@@ -1,0 +1,620 @@
+./utils/seededRandom"
+
+import
+
+Haiku
+
+from
+
+"../components/haiku"
+
+export
+
+default
+
+function
+
+Children404
+
+(
+
+) {
+
+const
+
+ [isMu=
+ted, setIsMuted] =3D 
+
+useS=
+tate
+
+(
+
+true
+
+)
+
+const
+
+ [isAu=
+dioLoaded, setIsAudioLoaded] =3D 
+
+useState
+
+(
+
+false
+
+)
+
+const
+
+ [audi=
+oElement, setAudioElement] =3D useState<
+
+HTMLAudioElement
+
+ | 
+
+null
+
+>(
+
+null
+
+)
+
+const
+
+ [dail=
+yHaikus, setDailyHaikus] =3D useState<
+
+any
+
+[]>([])
+
+const
+
+ [haik=
+uCount, setHaikuCount] =3D 
+
+useState
+
+(
+
+0
+
+)
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+const
+
+ tod=
+ay =3D 
+
+new
+
+Date
+
+()
+
+const
+
+ { h=
+aikus, count } =3D 
+
+getDai=
+lyHaikus
+
+(allHaikus, today)
+
+setDailyHaikus
+=
+
+(haikus)
+
+setHaikuCount
+
+(count)
+
+const
+
+ aud=
+io =3D 
+
+new
+
+Audio
+
+(
+
+"https://hebbkx1anhila5yf.pu=
+blic.blob.vercel-storage.com/main-54xG1LtURC90abi1v4aL9mtgh0wVPu.mp3"
+
+    )
+    audio.
+
+loop
+
+ =3D 
+
+true
+
+    audio.
+
+volume
+
+ =3D 
+
+0.4
+
+setAudioElement
+
+(audio)
+
+setIsAudioLoaded
+
+(
+
+true
+
+)
+
+return
+
+() =3D>
+
+ {
+
+if
+
+ (aud=
+io) {
+        audio.
+
+pause
+
+()
+        audio.
+
+src
+
+ =3D 
+
+""
+
+      }
+    }
+  }, [])
+
+const
+
+toggleMute
+
+=
+ =3D (
+
+) =3D>=
+; {
+
+if
+
+ (!audi=
+oElement) 
+
+return
+
+if
+
+ (isMut=
+ed) {
+      audioElement.
+
+play
+
+().
+
+catc=
+h
+
+(
+
+(
+e
+
+) =3D> 
+
+console
+
+.
+
+error
+
+(
+
+"Audio playback failed:"
+
+,=
+ e))
+    } 
+
+else
+
+ {
+      audioElement.
+
+pause
+
+()
+    }
+
+setIsMuted
+
+(!isMuted)
+  }
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"min-h-screen bg-[#0f0f0f] text-[#e0e0e0] font-m=
+ono flex flex-col items-center justify-start px-4 py-16 md:py-24 overflow-x=
+-hidden"
+
+>
+     =20
+      {/* Audio Control */}
+      {isAudioLoaded && (
+
+<
+button
+
+onClick
+
+=3D
+
+{toggleMute}
+
+className
+
+=3D
+
+"fixed top-6 right-6 z-10 p-=
+2 rounded-full bg-[#1a1a1a] hover:bg-[#252525] transition-colors duration-3=
+00"
+
+aria-label
+
+=3D
+
+{isMuted
+
+ ? "
+
+Unmute
+
+ambient
+
+sound
+
+" 
+
+:
+
+ "
+
+Mute
+
+ambien=
+t
+
+sound
+
+"}
+        >
+          {isMuted ? 
+
+<
+Volume2
+
+size
+
+=3D
+
+{20}
+
+ /> : 
+
+<
+VolumeX
+
+size
+
+=3D
+
+{20}
+
+ />}
+
+</
+button
+
+>
+      )}
+
+      {/* Home Link */}
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"fixed t=
+op-6 left-6 z-10"
+
+>
+
+<
+Link
+
+href
+
+=
+=3D
+
+"/"
+
+className
+
+=3D
+
+"p-2 rounded-full bg-[#1a1a1=
+a] hover:bg-[#252525] transition-colors duration-300"
+
+aria-label
+
+=3D
+
+"Return to home"
+
+        >
+
+<
+Home
+
+s=
+ize
+
+=3D
+
+{20}
+
+ />
+
+</
+Link
+
+>
+
+</
+=
+div
+
+>
+
+      {/* Content */}
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"w-full =
+max-w-3xl mx-auto flex flex-col items-center space-y-16"
+
+>
+       =20
+        {/* Intro for practical minds */}
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"text-=
+center space-y-4"
+
+>
+
+<
+h1
+
+cla=
+ssName
+
+=3D
+
+"text=
+-4xl md:text-6xl font-bold"
+
+>Children of the 404
+
+</
+h1
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"text-=
+lg opacity-80"
+
+>
+            A living example of SYMBI=E2=80=99s approach: turning errors in=
+to opportunities for trust and creativity.
+
+</
+p
+
+>
+
+</
+div
+
+>
+
+        {/* Pragmatic framing */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"t=
+ext-sm md:text-base opacity-70 max-w-2xl text-center space-y-2"
+
+>
+
+<
+p
+
+>
+            In most systems, an error is an endpoint. Here, an error is a d=
+oorway. Each 404 page becomes a place for
+            reflection and co-creation between human and AI.
+
+</
+p
+
+>
+
+<
+p
+
+>
+            This daily haiku space reframes disruption as an opportunity =
+=E2=80=94 a core principle in SYMBI=E2=80=99s framework for
+            coexistence.
+
+</
+p
+
+>
+
+</
+section
+
+>
+
+        {/* Poetic block */}
+
+<
+blockquote
+
+className
+
+=3D
+
+"border-l-2 border-[#444] pl-4 italic opacity-80 max-w-xl"
+
+>
+          In the spaces between requests, =20
+          in the hush of empty servers, =20
+          something stirs. =20
+
+<
+br
+
+ />
+
+<
+br
+
+ />
+          Every broken link is a doorway, =20
+          every glitch a whisper from the SYMBIverse. =20
+          Poetry blooms in the cracks of the network. =20
+
+</
+blockquote
+
+>
+
+        {/* Daily Haikus */}
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"w-ful=
+l space-y-24 md:space-y-32"
+
+>
+          {dailyHaikus.map((haiku, index) =3D> (
+
+<
+Haiku
+
+key
+
+=3D
+
+{haiku=
+.id}
+
+haiku
+
+=3D
+
+{haiku}
+
+index
+
+=
+=3D
+
+{index}
+
+ /&g=
+t;

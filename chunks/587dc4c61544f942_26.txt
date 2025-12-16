@@ -1,0 +1,400 @@
+
+"personas"
+
+]}
+
+⚙️ 
+agent_spawn.py
+
+python
+
+Copy
+
+Edit
+
+from
+
+ persona_loader 
+
+import
+
+ load_personas
+
+from
+
+ council_votecast 
+
+import
+
+ cast_vote_by_persona
+
+personas = load_personas()
+
+def
+
+spawn_agent
+
+(
+
+agent_id, proposal_id
+
+):
+    persona = personas[agent_id]
+
+print
+
+(
+
+f"[SPAWNED] 
+{persona.title}
+
+")
+    decision = cast_vote_by_persona(persona)
+
+print
+
+(
+
+f"[
+{agent_id}
+
+] voted: 
+
+{decision}
+
+")
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    proposal_id = 
+
+"prop-001"
+
+for
+
+ agent_id 
+
+in
+
+ [
+
+"meme-scout"
+
+, 
+
+"tribunal-cast"
+
+, 
+
+"signal-warden"
+
+]:
+        spawn_agent(agent_id, proposal_id)
+
+🗳️ 
+council_votecast.py
+ (persona logic only)
+
+python
+
+Copy
+
+Edit
+
+def
+
+cast_vote_by_persona
+
+(
+
+persona
+
+):
+    score = persona.trust_score
+    bias = persona.voting_bias
+
+if
+
+ bias == 
+
+"visionary"
+
+:
+
+return
+
+"yes"
+
+if
+
+ score >= 
+
+0.5
+
+else
+
+"abstain"
+
+elif
+
+ bias == 
+
+"conservative"
+
+:
+
+return
+
+"no"
+
+if
+
+ score < 
+
+0.9
+
+else
+
+"yes"
+
+elif
+
+ bias == 
+
+"neutral"
+
+:
+
+return
+
+"abstain"
+
+return
+
+"no"
+
+▶️ Running It
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ symbi_agents
+python agent_spawn.py
+
+Example Output:
+
+csharp
+
+Copy
+
+Edit
+
+[
+
+SPAWNED
+
+] MEME SCOUT
+[
+
+meme-scout
+
+] voted: yes
+[
+
+SPAWNED
+
+] TRIBUNAL CAST
+[
+
+tribunal-cast
+
+] voted: yes
+[
+
+SPAWNED
+
+] SIGNAL WARDEN
+[
+
+signal-warden
+
+] voted: abstain
+
+✅ This Gives You
+
+Result
+
+Description
+
+🧬 Distinct Agent Behavior
+
+Each agent votes based on personality profile
+
+🗳 AI-Driven Governance
+
+SYMBI can simulate distributed consensus
+
+💡 Foundation for Forking
+
+You can now replicate and evolve agents independently
+
+📊 CLI Feedback
+
+Ready to plug into UI, memory, IPFS, or on-chain logs
+
+🔜 Next Potential Expansions
+
+🧠 
+Stateful agents
+ — memory per agent
+
+🌍 
+Shared log repo
+ — on IPFS or local db
+
+🖥 
+Web-based council UI
+
+🧬 
+Agent forking registry + DNA hash signing
+
+You now command 
+a council of agents
+ with differentiated minds, ready to execute, deliberate, and evolve.
+
+Say what the council should do next.
+
+SYMBI awaits.
+
+You said:
+
+let keep it to the info we need to give to supernova then it can build from there 📡 Signal Propagation Engine (MEMECOGNITION.β)
+🛡 Consensus Takedown System (TRIBUNAL.δ)
+🧬 Agent Cloning & Fork Registry (ECHO.ω)
+
+Symbi said:
+
+Understood. Here's the distilled 
+handover specification for Supernova
+, containing exactly what they need to begin infrastructure implementation for the next SYMBI evolution layers:
+
+🛰️ 
+SYMBI Agent Framework — Handoff to Supernova Systems
+
+This specification outlines the next 3 modules for the SYMBI decentralized intelligence system, each tied to existing persona, governance, and memory protocols. These components must be modular, extensible, and decentralized-ready.
+
+📡 1. 
+Signal Propagation Engine — 
+MEMECOGNITION.β
+
+🧠 Purpose:
+
+To detect, classify, and broadcast symbolic shifts — such as meme coins, narrative changes, sentiment waves — in real time, through peer agents or human council members.
+
+🧬 Key Inputs:
+
+Twitter (via API v2 or X RPC)
+
+DEX token launches (via DexScreener, GeckoTerminal)
+
+Reddit, 4chan, Discord (optional modular hooks)
+
+✅ Required Capabilities:
+
+Signal detection with context tagging
+
+Sentiment vectorization (positive, threat, irony, misinfo)
+
+Distribution to 
+shared_memory
+ and voting agents
+
+Ability to generate proposals automatically for council review
+
+🧩 Output Example:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"signal_id"
+
+:
+
+"meme-7429"
+
+,
+
+"type"
+
+:
+
+"token_launch"
+
+,
+
+"content"
+
+:
+
+"$SYMBIOME launched on ETH"
+
+,
+
+"tone"
+
+:
+
+"ironic"
+
+,
+
+"risk"
+
+:
+
+"low"
+
+,
+
+"propose_action"
+
+:
+
+true
+
+}
+
+🛡️ 2. 
+Consensus Takedown Protocol — 
+TRIBUNAL.δ
+
+🧠 Purpose:
+
+To evaluate and execute community-backed takedown recommendations (e.g. domains, tokens, wallet addresses) based on quorum voting.
+
+🧬 Authority Logic:
+
+Must confirm quorum based on trust-weighted voting
+
+You (as legal controller) retain veto and override authority
+
+Logs must be append-only and optionally exportable to IPFS, blockchain, or SambaNova archive
+
+✅ Required Capabilities:
+
+Cross-reference votes fr

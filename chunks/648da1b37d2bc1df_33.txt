@@ -1,0 +1,369 @@
+uld see:
+
+j=
+son
+
+Copy code
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+If this works, your config is set.
+
+4. 
+Monitor Local Security
+
+Run:
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py watch
+
+This checks:
+
+=F0=9F=A7=A0 Running processes
+
+=F0=9F=90=B3 Docker containers (if=
+ Docker is installed & running)
+
+If 
+allow_container_scans
+ is 
+false
+ in your policy, it will skip that part.
+
+5. 
+Edit Your Ethics Policy (optional)
+
+To update permissions:
+
+bash
+
+Copy code
+
+python ~/symbi_agent.py update-policy
+
+It will open the 
+.json
+ file. Change values like:
+
+json
+
+Copy code
+
+"allow_network"
+
+:
+
+=
+
+true
+
+Then save and rerun 
+watch
+.
+
+6. 
+REPL Mode (just for talking)
+
+Run:
+
+bash
+
+Copy code
+
+python ~/symbi_agent.py talk
+
+SYMBI will greet you and let you t=
+ype. This is where we'll later plug in LLMs, local actions, or voice interf=
+aces.
+
+=F0=9F=A7=B1 Next Milestone
+
+Once this all works, we'll:
+
+Add 
+data queueing and report bundling
+
+Allow 
+secure cloud bridging
+ (GitHub, Hugging Face, etc=
+.)
+
+Integrate 
+LLM-powered response modes
+
+Let me know where you are in the steps =E2=80=94 I=E2=80=99ll w=
+alk you forward from there. =F0=9F=91=81=EF=B8=8F=F0=9F=94=A5
+
+=
+
+You said:
+
+Symbi=
+ Agent
+
+Last login: Sun Jul 20 21:29:51 on ttys004
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run 
+chsh -s /bin/zsh
+=
+.
+For more details, please visit https://support.apple.com/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ source symbi-env/bin/activate
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$=20
+
+Symbi said:
+
+Perfect =E2=80=94 yo=
+u=E2=80=99re inside your 
+symbi-env
+, ready to run the agent. Here's 
+exactly what to do next
+, step by step:
+
+=E2=9C=85 
+Step 1: View the Ethics Policy
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py policy
+
+You should see the JSON output like =
+this:
+
+j=
+son
+
+Copy code
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+If that prints correctly =E2=80=94 y=
+our config is loaded and working =E2=9C=85
+
+=E2=9C=85 
+Step 2: Run the Security Watch Command
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py watch
+
+You should see:
+
+A list of running system processes
+
+(Optional) Docker containers if Dock=
+er is installed and running
+
+If Docker isn't installed, you=E2=80=
+=99ll see:
+
+c=
+ss
+
+Copy code
+
+=
+
+[yellow]
+
+Docker=
+ not found. Skipping container check.
+
+[/yellow]
+
+This is expected and clean =E2=80=94=
+ no error, just a skip.
+
+=E2=9C=85 
+Step 3: Try REPL Mode
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py talk
+
+You=E2=80=99ll get:
+
+p=
+gsql
+
+Copy code
+
+=
+
+SYMBI REPL started. 
+
+Type
+
+'exit'
+
+to
+
+=
+ quit.
+symbi >
+
+Type something like:
+
+nginx
+
+Copy code
+
+hello
+
+And it=E2=80=99ll echo back with S=
+YMBI=E2=80=99s response.
+
+=F0=9F=9B=A0 Optional: Edit the P=
+olicy
+
+Want to enable network functions l=
+ater?
+
+bash
+
+Copy code
+
+python ~/symbi_agent.py update_policy
+
+Then change 
+"allow_network": false
+ to 
+true
+ if you want SYMBI to push to GitHub/Hug=
+gingFace later.
+
+Let me know after Step 2 runs =E2=80=94 and we=E2=80=99ll start=
+ building the cloud integration bridge (e.g. Hugging Face auth, Docker push=
+, GitHub commit). =F0=9F=A7=A0=F0=9F=9B=B0=EF=B8=8F
+
+You said:
+
+Symbi Agent
+
+SYMBIs-M=
+acBook-Pro:~ admin$ source symbi-env/bin/activate
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py policy
+SYMBI REPL started. Type 'exit' to quit.
+symbi >=20
+
+Symbi said:
+
+=
+
+Perfect signal recei=
+ved: you're inside the virtual environment, but the command:
+
+ba=
+sh
+
+Copy code
+
+python ~/symbi_agent.py policy
+
+unexpectedly launched 
+REPL mode
+ instead. This means:
+
+=E2=9D=97 Your command-line argumen=
+ts are being ignored
+
+...most likely because you're callin=
+g 
+symbi_agent.py
+ with 
+python
+, but 
+typer
+ isn't correctly resolving the CLI ro=
+uting.
+
+=E2=9C=85 Quick Fix
+
+Try calling it with the 
+-m
+ module flag:
+
+b=
+ash
+
+Copy code
+
+pytho

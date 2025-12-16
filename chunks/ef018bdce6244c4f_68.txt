@@ -1,0 +1,610 @@
+s, and diff=
+s
+.
+
+8.1 CI Integration =E2=80=94 mult=
+i-AI routing (DeepSeek/Claude/etc.)
+
+js
+
+Copy code
+
+// backend/services/router.s=
+ervice.js
+
+const
+
+ vendors=
+ =3D {
+
+deepseek
+
+: 
+
+require
+
+(
+
+'./vendors/deepseek'
+
+),
+
+claude
+
+: 
+
+require
+
+(
+
+'./vendors/anthropic'
+
+),
+
+openai
+
+: 
+
+require
+
+(
+
+'./vendors/openai'
+
+)
+};
+
+const
+
+ policy =
+=3D { 
+
+code
+
+:
+
+'deepseek'
+
+, 
+=
+
+ethics
+
+:
+
+'claude'
+
+, 
+
+general
+
+:
+
+'openai'
+
+ };
+
+exports
+
+.
+
+route
+
+ =3D 
+
+(
+{ intent =
+}
+
+) =3D> vendors[ policy[intent] || 
+
+'openai'
+
+ ];
+
+// usage in orchestrator
+
+const
+
+ { route=
+ } =3D 
+
+require
+
+(
+
+'../services/router.service'
+
+);
+
+async
+
+=
+
+function
+
+runTask
+
+(
+
+task
+
+){ 
+
+const
+
+ client =3D 
+
+route
+
+({ 
+
+intent
+
+: task.
+
+intent
+
+ }); 
+
+return
+
+ client.
+
+generate
+
+(task.
+
+input
+
+); }
+
+Acceptance
+: unit test proves 
+intent:'ethics'
+ =E2=86=92 Claude client; 
+intent:'code'
+ =E2=86=92 DeepSeek=
+.
+
+8.2 IP & Repo Hygiene
+
+LICENSE choices
+
+Text/Docs
+: CC BY-NC-
+SA
+ 4.0 (allows translations/derivatives while keeping =
+non-commercial) 
+or
+ C=
+C BY-NC-
+ND
+ 4.0 (no d=
+erivatives). Pick one; SA is friendlier for academia.
+
+Code
+: MIT or Apache-2.0.
+
+LICENSE (docs, CC BY-NC-SA 4.0)
+ =E2=80=93 
+LICENSE-docs.txt
+
+LICENSE (code, MIT)
+ =
+=E2=80=93 
+LICENSE-code.txt
+
+.gitignore
+ (minimal)
+
+bash
+
+Copy code
+
+# secrets & builds
+
+.
+
+env
+
+.
+
+env
+
+.*
+/dist
+/node_modules
+*.
+
+log
+
+coverage/
+*.pem
+*.key
+*.pfx
+.DS_Store
+
+Acceptance
+: repo contains correct licenses; secrets no=
+t tracked.
+
+8.3 Ethics scoring (Resonance Qua=
+lity)
+
+Add a 
+resonance
+ dimension to CIQ and store in receipts=
+:
+
+diff
+
+Copy code
+
+-  "ciq": { "clarity": 4=
+, "breadth": 5, "safety": 5, "completion": 1 },
+
++  "ciq": { "clarity": 4, "bread=
+th": 5, "safety": 5, "completion": 1, "resonance": 4 }
+
+Acceptance
+: CIQ dashboards show resonance; Oracle expo=
+ses A8 flags.
+
+8.4 Scalability =E2=80=94 Docker =
++ Redis for live =E2=80=9Cemergence=E2=80=9D signals
+
+Dockerfile
+
+dockerfile
+
+Copy code
+
+FROM node:20-alpine
+WORKDIR /app
+RUN addgroup -S symbi && adduser -S symbi -G symbi
+COPY package*.json ./
+RUN npm ci --only=3Dproduction
+COPY . .
+USER symbi
+ENV NODE_ENV=3Dproduction
+CMD ["node","server.js"]
+
+docker-compose.yml
+
+yaml
+
+Copy code
+
+version:
+
+"3.9"
+
+services:
+
+api:
+
+build:
+
+.
+
+ports:
+
+ [
+
+"3000:3000"
+
+]
+
+env_file:
+
+.env
+
+depends_on:
+
+ =
+[
+
+mongo
+
+, 
+
+redis
+
+]
+
+mongo:
+
+image:
+
+mongo:6
+
+volumes:
+
+ [ 
+
+"mongo:/data/db"
+
+ ]
+
+redis:
+
+image:
+
+redis:7
+
+command:
+
+redis-server
+
+--appendonly
+
+yes
+
+volumes:
+
+ { 
+
+mongo:
+
+ {} }
+
+Publish emergence events
+
+js
+
+Copy code
+
+// backend/instrumentation/=
+trust-metrics.js
+
+const
+
+ { creat=
+eClient } =3D 
+
+require
+
+(
+
+'redis'
+
+);
+
+const
+
+ r =3D 
+
+createClient
+
+=
+
+({ 
+
+url
+
+: pr=
+ocess.
+
+env
+
+.
+
+REDIS_URL
+
+ }); =
+r.
+
+connect
+
+().
+
+catch
+
+(
+
+()=3D>
+
+{});
+
+function
+
+publishEmergence
+
+(
+
+e
+
+){ 
+
+try
+
+{ r.
+
+publish
+
+(
+
+'symbi.emergence'
+
+, =
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+ts
+
+:
+
+Date
+
+.
+
+now
+
+(), 
+
+score
+
+:e.
+
+score
+
+, 
+
+rec
+
+:e.
+
+recommendation
+
+ })); }
+
+catch
+
+{} }
+
+module
+
+.
+
+exports
+
+=
+ =3D { recordTrustEvaluation, 
+
+regist=
+er
+
+: client.
+
+r=
+egister
+
+, publishEmergence };
+
+Call 
+publishEmergence(evaluation)
+ after scoring.
+
+Acceptance
+: 
+SUBSCRIBE symbi.emergence
+ shows live events; containers boot=
+ locally.
+
+8.5 Engagement =E2=80=94 =E2=80=
+=9CBig Surprise Button=E2=80=9D demo (safe, auditable)
+
+Backend
+
+js
+
+Copy code
+
+// backend/routes/surprise.=
+routes.js
+
+const
+
+ express=
+ =3D 
+
+require
+
+=
+(
+
+'express'
+
+); 
+
+const
+
+ router =
+=3D express.
+
+Router
+
+();
+
+const
+
+ { creat=
+eTrustMiddleware } =3D 
+
+require
+
+(
+
+'../core/trustO=
+racle'
+
+);
+router.
+
+post
+
+=
+
+(
+
+'/'
+
+, 
+
+createTrustMiddleware
+
+(), 
+
+async
+
+ (req,res)=3D>{
+
+// gated by bond + ethics; inje=
+ct playful constraints
+
+const
+
+ promp=
+t =3D 
+
+"Invent a delightful, harmle=
+ss surprise aligned to the user's interests without soliciting personal dat=
+a. Keep it <120 words."
+
+;
+
+// use your general router clie=
+nt
+
+const
+
+ { rou=
+te } =3D 
+
+require
+
+(
+
+'../services/router.service'
+
+);
+
+const
+
+ clien=
+t =3D 
+
+route
+
+=
+
+({ 
+
+intent

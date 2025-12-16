@@ -1,0 +1,485 @@
+our Next.js + Sanity setup is 
+still breaking
+ because:
+
+Sanity is not installed correctly
+, or a corrupted version is being used.
+
+Sanity placeholder files (
+sanity/placeholder.js
+) indicate a broken package install.
+
+You're importing 
+defineConfig
+, 
+defineField
+, and 
+defineType
+, but Sanity can't find them.
+
+🔥 Ultimate Fix: Fully Reset Sanity and Reinstall the Correct Version
+
+We 
+must remove the broken installation and force-install the correct version
+.
+
+🛠 Step 1: Completely Remove Sanity
+
+Run:
+
+bash
+
+Copy
+
+rm
+
+ -rf node_modules package-lock.json .next
+npm cache clean --force
+
+✅ 
+Removes all cached files that might be causing conflicts.
+
+Then, force uninstall Sanity:
+
+bash
+
+Copy
+
+npm uninstall sanity @sanity/client next-sanity @sanity/vision
+
+✅ 
+Completely removes Sanity from the project.
+
+🛠 Step 2: Reinstall the Correct Sanity Version
+
+Now, install the latest 
+Sanity V3
+ with forced peer dependencies:
+
+bash
+
+Copy
+
+npm install sanity@latest @sanity/client@latest next-sanity @sanity/vision --legacy-peer-deps
+
+✅ 
+This ensures you are using the latest supported Sanity version.
+
+🛠 Step 3: Fix 
+sanity.config.ts
+
+After reinstalling, open:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Replace everything with:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'your_project_id'
+
+, 
+
+// Replace with actual ID
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+})
+
+✅ 
+Fixes missing exports and ensures compatibility with Sanity V3.
+
+🛠 Step 4: Fix the Schema Definition
+
+Open:
+
+bash
+
+Copy
+
+nano schemas/page.ts
+
+Replace everything with:
+
+ts
+
+Copy
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'page'
+
+,
+
+title
+
+: 
+
+'Page'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'title'
+
+,
+
+title
+
+: 
+
+'Title'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'content'
+
+,
+
+title
+
+: 
+
+'Content'
+
+,
+
+type
+
+: 
+
+'text'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'image'
+
+,
+
+title
+
+: 
+
+'Hero Image'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+  ],
+})
+
+✅ 
+Ensures that 
+defineField
+ and 
+defineType
+ are properly loaded from Sanity.
+
+🛠 Step 5: Fix the Studio Route
+
+Open:
+
+bash
+
+Copy
+
+nano 
+
+"app/studio/[[...index]]/page.tsx"
+
+Replace everything with:
+
+tsx
+
+Copy
+
+'use client'
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+'next-sanity/studio'
+
+import
+
+ config 
+
+from
+
+'../../../sanity.config'
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />
+}
+
+✅ 
+Fixes broken metadata and ensures correct import from Sanity.
+
+🛠 Step 6: Restart the Project
+
+Now, reinstall all dependencies:
+
+bash
+
+Copy
+
+npm install
+
+Then, start the server:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ 
+Check the website at
+
+http://localhost:3000
+
+✅ 
+Check Sanity Studio at
+
+http://localhost:3000/studio
+
+🚀 If Errors Persist, Send Me the New Logs! 🚀🔥
+
+This should finally fix 
+all broken Sanity references
+. If 
+any errors remain
+, send the 
+full updated error message
+ so I can debug further! 😊
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % npm uninstall sanity @sanity/client next-sanity @sanity/vision
+
+added 389 packages, and audited 390 packages in 48s
+
+140 packages are looking for funding
+  run 
+npm fund
+ for details
+
+found 0 vulnerabilities
+sja@SJAs-MacBook-Pro symbi % npm install sanity@latest @sanity/client@latest next-sanity @sanity/vision --legacy-peer-deps
+
+added 851 packages, removed 1 package, and audited 1455 packages in 2m
+
+254 packages are looking for funding
+  run 
+npm fund
+ for details
+
+11 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audi

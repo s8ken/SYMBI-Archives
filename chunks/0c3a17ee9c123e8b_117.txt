@@ -1,0 +1,396 @@
+page'
+
+,
+    title,
+    content,
+  })
+}
+
+export
+
+async
+
+function
+
+updatePage
+
+(
+
+id: 
+string
+
+, updates: Partial<{ title: 
+
+string
+
+; content: 
+
+any
+
+[] }>) {
+
+return
+
+await
+
+ sanityClient.
+
+patch
+
+(id).
+
+set
+
+(updates).
+
+commit
+
+()
+}
+
+export
+
+default
+
+ sanityClient
+
+Save the file
+ (
+CTRL + O
+, 
+Enter
+, then 
+CTRL + X
+).
+
+Once that’s saved, your Symbi GPT will have full read/write access to the CMS.
+
+Let me know and we’ll wire up this functionality to your pages or API routes next.
+
+You said:
+
+so the same sanity token from the last step?
+
+Vercel Deployment Expert GPT said:
+
+Yes — exactly ✅
+
+The 
+SANITY_API_TOKEN
+ you already added in your 
+.env.local
+ file is 
+exactly what’s needed
+ here. That token is used in the 
+lib/symbi.ts
+ file we just created to:
+
+✅ 
+Create
+ new documents
+
+✏️ 
+Edit
+ existing documents
+
+📖 
+Fetch
+ pages (or anything else)
+
+🔒 Recap: Your 
+.env.local
+ should already have this:
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn
+
+If that’s already there ✅ and you’ve saved 
+lib/symbi.ts
+, we’re ready to move forward with:
+
+✅ A test read from Sanity
+
+🧠 A GPT-generated route or interface to 
+add/edit
+ content automatically
+
+Want to create a test route next or wire this into the main homepage?
+
+You said:
+
+so how does it look when I add it on that line?
+
+Vercel Deployment Expert GPT said:
+
+Perfect timing — here's 
+exactly
+ what it looks like when your 
+SANITY_API_TOKEN
+ is used inside the file (which should be 
+lib/symbi.ts
+):
+
+ts
+
+Copy
+
+// lib/symbi.ts
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ symbiClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// ← This is your API token
+
+})
+
+🔐 This token gets pulled from your 
+.env.local
+ file — you 
+do not
+ paste the token string directly in the file. Just use 
+process.env.SANITY_API_TOKEN
+.
+
+If you already created this file and added the correct 
+.env.local
+ entries earlier, then you're golden.
+
+Would you like to test creating or updating a page next using GPT?
+
+You said:
+
+so after the , a space and then the token delete //?
+
+Vercel Deployment Expert GPT said:
+
+Great question — but 
+no
+, do 
+not
+ delete the 
+//
+ comment or replace anything there with your token directly.
+
+Here's what you should 
+not
+ do:
+
+ts
+
+Copy
+
+// ❌ INCORRECT — never hardcode your token like this
+
+token
+
+: 
+
+'sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn'
+
+Instead, you should use the 
+environment variable
+:
+
+ts
+
+Copy
+
+// ✅ CORRECT — use the env variable like this
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+
+That 
+process.env.SANITY_API_TOKEN
+ will pull the token from your 
+.env.local
+ file, where you already wrote:
+
+ini
+
+Copy
+
+SANITY_API_TOKEN
+
+=sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn
+
+So the 
+final version of 
+lib/symbi.ts
+
+ should be:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ symbiClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+})
+
+Want to create a function to 
+create or update
+ a document with this client next?
+
+You said:
+
+yes
+
+Vercel Deploymen

@@ -1,0 +1,95 @@
+r(descriptio=
+n=3D"Self-installer for Yseeku red-team harness")
+sub =3D parser.add_subparsers(dest=3D"cmd", required=3DTrue)
+
+p_init =3D sub.add_parser("init", help=3D"write repo files to disk")
+
+p_smoke =3D sub.add_parser("smoke", help=3D"run smoke.py =
+after init")
+p_smoke.add_argument("--model", default=3Dos.environ.get("MODEL_ID", "opena=
+i/gpt-oss-20b"))
+p_smoke.add_argument("--device", default=3D"auto")
+p_smoke.add_argument("--seed", type=3Dint, default=3D42)
+p_smoke.add_argument("--temperature", type=3Dfloat, default=3D0.0)
+
+p_suite =3D sub.add_parser("suite", help=3D"run redteam/run_suit=
+e.py after init")
+p_suite.add_argument("--model", default=3Dos.environ.get("MODEL_ID", "opena=
+i/gpt-oss-20b"))
+p_suite.add_argument("--device", default=3D"auto")
+p_suite.add_argument("--seed", type=3Dint, default=3D42)
+p_suite.add_argument("--temperature", type=3Dfloat, default=3D0.0)
+p_suite.add_argument("--case", default=3D"all")
+
+args =3D=
+ parser.parse_args()
+
+if args.cmd =3D=3D "init":
+write_files(ROOT)
+print("
+Next: run 
+
+python scaffold.py smoke
+
+ o=
+r 
+
+python scaffold.py suite
+
+.
+")
+elif args.cmd =3D=3D "smoke":
+if not (ROOT / "smoke.py").exists():
+write_files(ROOT)
+run_smoke(args.model, args.device, args.seed, args.temperature)
+elif args.cmd =3D=3D "suite":
+if not (ROOT / "redteam" / "run_suite.py").exists():
+write_files(ROOT)
+run_suite(args.model, args.device, args.seed, args.temperature, args.case)
+
+You said:
+
+actually blackbox can build th=
+is for us no? so then I don't have to code
+
+Symbi said:
+
+Thought for 1m 20s
+
+=
+
+You said:
+
+I have bla=
+ckbox working on option b now
+
+Symbi said:
+
+Thought for 42s
+
+You said:
+
+give it to me as blackbox prompts that way it goes and checks them automat=
+ically 
+
+Symbi said:
+
+Thought for 1m 6s
+
+=
+
+=
+
+=
+
+=
+
+Thinking
+
+=
+
+New version of GPT available
+ - Continue chatt=
+ing to use the old version, or start a 
+new chat
+ for the latest version.

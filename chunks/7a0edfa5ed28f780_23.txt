@@ -1,0 +1,550 @@
+an indented block
+, and it got wiped in your paste.
+
+Let’s fix it right now 👇
+
+🔧 Replace the 
+load_ethics()
+ function with this:
+
+Just this section needs correction — you can paste it back into the same file (
+nano ~/symbi_agent.py
+) and overwrite lines 25–33.
+
+python
+
+Copy
+
+Edit
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=
+
+True
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'r'
+
+) 
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+🧪 Then Save + Run Again
+
+Ctrl + O
+, 
+Enter
+
+Ctrl + X
+
+Then:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+You should now see:
+
+pgsql
+
+Copy
+
+Edit
+
+SYMBI REPL started. 
+
+Type
+
+'exit'
+
+to
+
+ quit.
+symbi >
+
+Type:
+
+plaintext
+
+Copy
+
+Edit
+
+hello
+
+SYMBI will respond in mock mode and wait for your next command — exactly as designed.
+
+Let me know once it's working, and we’ll move to 
+adding local actions, secure bridging, or voice mode
+ next 🔧🔥
+
+You said:
+
+probably easier to give me the whole thing again haha
+
+Symbi said:
+
+😄 You got it — clean, fully corrected, and copy-paste ready.
+
+🧱 SYMBI Agent — Final Clean Version
+
+Open the editor:
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+Then paste this full code:
+
+python
+
+Copy
+
+Edit
+
+# symbi_agent.py — SYMBI Local Companion v1
+
+import
+
+ os
+
+import
+
+ json
+
+import
+
+ psutil
+
+import
+
+ typer
+
+import
+
+ subprocess
+
+from
+
+ rich 
+
+import
+
+print
+
+from
+
+ rich.console 
+
+import
+
+ Console
+
+from
+
+ rich.table 
+
+import
+
+ Table
+
+app = typer.Typer()
+console = Console()
+
+# ---------------------- ETHICS POLICY ----------------------
+
+ETHICS_PATH = os.path.expanduser(
+
+"~/.symbi/ethics.json"
+
+)
+DEFAULT_ETHICS = {
+
+"allow_network"
+
+: 
+
+False
+
+,
+
+"allow_container_scans"
+
+: 
+
+True
+
+,
+
+"allow_process_monitoring"
+
+: 
+
+True
+
+,
+
+"consent_required"
+
+: 
+
+True
+
+}
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=
+
+True
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'r'
+
+) 
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics = load_ethics()
+
+# ---------------------- WATCH SYSTEM ----------------------
+
+@app.command()
+
+def
+
+watch
+
+():
+
+"""Monitor system processes and Docker containers."""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring is disabled by ethics policy.[/red]"
+
+)
+
+raise
+
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"[bold green]Monitoring processes and containers...[/bold green]\n"
+
+)
+
+print
+
+(
+
+"[bold]Running processes:[/bold]"
+
+)
+
+for
+
+ proc 
+
+in
+
+ psutil.process_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"[dim]
+{proc.info[
+'pid'
+
+]}[/dim] 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ (psutil.NoSuchProcess, psutil.AccessDenied):
+
+continue
+
+if
+
+ ethics.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bold]"
+
+)
+
+try
+
+:
+            result = subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=
+
+True
+
+, text=
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found. Skipping container check.[/yellow]"
+
+)
+
+# ---------------------- REPL MODE ----------------------
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface with SYMBI agent."""
+
+    console.
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL started. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ user_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+        console.
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+        console.
+
+print
+
+(
+
+"[green]SYMBI (mock):[/green] I'm here. Functionality coming soon."
+
+)
+
+# ---------------------- POLICY VIEW ----------------------
+
+@app.command()
+
+def
+
+policy
+
+():
+
+"""View current SYMBI ethics policy."""
+
+    console.
+
+print
+
+(
+
+"[bold yellow]Current Ethics Policy:[/bold ye

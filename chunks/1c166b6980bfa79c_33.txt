@@ -1,0 +1,115 @@
+arty.BeaconKeyService
+		 0x3eb03    M   A   com.apple.icloud.searchpartyd.scheduler
+		  0x4303    M   A   com.apple.networking.captivenetworksupport
+		  0x5003    M   A   com.apple.SystemConfiguration.configd
+		  0x1803    M   A   com.apple.logd.watchdog
+		 0x37e5f    M   A   com.apple.ak.auth.xpc
+		  0xa403    M   A   com.apple.system.DirectoryService.libinfo_v1
+--
+		 0x3ea03    M   D   com.apple.icloud.searchpartyd.aps
+		 0x6538b    M   A   com.apple.nearbyd.xpc.nearbyinteraction.observer
+		       0    M   D   com.apple.storereceiptinstaller
+		       0    M   D   com.apple.private.alloy.timezonesync-idswake
+		  0x4d03    M   A   com.apple.SystemConfiguration.NetworkCategoryManager
+		 0x27807    M   A   com.apple.audio.AudioComponentRegistrar
+--
+		 0x2c303    M   A   com.apple.searchparty.ObservationStoreService
+		  0x6003    M   A   com.apple.metadata.mds.legacy
+		 0x1b427    M   A   com.apple.icloud.findmydeviced.aps-development
+		  0x1603    M   A   com.apple.logd.admin
+	}
+
+stephenaitken@SYMBIs-MacBook-Pro ~ % echo "\n=3D=3D=3D Step 3: Find what fi=
+le is loading it (LaunchAgents/Daemons) =3D=3D=3D"
+grep -r "searchpartyuseragent" /System/Library/Launch* /Library/Launch* ~/L=
+ibrary/Launch* 2>/dev/null
+
+=3D=3D=3D Step 3: Find what file is loading it (LaunchAgents/Daemons) =3D=
+=3D=3D
+zsh: no matches found: /Users/stephenaitken/Library/Launch*
+stephenaitken@SYMBIs-MacBook-Pro ~ % echo "\n=3D=3D=3D Step 4: Is it making=
+ outbound network connections? =3D=3D=3D"
+sudo lsof -i | grep -i searchpartyuseragent
+netstat -an | grep 5223
+
+=3D=3D=3D Step 4: Is it making outbound network connections? =3D=3D=3D
+Password:
+Sorry, try again.
+Password:
+sudo: 1 incorrect password attempt
+
+tcp4       0      0  192.168.68.101.58284   17.57.145.38.5223      ESTABLIS=
+HED
+stephenaitken@SYMBIs-MacBook-Pro ~ % echo "\n=3D=3D=3D Step 5: Quick system=
+ log check (last 2 mins of searchparty events) =3D=3D=3D"
+log show --last 2m | grep -i searchparty
+
+=3D=3D=3D Step 5: Quick system log check (last 2 mins of searchparty events=
+) =3D=3D=3D
+2025-09-23 21:49:32.883826+1000 0x2aaf8    Default     0x0                 =
+ 155    8    dasd: [com.apple.duetactivityscheduler:scoring] 502:com.apple.=
+searchpartyd.OwnDevicePublish:E708D4:[
+2025-09-23 21:49:33.480531+1000 0x2add8    Default     0x0                 =
+ 155    8    dasd: [com.apple.duetactivityscheduler:scoring] 502:com.apple.=
+searchpartyd.OwnDevicePublish:E708D4:[
+2025-09-23 21:50:33.392011+1000 0x2b058    Default     0x0                 =
+ 155    8    dasd: [com.apple.duetactivityscheduler:scoring] 502:com.apple.=
+searchpartyd.OwnDevicePublish:E708D4:[
+2025-09-23 21:51:00.994860+1000 0x2ae78    Error       0x0                 =
+ 0      0    kernel: (Sandbox) [com.apple.sandbox.reporting:violation] Syst=
+em Policy: findmydeviced(216) deny(1) file-read-data /private/var/db/search=
+party/sharedVault/agents/3F9AD3D7-D3D7-47DB-9FCB-259C6F8BD015/savedConfigur=
+ation.plist
+2025-09-23 21:51:12.098095+1000 0x2b281    Error       0x0                 =
+ 0      0    kernel: (Sandbox) [com.apple.sandbox.reporting:violation] 2 du=
+plicate reports for System Policy: findmydeviced(216) deny(1) file-read-dat=
+a /private/var/db/searchparty/sharedVault/agents/3F9AD3D7-D3D7-47DB-9FCB-25=
+9C6F8BD015/savedConfiguration.plist
+stephenaitken@SYMBIs-MacBook-Pro ~ % 
+
+Symbi said:
+
+Thank you =E2=80=94 this confirms a lot. Let=E2=80=
+=99s lay it out clearly:
+
+=F0=9F=94=8E What You Found
+
+1. 
+searchpartyuseragent
+ is running
+
+b=
+ash
+
+Copy code
+
+/usr/libexec/searchpartyuseragent
+
+That=E2=80=99s the 
+Find My
+ agent.
+
+It 
+should not be active
+ if iCloud/Find My is disabled on t=
+his profile.
+
+2. Launchctl shows multiple iCloud/=
+Find My daemons
+
+b=
+ash
+
+Copy code
+
+com.apple.icloud.searchpartyuseragent
+com.apple.icloud.searchpartyd
+com.apple.icloud.searchpartyd.finderstatemanager
+com.apple.icloud.searchpartyd.advertisementcache
+com.apple.icloud.searchpartyd.pairingmanager
+com.apple.icloud.findmydeviced
+
+These are 
+Find My Mac
+ / 
+Se

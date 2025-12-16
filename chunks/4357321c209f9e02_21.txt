@@ -1,0 +1,325 @@
+
+Copy
+
+# Check if the report contains "most contacted domains" data
+
+domain_connections = [entry 
+
+for
+
+ entry 
+
+in
+
+ report_data 
+
+if
+
+"domain"
+
+in
+
+ entry]
+
+# Count occurrences of each domain
+
+domain_activity = Counter()
+
+for
+
+ entry 
+
+in
+
+ domain_connections:
+    domain = entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+)
+    domain_activity[domain] += 
+
+1
+
+# Get the top 5 most contacted domains
+
+top_domains = domain_activity.most_common(
+
+5
+
+)
+
+# Output domain activity summary
+
+domain_summary = {
+
+"total_domains_tracked"
+
+: 
+
+len
+
+(domain_connections),
+
+"top_contacted_domains"
+
+: top_domains,
+}
+
+domain_summary
+
+Result
+
+{'total_domains_tracked': 2005,
+ 'top_contacted_domains': [('www.google.com', 29),
+  ('firebase-settings.crashlytics.com', 29),
+  ('firebaselogging-pa.googleapis.com', 26),
+  ('fonts.gstatic.com', 24),
+  ('app-analytics-services.com', 23)]}
+
+🔍 Most Contacted Domains in Your iPhone’s Privacy Report
+
+Your iPhone contacted 
+2,005 different domains
+, with the top ones being:
+
+🟢 Top 5 Most Contacted Domains
+
+1️⃣ 
+
+www.google.com
+ (29 times)
+ → Normal Google services (Search, Gmail, etc.).
+
+2️⃣ 
+
+firebase-settings.crashlytics.com
+ (29 times)
+ → 
+Google Firebase (App crash analytics)
+.
+
+3️⃣ 
+
+firebaselogging-pa.googleapis.com
+ (26 times)
+ → 
+Google Firebase Logging (App data logging service)
+.
+
+4️⃣ 
+
+fonts.gstatic.com
+ (24 times)
+ → Google Fonts (used by websites/apps for text rendering).
+
+5️⃣ 
+
+app-analytics-services.com
+ (23 times)
+ → Possible app tracking/analytics service.
+
+🚨 Anything Suspicious?
+
+✅ 
+Most domains are related to Google services, app analytics, and fonts
+—nothing immediately dangerous.
+
+❌ 
+
+app-analytics-services.com
+
+ is not a well-known domain—could be an ad tracker or data collection service.
+
+🛠 Next Steps: Do You Want to Investigate Specific Domains?
+
+We can 
+lookup unknown domains
+ (like 
+app-analytics-services.com
+) to see who owns them.
+
+We can check 
+which apps contacted these domains
+ to see 
+who is sending data where
+.
+
+📌 
+Would you like to investigate any domains further?
+ 🚀 
+
+You said:
+
+go back and reanalyse the data and keep in mind that I believe this could be related to google firebase and login with google is compromised so apps like Grindr snd others could also be impacted
+
+ChatGPT said:
+
+Updated saved memory
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Reanalyzing the data with a focus on Google Firebase and Login with Google activity
+
+# Filter entries related to Firebase and Google login services
+
+firebase_related = [entry 
+
+for
+
+ entry 
+
+in
+
+ report_data 
+
+if
+
+"firebase"
+
+in
+
+str
+
+(entry).lower() 
+
+or
+
+"googleapis"
+
+in
+
+str
+
+(entry).lower()]
+login_with_google_related = [entry 
+
+for
+
+ entry 
+
+in
+
+ report_data 
+
+if
+
+"oauth"
+
+in
+
+str
+
+(entry).lower() 
+
+or
+
+"accounts.google.com"
+
+in
+
+str
+
+(entry).lower()]
+
+# Count occurrences of Firebase and Google login-related entries
+
+firebase_activity = Counter(entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) 
+
+for
+
+ entry 
+
+in
+
+ firebase_related)
+google_login_activity = Counter(entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) 
+
+for
+
+ entry 
+
+in
+
+ login_with_google_related)
+
+# Get the most frequently accessed Firebase and Google login domains
+
+top_firebase_domains = firebase_activity.most_common(
+
+5
+
+)
+top_google_login_domains = google_login_activity.most_common(
+
+5
+
+)
+
+# Output updated analysis
+
+compromise_risk_analysis = {
+
+"total_firebase_related_entries"
+
+: 
+
+len
+
+(firebase_related),
+
+"top_firebase_domains"
+
+: top_firebase_domains,
+
+"total_google_login_related_entries"
+
+: 
+
+len
+
+(login_with_google_related),
+
+"top_google_login_domains"
+
+: top_google_login_domains,
+}
+
+compromise_risk_analysis
+
+Result
+
+{'total_firebase_related_entries': 212,
+ 'top_firebase_domains': [('firebase-settings.crashlytics.com', 29),
+  ('firebaselogging-pa.googleapis.com', 26),
+  ('firebaseinstallations.googleapis.com', 22),
+  ('firebaseremoteconfig.googleapis.com', 16),
+  ('oauth2.googleapis.com', 10)],
+ 'total_google_login_related_entries': 26,
+ 'top_google_login_domains':

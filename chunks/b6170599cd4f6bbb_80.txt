@@ -1,0 +1,333 @@
+/System/Library/Caches/com.apple.rapportd*
+sudo 
+
+rm
+
+ -rf /private/var/db/dyld/*
+sudo 
+
+rm
+
+ -rf /private/var/run/com.apple.rapportd*
+sudo 
+
+rm
+
+ -rf /Library/Caches/com.apple.rapportd*
+
+ð 
+This forces macOS to stop auto-restoring 
+rapportd
+.
+
+ð Step 4: Create a Fake 
+rapportd
+ & Block Modifications
+
+Now, recreate 
+rapportd
+ as a fake file so macOS 
+cannot restore it again
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /usr/libexec/rapportd
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+sudo chflags uchg /usr/libexec/rapportd
+
+ð 
+This makes 
+rapportd
+ permanently locked.
+
+ð 
+Even if macOS tries to restore it, it will fail.
+
+ð Step 5: Restart & Verify
+
+Now, reboot your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After restarting, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+launchctl list | grep rapportd
+
+ð 
+If no output appears, 
+rapportd
+ is GONE! ð
+
+ð Step 6: Re-enable SIP for Security
+
+Once confirmed that 
+rapportd
+ is removed, 
+restore System Integrity Protection (SIP)
+:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+This locks the system against unauthorized modifications.
+
+â Youâre Done! 
+rapportd
+ Should Be Fully Neutralized Now.
+ ðð
+
+Try these steps and let me know if 
+rapportd
+ is FINALLY gone! ð¥
+
+You said:
+
+lets come back to this one - is there any other way to block these things either at the router or firewall level
+
+ChatGPT said:
+
+ð¡ï¸ Blocking 
+rapportd
+ and Other Unwanted Services at the Router/Firewall Level ð¥
+
+If 
+rapportd
+ keeps respawning, 
+blocking it at the network level
+ is another powerful way to stop it. ð
+
+ð¥ Option 1: Block 
+rapportd
+ Using the Mac Firewall
+
+Since 
+rapportd
+ connects to Apple's servers, you can 
+block it using the built-in macOS firewall
+.
+
+Step 1: Enable the Firewall & Stealth Mode
+
+First, make sure macOS's firewall is turned on:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+
+ð 
+This blocks incoming requests and makes your Mac "invisible" to network scans.
+
+Step 2: Block 
+rapportd
+'s Internet Access
+
+Now, explicitly block 
+rapportd
+ from making network requests:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+ð 
+This stops 
+rapportd
+ from connecting to Apple's servers.
+
+Step 3: Verify That 
+rapportd
+ is Blocked
+
+Check the firewall settings:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --listapps
+
+ð If 
+rapportd
+ is listed as 
+blocked
+, youâre good! ð
+
+ð¥ Option 2: Block 
+rapportd
+ at the Router (Best Method)
+
+If 
+rapportd
+ is connecting to Apple's servers, you can 
+block its network traffic at the router
+.
+
+Step 1: Find Out Where 
+rapportd
+ is Connecting
+
+To see what servers 
+rapportd
+ is talking to, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+Youâll see output like:
+
+nginx
+
+Copy
+
+Edit
+
+rapportd
+
+588
+
+ sja  10u  IPv4 0x5b5a0e32dcadbb46  0t0  TCP 
+
+192.168.1.100:52134
+
+ -> 
+
+17.57.145.44:443
+
+ (ESTABLISHED)
+
+ð The 
+last part (
+17.57.145.44:443
+) is the Apple server IP.
+
+Step 2: Block These IPs in Your Router
+
+Now, log in to your 
+router admin panel
+ and:
+
+Find the 
+Firewall Settings
+ or 
+Access Control
+ section.
+
+Add a new 
+rule to block the IPs
+ found in Step 1.
+
+Set 
+"Block All Connections"
+ for those IPs.
+
+ð 
+This will stop 
+rapportd
+ from reaching Appleâs servers at all!
+ ð
+
+ð¥ Option 3: Block 
+rapportd
+ Using Little Snitch or Lulu (Easiest)
+
+If you want 
+a GUI method
+, use 
+Little Snitch
+ (paid) or 
+Lulu
+ (free) to block network connections.
+
+How to Block 
+rapportd
+ in Lulu:
+
+Open 
+Lulu
+ (
+/Applications/Lulu.app
+).
+
+Click 
+Rules
+ â 
+New Rule
+.
+
+Select:
+
+Process:
+
+/usr/libexec/rapportd
+
+Action:
+
+Block
+
+Direction:
+
+Outgoing
+
+Apply the rule.
+
+ð 
+Now, 
+rapportd
+ canât send or receive any data!
+ ð¥
+
+ð Final Thoughts
+
+â 
+Best metho

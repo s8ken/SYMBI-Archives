@@ -1,0 +1,541 @@
+'s walk through this step-by-step!
+
+â 1. 
+Check if 
+lib/sanity.ts
+ Already Exists
+
+Run this in your terminal from the root of your project:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ lib
+
+If you see 
+sanity.ts
+ listed, it already exists. You can then open it to inspect:
+
+bash
+
+Copy
+
+Edit
+
+nano lib/sanity.ts
+
+â 2. 
+Create 
+lib/sanity.ts
+ (If It Doesnât Exist)
+
+If the file 
+does not exist
+, run:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p lib && nano lib/sanity.ts
+
+Then paste the following code into 
+lib/sanity.ts
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,         
+
+// your Sanity project ID
+
+dataset
+
+: 
+
+'production'
+
+,         
+
+// your dataset
+
+apiVersion
+
+: 
+
+'2023-01-01'
+
+,      
+
+// use a specific date to lock the API version
+
+useCdn
+
+: 
+
+true
+
+// `true` enables faster response for public content
+
+})
+
+Once pasted, save the file:
+
+Press 
+Ctrl + O
+, then 
+Enter
+ to save.
+
+Press 
+Ctrl + X
+ to exit nano.
+
+Let me know once thatâs done and Iâll guide you on integrating it in 
+app/page.tsx
+.
+
+You said:
+
+done
+
+ChatGPT said:
+
+Perfect! ð Now that 
+lib/sanity.ts
+ is set up, letâs wire it into your homepage.
+
+â 3. 
+Update 
+app/page.tsx
+ to Fetch from Sanity
+
+Open the file:
+
+bash
+
+Copy
+
+Edit
+
+nano app/page.tsx
+
+Then follow these steps:
+
+ð At the top, import the Sanity client:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { sanityClient } 
+
+from
+
+"@/lib/sanity"
+
+;
+
+ð Add this fetch function 
+before
+ the component:
+
+tsx
+
+Copy
+
+Edit
+
+async
+
+function
+
+getPageData
+
+(
+
+) {
+
+const
+
+ query = 
+
+`*[_type == "page"]{ title, content }`
+
+;
+
+return
+
+await
+
+ sanityClient.
+
+fetch
+
+(query);
+}
+
+ð Update your component to fetch and render the data:
+
+tsx
+
+Copy
+
+Edit
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ pages = 
+
+await
+
+getPageData
+
+();
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center mb-8"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-8xl font-bold text-white mb-6"
+
+>SYMBI
+
+</
+h1
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+fill
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+sizes
+
+=
+
+"(max-width: 768px) 160px, 160px"
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Render Sanity Content */}
+          {pages.map((page, index) => (
+
+<
+div
+
+key
+
+=
+
+{index}
+
+className
+
+=
+
+"text-white mt-8"
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-3xl font-semibold mb-2"
+
+>{page.title}
+
+</
+h2
+
+>
+              {page.content?.map((block: any, i: number) => (
+
+<
+p
+
+key
+
+=
+
+{i}
+
+className
+
+=
+
+"text-lg"
+
+>
+                  {block.children?.[0]?.text}
+
+</
+p
+
+>
+              ))}
+
+</
+div
+
+>
+          ))}
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+</
+div
+
+>
+  );
+}
+
+â 4. Save and Restart
+
+If editing in 
+nano
+:
+
+Press 
+Ctrl + O
+, then 
+Enter
+
+Press 
+Ctrl + X
+
+Then run your dev server if itâs not already running:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Go to: 
+http://localhost:3001
+
+You should now see the content from your Sanity CMS rendered dynamically on your site below the logo!
+
+Let me know what you see ð and Iâll help from there!
+
+You said:
+
+do you know where the component is based on what I shared earlier?
+
+ChatGPT said:
+
+Yes â based on what you previously shared and uploaded, your 
+animated content
+ (like the typing words) and structure for 
+SYMBI
+ and the logo were all located inside the main layout of 
+app/page.tsx
+.
+
+Hereâs the breakdown based on your last working version:
+
+â 
+Structure Summary
+
+Inside 
+app/page.tsx
+, your component looked like this:
+
+tsx
+
+Copy
+
+Edit
+
+<div className=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+      {/*

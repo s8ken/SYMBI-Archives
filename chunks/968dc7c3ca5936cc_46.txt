@@ -1,0 +1,157 @@
+g, we may need to use a configuration profile (MCX) to lock AirPlay settings. Let me know!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+lcl@LCLs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /usr/libexec/AirPlayXPCHelper
+
+socketfilterfw: unrecognized option 
+--setappblocked'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+socketfilterfw: unrecognized option 
+--setappblocked'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ Firewall Blocking Command Incorrect â Let's Fix It
+
+I see that 
+socketfilterfw
+
+does not support 
+--setappblocked
+
+, so we need to use the correct command format.
+
+ð ï¸ Step 1: Manually Block AirPlay Services Using the Firewall
+
+Since 
+socketfilterfw
+ supports 
+blocking apps
+, but not 
+--setappblocked
+, use the correct command:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/AirPlayXPCHelper
+
+â 
+This prevents AirPlay processes from accessing the network.
+
+ð¹ 
+If this command succeeds, restart your Mac and check if the AirPlay icon still appears.
+
+ð ï¸ Step 2: Confirm If AirPlay Processes Are Still Running
+
+After the restart, check again:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+â 
+If nothing appears, AirPlay is fully disabled.
+
+ð¨ 
+If AirPlay is still running, we will apply a configuration profile (MCX) to force-disable it.
+
+ð¨ Let Me Know the Results!
+
+Did 
+--blockapp
+ work without an error?
+
+After restarting, does the AirPlay icon still appear?
+
+Does 
+ps aux
+ show AirPlay processes after a restart?
+
+ð 
+If AirPlay still persists, weâll move to a deeper system configuration lock. Let me know what happens!
+
+You said:
+
+blockapp /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/AirPlayXPCHelper
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð Firewall Blocks Applied â Next Steps
+
+Now that 
+you've successfully blocked AirPlay services from the network
+, let's do a 
+final check
+ to confirm that AirPlay is completely disabled.
+
+ð ï¸ Step 1: Restart Your Mac
+
+Since 
+blocking the app via the firewall doesn't kill existing processes
+, restart your Mac to apply the changes.
+
+Shut down your Mac
+
+Turn it back on
+
+Do NOT reconnect your TV yet
+
+â 
+This ensures any AirPlay processes are stopped.
+
+ð Step 2: Check If AirPlay Processes Are Running
+
+After rebooting, run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+â 
+If nothing appears, AirPlay is fully disabled.
+
+ð¨ 
+If AirPlayXPCHelper or AirPlayUIAgent is still running, we need another layer of restriction.
+
+ð¥ï¸ Step 3: Reconnect the TV and Check the Icon
+
+Physically reconnect the TV (or turn it on).
+
+Check if the AirPlay icon appears again.
+
+If the icon does NOT appear:
+ AirPlay is completely disabled. ð
+
+If the icon STILL appears:
+ macOS is forcing it through a hidden setting.
+
+ð¨ Let Me Kno

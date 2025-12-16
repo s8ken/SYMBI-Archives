@@ -1,0 +1,150 @@
+ Created Files in System Directories
+find /usr/local/bin /opt/homebrew/bin -mtime -30 -exec ls -ld {} \\;
+
+---
+
+User ran commands and found:
+- Homebrew does not seem to be currently installed.
+- No log files exist for Homebrew.
+- History showed attempts to use brew, but the tool was missing.
+- Found suspicious LaunchAgents.
+
+Assistant: These LaunchAgents could indicate persistent processes. We need to analyze their contents.
+
+Next Steps:
+Check for Homebrew remnants
+find / -name "*homebrew*" 2>/dev/null
+
+Inspect suspicious plist files
+cat ~/Library/LaunchAgents/us.zoom.updater.plist
+
+User: There were 2 network drives they were accessing.
+
+Assistant: Let's find out what they were accessing and whether the attacker is still here.
+
+Step 1: Identify Mounted Network Drives
+mount | grep "//"
+df -h | grep "//"
+
+Step 2: List Recently Accessed Files
+find /Volumes/<NetworkDriveName> -type f -atime -7 -exec ls -ltu {} \\; | head -20
+
+User: Says it wants access to folders on my desktop.
+
+Assistant: This is a security red flag. Letâs check whoâs trying to access it.
+
+Step 1: Identify the Requesting Process
+log show --predicate 'subsystem contains "TCC" AND eventMessage contains[c] "Desktop"' --last 30m | grep -i "access"
+
+Step 2: Check Permissions Already Granted
+sqlite3 ~/Library/Application\\ Support/com.apple.TCC/TCC.db 'SELECT * FROM access' | grep Desktop
+
+User: It's the mount / grep.
+
+Assistant: This means the network drive is likely still present, but we need more details. Let's see what's currently mounted:
+mount | grep "//"
+
+User: There are multiple Remote Management processes running.
+
+Assistant: This strongly suggests unauthorized remote access or MDM (Mobile Device Management) control.
+
+Immediate Actions:
+Check for Unauthorized MDM Profiles
+profiles status -type enrollment
+profiles list
+
+Check Active Remote Management & Screen Sharing
+sudo launchctl list | grep -i screensharing
+
+Disable Remote Management
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+
+Disable Screen Sharing
+sudo launchctl disable system/com.apple.screensharing
+
+User: Today, we need a high-level summary. Focus on:
+- Who they are
+- Where they are from
+- What they were trying to do
+- What they accessed
+- What they left behind
+- If they are still here
+- Any identifiers
+
+Assistant: Understood. Letâs collect the final evidence quickly and summarize our findings.
+
+Final Steps:
+Check Active Network Connections for Attacker IPs
+lsof -i -P | grep ESTABLISHED
+
+Check MDM Logs for Attacker Activity
+log show --predicate 'eventMessage contains "MDM"' --last 7d
+
+Find Any Hidden User Accounts They Created
+dscl . list /Users
+
+Check for Any Rogue Startup Items
+ls -la ~/Library/LaunchAgents/
+ls -la /Library/LaunchDaemons/
+"""
+
+# Add content to PDF
+
+pdf.set_font(
+
+"Arial"
+
+, size=
+
+10
+
+)
+pdf.multi_cell(
+
+0
+
+, 
+
+6
+
+, transcript)
+
+# Save PDF
+
+pdf_filename = 
+
+"/mnt/data/security_investigation_transcript.pdf"
+
+pdf.output(pdf_filename)
+
+# Provide the download link
+
+pdf_filename
+
+---------------------------------------------------------------------------
+UnicodeEncodeError                        Traceback (most recent call last)
+Cell In[1], line 139
+    137 # Save PDF
+    138 pdf_filename = "/mnt/data/security_investigation_transcript.pdf"
+--> 139 pdf.output(pdf_filename)
+    141 # Provide the download link
+    142 pdf_filename
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:1065, in FPDF.output(self, name, dest)
+   1063 #Finish document if necessary
+   1064 if(self.state<3):
+-> 1065     self.close()
+   1066 dest=dest.upper()
+   1067 if(dest==''):
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:246, in FPDF.close(self)
+    244 self._endpage()
+    245 #close document
+--> 246 self._enddoc()
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:1636, in FPDF._enddoc(self)
+   1634 def _enddoc(self):
+   1635     self._putheader()
+-> 1636     self._putpages()
+   1637     self._putresources()
+   1638     

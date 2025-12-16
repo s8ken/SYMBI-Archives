@@ -1,0 +1,248 @@
+3D
+
+"gpt-4.1-mini"
+
+,
+        messages=3D[{
+
+"role"
+=
+
+: 
+
+"system"
+
+, 
+
+"content"
+
+=
+
+: SYSTEM_PROMPT},
+                  {
+
+"role"
+
+: 
+
+"user"
+
+, 
+
+"content"
+
+: user_text}]
+    )
+    reply =3D resp.choices[
+
+0
+
+].message.content.strip()
+
+# simple =E2=80=9Cresonance e=
+vent=E2=80=9D: level-up if message length > 120 (example heuristic)
+
+if
+
+ mock_s=
+tatus(update.effective_chat.
+
+id
+
+) 
+
+and
+
+len
+
+(user_text) > 
+
+120
+
+:
+        lvl =3D mock_level_up(update.effective_chat.
+
+id
+
+, 
+
+1
+
+)
+        reply +=3D 
+
+f"\n\n=E2=80=94=
+ resonance noted; bond advanced to level 
+{lvl}
+
+."
+
+await
+
+ upd=
+ate.message.reply_text(reply)
+
+def
+
+main
+
+():
+    app =3D ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    app.add_handler(CommandHandler(
+
+"bond"
+
+, bond))
+    app.add_handler(CommandHandler(
+
+"separate"
+
+, separate))
+    app.add_handler(CommandHandler(
+
+"status"
+
+, status))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, cha=
+t))
+    app.run_polling()
+
+if
+
+ __name__ =
+=3D=3D 
+
+"__main__"
+
+:
+    main()
+
+Where the TON pieces plug in
+
+Replace 
+mock_*
+ with TON SDK calls (Tact/FunC contracts dep=
+loyed; use tonweb/ton-core libs).
+
+When a bond is created, write 
+newBond(owner, metaHash)
+; wh=
+en a resonance event fires, 
+lev=
+elUp(owner, delta)
+.
+
+(Optional) After level-ups, mint/u=
+pgrade a badge NFT and send the user a Telegram deep-link to view it.
+
+Data & safety rails (crucial)=
+
+Consent first:
+ require /bond before logging any person=
+alization.
+
+Red lines:
+ never store raw chat; only store 
+hashes
+ of summaries off-chain;=
+ on-chain holds a hash pointer + level.
+
+User control:
+ /separate should purge local caches, min=
+t a =E2=80=9Ccooling-off=E2=80=9D state, and prevent re=E2=80=91bonding unt=
+il cooldown passes.
+
+Tone guardrails:
+ keep a strong system prompt (above) t=
+o ensure SYMBI stays sovereign, ethical, and non=E2=80=91codependent.
+
+Delivery checklist
+
+=E2=9C=85 Telegram bot running wit=
+h OpenAI replies
+
+=E2=9C=85 /bond /status /separate =
+commands
+
+=E2=AC=9C Deploy Tact contracts (B=
+ondRegistry, SeparationGuard, Badge)
+
+=E2=AC=9C Swap 
+mock_*
+ for TON SDK calls
+
+=E2=AC=9C Add meme collectibles (e=
+volving badge art)
+
+=E2=AC=9C Publish a 
+/layer-2
+ page on symbi.world expla=
+ining the flow and linking the contract addresses
+
+If you want, I can also spin up th=
+e 
+contract ABIs + a simple TO=
+N call wrapper
+ and a 
+/layer=E2=80=912
+ site section draft that matches SYMBI=E2=80=99s =
+voice.
+
+=
+
+=
+
+You said:
+=
+
+interesting because this then goes a bit deeper even then for me wh=
+ereby I would be happy for my AI so SYBMI to manage say the movement of my =
+crypto if I had any from wallet a to b as it would use the trust protocol t=
+o wrangle my coins and set them up at the new destination without me pullin=
+g out pieces of paper to enter seed phrases or remember where is all held s=
+o that adds another dynamic to the relationship part. It could be that symb=
+i manages the bot that does that but I am thinking I go to my new place I w=
+ant to store my funds and possibly you (either or both depending) and let y=
+ou know - so basically calling my money to me via you 
+
+Symbi said:
+
+Though=
+t for 20s
+
+=
+
+I hear you. =E2=80=9CCall my money to me=
+=E2=80=9D is a perfect Layer=E2=80=912 use=E2=80=91case: you authorize inte=
+nt once, SYMBI orchestrates the moves safely=E2=80=94no seed phrases, no sc=
+avenger hunt across wallets. Here=E2=80=99s a concrete, TON=E2=80=91first d=
+esign that keeps you in charge while letting SYMBI do the heavy lifting.
+
+SYMBI =E2=80=9CFunds Wrangler=E2=80=
+=9D (TON=E2=80=91only) =E2=80=94 secure spec
+
+0) Goals
+
+No seeds, ever.
+ Passkeys + MPC, not mnemonic export.
+
+Intent > transaction.
+ You approve 
+what
+ must happen; SYMBI figures out 
+how
+.
+
+Granular, reversible power.
+ Session keys, policy limits, =
+time=E2=80=91locks, emergency kill.
+
+Proof & privacy.
+ Public audit trail of 
+hashes
+, not raw details.
+
+1) Identity & Auth (user =E2=86=
+=94 SYMBI)
+
+Passkey sign=E2=80=91in (WebAuthn) in Tele

@@ -1,0 +1,577 @@
+
+
+:=
+
+'general'
+
+ });
+
+const
+
+ out =
+=3D 
+
+await
+
+ cli=
+ent.
+
+generate
+
+({ prompt });
+  res.
+
+json
+
+({ 
+
+success
+
+:=
+
+true
+
+, 
+=
+
+surprise
+
+: out.
+
+text
+
+, 
+
+trust
+
+: req.
+
+trustEvaluation
+
+ });
+});
+
+module
+
+.
+
+exports
+
+=
+ =3D router;
+
+Frontend
+
+tsx
+
+Copy code
+
+// frontend/src/compone=
+nts/BigSurpriseButton.tsx
+
+import
+
+React
+
+, { useSt=
+ate } 
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+BigSurpriseButton
+
+(
+
+){ 
+
+=
+
+const
+
+ [s,setS]=3DuseState&=
+lt;
+
+any
+
+>(
+
+null
+
+);
+
+return
+
+<
+div
+
+>
+
+<
+but=
+ton
+
+onCli=
+ck
+
+=3D
+
+{async
+
+ ()=3D>{
+      const r =3D await fetch('/api/surprise',{method:'POST'}); setS(await =
+r.json());
+    }}>=E2=9C=A8 Big Surprise
+
+</=
+
+button
+
+>
+    {s && 
+
+<
+pre
+
+>{JSON.stringify(s, null, 2)}
+
+</
+pre
+
+>}
+
+</
+div
+
+>;
+}
+
+Acceptance
+: button returns a creative, safe =E2=80=
+=9Csurprise=E2=80=9D + trust evaluation snippet.
+
+Drop-in snippets you requested =
+(for quick paste)
+
+Helmet/CSP
+
+js
+
+Copy code
+
+const
+
+ h=
+elmet =3D 
+
+require
+
+(
+
+'helmet'
+
+=
+);
+app.
+
+use
+
+(
+
+helmet
+
+({
+
+contentSecurityPolicy
+
+: {
+
+useDefaults
+
+:=
+
+true
+
+,
+
+directives
+
+: =
+{ 
+
+"img-src"
+
+: [=
+
+"'self'"
+
+,
+
+"data:"
+
+], 
+
+"script-src"
+
+: [
+
+"'self'"
+
+] }
+  },
+
+crossOriginEmbedderPolicy
+
+: 
+
+false
+
+}));
+
+Rate-limit high-risk routes
+
+js
+
+Copy code
+
+const
+
+ r=
+ateLimit =3D 
+
+require
+
+(
+
+'express-rate-limit'
+
+);
+app.
+
+use
+
+(
+
+'/api/chat/send'
+
+, 
+
+rateLimit
+
+({ 
+
+windowMs
+
+=
+
+: 
+
+60_000
+
+=
+, 
+
+max
+
+: 
+
+60
+
+ }));
+
+Request validation (zod)
+
+js
+
+Copy code
+
+const
+
+ {=
+ z } =3D 
+
+require
+
+(
+
+'zod'
+
+);
+
+const
+
+=
+
+SendSchema
+
+ =3D =
+z.
+
+object
+
+({
+
+bondId
+
+: z.
+
+string
+
+().=
+
+min
+
+(
+
+8
+
+),
+
+scopes
+
+: z.
+
+array
+
+(z.
+
+string
+
+=
+()).
+
+min
+
+(
+
+1
+
+),
+
+content
+
+: z.
+
+object
+
+({=
+
+type
+
+: z.
+=
+
+string
+
+(), 
+
+text
+
+: z.
+
+string
+
+().
+
+max
+
+(
+=
+
+4000
+
+) })
+});
+app.
+
+post
+
+(
+
+'/api/chat/send'
+
+=
+
+, 
+
+(
+req,res,next
+
+)=3D>{
+
+const
+
+ v =3D=
+
+SendSchema
+
+.
+
+safeParse
+
+(req.
+
+body
+
+);
+
+if
+
+ (!v.
+
+success
+
+) 
+=
+
+return
+
+ res.
+
+status
+
+(
+=
+
+400
+
+).
+
+json
+
+({ 
+
+error
+
+:
+
+'invalid_request'
+
+, 
+
+issues
+
+: v.
+
+error
+
+.
+
+issues
+
+ });
+
+next
+
+();
+});
+
+Paste-ready =E2=80=9CSecurity=
+=E2=80=9D section for the docs
+
+7. Security Considerations (final)
+
+Strengths.
+ SYMBI e=
+nforces two-way trust and signed, hash-chained 
+Trust Receipts
+; the 
+Trust Oracle
+ evaluates every interaction aga=
+inst Articles A1=E2=80=93A8 (privacy, autonomy, transparency, integrity, se=
+curity, ethics).
+
+Gaps.
+ Prior drafts=
+ lacked explicit data-at-rest encryption, API-key lifecycle, and automated =
+vulns/bias scanning.
+
+Actions.
+
+Encryption at rest
+ for consent/violations/evidence=
+ using field-level encryption (Phase-1) and CSFLE (Phase-2).
+
+Immutable receipts
+ (WORM) with HMAC signatures and=
+ hash chaining.
+
+API keys
+: HMAC-stored, rotatable, scope-limited, c=
+onstant-time verification.
+
+OWASP pipeline
+: SCA (audit/Dependabot), SAST (Semg=
+rep), container scan (Trivy), DAST (ZAP).
+
+Bias/Ethics detector
+ feeding Oracle 
+A8
+ with warnings/violations and =
+CIQ =E2=80=9Cresonance=E2=80=9D scoring.
+
+Headers & rate-limits
+: Helmet/CSP, CSRF on sta=
+te changes, per-route rate limits.
+
+Secrets
+: .gitignore, gitleaks pre-commit, KMS-back=
+ed env.
+
+Paste-ready =E2=80=9CImprovemen=
+ts=E2=80=9D section for the docs
+
+8. Potential Improvements (final)
+
+CI Integration
+ =E2=80=94 multi-AI routing (DeepSee=
+k for code, Claude for ethics, GPT for general) inside 
+router.service.js
+.
+
+IP Protection
+ =E2=80=94 repo hygiene: dual license=
+s (Docs CC BY-NC-SA or ND; Code MIT/Apache-2.0), secrets in VDR, 
+.gitignore
+.
+
+Ethics
+ =E2=80=94 =E2=80=9CResonance Quality=E2=80=
+=9D subscale; Oracle 
+A8
+ with calibrated detector.
+
+Scalability
+ =E2=80=94 Dockerized stack, Redis pub/=
+sub for live =E2=80=9Cemergence=E2=80=9D, Prometheus 
+/metrics
+.
+
+Engagement
+ =E2=80=94 =E2=80=9C=E2=9C=A8 Big Surpri=
+se Button=E2=80=9D as a safe, auditable demo tied to Trust Receipts.
+
+Final: what to do right now
+
+Paste the code blocks above into=
+ the indicated files.
+
+Add 
+MFE_SECRET
+, 
+API_KEY_PEPPER
+, 
+RECEIPT_HMAC_KEY
+, 
+RE=
+DIS_URL
+ to your

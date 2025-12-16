@@ -1,0 +1,613 @@
+
+ for your website, let's define a schema for your 
+editable pages
+.
+
+1️⃣ Open the 
+schemas
+ Folder
+
+Run this command inside your Sanity project:
+
+bash
+
+Copy
+
+cd
+
+ symbi-cms
+
+mkdir
+
+ schemas
+nano schemas/page.ts
+
+(This creates a new 
+page.ts
+ file for your website’s content.)
+
+2️⃣ Add This Code to 
+schemas/page.ts
+
+Paste the following:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save the file 
+(Ctrl + X → Y → Enter).
+
+🔹 Step 2: Register the Schema
+
+1️⃣ Open 
+sanity.config.ts
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+2️⃣ Add the New Schema
+
+Find this part:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+Then 
+add your schema inside the 
+schema
+ section
+:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+Save 
+(Ctrl + X → Y → Enter).
+
+🔹 Step 3: Restart Sanity Studio
+
+Now, restart your CMS to apply the schema:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ 
+Go back to 
+http://localhost:3333
+
+Now, you should see a 
+"Pages"
+ section where you can 
+add/edit content
+.
+
+🎯 Next Steps
+
+Confirm if you see the "Pages" section in Sanity Studio.
+
+If it’s working, we’ll 
+connect it to Next.js
+ so your website updates in real time. 🚀🔥
+
+You said:
+
+no it also allows me to choose Blog (schema)
+
+Vercel Deployment Expert GPT said:
+
+🚀 You See "Blog" as an Option in Sanity Studio? What It Means
+
+If 
+Sanity Studio is suggesting a "Blog" schema
+, that means:
+
+Sanity auto-detected a schema template
+ (probably from a previous install).
+
+It allows you to create Blog pages
+, but 
+you can still define custom schemas like "Pages"
+ for the rest of your site.
+
+🔹 What Should You Do?
+
+✅ 
+Option 1: Keep Both (Blog + Pages)
+
+Use "Blog" for future articles.
+
+Create a "Pages" schema
+ for things like the homepage, about, and contact pages.
+
+🚀 
+Option 2: Create a Clean Setup (Recommended)
+
+Delete existing schemas
+ and define only what you need.
+
+Follow the steps below to reset and add "Pages."
+
+🔹 Step 1: Delete Default Schemas
+
+If you want 
+a clean setup without Blog
+, delete all schema files:
+
+bash
+
+Copy
+
+rm
+
+ -rf schemas/*
+
+🔹 Step 2: Create the Correct Schema for Editable Pages
+
+Now, 
+recreate the schema
+:
+
+bash
+
+Copy
+
+nano schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save the file (
+Ctrl + X → Y → Enter
+).
+
+🔹 Step 3: Register the New Schema
+
+Now, update 
+sanity.config.ts
+:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page], 
+
+// Only Pages, no Blog
+
+  },
+});
+
+Save (
+Ctrl + X → Y → Enter
+).
+
+🔹 Step 4: Restart Sanity Studio
+
+Now, 
+restart the Studio to apply changes
+:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ 
+Go back to 
+http://localhost:3333
+
+Now, you should see 
+"Pages" only
+, without "Blog."
+
+🎯 Next Steps
+
+Confirm if "Pages" now appears in Sanity Studio.
+
+If it’s working, we’ll 
+connect i

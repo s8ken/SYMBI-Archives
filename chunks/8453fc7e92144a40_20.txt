@@ -1,0 +1,461 @@
+ild|.git"
+
+else
+
+  find . -maxdepth 3 -not -path 
+
+".=
+/node_modules/*"
+
+ -not -path 
+
+"./.next/*"
+
+ -not -path 
+
+"./dist/*"
+
+ -not -path 
+
+"./build/*"
+
+ -not -path 
+
+"./.git/*"
+
+fi
+
+section 
+
+"Languages / LOC (cloc)"
+
+npx -y cloc --md --exclude-dir=3Dnode_modules,.next,dist,build . || 
+=
+
+true
+
+section 
+
+"Untracked / unexplained f=
+iles"
+
+git ls-files --others --exclude-standard || 
+
+true
+
+section 
+
+"Frontend package.json scr=
+ipts"
+
+[ -f 
+
+"frontend/package.json"
+
+ ] && 
+
+cat
+
+ frontend/package.json | sed -n 
+
+'1,200p'
+
+ || 
+
+echo
+
+"frontend/package.json: NOT FOUND"
+
+section 
+
+"Backend package.json scri=
+pts"
+
+[ -f 
+
+"backend/package.json"
+=
+
+ ] && 
+
+cat
+
+ backend/package.json | sed -n 
+
+'1,200p'
+
+ || 
+
+echo
+
+"backend/package.json: NOT FOUND"
+
+section 
+
+"Dependency graph (fronten=
+d, circular deps)"
+
+if
+
+ [ -d 
+
+"frontend"
+
+ ]; 
+
+then
+
+  npx -y madge frontend/src --extensions ts,tsx,js,jsx --circular || 
+
+true
+
+fi
+
+section 
+
+"Dependency graph (backend=
+, circular deps)"
+
+if
+
+ [ -d 
+
+"backend"
+
+ ]; 
+
+then
+
+  npx -y madge backend --extensions ts,tsx,js,jsx --circular || 
+
+true
+
+fi
+
+section 
+
+"Unused dependencies (fron=
+tend)"
+
+[ -d 
+
+"frontend"
+
+ ] && (
+
+cd
+
+=
+
+ frontend && npx -y depcheck || 
+
+true
+
+)
+section 
+
+"Unused dependencies (back=
+end)"
+
+[ -d 
+
+"backend"
+
+=
+ ] && (
+
+cd
+
+ backend && npx -y depcheck || 
+
+true
+
+)
+
+section 
+
+"Knip (unused files/export=
+s; may warn)"
+
+npx -y knip || 
+
+true
+
+=
+
+section 
+
+"ESLint (summary only)"
+
+npx -y eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=3D0 || 
+
+=
+
+true
+
+section 
+
+"Typecheck (if TS)"
+=
+
+if
+
+ [ -f 
+
+"tsconfig.json"
+
+ ]; =
+
+then
+
+  npx -y tsc -p tsconfig.json --noEmit || 
+
+true
+
+fi
+
+if
+
+ [ -f 
+
+"frontend/tsconfig.json"
+
+ ]; 
+
+then
+
+  (
+
+cd
+
+ fronte=
+nd && npx -y tsc -p tsconfig.json --noEmit) || 
+
+true
+
+fi
+
+if
+
+ [ -f 
+
+"backend/tsconfig.json"
+
+ ]; 
+
+then
+
+  (
+
+cd
+
+ backen=
+d && npx -y tsc -p tsconfig.json --noEmit) || 
+
+true
+
+fi
+
+section 
+
+"OpenAPI contract (head)"
+
+[ -f 
+
+"openapi.yaml"
+
+ ] && 
+
+head
+
+ -n 120 openapi.yaml || 
+
+echo
+
+"opena=
+pi.yaml: NOT FOUND"
+
+section 
+
+"Env template (.env.exampl=
+e head =E2=80=94 names only)"
+
+[ -f 
+
+".env.example"
+
+ ] && sed -n 
+
+'1,160p'=
+
+ .env.example || 
+
+echo
+
+".en=
+v.example: NOT FOUND"
+
+section 
+
+"CI Workflows"
+
+[ -f 
+
+".github/workflows/ci.yml"
+
+ ] && sed -n 
+
+'1,200p'
+
+ .github/workflows/ci.yml || 
+
+echo
+
+"ci.yml: NOT FOUND"
+
+[ -f 
+
+".github/workflows/codeql.yml=
+"
+
+ ] && sed -n 
+
+'1,200p'
+
+ .github/workflows/codeql.yml || 
+
+echo
+
+=
+
+"codeql.yml: NOT FOUND"
+
+section 
+
+"Frontend bundle size (dry=
+ build if available)"
+
+if
+
+ [ -d 
+
+"frontend"
+
+ ]; 
+
+then
+
+  (
+
+cd
+
+ fronte=
+nd && npm run build --silent) || 
+
+true
+
+# If Next.js: print build stats=
+ head
+
+  [ -d 
+
+"frontend/.next"
+
+ ] && find frontend/.next -maxdepth 2 -
+
+type
+
+ f -name 
+
+"*.json"
+
+ -size -200k -
+
+exec
+
+wc
+
+ -c {} \; | 
+
+sort
+
+ -nr | 
+
+head
+
+ -n 10 || 
+
+true
+
+fi
+
+section 
+
+"Backend health endpoints =
+(if running locally)"
+
+echo
+
+=
+
+"Skip runtime perf for now (hibernation).=
+"
+
+If any 
+npx
+ tool is missing, the command uses 
+-y
+ to run it ad-hoc without modifying=
+ package.json.
+
+Phase 2 =E2=80=94 Report & cu=
+t list (I=E2=80=99ll draft from your outputs)
+
+Deliverables I=E2=80=99ll assemble=
+ (no repo changes yet):
+
+Architecture map
+ (Mermaid) showing FE/BE/CMS/DB + data=
+ flows.
+
+Dependency & file inventory
+: top heavy dirs/files,=
+ unused deps (depcheck/knip), circular deps (madge).
+
+Policy & config drift
+: eslint/tsconfig/package scr=
+ipts vs reality.
+
+Performance snapshot
+: FE build size notes; backend per=
+f test plan for later (autocannon).
+
+Test readiness
+: what test runners exist, coverage gaps=
+, flake risks.
+
+Bug surface
+: list of hot spots based on lint/typecheck=
+ results.
+
+Proposed minimal refactor plan
+ with 
+cut list
+ and 
+module boundary
+ fixes:
+
+Delete orphaned dirs/files (explic=
+it list).
+
+Remove unused deps; pin versions f=
+or critical ones.
+
+Introduce/standardize structure:
+
+backend/
+: 
+src/=
+{routes,controllers,services,models,middleware,lib}
+
+fronten

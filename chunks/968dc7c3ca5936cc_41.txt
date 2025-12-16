@@ -1,0 +1,136 @@
+d of a normal display.
+
+Disconnect your TV completely
+ (physically unplug HDMI or turn off the TV).
+
+Restart your Mac.
+
+Check if the icon disappears after reboot.
+
+â 
+If the icon disappears, macOS was misidentifying the TV as an AirPlay display.
+
+ð¨ 
+If the icon is still there, macOS is stuck in an incorrect AirPlay state.
+
+ð Step 4: Manually Unload Any AirPlay Services
+
+Even though AirPlay was removed, try manually unloading any hidden system services:
+
+sh
+
+Copy
+
+Edit
+
+launchctl list | grep -i airplay
+
+If anything appears, try:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+
+â This ensures 
+no hidden AirPlay daemons are still registered.
+
+ð Step 5: Reset NVRAM & SMC (To Fix Stuck UI States)
+
+If the icon 
+is still there
+, macOS might be 
+stuck in a persistent UI state.
+
+Reset NVRAM (Non-Volatile RAM)
+
+Shut down your Mac completely.
+
+Turn it on and immediately hold 
+Option + Command + P + R
+
+ for 
+20 seconds
+ until you hear the startup chime a second time.
+
+Release the keys and let it boot normally.
+
+â 
+This resets display settings, UI caches, and AirPlay status.
+
+ð¨ Let Me Know What Happens!
+
+Did 
+system_profiler SPDisplaysDataType
+ show any AirPlay displays?
+
+Did 
+log show --predicate 'subsystem == "com.apple.airplay"'
+ reveal anything?
+
+Did unplugging your TV make the icon disappear?
+
+Did 
+launchctl list | grep -i airplay
+ return anything?
+
+Did resetting NVRAM finally remove the icon?
+
+ð 
+Weâre closing in on the issue! Let me know what happens after trying these steps.
+
+You said:
+
+Last login: Fri Mar  7 09:00:49 on console
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -E "AirPlay|screensharing|screencapture|VNC"
+
+lcl                734   0.0  0.0 410734352   1680 s000  S+    9:01am   0:00.01 grep -E AirPlay|screensharing|screencapture|VNC
+lcl@LCLs-MacBook-Pro ~ % killall SystemUIServer
+
+lcl@LCLs-MacBook-Pro ~ % defaults delete com.apple.systemuiserver
+killall SystemUIServer
+
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Preferences/com.apple.systemuiserver.plist
+killall SystemUIServer
+
+lcl@LCLs-MacBook-Pro ~ % system_profiler SPDisplaysDataType
+
+Graphics/Displays:
+
+    Apple M1 Pro:
+
+      Chipset Model: Apple M1 Pro
+      Type: GPU
+      Bus: Built-In
+      Total Number of Cores: 16
+      Vendor: Apple (0x106b)
+      Metal Support: Metal 3
+      Displays:
+        AV Receiver:
+          Resolution: 1920 x 1080 (1080p FHD - Full High Definition)
+          UI Looks like: 1920 x 1080 @ 60.00Hz
+          Main Display: Yes
+          Mirror: Off
+          Online: Yes
+          Rotation: Supported
+        Color LCD:
+          Display Type: Built-in Liquid Retina XDR Display
+          Resolution: 3024 x 1964 Retina
+          Mirror: Off
+          Online: Yes
+          Automatically Adjust Brightness: Yes
+          Connection Type: Internal
+
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'subsystem == "com.apple.airplay"' --info --last 10m
+
+Filtering the log data using "subsystem == "com.apple.airplay""
+Skipping debug messages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+2025-03-07 09:00:30.147269-0800 0xcd9      Error       0x0                  284    0    coreaudiod: (CoreUtils) [com.apple.airplay:APSLogUtils] [AirPlayError] _XPCHelperCopyAirPlayPref:817: got error -6753/0xFFFFE59F kConnectionErr
+2025-03-07 09:00:30.150950-0800 0xcd9      Error       0x0                  284    0    coreaudiod: (CoreUtils) [com.apple.airplay:APSLogUtils] apPlugin_InstantiateAirPlayEndpointManager:69: got error -16155/0xFFFFC0E5
+2025-03-07 09:00:30.452026-0800 0x8ce      Error       0x0                  89     0    mediaremoted: (CoreUtils) [com.apple.airplay:APSLogUtils] [AirPlayError] _XPCHelperCopyAirPlayPref:817: got error -6753/0xFFFFE59F kConnectionErr
+2025-03-07 09:00:30.452132-0800 0x8ce      Error       0x0                  89     0    mediaremoted: (CoreUtils) [com.apple.airplay:APSLogUtils] [AirPlayError] _XPCHelperCopy

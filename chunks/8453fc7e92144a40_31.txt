@@ -1,0 +1,405 @@
+ 
+
+true
+
+  grep -R --line-number -E 
+
+"app\.u=
+se|helmet|rateLimit|cors|json\(|urlencoded\("
+
+ backend 2=
+>/dev/null || 
+
+true
+
+  grep -R --line-number -E 
+
+"app\.(=
+get|post|put|patch|delete)\("
+
+ backend 2>/dev/null ||=
+
+true
+
+  grep -R --line-number -E 
+
+"io\.on=
+\(|socket\.on\(|socket\.emit\("
+
+ backend 2>/dev/null =
+|| 
+
+true
+
+  grep -R --line-number -E 
+
+"mongoo=
+se\.model|new Schema|model\("
+
+ backend 2>/dev/null ||=
+
+true
+
+- Frontend surfacing
+
+ls
+
+ -la fro=
+ntend/src 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ frontend/src/App.js 2>/dev/null || 
+
+true
+
+  grep -R --line-number -E 
+
+"Route|=
+createBrowserRouter|next\/"
+
+ frontend/src 2>/dev/null=
+ || 
+
+true
+
+  grep -R --line-number -E 
+
+"fetch\=
+(|axios\("
+
+ frontend/src 2>/dev/null || 
+
+=
+
+true
+
+  [ -f 
+
+"frontend/package.json"
+
+ ] && sed -n 
+
+'1,200p'
+
+ frontend/package.json || 
+
+true
+
+  ( 
+
+cd
+
+ front=
+end 2>/dev/null && npm run build --silent || 
+
+true
+
+ )
+
+- LLM & assistants
+  grep -R --line-number -E 
+
+"openai=
+|anthropic|assist(ant|ants)|models\.list|gpt-4o"
+
+ backen=
+d 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/controllers/assistant.controller.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/services/assistant.service.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,240p'
+
+ backend/controllers/llm.controller.js 2>/dev/null || 
+
+true
+
+- Ledger / analysis / guardrails
+  grep -R --line-number -E 
+
+"ledger=
+|row_hash|prev_hash|signature|ed25519"
+
+ backend 2>/de=
+v/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/models/interactionEvent.model.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,240p'
+
+ backend/services/analysis.service.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/controllers/guardrails.controller.js 2>/dev/null || 
+
+true
+
+- Env & OpenAPI
+  [ -f 
+
+".env.example"
+
+ ] && sed -n 
+
+'1,160=
+p'
+
+ .env.example || 
+
+true
+
+  [ -f 
+
+"openapi.yaml"
+
+ ] && 
+
+head
+=
+
+ -n 160 openapi.yaml || 
+
+true
+
+- Dependencies & risk (summaries only)
+  node -v || 
+
+true
+
+; npm -v || 
+
+true
+
+if
+
+command
+
+ -v jq >/d=
+ev/null 2>&1; 
+
+then
+
+    npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ || 
+
+true
+
+    ( 
+
+cd
+
+ fro=
+ntend 2>/dev/null && npm audit --audit-level=3Dhigh --json | jq =
+
+'.metadata.vulnerabilities'
+=
+
+ ) || 
+
+true
+
+else
+
+    npm audit --audit-level=3Dhigh || 
+
+true
+
+    ( 
+
+cd
+
+ fro=
+ntend 2>/dev/null && npm audit --audit-level=3Dhigh || 
+
+true
+
+ )
+
+fi
+
+  npx -y madge backend --extensions ts,tsx,js,jsx --circular || 
+
+true
+
+  [ -d 
+
+"frontend/src"
+
+ ] && npx -y madge frontend/src --extensions ts,tsx,js,jsx -=
+-circular || 
+
+true
+
+  ( 
+
+cd
+
+ front=
+end 2>/dev/null && npx -y depcheck || 
+
+true
+
+ )
+  ( 
+
+cd
+
+ backe=
+nd 2>/dev/null && npx -y depcheck || 
+
+true
+
+ )
+  npx -y knip || 
+
+true
+
+  npx -y eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=3D0 || 
+
+true
+
+if
+
+ [ -f 
+
+"tsconfig.json"
+
+ ]=
+; 
+
+then
+
+ npx -y=
+ tsc -p tsconfig.json --noEmit || 
+
+true
+
+; 
+
+fi
+
+if
+
+ [ -f 
+
+"frontend/tsconfig.json"
+
+ ]; 
+
+then
+
+ ( 
+
+cd
+
+ fron=
+tend && npx -y tsc -p tsconfig.json --noEmit ) || 
+
+true
+
+; 
+
+fi
+
+if
+
+ [ -f 
+
+"backend/tsconfig.json"
+
+=
+
+ ]; 
+
+then
+
+ ( 
+
+cd
+
+ backe=
+nd && npx -y tsc -p tsconfig.json --noEmit ) || 
+
+true
+
+; 
+
+fi
+
+Reporting Rules
+- Summarize outputs; don=E2=80=99t dump thousands of lines. Link findings t=
+o exact files/lines.
+- Produce one Mermaid diagram.
+- Produce a table 
+
+for
+
+ Routes (method/path/auth/controller), Sockets (event/from/handler)=
+, Models (name/key fields), Envs (name/purpose).
+- Call out duplications, dead files, circular deps, and unused deps explici=
+tly.
+- End with a prioritized =E2=80=9CTop 5 fixes / Top 5 deletions / Top 5 QoL=
+=E2=80=9D and the smallest-safe next PR.
+
+Approval Gate (no writes yet)
+After presenting the PROJECT ATLAS, 
+
+wait
+
+for
+
+ my 
+
+command
+
+:
+- /approve ATLAS =E2=86=92 create branch `docs/project-atlas`, write `docs/=
+PROJECT_ATLAS.md`, commit, and open PR.
+- /revise ATLAS <scope> =E2=86=92 re-run a subset or 
+
+expand
+
+ a section.
+- /abort ATLAS =E2=86=92 stop.
+
+If you want a shorter versio

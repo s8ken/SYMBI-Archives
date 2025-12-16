@@ -1,0 +1,297 @@
+
+
+Edit
+
+yarn dev
+
+ð  Step 2: Open the Local Site in a Browser
+
+After running the dev server, you should see an output like this:
+
+arduino
+
+Copy
+
+Edit
+
+Local: http:
+
+//localhost:3000
+
+ð¹ 
+Open 
+http://localhost:3000
+ in your browser
+ and check if:
+
+The 
+homepage loads
+ without a 
+404 error
+
+The 
+images and styles appear correctly
+
+The 
+console has no errors
+ (Check DevTools â Console)
+
+ð  Step 3: Debug Any Local Issues
+
+If 
+npm run dev
+ gives errors:
+
+1ï¸â£ 
+Check for missing dependencies
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install
+
+2ï¸â£ 
+Clear cache and rebuild
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .next
+npm run dev
+
+3ï¸â£ 
+Check for Next.js errors in the terminal output
+
+ð Step 4: If It Works Locally, Then Deploy
+
+Once you confirm that everything 
+runs fine locally
+, you can 
+push to GitHub and deploy to Vercel
+:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % ls app/
+globals.css	layout.tsx	page.tsx
+sja@SJAs-MacBook-Pro symbi-ai-website % npm install
+
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: my-v0-project@0.1.0
+npm error Found: date-fns@4.1.0
+npm error node_modules/date-fns
+npm error   date-fns@"4.1.0" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer date-fns@"^2.28.0 || ^3.0.0" from react-day-picker@8.10.1
+npm error node_modules/react-day-picker
+npm error   react-day-picker@"8.10.1" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sja/.npm/_logs/2025-03-20T15_03_38_188Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sja/.npm/_logs/2025-03-20T15_03_38_188Z-debug-0.log
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð¨ Issue: 
+ERESOLVE unable to resolve dependency tree
+ ð¨
+
+The error is caused by 
+
+date-fns@4.1.0
+
+, which 
+isn't compatible
+ with 
+react-day-picker@8.10.1
+ (which requires 
+date-fns
+ version 
+2.x
+ or 
+3.x
+).
+
+â Solution: Install Compatible 
+date-fns
+ Version
+
+Run the following command to 
+force install a compatible version
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install date-fns@3.3.0 --legacy-peer-deps
+
+or if using 
+Yarn
+:
+
+bash
+
+Copy
+
+Edit
+
+yarn add date-fns@3.3.0
+
+â This 
+downgrades 
+date-fns
+ to a version that 
+react-day-picker
+ supports
+.
+
+ð  Step 2: Clean and Reinstall Dependencies
+
+After installing the correct version, 
+clean up and reinstall everything
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf node_modules package-lock.json
+npm cache clean --force
+npm install --legacy-peer-deps
+
+ð This ensures there are 
+no broken dependencies
+.
+
+ð  Step 3: Run Locally
+
+Now, test the app again:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+If it runs fine on 
+localhost:3000
+,
+ youâre good to deploy.
+
+ð Step 4: Commit & Deploy
+
+Once everything is working:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed dependency issue with date-fns"
+
+git push origin main
+vercel --prod
+
+ð¥ Final Check
+
+â 
+npm run dev
+ works locally
+
+â No dependency issues
+
+â Site loads on 
+localhost:3000
+
+â Deployment succeeds on 
+Vercel
+
+Try this now, and let me know if anything breaks! ðð¥
+
+You said:
+
+added 274 packages, and audited 275 packages in 21s
+
+44 packages are looking for funding
+  run 
+npm fund
+ for details
+
+1 moderate severity vulnerability
+
+To address all issues, run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð 
+Nice! Dependencies Installed Successfully!
+ ð
+
+Now letâs 
+clean up any vulnerabilities
+, test the app locally, and deploy.
+
+ð  Step 1: Fix the Security Vulnerability (Optional)
+
+Since 
+npm reported 1 moderate vulnerability
+, you can 
+fix it automatically
+ by running:
+
+bash
+
+Copy
+
+Edit
+
+npm audit fix --force
+
+This will 

@@ -1,0 +1,545 @@
+ },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ name, instructions, model, tools })
+      });
+
+if
+
+ (!r.=
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`save 
+${r.status}
+
+=
+
+`);
+
+onClose
+
+(
+
+true
+
+=
+);
+    } 
+
+catch
+
+ (=
+e) { 
+
+alert
+
+(
+
+String
+
+(e?.
+
+message
+
+||e)); }
+  };
+
+if
+
+ (!open) =
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"fixed inset-0 bg-black/30 flex items-center just=
+ify-center z-[1000]"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"bg-whit=
+e rounded-xl p-4 w-[720px] max-w-[96vw]"
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"text-=
+lg font-semibold mb-3"
+
+>Edit Assistant
+
+</
+div
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"space=
+-y-2"
+
+>
+
+<
+label
+
+=
+className
+
+=3D
+
+"t=
+ext-sm"
+
+>Name
+
+&l=
+t;/
+label
+
+>
+
+<
+input
+
+=
+className
+
+=3D
+
+"b=
+order p-2 w-full"
+
+value
+
+=3D
+
+{nam=
+e}
+
+onChange
+
+=3D
+
+{e
+
+=
+
+=3D>setName(e.target.value)} />
+
+<
+label
+
+=
+className
+
+=3D
+
+"t=
+ext-sm"
+
+>Model
+
+&=
+lt;/
+label
+
+>
+
+<
+select
+
+className
+
+=3D
+
+"=
+border p-2 w-full"
+
+value
+
+=3D
+
+{mo=
+del}
+
+onChange
+
+=3D
+
+{e
+
+=3D>setModel(e.target.value)}>
+            {[model, ...models].filter((v,i,a)=3D>a.indexOf(v)=3D=3D=3Di=
+).map(m =3D> 
+
+<
+option
+
+key
+
+=3D
+
+{=
+m}
+
+value
+
+=3D
+
+{m}
+
+>{m}
+
+</
+option
+
+>)}
+
+</
+select
+
+>
+
+<
+label
+
+=
+className
+
+=3D
+
+"t=
+ext-sm"
+
+>Instructions
+
+</
+label
+
+>
+
+<
+textarea
+
+className
+
+=3D
+
+"border p-2 w-full h-28"
+
+value
+
+=3D
+
+{instructions}
+
+onChange
+
+=3D
+
+=
+{e
+
+=3D>setInstructions(e.target.value)} />
+
+<
+label
+
+=
+className
+
+=3D
+
+"t=
+ext-sm"
+
+>Tools (JSON array)
+
+</
+label
+
+>
+
+<
+textarea
+
+className
+
+=3D
+
+"border p-2 w-full h-24"
+
+value
+
+=3D
+
+{toolsText}
+
+=
+onChange
+
+=3D
+
+{e
+
+=3D>setToolsText(e.target.value)} />
+
+</
+div
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"flex =
+gap-2 justify-end mt-4"
+
+>
+
+<
+button
+
+className
+
+=3D
+
+"=
+border px-3 py-1 rounded"
+
+onClick
+
+=3D
+
+{()
+
+=3D>onClose(false)}>Cancel
+
+</
+button
+
+=
+
+>
+
+<
+button
+
+className
+
+=3D
+
+"=
+bg-black text-white px-4 py-1.5 rounded"
+
+onClick
+
+=3D
+
+{save}
+
+>Save
+
+</
+button
+
+>
+
+</
+div
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+frontend/src/pages/Assistants.j=
+s (patch)
+
+diff
+
+Copy code
+
++import AssistantEdit=
+Dialog from "../components/assistants/AssistantEditDialog";
+
+@@
+ const [items, setItems] =3D React.useState([]);
+
++const [editing, setEditing] =3D=
+ React.useState(null);
+
+@@
+   <ul className=3D"space-y-2">
+     {items.map(a =3D> (
+       <li key=3D{a.assistantId} className=3D"border rounded p-3">
+         <div className=3D"flex items-center justify-between">
+           <div>
+             <div className=3D"font-medium">{a.name} <span classNa=
+me=3D"text-xs opacity-60">({a.model})</span></div>
+             <div className=3D"text-xs opacity-70">id: {a.assistantId=
+}</div>
+           </div>
+           <div className=3D"flex gap-2">
+
++            <button classNam=
+e=3D"border px-3 py-1 rounded" onClick=3D{()=3D>setEditing(a)}>Edit&l=
+t;/button>
+
+           </div>
+         </div>
+       </li>
+     ))}
+   </ul>
+
++
+
++<AssistantEditDialog
+
++  open=3D{!!editing}
+
++  assistant=3D{editing}
+
++  onClose=3D{(saved)=3D>{ se=
+tEditing(null); if (saved) load(); }}
+
++/>
+
+6) Wire capsules into chats (cl=
+ient stays the same)
+
+Where your chat sends messages t=
+o 
+/api/assistant/message
+, keep passing 
+session_id
+ if you already do. If not, add:
+
+diff
+
+Copy code
+
+-const body =3D { mes=
+sage: text, assistantId };
+
++const sid =3D conversation?.ses=
+sion_id || conversationId;
+
++const body =3D { message: text,=
+ assistantId, session_id: sid };
+
+Server will normalize (
+conv:<id>
+) and inject the=
+ capsule automatically.
+
+Runbook
+
+Apply files/patches
+ above.
+
+Backend:
+
+cd backend && npm run dev
+
+Frontend:
+
+cd frontend && npm start
+
+Smoke tests
+
+Start/continue a conversation =
+=E2=86=92 header and per-message TrustChips render; ledger entries show 
+conv:<id>
+.
+
+Open 
+Assistants
+ =E2=86=92 click 
+Edit
+, change model/instructions =E2=
+=86=92 save =E2=86=92 next chat reflects changes.
+
+Open a conversation =E2=86=92 
+Context Capsule
+ pane=
+l =E2=86=92 set goals/tone/constraints =E2=86=92 send message =E2=86=92 ass=
+istant replies with preserved tone/constraints.
+
+Rollback
+
+Remove 

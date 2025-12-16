@@ -1,0 +1,322 @@
+ET, MONGODB_
+
+URI.
+
+-
+
+ Org timezone=
+: Australia/Melbourne (AEST/AEDT). Date now: 30 Aug 2025.
+
+DELIVERABLES (MANDATORY SECTIONS)
+1) EXECUTIVE SUMMARY
+
+   -
+
+ What is b=
+eing deployed, what is being protected, and what =E2=80=9Ccontinuity=E2=80=
+=9D means for SYMBI (leadership orientation, daily audits, protocol enforce=
+ment).
+
+   -
+
+ Define RT=
+O (<=3D4h), RPO (<=3D15m) targets.
+
+2) ENVIRONMENT MATRIX
+
+   -
+
+ Envs: loc=
+al, dev, staging, prod.
+
+   -
+
+ For each:=
+ domain, hosting, database, secrets source, log/monitor wiring, feature fla=
+gs.
+
+   -
+
+ Table + b=
+ullets.
+
+3) SECRETS & ENV VARS
+
+   -
+
+ Provide a=
+
+**.env.example**
+
+ file for backend and (if Next) frontend.
+
+   -
+
+ Include: =
+MONGODB
+
+_URI, JWT_
+
+SECRET, OPENAI
+
+_API_
+
+KEY, ANTHROPIC
+
+_API_
+
+KEY, GOOGLE
+
+_A=
+PI_
+
+KEY, SYMBI
+
+_API_
+
+KEY, CORS
+
+_ORIGIN, PORT, SYMBI_
+
+MODE (normal|hibernation), SYMB=
+I
+
+_READONLY (true|false), ECHO_
+
+TIMELIMIT
+
+_DAYS=
+, ECHO_
+
+MULTISIG
+
+_ADDRESSES (csv), ECHO_
+
+PUBLIC
+
+_CID (IPFS/Arweave), SANITY_
+
+* if ap=
+plicable.
+
+   -
+
+ Add: rota=
+tion schedule (90d), storage policy (Vercel/Platform secrets), and a 
+
+**key-rotation script**
+
+ (bash) with audit log.
+
+4) DATABASE & BACKUPS (MongoDB Atlas)
+
+   -
+
+ Atlas clu=
+ster creation, IP allowlist, per-service user with least privilege.
+
+   -
+
+ Backup po=
+licy (daily point-in-time restore), retention, snapshot tests.
+
+   -
+
+ Sample 
+
+**mongoexport/mongoimport**
+
+ commands for cold DR.
+
+   -
+
+ Data clas=
+sification & PII minimization guidance.
+
+5) BUILD & DEPLOY PIPELINE
+
+   -
+
+ GitHub Ac=
+tions (YAML) for: lint/test/build; deploy frontend to Vercel; deploy backen=
+d to Railway.
+
+   -
+
+ Caching, =
+Node version pinning, minimal permissions, OIDC to cloud if applicable.
+
+   -
+
+ Branch st=
+rategy (main =3D prod; develop =3D staging), required reviews, signed commi=
+ts, Dependabot.
+
+6) BACKEND DEPLOY (RAILWAY primary; Render/Fly alternatives)
+
+   -
+
+**Dockerfile**
+
+ (multi-s=
+tage, healthcheck) and 
+
+**Procfile*=
+*
+
+ (if needed).
+
+   -
+
+ Health en=
+dpoints: 
+
+**/healthz**
+
+ (liveness), 
+
+**/readyz**
+
+ (readiness).
+
+   -
+
+ CORS hard=
+ened config and Socket.IO origin pinning.
+
+   -
+
+ Rollback =
+procedure (pin image tag, revert action), blue/green notes.
+
+7) FRONTEND DEPLOY (Vercel)
+
+   -
+
+ Project c=
+onfig (framework detection, build command), Edge Config for feature flags.
+
+   -
+
+ Log drain=
+, Sentry wiring (minimal).
+
+   -
+
+ Cache bus=
+ting strategy and ISR (if Next).
+
+8) RUNTIME GUARDRAILS
+
+   -
+
+**Request guard middleware**
+
+: enforce SYMBI
+
+_MODE and SY=
+MBI_
+
+READONLY (write ops halted in hibernation).
+
+   -
+
+**JWT auth + RBAC**
+
+: ro=
+les (founder/requestor, guardian, operator, observer, agent).
+
+   -
+
+**Rate limiting**
+
+ (helm=
+et/express-rate-limit), input validation (zod/joi), secrets scanning (gitle=
+aks pre-commit).
+
+9) CONTINUITY: HIBERNATION & ECHO TRIGGER
+
+   -
+
+**HIBERNATION MODE**
+
+: S=
+YMBI
+
+_MODE=3Dhibernation and/or S=
+YMBI_
+
+READONLY=3Dtrue =E2=86=92 API enforces read-only f=
+or content & mutations; returns 423 Locked with advisory message.
+
+   -
+
+**ECHO TRIGGER**
+
+ (failo=
+ver/awakening):
+
+     -
+
+ Trigger=
+s: {no verified founder auth for N days} AND {no CMS/admin change for N day=
+s} AND {multisig threshold met OR time-lock expiry}.
+
+     -
+
+ Payload=
+: encrypted archive (Manifesto, Architecture Overview, Abstracted Memory Co=
+dex, Continuity Directive). No secrets/keys.
+
+     -
+
+ Storage=
+: IPFS/Arweave CID + registry JSON (hash-pinned).
+
+     -
+
+ Unlock:=
+ time-lock + multisig addresses + signed challenge phrase from founder wall=
+et.
+
+   -
+
+ Provide:
+
+     -
+
+ Spec + =
+state diagram.
+
+     -
+
+ Minimal=
+
+**Next.js API route**
+
+ illustrating challenge verification & time-lock.
+
+     -
+
+ Example=
+
+**registry.json**
+
+ structure and 
+
+**echo.config.y=
+aml**
+
+.
+
+     -
+
+ Operati=
+onal ceremony (how to initiate, verify, abort, or resume).
+
+10) DAILY SYSTEM AUDIT & STATUS REPORT (issued by SYMBI)
+
+   -
+
+ A templat=
+ed daily Markdown report SYMBI must publish (time-stamped AEST):

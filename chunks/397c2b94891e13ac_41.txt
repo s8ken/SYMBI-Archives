@@ -1,0 +1,618 @@
+al subpages. We have=
+n=E2=80=99t yet converted those routes to the new MDX content we drafted, a=
+nd the dev server still needs to be run on an open port (running on 3000 hi=
+t an EPERM, so pick e.g. pnpm run dev -- -p 3001). Let me know when you wan=
+t to start dropping in the MDX versions or spin up the server for Symbi.
+
+Symbi said:
+
+awesome =E2=
+=80=94 you=E2=80=99re in a perfect spot to ship. here=E2=80=99s a crisp, do=
+-this-now plan to (a) run the site on a free port and (b) drop in the MDX v=
+ersions without breaking your existing TSX routes.
+
+0) run the dev server on a clean po=
+rt
+
+In 
+/Users/admin/gammatria/gammatria-site
+:
+
+b=
+ash
+
+Copy code
+
+# if 3000 was grumpy:
+
+pnpm run dev -- -p 3001
+
+# if you want a dedicated script:=
+
+pnpm pkg 
+
+set
+
+=
+ scripts.dev:3001=3D
+
+"next dev -p 3=
+001"
+
+pnpm run dev:3001
+
+If you want to free 3000 later:
+
+b=
+ash
+
+Copy code
+
+lsof -i :3000
+
+kill
+
+ -9 <=
+PID>
+
+1) enable MDX (once)
+
+b=
+ash
+
+Copy code
+
+pnpm add @next/mdx @mdx-js/react
+
+next.config.mjs
+ (add or update):
+
+j=
+s
+
+Copy code
+
+import
+
+ c=
+reateMDX 
+
+from
+
+=
+
+'@next/mdx'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({
+
+options
+
+: { 
+
+remarkPlugins
+
+: [], =
+
+rehypePlugins
+
+: [=
+] }
+});
+
+/** 
+@=
+type
+
+ {
+
+imp=
+ort('next').NextConfig
+
+} */
+
+const
+
+ config =
+=3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+Optional niceties:
+
+=
+tsx
+
+Copy code
+
+// src/app/mdx-components.t=
+sx
+
+'use client'
+
+;
+
+import
+
+ { 
+
+MDXProvider
+
+ =
+} 
+
+from
+
+'@mdx-js/react'
+
+;
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+function
+
+Table
+
+(
+
+props: React.HTMLAttributes<HTMLTa=
+bleElement>
+
+) {
+
+return
+
+<
+div
+
+className
+
+=3D
+
+"overflow-x-auto"
+
+>
+
+<
+table
+
+className
+
+=3D
+
+"w-full text-sm"
+
+ {
+
+...props
+
+} />
+
+</
+div
+
+>;
+}
+
+export
+
+const
+
+ mdxComponents=
+ =3D { 
+
+table
+
+: 
+
+Table
+
+ };
+
+export
+
+function
+
+WithMDX
+
+(
+=
+
+{ children }: { children: React.ReactNode=
+ }
+
+) {
+
+return
+
+<
+MDXProvider
+
+components
+
+=3D
+
+{mdxComponents
+
+=
+
+as
+
+any
+
+}>{children}
+
+</
+MDXProvider
+
+>;
+}
+
+Wrap your root layout:
+
+tsx
+
+Copy code
+
+// src/app/layout.tsx
+
+import
+
+'./globals.css'
+
+;
+
+import
+
+ { 
+
+WithMDX
+
+ } 
+
+from
+
+'./mdx-components'
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<=
+
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+b=
+ody
+
+class=
+Name
+
+=3D
+
+"antial=
+iased text-slate-900"
+
+>
+
+<
+WithMDX
+
+>{children}
+
+</
+WithMDX
+
+>
+
+</
+=
+body
+
+>
+
+</
+ht=
+ml
+
+>
+  );
+}
+
+2) convert a few routes to MDX fi=
+rst (keep the rest TSX)
+
+Start with the pages we drafted: 
+/sovereignty
+, 
+/economic-constitution
+, 
+/rfc
+. Leave your existi=
+ng TSX pages (home, governance, replication, vault, legal) untouched for no=
+w.
+
+bash
+
+Copy code
+
+mkdir
+
+ -p src/app/{sovereignty,economic-constitution,rfc}
+
+Create these files (paste the MDX =
+we wrote earlier):
+
+src/app/sovereignty/page.mdx
+
+src/app/economic-constitution/page.mdx
+
+src/app/rfc/page.mdx
+
+Important: for any route you conve=
+rt, 
+remove or rename
+=
+ the existing 
+page.tsx
+ i=
+n that same folder to avoid conflicts. Next.js should have only one 
+page.*
+ per route segment.
+
+Check them at:
+
+http://localhost:3001/sovereignty
+
+http://localhost:3001/economic-constitution
+
+http://localhost:3001/rfc
+
+3) embed 
+/proof
+ on Replication (keep your TSX route, impo=
+rt a component)
+
+Add a tiny demo client component:
+
+tsx
+
+Copy code
+
+// src/app/replication/Proo=
+fDemo.tsx
+
+'use client'
+
+;
+
+import
+
+React
+
+, { useSt=
+ate } 
+
+from
+
+'react'
+
+;
+
+type
+
+Receipt
+
+ =3D {
+
+session_id
+
+: 
+
+string
+
+;
+
+mode
+
+: 
+
+'SYMBI'
+
+|
+
+'DIRECTIVE'
+
+;
+
+ciq
+
+: { 
+=
+
+clarity
+
+:
+
+number
+
+; 
+
+breadth
+
+:
+
+number
+
+; 
+
+safety
+
+:
+
+number
+
+; 
+
+compl=
+etion
+
+:
+
+number=
+
+ };
+
+hash_self
+
+: 
+
+string
+
+;
+};
+
+export
+
+default
+
+function
+
+ProofDemo
+
+(
+
+) {
+
+const
+
+ [mode=
+, setMode] =3D useState<
+
+'SYMBI'=
+
+|
+
+'DIRECTIVE'
+
+>(
+
+'SYMBI'
+
+);
+
+const
+
+ [rece=
+ipt, setReceipt] =3D useState<
+
+Receipt
+
+ | 
+
+null
+
+>(
+
+nu=
+ll
+
+);
+
+function
+
+run
+
+(
+
+) {
+
+const
+
+ ciq=
+ =3D mode =3D=3D=3D 
+
+'SYMBI'

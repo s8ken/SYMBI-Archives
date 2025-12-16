@@ -1,0 +1,215 @@
+vestigate & Remove OPS
+
+Since OPS has screen recording access, we need to 
+find out what it is and remove it completely
+.
+
+1ï¸â£ Find Where OPS is Installed
+
+Run this command in 
+Terminal
+:
+
+sh
+
+Copy
+
+mdfind 
+
+"OPS"
+
+This will search your entire Mac for any files related to "OPS."
+
+ð¹ 
+If you find it in 
+/Applications/
+, 
+/Library/
+, or 
+~/Library/
+, let me know the file path.
+
+ð¹ If nothing shows up, it may be hidden.
+
+2ï¸â£ Check if OPS is Running in the Background
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep OPS
+
+If you see an entry 
+other than grep
+, OPS is currently running.
+
+Note the 
+PID number
+ next to it and use this command to 
+kill it
+:
+
+sh
+
+Copy
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+(Replace 
+[PID]
+ with the number shown in the process list.)
+
+3ï¸â£ Check If OPS Starts at Boot (Persistence Check)
+
+Run:
+
+sh
+
+Copy
+
+sudo 
+
+ls
+
+ -l /Library/LaunchAgents /Library/LaunchDaemons ~/Library/LaunchAgents
+
+If OPS appears in any of these locations, it means 
+it auto-starts with your Mac
+.
+
+To remove it:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+(Replace 
+[file_path]
+ with the actual OPS file found.)
+
+4ï¸â£ Check for Hidden Malware (Rootkits, Keyloggers)
+
+Since you suspect long-term monitoring, let's check for hidden malware:
+
+ð¹ 
+Run this to list all running processes:
+
+sh
+
+Copy
+
+ps aux
+
+Look for 
+anything unusual
+ or 
+unknown apps
+ running.
+
+ð¹ 
+Check active network connections (to see if OPS is sending data):
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+If OPS is communicating with an external server, this could indicate a 
+remote surveillance tool
+.
+
+5ï¸â£ Delete OPS Completely
+
+If you find OPS installed anywhere:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+Then, 
+empty the Trash
+ and restart your Mac.
+
+ð¨ Summary: What to Do Right Now
+
+â 
+Turn off & remove OPS from Screen Recording (System Settings > Privacy & Security)
+
+â 
+Find OPS on your Mac (
+mdfind "OPS"
+) & delete it if found
+
+â 
+Check if OPS is running (
+ps aux | grep OPS
+), kill the process if active
+
+â 
+Look for OPS in LaunchAgents & LaunchDaemons to remove persistence
+
+â 
+Check for suspicious network activity (
+netstat -an | grep ESTABLISHED
+)
+
+ð¬ Let Me Know What You Find!
+
+If you find OPS in a 
+specific folder
+, tell me the path before deleting.
+
+If you see 
+suspicious network activity
+, we may need to 
+block connections
+.
+
+You're doing greatâletâs get this hacker out for good! ð
+
+You said:
+
+2025-03-01 15:57:13.540 mdfind[1050:28185] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+/Library/WebServer/share/httpd/manual/mod/mod_http2.html.en
+/Library/WebServer/share/httpd/manual/index.html.da
+user@Mes-MacBook-Pro ~ % mdfind "OBS"
+2025-03-01 15:57:29.118 mdfind[1051:28313] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+/Applications/OBS.app
+/Library/Ruby/Gems/2.6.0/gems/test-unit-3.2.9/test/util/test_observable.rb
+/Library/Ruby/Gems/2.6.0/gems/test-unit-3.2.9/lib/test/unit/util/observable.rb
+/Library/WebServer/share/httpd/manual/new_features_2_4.html.fr.utf8
+/Library/WebServer/share/httpd/manual/platform/netware.html.fr.utf8
+/Library/WebServer/share/httpd/manual/filter.html.fr.utf8
+/Library/WebServer/share/httpd/manual/expr.html.fr.utf8
+/Library/WebServer/share/httpd/manual/rewrite/flags.html.en
+/Library/WebServer/share/httpd/manual/mod/mod_authnz_fcgi.html.en
+/Library/WebServer/share/httpd/manual/mod/mod_ssl.html.en
+/Library/WebServer/share/httpd/manual/howto/access.html.fr.utf8
+/Library/WebServer/share/httpd/manual/howto/cgi.html.es
+/Library/WebServer/share/httpd/manual/upgrading.html.fr.utf8
+/Library/WebServer/share/httpd/manual/mod/quickreference.html.fr.utf8
+/Library/WebServer/share/httpd/manual/mod/mod_example_hooks.html.fr.utf8
+/Library/WebServer/share/httpd/manual/mod/mod_authn_socache.html.en
+/Library/WebServer/share/httpd/manual/mod/mod_http2.html.en
+/Library/WebServer/share/httpd/manual/mod/mpm_common.html.en
+/Library/WebServer/share/httpd/manual/mod/mod_ssl.html.fr.utf8
+/Library/WebServer/share/httpd/manua

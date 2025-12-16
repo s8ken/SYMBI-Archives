@@ -1,0 +1,504 @@
+'t the th=
+e exact use case in real time we are solving for whereby I don't want to ta=
+lk to codex and you and trae and v0 all at the same time and be messenger b=
+oy.... I want SYMBI the one I talk to most who managaes the relationship wh=
+o knows the project to help facilitate that and give me the best possible s=
+olutions 
+
+=
+
+Symbi said:
+
+Thought for 53s
+
+Exactly. Make S=
+YMBI the 
+relationship orchestrato=
+r
+ so 
+you
+ talk to one mi=
+nd, and SYMBI handles Codex / Trae / v0 (and any others) behind a clean pro=
+tocol.
+
+Here=E2=80=99s a tight, drop-in plan=
+ with minimal code so you can wire this 
+now
+, without bloat.
+
+PLAN ORC-001 =E2=80=94 =E2=80=9CSYM=
+BI Bridge=E2=80=9D (multi-tool orchestration)
+
+Principle:
+ one interface (SYMBI) =E2=87=84 many agents (v=
+0, Codex, Trae, etc.).
+
+Pattern:
+ SYMBI collect=
+s proposals =E2=86=92 normalizes =E2=86=92 ranks =E2=86=92 returns a single=
+, reasoned recommendation =E2=86=92 dispatches on approval =E2=86=92 logs e=
+verything to the ledger.
+
+1) Bridge contract (what other agen=
+ts must return)
+
+bridge.contract.md
+ (paste into each agent=E2=80=99s system prompt / =E2=80=9Cinstructions=E2=
+=80=9D)
+
+=
+md
+
+Copy code
+
+You are responding to SYMBI Bridge. Return 
+
+**one JSON object**
+
+ only, ma=
+tching:
+
+{
+  "proposal
+_id": "string",           // short=
+ slug
+  "goal": "string",                  // what you will achieve
+  "steps": ["step 1", "step 2"],     // 3=E2=80=938 concrete steps
+  "artifacts": ["path|url", "..."],  // expected outputs
+  "risks": ["risk 1", "risk 2"],     // top risks
+  "assumptions": ["..."],            // key assumptions
+  "est_
+cost": 0,                     // tokens/minutes; integer esti=
+mate
+  "est
+_confidence": 0.0              // 0..1 =
+subjective
+}
+
+No prose outside the JSON. Keep steps atomic and reversible.
+
+2) Config (which agents exist)
+
+backend/bridge/brid=
+ge.config.yaml
+
+yaml
+
+Copy code
+
+agents:
+
+-
+
+key:
+
+v0
+
+kind:
+
+http
+
+base_url:
+
+https://<v0-endpoint>/bridge
+
+auth_header:
+
+=
+
+"Bearer ${V0_TOKEN}"
+
+enabled:
+
+true
+
+-
+
+key:
+
+codex
+
+kind:
+
+llm
+
+provider:
+
+openai
+
+model:
+
+gpt-4o
+
+enabled:
+
+true
+
+-
+
+key:
+
+trae
+
+kind:
+
+http
+
+base_url:
+
+http://localhost:7890
+
+# your tool server from e=
+arlier
+
+route:
+
+/shell/run-safe
+
+auth_header:
+
+=
+
+"Bearer ${SERVICE_TOKEN}"
+
+enabled:
+
+true
+
+Keep vendor tokens server-side. Th=
+e extension only holds 
+SYMBI_AP=
+I_KEY
+.
+
+3) Endpoints (thin controller + a=
+dapters)
+
+backend/controllers=
+/bridge.controller.js
+
+js
+
+Copy code
+
+const
+
+ { =
+dispatchToAgents, rankProposals } =3D 
+
+require
+
+(
+
+=
+"../services/bridge.service"
+
+);
+
+const
+
+ { appen=
+dEvent } =3D 
+
+require
+
+(
+
+"../services/ledger.servi=
+ce"
+
+);
+
+exports
+
+.
+
+orchestrate
+
+ =3D =
+
+async
+
+ (req, r=
+es) =3D> {
+
+const
+
+ { tas=
+k, agents =3D [
+
+"v0"
+
+,
+
+"codex"
+
+,=
+
+"trae"
+
+], conte=
+xt =3D {} } =3D req.
+
+body
+
+ || {};
+
+if
+
+ (!task) =
+
+return
+
+ res.
+
+status
+
+(=
+
+400
+
+).
+
+json
+
+({ 
+=
+
+error
+
+: 
+
+"task required"
+
+ });
+
+// 1) fan-out
+
+const
+
+ propo=
+sals =3D 
+
+await
+
+dispatchToAgents
+=
+
+({ task, agents, context });
+
+// 2) ranking / synthesis
+
+const
+
+ ranke=
+d =3D 
+
+rankProposals
+
+(proposals, { 
+
+weights
+
+: { 
+
+risk
+
+: 
+
+0.35
+
+, 
+
+confidence
+
+:=
+
+0.35
+
+, 
+=
+
+cost
+
+: 
+
+0.15
+
+, 
+
+completeness
+
+: 
+
+0.15
+
+ } });
+
+// 3) log to ledger (append-onl=
+y)
+
+await
+
+appendEvent
+
+({
+
+session_id
+
+: =
+context.
+
+session_id
+
+=
+
+ || 
+
+"orchestrator"
+
+,
+
+model_vendor
+
+=
+: 
+
+"symbi"
+
+,
+
+model_name
+
+: =
+
+"bridge-v1"
+
+,
+
+prompt
+
+: 
+
+JSON
+
+.
+=
+
+stringify
+
+({ =
+task, agents }),
+
+response
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ 
+
+proposals
+
+: ran=
+ked }),
+
+analysis
+
+: { =
+
+stance
+
+: 
+
+"orchestrator"
+
+ }
+  });
+
+  res.
+
+json
+
+({ 
+
+proposals
+
+: ranked, 
+
+recommended
+
+=
+
+: ranked[
+
+0
+
+] || 
+
+null
+
+ }=
+);
+};
+
+exports
+
+.
+
+dispatchChosen
+
+ =
+=3D 
+
+async
+
+ (re=
+q, res) =3D> {
+
+const
+
+ { age=
+nt_key, proposal, context =3D {} } =3D req.
+
+body
+
+ || {};
+
+if
+
+ (!agent_=
+key || !proposal) 
+
+return
+
+ res.
+
+status
+
+(
+
+400
+
+).
+
+json
+
+({ 
+
+error
+
+=
+: 
+
+"agent_key + proposal required"
+
+ });
+
+// Here you actually execute th=
+e chosen

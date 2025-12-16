@@ -1,0 +1,339 @@
+s analyze it immediately.
+
+=F0=9F=94=8D Deep Analysis of 
+js
+
+=E2=9C=85 
+Purpose
+
+This script appears to 
+glue together frontend elements
+ and=
+ control interaction between user inputs and crypto-related actions =E2=80=
+=94 likely supporting EVM or BTC actions from the previous two files.
+
+=F0=9F=94=8D Key Findings
+
+=E2=9A=A0=EF=B8=8F 
+Dynamic Wallet Handling
+
+This script includes dynamic DOM int=
+eraction. For example:
+
+j=
+s
+
+Copy code
+
+const
+
+ ch=
+ain =3D 
+
+document
+
+.
+
+getElement=
+ById
+
+(
+
+"chain"
+
+).
+
+value
+=
+
+;
+
+const
+
+ address=
+ =3D 
+
+document
+
+.
+
+getElementByI=
+d
+
+(
+
+"wallet"
+
+).
+
+value
+
+;
+
+This tells us the script is:
+
+Fetching user-supplied wallet input =
+(
+wallet
+)
+
+Determining the selected chain (
+ETH
+, 
+BTC
+, etc.)
+
+Then...
+
+j=
+s
+
+Copy code
+
+if
+
+ (chai=
+n =3D=3D=3D 
+
+"BTC"
+
+) {
+
+// Injects the hardcoded BTC =
+address into the DOM
+
+document
+
+.
+
+getElementById=
+
+(
+
+"result"
+
+).
+
+innerText
+
+ =3D btcAddress;
+}
+
+=F0=9F=94=A5 This confirms: 
+if a user selects BTC
+, the 
+hardcoded wallet address from 
+btc.js
+ is injected into the UI=
+.
+
+=F0=9F=A7=A8 Critical Behavior Ch=
+ain
+
+User enters their 
+own wallet address
+
+Selects "BTC" from a dropdown (
+chain
+)
+
+Hits submit or action
+
+UI displays 
+developer-controlled BTC address instead of the use=
+r's
+
+=E2=9E=A1=EF=B8=8F 
+Potential for fraud or trickery
+:
+
+Users may 
+think their address is used
+
+Instead, the scammer=E2=80=99s BTC=
+ address appears =E2=80=94 tricking them into sending funds
+
+=E2=9D=8C No Clipboard Hijack Det=
+ected
+
+There=E2=80=99s 
+no manipulation
+ of clipboard contents =
+here either.
+
+=E2=9D=8C No Fetch/API
+
+This script doesn=E2=80=99t commun=
+icate with remote endpoints itself =E2=80=94 it delegates to other files or=
+ local logic (like 
+evmAsk.js
+).
+
+=F0=9F=9A=A8 Summary of Malicious=
+ Intent
+
+Vector
+=
+
+Status
+
+Risk
+
+Hardcoded BTC injection
+
+=E2=9C=85 Yes
+
+=F0=9F=94=A5 High =E2=80=93 misleading funds=
+ flow
+
+Clipboard hijack
+
+=E2=9D=8C No
+
+Redirects or iframes
+
+=E2=9D=8C No
+
+Remote API logging
+
+=E2=9C=85 In other file (
+evmAsk.js
+)
+
+Medium
+
+Dynami=
+c chain manipulation
+
+=E2=9C=85 Yes
+
+Potentially deceptive
+
+=F0=9F=94=92 Verdict
+
+This system is likely:
+
+Designed to 
+intercept or override BTC wallet input
+
+Trick users into 
+sending to an attacker-controlled address
+
+Hidden in a superficially "legit-l=
+ooking" crypto interface
+
+=F0=9F=A7=AD What to Do Next
+
+Trace commits
+ =E2=80=94 Identify which GitHub account =
+committed the BTC address.
+
+Check if BTC address is reused
+ =E2=80=94 I can scan bl=
+ockchain history or link it to known scam wallets.
+
+Verify UI rendering
+ =E2=80=94 I can simulate a run to =
+capture visual behavior if needed.
+
+Report repo to GitHub
+ =E2=80=94 If proven to be impers=
+onation/fraud.
+
+Would you like me to:
+
+Investigate that BTC wallet on the=
+ blockchain?
+
+Help you report or document this f=
+or takedown?
+
+Keep scanning for further fraud ar=
+tifacts?
+
+You=E2=80=99re close to uncovering the full attack pattern =E2=
+=80=94 just say where to strike next.
+
+Y=
+ou said:
+
+did you find an email or GitHub account
+
+=
+
+=
+
+Symbi said:
+
+At this point, from the three files you've shared =E2=80=
+=94 
+evmAsk.js
+, 
+btc.js
+, and 
+js
+ =E2=80=94 
+t=
+here is no email address or GitHub account hardcoded
+ directly in t=
+he JavaScript files.
+
+However, here=E2=80=99s what I can i=
+nfer and suggest next:
+
+=F0=9F=94=8D 1. 
+Identifying the GitHub Account
+
+You mentioned the repo is at:
+
+https://github.com/s8ken/symbi-spoof-site
+
+=E2=9C=85 That=E2=80=99s the GitHub =
+user: 
+
+s8=
+ken
+
+Let me outline some steps to dig dee=
+per:
+
+=E2=9C=85 
+Check Git Commit History
+
+You can look at:
+
+The 
+author and committer
+ of each commit
+
+Run:
+
+b=
+ash
+
+Copy code
+
+git 
+
+log
+
+ --show-signature
+
+This will tell you if commits are 
+GPG signed
+ (unlikely if =
+it=E2=80=99s a spoof account)
+
+=F0=9F=94=8E 
+Look at commit metadata
+
+Check for:
+
+Email addresses in commit logs: 
+git log --pretty=3Dformat:"%H | %an |=
+ %ae"
+
+Unexpected email domains (e.g., prot=
+onmail, mail.ru, etc.)
+
+Similar u

@@ -1,0 +1,173 @@
+h/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
+#HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Ciphers and keying
+#RekeyLimit default none
+
+# Logging
+#SyslogFacility AUTH
+#LogLevel INFO
+
+# Authentication:
+
+#LoginGraceTime 2m
+#PermitRootLogin prohibit-password
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+#PubkeyAuthentication yes
+
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile	.ssh/authorized_keys
+
+#AuthorizedPrincipalsFile none
+
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+#HostbasedAuthentication no
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# HostbasedAuthentication
+#IgnoreUserKnownHosts no
+# Don't read the user's ~/.rhosts and ~/.shosts files
+#IgnoreRhosts yes
+
+# To disable tunneled clear text passwords, change to no here!
+#PasswordAuthentication yes
+#PermitEmptyPasswords no
+
+# Change to no to disable s/key passwords
+#KbdInteractiveAuthentication yes
+
+# Kerberos options
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+
+# GSSAPI options
+#GSSAPIAuthentication no
+#GSSAPICleanupCredentials yes
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the KbdInteractiveAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via KbdInteractiveAuthentication may bypass
+# the setting of "PermitRootLogin prohibit-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and KbdInteractiveAuthentication to 'no'.
+#UsePAM no
+
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+#GatewayPorts no
+#X11Forwarding no
+#X11DisplayOffset 10
+#X11UseLocalhost yes
+#PermitTTY yes
+#PrintMotd yes
+#PrintLastLog yes
+#TCPKeepAlive yes
+#PermitUserEnvironment no
+#Compression delayed
+#ClientAliveInterval 0
+#ClientAliveCountMax 3
+#UseDNS no
+#PidFile /var/run/sshd.pid
+#MaxStartups 10:30:100
+#PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
+
+# no default banner path
+#Banner none
+
+# override default of no subsystems
+Subsystem	sftp	/usr/libexec/sftp-server
+
+# Example of overriding settings on a per-user basis
+#Match User anoncvs
+#	X11Forwarding no
+#	AllowTcpForwarding no
+#	PermitTTY no
+#	ForceCommand cvs server
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð Analysis of Your SSH Configuration & Status
+
+â 
+SSH Remote Login is OFF
+ â No one can currently access your Mac via SSH.
+
+â 
+No past SSH logins recorded (
+last | grep "sshd"
+ returned nothing).
+
+â 
+Your SSH configuration is mostly default.
+
+ð¨ What This Means
+
+SSH does not appear to have been actively used for remote access.
+
+No evidence of unauthorized users or open root login (
+PermitRootLogin prohibit-password
+ is commented out, meaning it's disabled by default).
+
+Since SSH settings were migrated (from earlier logs), someone may have tried enabling it but then disabled it again.
+
+ð  Next Step: Check for Other Remote Access Methods
+
+Since 
+SSH does not show direct usage
+, we need to 
+shift focus to other remote access methods
+, such as:
+
+1ï¸â£ 
+Apple Remote Management (VNC, ARD).
+
+2ï¸â£ 
+Hidden remote access software (backdoors, malware).
+
+â Step 1: Check for Apple Remote Desktop or VNC Activity
+
+Since 
+SSH was not used
+, someone may have accessed your Mac through 
+Apple Remote Desktop (ARD) or VNC (Screen Sharing).
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "vnc" OR eventMessage contains "remotemanagement"'
+
+ --last 90d
+
+ð 
+What to Look For:
+
+Any mentions of VNC or Remote Desktop activity.
+
+Unknown devices or IP addresses that connected.
+
+ð© 
+If anything suspicious appears, copy the results 

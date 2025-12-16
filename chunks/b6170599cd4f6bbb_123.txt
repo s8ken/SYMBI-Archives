@@ -1,0 +1,182 @@
+|libcrypto\|libsqlite"
+
+ð If 
+no results appear, everything is gone.
+
+â Step 2: Fresh Install of Dependencies
+
+Now, reinstall everything 
+cleanly
+ in the correct order.
+
+1ï¸â£ 
+Reinstall Homebrew dependencies
+
+sh
+
+Copy
+
+Edit
+
+brew install sleuthkit libewf afflib openssl sqlite
+
+2ï¸â£ 
+Reinstall Java (Zulu JDK 17)
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu@17
+
+3ï¸â£ 
+Confirm Java is installed
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+ð 
+It should output Java 17!
+
+4ï¸â£ 
+Reinstall JavaFX
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p /usr/local/javafx
+
+cd
+
+ ~/Downloads
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-x64_bin-sdk.zip
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+mv
+
+ javafx-sdk-11.0.2 /usr/local/javafx
+
+5ï¸â£ 
+Set up environment variables
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 17)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 3: Fresh Install of Autopsy
+
+1ï¸â£ 
+Download & Extract Autopsy
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://github.com/sleuthkit/autopsy/releases/download/autopsy-4.21.0/autopsy-4.21.0.zip
+unzip autopsy-4.21.0.zip
+
+2ï¸â£ 
+Fix Permissions
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+
+chmod
+
+ +x autopsy
+
+3ï¸â£ 
+Run Autopsy
+
+sh
+
+Copy
+
+Edit
+
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+ð This Should Work!
+
+After a full reset, 
+Autopsy should now run without any missing dependencies
+.
+
+ð If it 
+still fails
+, send me the output of:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+java -version
+
+ð 
+Try it out and let me know! ð¥
+
+New version of GPT available
+ - Continue chatting to use the old version, or start a 
+new chat
+ for the latest version.

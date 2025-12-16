@@ -1,0 +1,300 @@
+
+background connections
+ to check for:
+
+Safe Browsing updates (malware protection).
+
+Automatic updates for the browser itself.
+
+Extensions calling Google services.
+
+Check if Chrome is running in the background
+:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep 
+
+"Chrome"
+
+If it shows up, you can 
+force close Chrome
+ and run 
+netstat
+ again:
+
+sh
+
+Copy
+
+Edit
+
+killall 
+
+"Google Chrome"
+
+2️⃣ 
+Google DNS
+
+You recently 
+set your DNS to 
+8.8.8.8
+ and 
+8.8.4.4
+
+, which means 
+your Mac queries Google’s DNS servers
+.
+
+Even if you're not logged into Google, your device 
+still makes connections to resolve domain names.
+
+Want to avoid Google DNS?
+ You can switch to Cloudflare’s DNS:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ 1.1.1.1 1.0.0.1
+
+3️⃣ 
+macOS System Services
+
+Some macOS 
+background processes
+ (like Captive Portal detection) may ping Google servers.
+
+Try running:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+This will tell us 
+which process is making the connection.
+
+4️⃣ 
+Any Installed Apps Using Google APIs
+
+Some apps (even non-Google ones) use 
+Google Cloud Services
+ or 
+Google Firebase
+ for:
+
+Push notifications
+
+Analytics
+
+Cloud sync
+
+🛠️ What To Do Next
+
+🔹 
+If you want to investigate further, run this command
+ to check 
+which app is making the Google connection
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+📌 
+Let me know what app shows up, and we’ll decide if it’s normal or suspicious.
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep "Chrome"
+
+sja               1050   0.0  0.0 410742544   1760 s001  S+    9:30pm   0:00.00 grep Chrome
+sja@SJAs-MacBook-Pro ~ % killall "Google Chrome"
+
+No matching processes belonging to you were found
+sja@SJAs-MacBook-Pro ~ %
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔍 No Chrome Running – But Still Google Connections?
+
+✅ 
+You confirmed that Chrome is NOT running
+, but your Mac 
+still has an active connection to 
+142.250.70.164
+ (Google-owned server).
+
+That means 
+something else
+ is making that request.
+
+🛠 Step 1: Find the Process Making the Google Connection
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+📌 
+This will show the exact process that is talking to Google.
+
+Possible Causes (If Not Chrome)
+
+1️⃣ 
+A Background macOS Service
+
+macOS sometimes 
+pings Google servers
+ to check internet connectivity.
+
+Process to look for:
+
+configd
+ (networking), 
+trustd
+ (certificate validation).
+
+2️⃣ 
+An App Using Google Services
+
+Some non-Google apps 
+use Google APIs for syncing or analytics.
+
+Examples:
+ Slack, Discord, Spotify, etc.
+
+3️⃣ 
+A Hidden Background Process
+
+If an unknown process is making the connection, 
+we need to investigate further
+.
+
+🚀 Next Step: Run the 
+lsof
+ Command & Tell Me What Process is Making the Connection
+
+Once we know 
+which app is responsible
+, we can decide if it's 
+safe or suspicious.
+ 🔍
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep "142.250.70.164"
+
+sja@SJAs-MacBook-Pro ~ %
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+✅ No Process Found – What Does This Mean?
+
+You ran:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+…and 
+nothing showed up
+, meaning:
+
+1️⃣ 
+Your Mac is no longer actively connected to Google at this moment.
+
+2️⃣ The previous connection to 
+142.250.70.164
+
+was temporary
+ (likely a system service or app that no longer needs it).
+
+3️⃣ If it was 
+malicious
+, it 
+isn’t running anymore
+, so there’s no immediate risk.
+
+🛠 Want to Keep Monitoring?
+
+If you want to 
+catch future connections in real-time
+, use this command:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep ESTABLISHED
+
+📌 
+Run it periodically to check for new active connections.
+
+🚀 Final Check – Do You Want to Hunt for Hidden Processes?
+
+If you 
+still feel suspicious
+, we can:
+
+Run KnockKnock
+ to find hidden startup malware:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask knockknock
+open /Applications/KnockKnock.app
+
+Use LuLu to monitor outbound connections in real-time:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask lulu
+
+LuLu

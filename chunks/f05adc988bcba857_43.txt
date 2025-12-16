@@ -1,0 +1,232 @@
+used by 
+@sanity/base
+ requiring 
+React 16 or 17
+.
+
+ð¥ Solution: Downgrade React to 18 & Force Install Sanity
+
+To fix this, 
+we must downgrade React to 18
+ before reinstalling Sanity.
+
+ð¹ Step 1: Downgrade React to 18
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm install react@18 react-dom@18
+
+â This 
+fixes compatibility with Sanity
+.
+
+ð¹ Step 2: Force Install Sanity
+
+Once React 18 is installed, run:
+
+bash
+
+Copy
+
+Edit
+
+npm install sanity @sanity/client next-sanity @sanity/icons @sanity/image-url --legacy-peer-deps
+
+â This 
+bypasses strict dependency checks
+ and allows installation.
+
+ð¹ Step 3: Rebuild & Start the Project
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Website:
+
+http://localhost:3000
+
+â 
+Sanity Studio:
+
+http://localhost:3000/studio
+
+ð Let Me Know If This Fixes It! ðð¥
+
+If 
+errors persist
+, send me 
+the new error logs
+ so I can debug further! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % 
+sja@SJAs-MacBook-Pro symbi % 
+sja@SJAs-MacBook-Pro symbi % npm install react@18 react-dom@18
+
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: symbi@0.1.0
+npm error Found: react@18.3.1
+npm error node_modules/react
+npm error   react@"18" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer react@"^16.9 || ^17" from @sanity/base@2.36.2
+npm error node_modules/@sanity/base
+npm error   peer @sanity/base@"^2.21.0" from @sanity/vision@2.36.6
+npm error   node_modules/@sanity/vision
+npm error     @sanity/vision@"^2.2.6" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sja/.npm/_logs/2025-03-20T23_54_05_633Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sja/.npm/_logs/2025-03-20T23_54_05_633Z-debug-0.log
+sja@SJAs-MacBook-Pro symbi % 
+
+ChatGPT said:
+
+ð¨ Critical Issue: Sanity Requires React 16/17, But You Have React 19
+
+Your 
+Sanity installation is failing
+ because:
+
+Sanity requires React 16 or 17
+, but your project is using 
+React 19
+.
+
+Even React 18 is not working properly
+ because 
+@sanity/base
+
+does not support it
+.
+
+ð¥ Ultimate Fix: Force Install with Compatibility Mode
+
+We need to:
+
+â 
+Remove React 19 completely
+
+â 
+Install React 18 with forced dependencies
+
+â 
+Reinstall Sanity using legacy peer dependencies
+
+ð¹ Step 1: Completely Remove React 19
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm uninstall react react-dom
+
+â This 
+removes React 19
+ completely from your project.
+
+ð¹ Step 2: Force Install React 18
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm install react@18.2.0 react-dom@18.2.0 --legacy-peer-deps
+
+â This 
+ensures compatibility with Sanity
+.
+
+ð¹ Step 3: Reinstall Sanity
+
+Now that 
+React 18 is installed
+, force install Sanity:
+
+bash
+
+Copy
+
+Edit
+
+npm install sanity @sanity/client next-sanity @sanity/icons @sanity/image-url --legacy-peer-deps
+
+â This 
+bypasses strict dependency checks
+.
+
+ð¹ Step 4: Rebuild & Start the Project
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð 
+Website:
+
+http://localhost:3000
+
+ð 
+Sanity Studio:
+
+http://localhost:3000/studio
+
+ð Let Me Know If This Works! ðð¥
+
+If 
+errors persist
+, send me 
+the new error logs
+ so I can debug further! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % npm uninstall react react-dom
+
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: symbi@0.1.0
+npm error Found: styled-components@6.1.16
+npm error node_modules/styled-components
+npm error   styled-components@"^6.1.16" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer styled-components@"^5.2.0" from @sanity/base@2.36.2
+npm error node_modules/@sanity/base
+npm error   peer @sanity/base@"^2.21.0" from @sanity/vision@2.36.6
+npm error   node_modules/@sanity/vision
+npm erro

@@ -1,0 +1,473 @@
+namic via Sanity too? Or were you asking about editing that animation specifically?
+
+You said:
+
+no it was in the most recently shared file - terminal output or similar
+
+Vercel Deployment Expert GPT said:
+
+Perfect — just reviewed the last file you uploaded (
+Terminal Saved Output1.txt
+) and yes, you’re right. The animated text logic is 
+built directly into 
+app/page.tsx
+
+, without importing a separate component. Here’s what it includes:
+
+✅ It contains this in-line animation setup:
+
+tsx
+
+Copy
+
+const
+
+messages
+
+: { 
+
+text
+
+: 
+
+string
+
+; 
+
+duration
+
+: 
+
+number
+
+ }[] = [
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+""
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+250
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1000
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+]
+
+Then it's rendered with this logic:
+
+tsx
+
+Copy
+
+<motion.
+
+div
+
+  key={index}
+  initial={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+  animate={{ 
+
+opacity
+
+: 
+
+1
+
+ }}
+  exit={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+  transition={{ 
+
+duration
+
+: 
+
+0.5
+
+ }}
+  className=
+
+"text-white text-2xl md:text-4xl font-semibold h-12 flex items-center justify-center"
+
+/>
+
+And it loops via 
+useEffect
+, cycling the words with 
+setTimeout
+.
+
+🔁 So the animated words are 
+built directly into 
+page.tsx
+
+.
+
+You don’t need to look for a separate component — it’s all right there.
+
+Would you like to 
+make that list dynamic
+ from Sanity now? Or possibly 
+extract this into a reusable component
+ like 
+<AnimatedWords />
+ to clean things up?
+
+You said:
+
+sorry let me clarify - I am starting terminal from scratch so I need to navigate to my project folder and find the text file again
+
+Vercel Deployment Expert GPT said:
+
+Got it! Here's how to get back into your project folder and open the file again via terminal:
+
+✅ 
+Step-by-Step to Navigate & Open the File
+
+Open Terminal
+ and type:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+List all files to find your saved output:
+
+bash
+
+Copy
+
+ls
+
+If the file is still in the root folder of the project, you should see something like:
+
+Copy
+
+Terminal\ Saved\ Output1.txt
+
+Open the file using 
+nano
+:
+
+bash
+
+Copy
+
+nano Terminal\ Saved\ Output1.txt
+
+(The backslashes 
+\
+ escape the spaces in the filename.)
+
+🧠 Pro Tip
+
+If you're unsure where the file went, you can search for it:
+
+bash
+
+Copy
+
+find . -name 
+
+"*Saved*Output1.txt"
+
+Or search your whole Documents directory:
+
+bash
+
+Copy
+
+find ~/Documents -name 
+
+"*Saved*Output1.txt"
+
+Let me know once you’re in — or if you want to move the animated code from that file into your current working 
+app/page.tsx
+.
+
+You said:
+
+don't worry about output 1 - we are going back to whatever file I was just trying to edit 
+
+Vercel Deployment Expert GPT said:
+
+Ah, crystal clear now — we’re jumping back into editing the main file you were working on, which is:
+
+✅ 
+app/page.tsx
+
+📂 How to Navigate to That File in Terminal
+
+Navigate to your project folder
+ (if you're not already there):
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Open the file in 
+nano
+:
+
+bash
+
+Copy
+
+nano app/page.tsx
+
+Once you’ve opened it, let me know what you’d like to update in 
+page.tsx
+ — whether it’s tweaking the animated messages, loading from Sanity, layout changes, or anything else. I’m here to make it silky smooth ✨
+
+You said:
+
+how do I copy everything?
+
+Vercel Deployment Expert GPT said:
+
+To copy 
+everything from 
+app/page.tsx
+
+ while you're editing in 
+nano
+, here's what you can do:
+
+✅ Option 1: 
+Use Your Mouse in Terminal
+
+If your terminal app supports mouse interaction (most 

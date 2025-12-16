@@ -1,0 +1,242 @@
+ 
+Apple Menu
+ → 
+System Settings
+ → 
+Privacy & Security
+ → 
+Profiles
+
+🚨 
+If you see a profile you don’t recognize, REMOVE IT IMMEDIATELY.
+
+If "Profiles" is missing, that's good
+—it means no MDM is installed.
+
+Go to
+  
+Apple Menu
+ → 
+System Settings
+ → 
+General
+ → 
+About
+
+Scroll to 
+“Management”
+ (only visible if MDM is installed).
+
+If it appears, remove it by clicking “Remove Management”
+ (you may need admin rights).
+
+🛑 
+Check & Disable Remote Login (SSH)
+
+Go to
+  
+System Settings
+ → 
+General
+ → 
+Sharing
+
+Make sure ALL remote access services are OFF
+:
+
+❌ 
+Remote Login
+ (SSH)
+
+❌ 
+Remote Management
+ (Apple Remote Desktop)
+
+❌ 
+Screen Sharing
+
+❌ 
+AirPlay Receiver
+
+❌ 
+Bluetooth Sharing
+
+❌ 
+Content Caching
+
+❌ 
+Internet Sharing
+
+⛔ 
+Check for Hidden Remote Access Apps
+
+Run this Terminal command to see if anything suspicious is running:
+
+bash
+
+Copy
+
+sudo lsof -i -n | grep LISTEN
+
+Look for unusual services that are listening for connections.
+
+2️⃣ Stop Unauthorized Camera & Microphone Access
+
+Attackers could use apps or accessibility exploits to hijack your camera/mic.
+
+📸 
+Disable Camera & Mic Access for Unauthorized Apps
+
+Go to
+  
+System Settings
+ → 
+Privacy & Security
+
+Select “Camera” & “Microphone”
+
+🚫 
+Turn OFF access for all apps except the ones you trust (e.g., FaceTime, Zoom)
+
+If an app is listed that you didn’t install, investigate it immediately.
+
+🛑 
+Check for Fake or Hidden Camera Apps
+
+Run this command in Terminal to list apps that have requested camera/mic access:
+
+bash
+
+Copy
+
+tccutil reset Camera
+tccutil reset Microphone
+
+This will reset permissions, forcing apps to request access again—
+if something re-enables itself without asking, it’s suspicious.
+
+3️⃣ Stop Unauthorized AirPlay / Screen Mirroring
+
+Since you suspected AirPlay was used in the past, let’s 
+fully lock it down
+.
+
+🖥️ 
+Turn Off AirPlay & Screen Mirroring
+
+Go to
+  
+System Settings
+ → 
+General
+ → 
+AirDrop & Handoff
+
+Set "AirDrop" to “Receiving Off”
+
+Turn OFF "Allow Handoff"
+
+Go to "AirPlay & Receiver"
+
+Set 
+"Allow AirPlay"
+ to 
+OFF
+
+If you must keep it on, set it to 
+“Only People Sharing This Mac”
+
+🔎 
+Check for Unauthorized AirPlay Devices
+
+Go to
+  
+System Settings
+ → 
+Control Center
+
+Look under “Screen Mirroring”
+ → If you see any devices 
+you don’t recognize
+, remove them.
+
+4️⃣ Extra Steps to Ensure No Hidden Monitoring
+
+✔ 
+Check Accessibility Settings
+ (Attackers may use these for remote control)
+
+Go to
+  
+System Settings
+ → 
+Privacy & Security
+ → 
+Accessibility
+
+Remove ALL apps unless you installed them yourself.
+
+✔ 
+Run a Quick Malware Scan
+ (Check for persistence)
+
+bash
+
+Copy
+
+sudo system_profiler SPApplicationsDataType | grep -i 
+
+"remote"
+
+This lists apps that contain "remote" in their name or description.
+
+✔ 
+Check Login Items & Background Services
+
+Go to
+  
+System Settings
+ → 
+General
+ → 
+Login Items
+
+Disable any unknown items.
+
+Run this command in Terminal:
+
+bash
+
+Copy
+
+launchctl list | grep -i remote
+
+If anything suspicious appears, let me know.
+
+Final Step: Reboot & Monitor for Suspicious Behavior
+
+Restart your Mac and check if 
+any settings re-enable themselves
+
+If anything 
+turns back on automatically
+, it could indicate a deeper issue.
+
+Want Me to Help Analyze Any Results?
+
+If anything suspicious comes up in your 
+Terminal results, profiles, or login items
+, feel free to share it here and I’ll help you figure out if it’s safe or not. 🚀
+
+You said:
+
+Last login: Thu Mar  6 22:13:00 on console
+lcl@LCLs-MacBook-Pro ~ % sudo lsof -i -n | grep LISTEN
+
+Password:
+rapportd   397            lcl   14u  IPv4  0xe01fde5b2647a6b      0t0    TCP *:49153 (LISTEN)
+rapportd   397            lcl   15u  IPv6 0xb10163f6116d6b7b      0t0    TCP *:49153 (LISTEN)
+Disk\x20D 1108            lcl   27u  IPv4 0x3090f4de8c94a30f      0t0    TCP 127.0.0.1:49189 (LISTEN)
+adb       1129            lcl    8u  IPv4 0xde94a7c40f322743      0t0    TCP 127.0.0.1:5037 (LISTEN)
+cupsd     1258           root    5u  IPv6 0x1991aa8cd37df38b      0t0    TCP [::1]:ipp (LISTEN)
+cupsd     

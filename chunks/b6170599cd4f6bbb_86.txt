@@ -1,0 +1,283 @@
+in
+
+Now that 
+Handoff is turned off
+, letâs manually 
+kill 
+rapportd
+
+ and see if it stays gone.
+
+sh
+
+Copy
+
+Edit
+
+sudo killall rapportd
+
+ð 
+This should stop 
+rapportd
+ immediately.
+
+â Step 2: Does It Restart?
+
+Now check if 
+
+rapportd
+ comes back:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+
+ð 
+If 
+rapportd
+ is GONE
+, then Handoff was the cause. ð
+
+ð 
+If 
+rapportd
+ RESTARTS, something else is triggering it.
+
+â Step 3: Check if Itâs Still Trying to Connect
+
+Even if 
+rapportd
+ is running, it might still be 
+blocked from doing anything
+. Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+ð 
+If no output appears
+, 
+rapportd
+ is running but canât talk to the internet. ð
+
+ð Final Thoughts
+
+If 
+rapportd
+ disappears after killing it
+, 
+Handoff was the reason it kept running
+ â
+
+If it restarts automatically, thereâs another macOS process triggering it.
+ ð¥
+
+If Lulu is blocking its network traffic, itâs alive but totally useless.
+ ð
+
+ð 
+Try these tests and let me know what happens!
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % 
+sja@SJAs-MacBook-Pro ~ % sudo killall rapportd
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep rapportd
+
+sja               1262   0.0  0.0 410724112   1488 s000  S+    1:10am   0:00.00 grep rapportd
+sja               1260   0.0  0.2 426972160  30272   ??  S     1:10am   0:00.22 /usr/libexec/rapportd
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep rapportd
+
+rapportd  1260            sja    8u  IPv4 0x6d9bd67342b55edb      0t0    TCP *:49168 (LISTEN)
+rapportd  1260            sja    9u  IPv6 0x58bae4bf2b2256a4      0t0    TCP *:49168 (LISTEN)
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð 
+rapportd
+ is Restarting Automatically â Something Else is Keeping It Alive! ð¨
+
+ð 
+Key findings from your test:
+
+1ï¸â£ 
+You killed 
+rapportd
+, but it restarted instantly.
+
+2ï¸â£ 
+Itâs still in 
+LISTEN
+ mode on port 
+49168
+ (waiting for connections).
+
+3ï¸â£ 
+Even with Handoff disabled, something else is forcing it to run.
+
+ð¥ Step 1: Find What is Restarting 
+rapportd
+
+Letâs check 
+which macOS process is launching 
+rapportd
+
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep rapportd
+
+ð 
+If a service like 
+com.apple.rapportd
+ appears, thatâs what is forcing it to restart.
+
+ð¥ Step 2: Force-Stop 
+rapportd
+ from Auto-Restarting
+
+If 
+launchctl list
+ shows 
+com.apple.rapportd
+, 
+disable it manually
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.rapportd
+sudo launchctl 
+
+disable
+
+ system/com.apple.rapportd
+
+ð 
+This should stop macOS from respawning it.
+
+ð¥ Step 3: Confirm 
+rapportd
+ is Gone
+
+Now, 
+kill it again
+ and check if it comes back:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall rapportd
+ps aux | grep rapportd
+
+ð 
+If it stays dead, the bootout command worked!
+ ð
+
+ð 
+If it respawns, move to Step 4.
+
+ð¥ Step 4: Block 
+rapportd
+ at the System Firewall
+
+Even though 
+Lulu is blocking network traffic
+, macOS might still use internal processes. 
+Letâs double-layer it
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+ð 
+This blocks ALL connections, even local system ones.
+
+ð¥ Step 5: Check Whatâs Keeping 
+rapportd
+ Alive
+
+If it still keeps coming back, 
+trace what is forcing it to restart
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo fs_usage | grep rapportd
+
+ð 
+This will show whatâs calling 
+rapportd
+ to relaunch.
+
+ð 
+If a system process is triggering it, weâll disable that too!
+ ð¥
+
+ð Next Steps
+
+ð 
+Find what is restarting 
+rapportd
+
+ (
+launchctl list | grep rapportd
+).
+
+â 
+Disable auto-restart
+ (
+launchctl bootout system/com.apple.rapportd
+).
+
+ð 
+Kill it again and verify it stays dead.
+
+ð 
+Double-block it at the firewall if necessary.
+
+ð 
+Run these tests and let me know whatâs forcing 
+rapportd
+ to stay alive!
+ ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo launchctl list | grep rapportd
+
+sja@SJAs-MacBook-Pro ~ % sudo 

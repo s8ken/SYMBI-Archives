@@ -1,0 +1,207 @@
+ibtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ 
+libtsk_jni
+ Still Not Loading â Let's Do a Deeper Fix ð¥
+
+We've now 
+fixed the permissions
+, but Autopsy 
+still isnât loading 
+libtsk_jni
+
+. That means either:
+
+1ï¸â£ 
+Java still canât see it
+, or
+
+2ï¸â£ 
+There is a linking issue inside the 
+.dylib
+ files
+
+â Step 1: Check If Java Can See 
+libtsk_jni.dylib
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+ð 
+Ensure 
+/usr/local/lib
+ and 
+/opt/homebrew/opt/sleuthkit/lib/
+ appear in the output
+.
+
+If not, force Java to use the correct paths:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/usr/local/lib:/opt/homebrew/lib:/opt/homebrew/opt/sleuthkit/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=/usr/local/lib:/opt/homebrew/lib:/opt/homebrew/opt/sleuthkit/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 2: Check for Broken Links Inside 
+libtsk_jni.dylib
+
+If Java 
+sees
+ the file but 
+still refuses to load it
+, check if 
+
+libtsk_jni.dylib
+ is trying to load something missing
+:
+
+sh
+
+Copy
+
+Edit
+
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+ð If any dependencies say 
+"not found"
+, we need to fix them.
+
+â Step 3: Manually Force 
+libtsk_jni.dylib
+ to Load Correctly
+
+1ï¸â£ 
+Use 
+install_name_tool
+ to fix its paths:
+
+sh
+
+Copy
+
+Edit
+
+sudo install_name_tool -change /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib /usr/local/lib/libtsk_jni.dylib /usr/local/lib/libtsk_jni.dylib
+sudo install_name_tool -change /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib /usr/local/lib/libtsk.22.dylib /usr/local/lib/libtsk_jni.dylib
+
+2ï¸â£ 
+Re-run Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+ð If It Still Fails, Send Me This Output:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+ð This will confirm if 
+Java is seeing the correct paths
+ and 
+if any dependencies are broken
+.
+
+ð 
+Try these fixes and let me know what happens! ð¥
+
+You said:
+
+2025-03-18 02:28:45.714 java[13326:76768] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % java -XshowSettings:properties | grep java.library.path
+
+Property settings:
+    file.encoding = UTF-8
+    file.separator = /
+    ftp.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    http.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    java.class.path = 
+    java.class.version = 61.0
+    java.home = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+    java.io.tmpdir = /var/folders/zt/jn1c6p4n2vxbb5j4dl4c85fm0000gn/T/
+    java.library.path = /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+
+        /Users/sja/Library/Java/Extensions
+        /Library/Java/Extensions
+        /Network/Library/Java/Extensions
+        /System/Library/Java/Extensions
+        /usr/lib/java
+        .
+    java.runtime.name = OpenJDK Runtime Environment
+    java.runtime.version = 17.0.14+7-LTS
+    java.specification.maintenance.version = 1
+    java.specification.name = Java Platform API Specification
+    java.specification.vendor = Oracle Corporation
+    java.specification.version = 17
+    java.vendor = Azul Systems, Inc.
+    java.vendor.url = http://www.azul.com/
+    java.vendor.url.bug = http://www.azul.com/support/
+    java.vendor.version = Zulu17.56+15-CA
+    java.version = 17.0.14
+    java.version.date = 2025-01-21
+    java.vm.compressedOopsMode = Zero based
+    java.vm.info = mixed mode, sharing
+    java.vm.name = OpenJDK 64-Bit Server VM
+    java.vm.specification.name = Java Virtual Machine Specificatio

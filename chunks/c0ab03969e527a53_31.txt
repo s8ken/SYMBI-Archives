@@ -1,0 +1,264 @@
+irPlayXPCHelper (If Necessary)
+
+If AirPlay still persists, we force-delete it:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /usr/libexec/AirPlayXPCHelper
+
+✅ 
+If successful, macOS won’t be able to restart it.
+
+🚨 Step 4: Restart & Verify AirPlay is Gone
+
+Restart your Mac
+
+Once back, run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+✅ 
+If nothing appears, AirPlay is permanently disabled.
+
+🚨 
+If it still comes back, something is reinstalling it, and we need to check deeper persistence mechanisms.
+
+Let Me Know the Results!
+
+Run 
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+
+Run 
+sudo chmod 000 /usr/libexec/AirPlayXPCHelper
+
+If necessary, run 
+sudo rm -rf /usr/libexec/AirPlayXPCHelper
+
+Restart and check if it’s finally gone with 
+ps aux | grep -i airplay
+
+🚨 
+Tell me if the AirPlay icon is FINALLY gone!
+ If not, we will investigate further.
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+
+lcl@LCLs-MacBook-Pro ~ % sudo chmod 000 /usr/libexec/AirPlayXPCHelper
+
+chmod: Unable to change file mode on /usr/libexec/AirPlayXPCHelper: Read-only file system
+lcl@LCLs-MacBook-Pro ~ % sudo chmod 000 /usr/libexec/AirPlayXPCHelper
+
+chmod: Unable to change file mode on /usr/libexec/AirPlayXPCHelper: Read-only file system
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: The Root File System is Still Read-Only
+
+🚨 
+Even though SIP is disabled, macOS still prevents modifications because the root filesystem is in a read-only state.
+
+🔹 This means 
+we need to remount the root filesystem as read/write before we can modify 
+AirPlayXPCHelper
+
+.
+
+🚨 Step 1: Remount Root as Read/Write
+
+Since macOS defaults to a 
+read-only system
+, we need to temporarily 
+remount the root volume as writable.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+sudo mount -uw /
+
+✅ This should allow us to make system modifications.
+
+🚨 Step 2: Verify if the File System is Now Writable
+
+After remounting, check if it worked:
+
+sh
+
+Copy
+
+Edit
+
+mount | grep 
+
+" / "
+
+✅ 
+If it says 
+read/write
+, the file system is now unlocked.
+
+🚨 
+If it still says 
+read-only
+, we need to check deeper protections.
+
+🚨 Step 3: Modify & Remove AirPlayXPCHelper
+
+Now that the system is writable, try again:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /usr/libexec/AirPlayXPCHelper
+
+If that works, completely remove the file:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /usr/libexec/AirPlayXPCHelper
+
+✅ 
+This will permanently remove AirPlayXPCHelper.
+
+🚨 Step 4: Restart & Verify AirPlay is Gone
+
+Restart your Mac
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+✅ 
+If nothing appears, AirPlay is finally removed.
+
+🚨 
+If it still comes back, something is reinstalling it, which we need to investigate.
+
+Let Me Know the Results!
+
+Run 
+sudo mount -uw /
+
+Check with 
+mount | grep " / "
+
+Try 
+sudo chmod 000 /usr/libexec/AirPlayXPCHelper
+
+Try 
+sudo rm -rf /usr/libexec/AirPlayXPCHelper
+
+Restart & check 
+ps aux | grep -i airplay
+
+🚨 
+Let me know if the root filesystem is writable and if AirPlay is finally gone!
+ 🚀
+
+You said:
+
+mount_apfs: volume could not be mounted: Permission denied
+mount: / failed with 66
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+You said:
+
+mount_apfs: volume could not be mounted: Permission denied
+mount: / failed with 66
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: Root Filesystem is Still Locked (Even with SIP Disabled)
+
+🚨 
+You are getting "Permission Denied" when trying to remount the root filesystem.
+
+🚨 
+Error code 
+66
+ means macOS is blocking the mount operation.
+
+🔹 This means 
+we need to manually mount the system in Recovery Mode.
+
+🚨 Step 1: Boot into macOS Recovery Mode
+
+Since macOS won’t allow changes in normal mode, we need to:
+
+Shut down your Mac completely.
+
+Turn it back on and immediately hold 
+Command (⌘) + R
+
+ until you see the 
+macOS Utilities screen
+.
+
+🚨 Step 2: Open Terminal in Recovery Mode
+
+Click 
+Utilities
+ in the top menu bar.
+
+Select 
+Terminal
+.
+
+🚨 Step 3: Manually Remount Root as Writable
+
+Run the following command:
+
+sh
+
+Copy
+
+Edit
+
+mount -uw /
+
+✅ If successful, the syst

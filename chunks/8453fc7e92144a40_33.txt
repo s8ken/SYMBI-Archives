@@ -1,0 +1,89 @@
+s:24
+CORS (env-driven allowlist; dev open): backend/app.js:38
+Body parsers (json, urlencoded) with 10 MB: backend/app.js:74
+Input sanitize (mongoSanitize + HPP): backend/app.js:78
+Suspicious input detection: backend/app.js:81
+Request logger + morgan (errors only): backend/app.js:84..87
+Rate limit /api/*: backend/app.js:92
+Health/Readiness
+GET /healthz uptime: backend/app.js:167
+GET /readyz Mongo state: backend/app.js:171
+Routes (method/path/auth/controller)
+Auth
+POST /api/auth/register =E2=80=94 no =E2=80=94 backend/controllers/auth.con=
+troller.js
+POST /api/auth/login =E2=80=94 no =E2=80=94 backend/controllers/auth.contro=
+ller.js
+GET /api/auth/me =E2=80=94 yes =E2=80=94 backend/controllers/auth.controlle=
+r.js
+PUT /api/auth/profile =E2=80=94 yes =E2=80=94 backend/controllers/auth.cont=
+roller.js
+POST /api/auth/logout =E2=80=94 optionalAuth =E2=80=94 backend/controllers/=
+auth.controller.js
+Users
+GET/PUT /api/users/profile =E2=80=94 yes =E2=80=94 backend/controllers/user=
+.controller.js
+DELETE /api/users/account =E2=80=94 yes =E2=80=94 backend/controllers/user.=
+controller.js
+GET/POST/PUT/DELETE /api/users/api-keys[:id] =E2=80=94 yes =E2=80=94 backen=
+d/controllers/user.controller.js
+Conversations
+GET/POST /api/conversations =E2=80=94 yes =E2=80=94 backend/controllers/con=
+versation.controller.js
+GET/PUT/DELETE /api/conversations/:id =E2=80=94 yes =E2=80=94 controller sa=
+me
+GET/POST /api/conversations/:id/messages =E2=80=94 yes =E2=80=94 controller=
+ same
+Agents
+GET/POST /api/agents =E2=80=94 yes =E2=80=94 backend/controllers/agent.cont=
+roller.js
+GET/PUT/DELETE /api/agents/:id =E2=80=94 yes =E2=80=94 same
+POST /api/agents/connect / external systems routes =E2=80=94 yes =E2=80=94 =
+same
+Assistants
+POST /api/assistant/create =E2=80=94 yes =E2=80=94 backend/controllers/assi=
+stant.controller.js
+GET /api/assistant/list =E2=80=94 yes =E2=80=94 same
+GET /api/assistant/latest =E2=80=94 yes =E2=80=94 same
+PUT /api/assistant/:assistantId =E2=80=94 yes =E2=80=94 same
+DELETE /api/assistant/:assistantId =E2=80=94 yes =E2=80=94 same
+POST /api/assistant/thread/create =E2=80=94 yes =E2=80=94 same
+GET /api/assistant/thread/:threadId/messages =E2=80=94 yes =E2=80=94 same
+POST /api/assistant/message =E2=80=94 yes =E2=80=94 same (falls back to lat=
+est assistant if none given)
+GET /api/assistant/functions =E2=80=94 yes =E2=80=94 same
+LLM
+GET /api/llm/providers =E2=80=94 yes =E2=80=94 backend/controllers/llm.cont=
+roller.js
+GET /api/llm/models/:provider =E2=80=94 yes =E2=80=94 same (dynamic OpenAI =
+models + static fallback)
+POST /api/llm/generate =E2=80=94 yes =E2=80=94 same
+POST /api/llm/stream =E2=80=94 yes =E2=80=94 same (simulated streaming)
+POST /api/llm/code-review =E2=80=94 yes =E2=80=94 same
+Trust
+GET /api/trust/analytics =E2=80=94 yes =E2=80=94 backend/controllers/trust.=
+controller.js
+GET /api/trust/agent/:agentId =E2=80=94 yes =E2=80=94 same
+POST /api/trust/:id/audit =E2=80=94 yes =E2=80=94 same (should be admin-onl=
+y)
+GET/PUT/DELETE /api/trust/:id =E2=80=94 yes =E2=80=94 same
+GET /api/trust =E2=80=94 yes =E2=80=94 same
+POST /api/trust =E2=80=94 yes =E2=80=94 same (AJV validation)
+Context
+GET /api/context / /tag/:tag / /:id =E2=80=94 yes =E2=80=94 backend/control=
+lers/context.controller.js
+POST /api/context / /bridge / /search / /recommendations =E2=80=94 yes =E2=
+=80=94 same
+Weaviate: GET /weaviate/status, POST /weaviate/init|/weaviate/sync =E2=80=
+=94 yes =E2=80=94 same
+PUT /api/context/:id / /deactivate =E2=80=94 yes =E2=80=94 same
+DELETE /api/context/:id =E2=80=94 yes =E2=80=94 same
+Events/Ledger/Analysis/Guardrails/Insights
+POST /api/events =E2=80=94 yes =E2=80=94 backend/controllers/ledger.control=
+ler.js (auto-analyze + hash-chain)
+GET /api/ledger =E2=80=94 yes =E2=80=94 backend/controllers/ledger.controll=
+er.js (paginated, since anchor)
+GET /api/events/ledger =E2=80=94 yes =E2=80=94 alias
+POST /api/analyze/turn =E2=80=94 yes =E2=80=94 backend/controllers/analysis=
+.controller.js
+POST /api/guardrails/apply =E2=80=94 yes =

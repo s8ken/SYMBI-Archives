@@ -1,0 +1,220 @@
+??  Ss    9:11am   0:00.27 /usr/libexec/AirPlayXPCHelper
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ AirPlay Processes Have Returned After Enabling SIP
+
+Even though 
+we disabled and removed AirPlay earlier
+, it's back after SIP was re-enabled.
+
+ð What This Means
+
+/System/Library/CoreServices/AirPlayUIAgent
+ is 
+running again
+.
+
+/usr/libexec/AirPlayXPCHelper
+
+has restarted
+, meaning 
+macOS restored it when SIP was re-enabled
+.
+
+This suggests AirPlay is system-protected, and SIP is forcing it to return.
+
+ð Next Steps to Fully Disable AirPlay (Even With SIP On)
+
+Since 
+SIP prevents removing AirPlay
+ manually, we need an alternative approach: 
+permanently disabling it using system settings and overrides.
+
+ð ï¸ Step 1: Disable AirPlay Receiver (Prevents macOS from Running It)
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+â 
+This stops macOS from treating your Mac as an AirPlay receiver.
+
+ð Step 2: Unload AirPlay Services
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+killall SystemUIServer
+
+â 
+This stops AirPlayXPCHelper from running.
+
+ð¹ 
+Check if 
+ps aux | grep -E "AirPlay"
+ still shows anything after running this.
+
+ð¥ï¸ Step 3: Check Display Settings Again
+
+Go to 
+System Settings
+ â 
+Displays
+
+Make sure "AirPlay Display" is set to OFF.
+
+Uncheck "Show mirroring options in menu bar when available."
+
+â 
+This prevents AirPlay from appearing in your UI.
+
+ð¨ Let Me Know What Happens!
+
+Did 
+launchctl disable system/com.apple.AirPlayXPCHelper
+ work?
+
+Does 
+ps aux
+ still show AirPlay after this?
+
+Does reconnecting the TV still bring back the icon?
+
+ð 
+If it still persists, we will try a configuration lock to block AirPlay permanently. Let me know the results!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl disable system/com.apple.AirPlayXPCHelper
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+killall SystemUIServer
+
+Password:
+Boot-out failed: 150: Operation not permitted while System Integrity Protection is engaged
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ SIP is Preventing AirPlay From Being Disabled
+
+Since 
+SIP is blocking the removal of 
+AirPlayXPCHelper
+
+, the only way to 
+fully disable AirPlay while keeping SIP enabled
+ is to 
+block its functionality at the configuration level.
+
+ð Alternative: Block AirPlay Using Configuration Restrictions
+
+Since we 
+cannot remove the process
+, we will use 
+system settings and access control rules to block AirPlay completely.
+
+ð ï¸ Step 1: Disable AirPlay via System Preferences
+
+Go to 
+System Settings
+ â 
+General
+ â 
+AirDrop & Handoff
+
+Turn Off "AirPlay Receiver"
+
+Go to 
+System Settings
+ â 
+Displays
+
+Set "AirPlay Display" to OFF
+
+Uncheck "Show mirroring options in menu bar when available."
+
+â 
+This will prevent AirPlay from auto-activating.
+
+ð ï¸ Step 2: Use 
+defaults
+ to Force Disable AirPlay
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+â 
+This tells macOS to completely disable AirPlay Receiver.
+
+ð ï¸ Step 3: Block AirPlay Network Traffic
+
+Since 
+SIP prevents disabling the process
+, the next best solution is to 
+block its ability to communicate
+ using the firewall.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /usr/libexec/AirPlayXPCHelper
+
+â 
+This prevents AirPlay from making outgoing network connections.
+
+ð Final Check
+
+After running these steps:
+
+Restart your Mac
+
+Reconnect your TV
+
+Check if the AirPlay icon still appears.
+
+ð¨ Let Me Know the Results!
+
+Does the icon still appear after reconnecting the TV?
+
+Does 
+ps aux | grep -E "AirPlay"
+ still show processes?
+
+Does blocking AirPlay in System Settings help?
+
+ð 
+If the icon is still appearin

@@ -1,0 +1,671 @@
+t=
+o content
+</a>
+
+jsx
+
+Copy code
+
+// In your page shell/layou=
+t (e.g., frontend/src/components/layout/AppLayout.jsx)
+
+export
+
+default
+
+function
+
+AppLayout
+
+(
+
+{ children, title =3D 
+'YCQ Sonate'
+
+ }) {
+
+return
+
+ (
+
+<=
+>
+
+      {/* =E2=80=A6header=E2=80=A6 */}
+
+<
+m=
+ain
+
+id
+
+=3D
+
+"main"
+
+tabIndex
+
+=3D
+
+{-1}
+
+style
+
+=3D
+
+{{
+
+outline:
+
+ '
+
+none
+
+' }}>
+        {children}
+
+</
+=
+main
+
+>
+      {/* =E2=80=A6footer=E2=80=A6 */}
+
+</>
+
+  );
+}
+
+2.2 Route-change focus management=
+
+Ensure keyboard focus moves to the=
+ page=E2=80=99s H1 on navigation.
+
+jsx
+
+Copy code
+
+// frontend/src/hooks/useRo=
+uteFocus.js
+
+import
+
+ { useE=
+ffect, useRef } 
+
+from
+
+'react'
+
+;
+
+import
+
+ { useL=
+ocation } 
+
+from
+
+'react-router-dom'
+
+=
+
+;
+
+export
+
+function
+
+useRouteFocus
+
+(
+
+) {
+
+const
+
+ ref =
+=3D 
+
+useRef
+
+(
+
+null
+
+);
+
+const
+
+ { pat=
+hname } =3D 
+
+useLocation
+
+();
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (ref.
+
+current
+
+) ref.=
+
+current
+
+.
+
+focus
+
+();
+  }, [pathname]);
+
+return
+
+ ref;
+}
+
+jsx
+
+Copy code
+
+// Example page component (=
+e.g., Dashboard)
+
+import
+
+ { useR=
+outeFocus } 
+
+from
+
+'../../hooks/useRouteFocus'
+
+;
+
+export
+
+default
+
+function
+
+Dashboard
+
+(
+
+) {
+
+const
+
+ h1Ref=
+ =3D 
+
+useRouteFocus
+=
+
+();
+
+return
+
+ (
+
+<=
+>
+
+<
+h=
+1
+
+ref
+
+=3D
+
+{h1Ref}
+
+tabIndex
+
+=3D
+
+{-1}
+
+&g=
+t;Dashboard
+
+</
+h1
+
+>
+      {/* =E2=80=A6rest=E2=80=A6 */}
+
+</>
+
+  );
+}
+
+2.3 Forms: visible focus & fi=
+rst-field autofocus
+
+jsx
+
+Copy code
+
+// Example: Login form
+
+<
+
+TextField
+
+  label=3D
+
+"Email"
+
+  autoFocus
+  inputProps=3D{{ 
+
+'aria-label'
+
+: 
+
+'Email address'
+
+ }}
+
+// keep default focus outline; =
+don=E2=80=99t remove :focus styles in CSS
+
+/>
+
+If you have custom CSS that remove=
+s outlines, delete it or add:
+
+css
+
+Copy code
+
+:focus
+
+ { 
+
+outline
+
+=
+
+: 
+
+2px
+
+ so=
+lid currentColor; 
+
+outline-offse=
+t
+
+: 
+
+2px
+
+; }
+
+3) Playwright: add assertions for=
+ new health + a11y hooks
+
+Add/adjust a couple of tests so th=
+ey pass immediately after the above patches.
+
+js
+
+Copy code
+
+// tests/e2e/api-integration=
+.spec.js (add)
+
+test
+
+(=
+
+'API health is available'
+
+, 
+
+async
+
+ ({ request }) =3D> {
+
+const
+
+ res =
+=3D 
+
+await
+
+ req=
+uest.
+
+get
+
+(
+
+'http://localhost:5001/api/hea=
+lth'
+
+);
+
+expect
+
+(res.
+
+status
+
+()).
+
+toBe
+
+(
+
+200
+
+);
+
+const
+
+ json =
+=3D 
+
+await
+
+ res=
+.
+
+json
+
+=
+();
+
+expect
+
+(json.
+
+ok
+
+)=
+.
+
+toBe
+
+=
+(
+
+true
+
+);
+});
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js (add quick skip-link check)
+
+test
+
+(=
+
+'skip link moves focus to main'
+
+, 
+
+async
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/'
+
+);
+
+await
+
+ page.=
+
+keyboard
+
+.
+
+press
+
+(
+
+'Tab'
+
+); 
+
+// skip link
+
+await
+
+ page.=
+
+keyboard
+
+.
+
+press
+
+(
+
+'Enter'
+
+);
+
+const
+
+ activ=
+e =3D 
+
+await
+
+ p=
+age.evaluate(
+
+() =3D>
+
+document
+
+.
+
+activeElement=
+
+.
+
+id
+
+);
+
+expect
+
+(active).
+
+toBe
+
+(
+
+'main'
+
+);
+});
+
+4) Smoke script additions (securi=
+ty headers)
+
+Add these to 
+tools/smoke.sh
+ to verify headers in one shot:=
+
+bash
+
+Copy code
+
+# Security headers quick =
+check
+
+curl -sI 
+
+"
+$API
+
+/healthz" | egrep -i 
+
+'content-security-policy|strict-transport-security|=
+x-content-type-options|x-frame-options|referrer-policy'
+
+=
+ || 
+
+true
+
+# API health
+
+curl -s 
+
+"
+$API
+
+/api/health" | jq 
+
+'.ok,.env,.uptime'
+
+ || 
+
+=
+
+true
+
+5) Optional: gate /metrics in pro=
+d (one-liner)
+
+If you=E2=80=99d like to restrict =
+Prometheus scraping:
+
+js
+
+Copy code
+
+// backend/app.js (before /m=
+etrics)
+
+app.
+
+use
+
+(
+
+'/metrics'
+
+,=
+
+(
+re=
+q, res, next
+
+) =3D> {
+
+if
+
+ (process=
+.
+
+env
+
+.
+=
+
+METRICS_TOKEN
+
+ &=
+& req.
+
+headers
+
+.
+
+authorization
+
+ !=3D=3D 
+
+`Bearer 
+${process.env.METRICS_TOKEN}
+
+`) =
+{
+
+return
+
+ re=
+s.
+
+status
+
+(
+
+401
+
+).
+
+json
+
+({ 
+
+ok
+
+: 
+
+false
+
+ });
+  }
+
+next
+
+();
+});
+
+What this delivers (maps to your =
+failed checks)
+
+Security headers:
+ CSP/HSTS/Frameguard/No-Sniff/Referre=
+r-Policy =E2=86=92 =E2=9C=85
+
+/api/health
+:=
+
+ exists and returns JSON =E2=86=92 =E2=9C=85
+
+A11y focus & semantics:
+ skip link, main landmark, =
+H1 focus, visible outlines =E2=86=92 =E2=9C=85
+
+Tests:
+ small Playwright additions so the suite turns g=
+reen =E2=86=92 =E2=9C=85
+
+If yo

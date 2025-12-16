@@ -1,0 +1,239 @@
+sibility Logs – What We Found
+
+Your 
+Accessibility log (
+accessibility_log.txt
+)
+ contains system records related to 
+TCC (Transparency, Consent, and Control)
+, which manages app permissions for things like Accessibility, Screen Recording, and Input Monitoring.
+
+🚨 Suspicious or Notable Entries
+
+1️⃣ System-Level Access Requests (
+TCCAccessRequest
+)
+
+Multiple services 
+requested Accessibility access
+:
+
+com.apple.Installer-Progress
+
+ → Likely a macOS system process.
+
+com.apple.bluetoothd
+
+ → Bluetooth daemon requesting permissions.
+
+com.apple.recoveryosd
+
+ → Related to macOS Recovery mode.
+
+com.apple.imklaunchagent
+
+ → Input method service (keyboard input).
+
+🚨 
+Why This Matters?
+
+Input monitoring services
+ like 
+imklaunchagent
+ can be used 
+by keyloggers
+ or spyware.
+
+If these services requested Accessibility permissions 
+recently
+, 
+we should verify that nothing suspicious is running
+.
+
+🚀 Next Steps: Check & Remove Unauthorized Accessibility Access
+
+1️⃣ List All Apps with Accessibility Permissions
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+tccutil dump Accessibility
+
+📌 
+This will show a full list of apps that have Accessibility control.
+
+📌 Look for 
+non-Apple apps
+ that shouldn’t have full control (e.g., remote access tools, unknown software).
+
+2️⃣ Manually Review & Remove Suspicious Accessibility Apps
+
+Open 
+System Settings
+
+Go to 
+Privacy & Security
+ → 
+Accessibility
+
+Review all apps that have full control
+
+If you don’t recognize an app, REMOVE IT
+
+Click 
+"-"
+ to revoke its permission.
+
+3️⃣ Remove Specific Accessibility Permissions via Terminal
+
+If a 
+suspicious app is found
+, revoke its access:
+
+sh
+
+Copy
+
+Edit
+
+tccutil reset Accessibility com.[app.bundle.identifier]
+
+📌 Replace 
+[app.bundle.identifier]
+ with the actual app ID from 
+tccutil dump Accessibility
+.
+
+4️⃣ Check If Any Suspicious App Is Running
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i accessibility
+ps aux | grep -i tcc
+
+📌 If any 
+non-Apple process
+ is running and has 
+Accessibility permissions
+, we should investigate further.
+
+🚀 What To Do Next
+
+✅ 
+Run 
+tccutil dump Accessibility
+ and manually check for suspicious apps.
+
+✅ 
+Remove any apps from Accessibility settings that you don’t recognize.
+
+✅ 
+Check if any unauthorized apps are running (
+ps aux | grep accessibility
+).
+
+🔍 
+Let me know what you find, and we’ll fully remove any potential threats!
+ 🔒🚀 
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % tccutil dump Accessibility
+
+tccutil: Usage: tccutil reset SERVICE [BUNDLE_ID]
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 
+tccutil dump Accessibility
+ Didn't Work – Let's Use an Alternative Method
+
+Since 
+tccutil dump Accessibility
+
+isn't a valid command
+, we need to use 
+another way
+ to list apps with Accessibility permissions.
+
+🚀 Step 1: List All Apps with Accessibility Permissions
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db 
+
+"SELECT service, client FROM access WHERE service='kTCCServiceAccessibility';"
+
+📌 
+This will output all apps that have Accessibility access.
+
+📌 If you see 
+any apps that shouldn’t have access
+, we will remove them.
+
+🚀 Step 2: Manually Review Accessibility Permissions
+
+1️⃣ 
+Open System Settings
+
+2️⃣ 
+Go to Privacy & Security → Accessibility
+
+3️⃣ 
+Look at all apps listed
+
+4️⃣ 
+Remove any apps you don’t recognize
+ by clicking 
+"-"
+
+🚀 Step 3: Check If Any Suspicious App Is Running
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i accessibility
+ps aux | grep -i tcc
+
+📌 **If any unknown process appears, let me know, and we’ll
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "SELECT service, client FROM access WHERE service='kTCCServiceAccessibility';"
+
+Error: unable to open database "/Users/sja/Library/Application Support/com.apple.TCC/TCC.db": authorization denied
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 macOS is Blocking Direct Access to the TCC Database – Let’s Work Around It
+
+Since 
+macOS protects the 
+TCC.db
+ file
+, we need 
+elev

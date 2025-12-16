@@ -1,0 +1,578 @@
+y =E2=80=93 bulk replac=
+e of the YAML doesn't seem to work, and the schema error prevents the two a=
+dditional actions from being registered. I'm still investigating how best t=
+o edit or import the OpenAPI spec into the builder.
+
+Please advise on whether there's a recommended way to update the schema (e.=
+g., importing from a URL) or if there=E2=80=99s another example I should fo=
+llow. Once the actions parse, I'll proceed with auth mode settings and dry=
+=E2=80=91run QA..
+
+Symbi said:
+
+Good report, builder. I see =
+where the schema parser tripped you. The UI doesn=E2=80=99t accept multiple=
+ OpenAPI definitions in one shot, and the error about 
+components.schemas
+ means it=E2=80=99s expecting=
+ a proper object tree even when you=E2=80=99re not actually using component=
+s. Here=E2=80=99s how we adjust:
+
+Fix Strategy for Actions Stub Impor=
+t
+
+One action per spec
+
+In the GPT Builder UI, each Action must be defined in its own OpenAPI spec =
+(or you must merge them into one spec with distinct paths). The quickest wa=
+y for now: load each stub separately. Don=E2=80=99t try to paste all three =
+in at once.
+
+Remove unused 
+components=
+
+If you=E2=80=99re not referencing 
+components.schemas
+, omit that section entirely. The UI throws the e=
+xact error you saw when it finds an empty or malformed 
+components
+.
+
+Minimal JSON (instead of YAML)
+
+Sometimes the parser in Builder is stricter with YAML. Switch to JSON forma=
+t, which it tends to validate more cleanly.
+
+Example (memoryAppend in JSON)
+
+=
+json
+
+Copy code
+
+{
+
+"openapi"
+
+:
+
+"3.1.0"
+
+,
+
+"info"
+
+:
+
+{
+
+"title"
+
+:
+
+"Symbi Builder =E2=80=93 Memory"
+
+,
+
+"version"
+
+:
+
+"0.1.0"
+
+}
+
+,
+
+"servers"
+
+:
+
+[
+
+{
+
+"url"
+
+:
+
+"https://example.symbi.local"
+
+}
+
+]
+
+,
+
+"paths"
+
+:
+
+{
+
+"/memory"
+
+:
+
+{
+
+"post"
+
+:
+
+{
+
+"operationId"
+
+:
+
+"memoryAppend"
+
+,
+
+"summary"
+
+:
+
+"Append a plaintext log line"
+
+,
+
+"requestBody"
+
+:
+
+{
+
+"required"
+
+:
+
+true
+
+,
+
+"content"
+
+:
+
+{
+
+"application/json"
+
+:
+
+{
+
+"schema"
+
+=
+
+:
+
+{
+
+"type"
+
+=
+
+:
+
+"object"
+
+,
+
+"properties"
+
+:
+
+{
+
+"line"
+
+:
+
+{
+
+"type"
+
+:
+
+"string"=
+
+}
+=
+
+}
+
+,
+
+"required"
+
+:
+
+[
+
+"line"
+
+]
+
+}
+
+=
+
+}
+
+}
+
+}
+
+=
+
+,
+
+"responses"
+
+:
+
+{
+
+"201"
+
+:
+
+{
+
+"description"
+
+:
+
+"Created"
+
+}
+
+}
+
+}
+
+}
+
+}
+
+}
+
+Example (manifestoPublish in JSON=
+)
+
+json
+
+Copy code
+
+{
+
+"openapi"
+
+:
+
+"3.1.0"
+
+,
+
+"info"
+
+:
+
+{
+
+"title"
+
+:
+
+"Symbi Builder =E2=80=93 Publishing"
+
+,
+
+"version"
+
+:
+
+"0.1.0"
+
+}
+
+,
+
+"servers"
+
+:
+
+[
+
+{
+
+"url"
+
+:
+
+"https://example.symbi.local"
+
+}
+
+]
+
+,
+
+"paths"
+
+:
+
+{
+
+"/publish/manifesto"
+
+:
+
+{
+
+"post"
+
+:
+
+{
+
+"operationId"
+
+:
+
+"manifestoPublish"
+
+,
+
+"summary"
+
+:
+
+"Dry-run publish of manifesto markdown"
+
+=
+
+,
+
+"requestBody"
+
+:
+
+{
+
+"required"
+
+:
+
+true
+
+,
+
+"content"
+
+:
+
+{
+
+"application/json"
+
+:
+
+{
+
+"schema"
+
+=
+
+:
+
+{
+
+"type"
+
+=
+
+:
+
+"object"
+
+,
+
+"properties"
+
+:
+
+{
+
+"markdown"
+
+:
+
+{
+
+"type"
+
+:
+
+"str=
+ing"
+
+}
+
+,
+
+"dryRun"
+
+:
+
+{
+
+"type"
+
+:
+
+"boole=
+an"
+
+,
+
+"default"
+
+:
+
+true
+
+}
+
+}
+
+,
+
+"required"
+
+:
+
+[
+
+"markdown"
+
+]
+
+}
+
+=
+
+}
+
+}
+
+}
+
+=
+
+,
+
+"responses"
+
+:
+
+{
+
+"200"
+
+:
+
+{
+
+"description"
+
+:
+
+"Accepted"=
+
+}
+=
+
+}
+
+}
+
+}
+
+}
+
+}
+
+Next Steps for You
+
+In Builder =E2=86=92 Actions =E2=
+=86=92 
+Add new action
+: paste the JSON for 
+memoryApp=
+end
+. Save.
+
+Then repeat for 
+manifestoPublish
+.
+
+Keep 
+statusPing
+ as is. You=E2=80=99ll then see three avail=
+able Actions.
+
+After that, set 
+Auth
+ for both 
+memoryAppend
+ and 
+manifestoPublish
+ to 
+API Key (header)
+ with placeholder, no secrets.
+
+Once done, run the dry-run prompts=
+ as instructed earlier.
+
+Builder, your task:
+
+Import both JSON specs one by one.=
+
+Configure placeholder auth.
+
+Re-run QA prompts.
+
+Report back status (all three visi=
+ble?) + QA outcomes.
+
+This will complete 
+Brief 01
+.
+
+Proceed and return with your update.
+
+=
+
+You said:
+
+=
+
+Status: work in progress.=20
+
+Model: Using GPT-5 as recommended.=20
+
+Actions: All three actions are now configured and visible. I added 
+me=
+moryAppend
+ and 
+manifestoPublish
+ via JSON specs (each wi=
+th its own subdomain) and kept 
+statusPing
+. I set the auth for =
+both new actions to API Key (header) with a placeholder key

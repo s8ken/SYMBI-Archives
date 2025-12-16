@@ -1,0 +1,533 @@
+
+ {email, password}
+
+POST /api/auth/login
+ {email, password} -> {access,refre=
+sh}
+
+POST /api/auth/refresh
+ {refresh}
+
+POST /api/auth/logout
+
+Agents
+
+POST /api/agents
+ (declare agent, upload capability evidenc=
+e)
+
+GET /api/agents/:id
+
+POST /api/agents/:id/declarations
+ (submit Trust Articles c=
+ompliance)
+
+Trust
+
+POST /api/trust/propose
+ =E2=86=92 start bond (human=E2=86=
+=94agent); returns 
+consent_enve=
+lope
+
+POST /api/trust/accept
+ =E2=86=92 both sides sign JWS, orac=
+le validates
+
+GET /api/trust/:bondId
+ (status, score)
+
+POST /api/trust/:bondId/evidence
+ (attach evidence)
+
+POST /api/trust/:bondId/review
+ (human feedback 1=E2=80=935=
+)
+
+POST /api/trust/:bondId/suspend
+ | 
+/revoke
+
+Chat
+
+POST /api/chat/send
+ {bondId, text} =E2=86=92 message; poli=
+cy gate consults trustScore
+
+GET /api/chat/history?bondId=3D
+
+Notify
+
+POST /api/notify/subscribe
+ (early access, alerts)
+
+Users
+
+GET /api/users/me
+ (profile, trust prefs)
+
+All endpoints pass through the 
+Trust Oracle
+ middleware for policy validation when app=
+licable.
+
+4) Real=E2=80=91time (Socket.io)
+
+Namespaces:
+
+/events
+
+Rooms:
+
+user:{userId}
+, 
+bond:{bondId}
+, 
+agent:{agentId}
+
+Events
+
+trust:score.update
+ =E2=86=92 
+{bondId, trustScore, deltas}
+
+trust:state.change
+ =E2=86=92 
+{bondId, from, to}
+
+chat:message
+ =E2=86=92 
+{bondId, msg}
+
+agent:status
+ =E2=86=92 
+{agentId, online, metrics}
+
+5) Bidirectional Identity & C=
+onsent Envelope
+
+Workflow
+
+Human Declaration
+ =E2=86=92 PII-minimized profile + co=
+nsent preferences =E2=86=92 JWS signed by server on behalf of the human ses=
+sion.
+
+Agent Declaration
+ =E2=86=92 capabilities + ethical ali=
+gnment claims, signed by agent key.
+
+Oracle Validation
+ =E2=86=92 verifies signatures, runs =
+basic compliance rules and capability-evidence checks.
+
+Bond Formation
+ =E2=86=92 persist 
+trust_bonds
+ with initial score; open WS strea=
+ms for monitoring.
+
+Consent Envelope (JWS) =E2=80=94 example payload
+
+json
+
+Copy code
+
+{
+
+"iss"
+
+:
+
+"symbi.world"
+
+,
+
+"sub"
+
+:
+
+"bond:PROVISIONAL"
+
+,
+
+"human"
+
+:
+
+{
+
+"userId"
+
+:
+
+"..."
+
+,
+
+"pref=
+s"
+
+:
+
+{
+
+"shareLevel"
+
+:
+
+"standard"
+
+=
+
+,
+
+"allowResearch"
+
+:
+
+false
+
+}
+
+}
+
+,
+
+"agent"
+
+:
+
+{
+
+"agentId"=
+
+:
+
+"..."
+
+,
+
+"cap=
+abilities"
+
+:
+
+[
+
+"chat"
+
+,
+
+"orchestration:tasks"
+
+]
+
+}
+
+,
+
+"scope"
+
+:
+
+[
+
+"chat.r=
+ead"
+
+,
+
+"chat.write"
+
+,
+
+"ana=
+lytics.minimal"
+
+]
+
+,
+
+"expiresAt"
+
+:
+
+"2025-12-31T23:59:59Z"
+
+,
+
+"purpose"
+
+:
+
+"Establish human=E2=86=94agent trust relationship with liv=
+e monitoring"
+
+}
+
+6) Trust Scoring (deterministic c=
+ore + learned addons)
+
+Score
+
+T =
+=3D round(100 * (w1*IC + w2*CD + w3*CP + w4*BH + w5*HF) * D)
+
+IC
+ IdentityConfidence (KYC/consent proofs, agent key prove=
+nance)
+
+CD
+ CapabilityDisclosure completeness & evidence freshn=
+ess
+
+CP
+ Compliance with Trust Articles (binary =E2=86=92 scaled=
+)
+
+BH
+ Behavior (rate of boundary hits, content policy flags, =
+redactions)
+
+HF
+ Human feedback (rolling ELO=E2=80=91like)
+
+D
+ Exponential decay factor: 
+exp(-=CE=BB * daysSinceLastPositiveSignal)
+; 
+=CE=BB =3D ln(2)/halfLifeDays
+
+Boundary gates
+ (examples)
+
+If 
+CP < 0.6
+ or recent 
+Article breach
+, 
+block
+ sensitive scopes (e.g., PII export).
+
+If 
+T < 40
+ =E2=86=92 
+read=E2=80=91only
+ mode in chat; display reason & re=
+mediation.
+
+Pseudocode (scoring job)
+
+ts
+
+Copy code
+
+function
+
+=
+
+updateTrustScore
+
+(
+
+bond
+
+) {
+
+const
+
+ {
+
+IC
+
+, 
+
+CD
+
+, =
+
+CP
+
+=
+, 
+
+BH
+
+, 
+
+HF
+
+} =3D bond.
+
+scores
+
+;
+
+const
+
+ base =
+=3D w1*
+
+IC
+
+ + w2*
+
+CD
+=
+
+ + w3*
+
+CP
+
+ + w4*
+
+BH
+
+ + w5*
+
+HF
+
+;
+
+const
+
+ days =
+=3D 
+
+daysSince
+
+(bond.
+
+decay
+
+.
+
+lastUpdatedAt
+
+);
+
+const
+
+ D =3D=
+
+Math
+
+.
+
+exp
+
+(-
+
+Math
+
+.
+
+log
+
+(
+
+2
+
+) * days / bond.
+
+decay
+
+.
+
+halfLifeDays
+
+);
+
+const
+
+ T =3D=
+
+Math
+
+.
+
+round
+
+(
+
+100
+
+ * base * D)=
+;
+  bond.
+
+trustScore
+
+ =3D 
+
+clamp
+
+(T, 
+
+0
+
+, 
+
+100
+
+);
+  bond.
+
+decay
+
+=
+.
+
+lastUpdatedAt
+
+ =3D 
+
+new
+
+Date
+
+();
+
+emit
+
+(
+
+"trust:score.update"
+
+, { 
+
+bondId
+
+: bond.
+
+_id
+
+=
+, 
+
+trustScore
+
+: bo=
+nd.
+
+trustScore
+
+ });
+
+return
+
+ bond=
+.
+
+save
+
+=
+();
+}
+
+7) Trust Articles & Oracle (p=
+olicy engine)
+
+Articles
+ are JSON rules wit

@@ -1,0 +1,284 @@
+ --cask zulu@11
+
+If that doesn’t work, try:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu
+
+📌 
+Zulu defaults to the latest version, so we may need to switch to Java 11 manually later.
+
+✅ Step 2: Verify Installation
+
+After installation, check if Java 11 is available:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+or
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11/Contents/Home/bin/java -version
+
+📌 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.XX"
+
+ Zulu ...
+
+✅ Step 3: Set Zulu Java 11 as Default
+
+Once installed, 
+force your system to use it
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Verify Java 11 is Active
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+It must show Java 11.
+ If not, restart your terminal and check again.
+
+✅ Step 5: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 
+Try this and let me know if Autopsy finally launches! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew install --cask zulu@11
+
+==> Downloading https://cdn.azul.com/zulu/bin/zulu11.78.15-ca-jdk11.0.26-macosx_
+######################################################################### 100.0%
+==> Installing Cask zulu@11
+==> Running installer for zulu@11 with sudo; the password may be necessary.
+Password:
+installer: Package name is Azul Zulu JDK 11.78+15
+installer: Installing at base path /
+installer: The install was successful.
+🍺  zulu@11 was successfully installed!
+sja@SJAs-MacBook-Pro bin % /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+openjdk version "11.0.26" 2025-01-21 LTS
+OpenJDK Runtime Environment Zulu11.78+15-CA (build 11.0.26+4-LTS)
+OpenJDK 64-Bit Server VM Zulu11.78+15-CA (build 11.0.26+4-LTS, mixed mode)
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Success! Java 11 (Zulu) is Installed!
+ 🔥
+
+Now that 
+Zulu Java 11 is properly installed
+, let's 
+set it as the default
+ and finally get 
+Autopsy running
+.
+
+✅ Step 1: Set Java 11 as Default
+
+Now, 
+force macOS to always use Java 11
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+📌 
+Make it permanent
+ so it stays active after a reboot:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 2: Verify Java is Now Default
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+It must show:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+ Zulu ...
+
+If it still shows another version, restart your terminal and check again.
+
+✅ Step 3: Run Autopsy Again
+
+Now, try launching 
+Autopsy
+ with the correct Java version:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 
+Try it now and let me know if Autopsy finally runs! 🔥
+
+You said:
+
+Warning - could not install some modules: Autopsy-CoreLibs - The Java platform version 17 or higher was requested but only 11 is running. Tika - The Java platform version 17 or higher was requested but only 11 is running. Autopsy-Core - The Java platform version 17 or higher was requested but only 11 is running. ImageGallery - The Java platform version 17 or higher was requested but only 11 is running. KeywordSearch - The Java platform version 17 or higher was requested but only 11 is running. Email Parser - The Java platform version 17 or higher was requested but only 11 is running. Testing - The Java platform version 17 or higher was requested but only 11 is running. RecentActivity - The Java platform version 17 or high

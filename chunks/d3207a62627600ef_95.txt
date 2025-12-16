@@ -1,0 +1,315 @@
+O_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see 
+man brew
+).
+Warning: openjdk@11 11.0.26 is already installed and up-to-date.
+To reinstall 11.0.26, run:
+  brew reinstall openjdk@11
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+It looks like Java 11 
+is installed
+, but 
+Java 23 is still being used
+. Let’s fix that by 
+forcing your system to use Java 11
+ properly.
+
+🔥 Step 1: Manually Set Java 11
+
+Since 
+java_home
+ isn't switching it properly, let’s 
+manually point to Java 11
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/opt/homebrew/opt/openjdk@11"
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Now 
+check if Java 11 is active:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+You should now see something like:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+2024
+
+-XX-XX
+
+🔥 Step 2: Symlink Java 11 for System-Wide Use
+
+If 
+java -version
+
+still shows Java 23
+, then manually force Java 11 to be used by all apps:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+Then restart your terminal 
+or
+ run:
+
+sh
+
+Copy
+
+Edit
+
+source
+
+ ~/.zshrc
+
+Now check again:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+🔥 Step 3: Try Running Autopsy Again
+
+Now that Java 11 is 
+definitely
+ active, try launching Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+Let me know if it still crashes and send the new error log!
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME="/opt/homebrew/opt/openjdk@11"
+echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin %              
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+It looks like Java 23 is still being used instead of Java 11. Let's 
+force the switch
+ properly.
+
+🔥 Step 1: Unlink Java 23
+
+Since 
+java -version
+ is still showing 
+Java 23
+, let's 
+unlink it
+ so it stops being the default.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew 
+
+unlink
+
+ openjdk
+
+Now try checking again:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+It should 
+fail
+ or say "command not found." This means Java 23 is 
+no longer active
+.
+
+🔥 Step 2: Link Java 11 as the Default
+
+Now, we’ll force the system to 
+use Java 11
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew 
+
+link
+
+ --force --overwrite openjdk@11
+
+Now, check again:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+You 
+should now see Java 11
+ as the default:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+2024
+
+-XX-XX
+
+🔥 Step 3: Restart Terminal & Verify Again
+
+If it's still showing Java 23, restart the terminal and 
+check again
+:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+🔥 Step 4: Run Autopsy
+
+Once Java 11 is confirmed as the default, try launching Autopsy again:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+Let me know if 
+Java 23 still refuses to go away
+ or if 
+Autopsy crashes again
+! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % brew unlink openjdk
+
+Unlinking /opt/homebrew/Cellar/openjdk/23.0.2... 0 symlinks removed.
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk

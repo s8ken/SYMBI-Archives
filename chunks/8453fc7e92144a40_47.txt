@@ -1,0 +1,522 @@
+body>
+  <div class=3D"wrap">
+    <h3>SYMBI Console</h3>
+    <textarea id=3D"t" placeholder=3D"Message to your latest assistant..=
+."></textarea>
+    <div><button id=3D"s">Send</button></div>
+    <div id=3D"o" style=3D"margin-top:10px;"></div>
+  </div>
+  <script>
+    const vscode =3D acquireVsCodeApi();
+    const t =3D document.getElementById('t');
+    const o =3D document.getElementById('o');
+    document.getElementById('s').onclick =3D () =3D> {
+      const text =3D t.value.trim();
+      if(!text){ return; }
+      o.innerHTML =3D '<em>Sending...</em>';
+      vscode.postMessage({ type: 'send', text });
+    };
+    window.addEventListener('message', ev =3D> {
+      if (ev.data.type =3D=3D=3D 'reply') {
+        o.innerHTML =3D '<pre>'+JSON.stringify(ev.data.data, null, 2)=
++'</pre>';
+      } else if (ev.data.type =3D=3D=3D 'error') {
+        o.innerHTML =3D '<pre class=3D"error">'+ev.data.error+'</p=
+re>';
+      }
+    });
+  </script>
+</body>
+</html>`
+;
+}
+
+.vscodeignore
+
+bash
+
+Copy code
+
+**/.git/**
+**/.github/**
+**/.vscode/**
+**/node_modules/**
+src/**
+tsconfig.json
+
+Build: 
+npm i && npm run compile
+ then press 
+F5
+ in VS Code to launch the=
+ extension host.
+
+In the Command Palette:
+
+SYMBI: Set API Base
+ =E2=86=92 
+http://localhost:5000
+ (or your backend)
+
+SYMBI: Save SYMBI_API_KEY
+ =E2=86=92 
+ALL-THIS-HAS-HAPPENED-BEFORE
+
+SYMBI: Open Console
+ to chat, or use the 
+Symbi Ledger
+ tree + 
+SYMBI: Verify Ledger
+.
+
+2) Dev Container (pairing)
+
+Place these in your repo (not in =
+the extension folder)=E2=80=94they provision a reproducible dev env for you=
+r backend/frontend.
+
+.devcontainer/devcontainer.json
+
+json
+
+Copy code
+
+{
+
+"name"
+
+:
+
+"symbi-dev"
+
+,
+
+"dockerComposeFile"
+
+:
+
+[
+
+"../docker-compose.yml"
+
+]
+
+,
+
+=
+
+"service"
+
+:
+
+"workspace"
+
+,
+
+"workspaceFolder"
+
+:
+
+"/work"
+
+,
+
+"features"
+
+:
+
+{
+
+"ghcr.io/devcontainers/features/=
+node:1"
+
+:
+
+=
+
+{
+
+ =
+
+"version"
+
+:
+
+"18"
+
+}
+
+,
+
+"ghcr.io/devcontainers/features/=
+git:1"
+
+:
+
+{
+
+}
+
+}
+
+,
+
+"forwardPorts"
+
+=
+
+:
+
+[
+
+=
+5000
+
+,
+
+3000
+
+,
+
+27017
+
+=
+]
+
+,
+
+"postCreateCommand"
+
+:
+
+"corepack enable || true && (pnpm -v || n=
+pm i -g pnpm) && pnpm i -C backend && pnpm i -C frontend"
+
+,
+
+"customizations"
+
+:
+
+{
+
+"vscode"
+
+:
+
+{
+
+"settings"
+
+=
+
+:
+
+{
+
+"symbi.apiBase"
+
+:
+
+=
+
+"http://localhost:5000"
+
+,
+
+"editor.formatOnSave"
+=
+
+:
+
+=
+
+true
+=
+
+}
+
+,
+
+"extensions"
+
+:
+
+[
+
+"dbaeumer.vscode-eslint"
+
+,
+
+"esbenp.prettier-vscode"
+
+]
+
+}
+
+}
+
+,
+
+"containerEnv"
+
+=
+
+:
+
+{
+
+"NODE_ENV"
+
+:
+
+"development"
+
+,
+
+"SYMBI_MODE"
+
+=
+
+:
+
+"normal"
+
+}
+
+,
+
+"remoteUser"
+
+:
+
+"node"
+
+}
+
+docker-compose.yml
+ (repo root)
+
+yaml
+
+Copy code
+
+version:
+
+"3.9"
+
+services:
+
+workspace:
+
+image:
+
+mcr.microsoft.com/devcontainers/javascr=
+ipt-node:1-18-bullseye
+
+volumes:
+
+-
+
+.:/work
+
+working_dir:
+
+=
+
+/work
+
+command:
+
+sleep
+
+infinity
+
+depends_on:
+
+ =
+[
+
+mongo
+
+]
+
+mongo:
+
+image:
+
+mongo:6
+
+restart:
+
+unless-stopped
+
+ports:
+
+ [
+
+"27017:27017"
+
+]
+
+volumes:
+
+-
+
+mongo-data:/data/db
+
+volumes:
+
+mongo-data:
+
+(Optional) 
+.vscode/tasks.json
+ to run apps inside t=
+he container:
+
+json
+
+Copy code
+
+{
+
+"version"
+
+:
+
+"2.0.0"
+
+,
+
+"tasks"
+
+:
+
+[
+
+{
+
+"label"
+
+:
+
+"backend:dev"
+
+,
+
+"type"
+=
+
+:
+
+=
+
+"shell"
+
+,
+
+"command"
+
+:
+=
+
+"cd backend &&am=
+p; npm run dev"
+
+}
+
+,
+
+{
+
+"label"
+
+:
+
+"frontend:dev"
+
+,
+
+"type"
+
+:
+
+"shell"
+
+,
+
+"command"
+
+:
+
+"cd frontend &=
+;& npm start"
+
+}
+
+]
+
+}
+
+What this gives you (now)
+
+Console webview
+ to your 
+most recent assistant
+ (
+POST /api/assistant/message
+), no provider k=
+eys in IDE.
+
+Ledger tree
+ with 
+recent sessions
+ and a one-click 
+Verify Chain
+.
+
+Status bar
+ shows 
+normal/hibernation/offline
+ from 
+/healthz
+.
+
+Dev Container
+: 1-click consistent Node+Mongo envir=
+onment.
+
+If you want, I can also add:
+
+A tiny 
+settings UI
+ panel to set 
+symbi.apiBase
+ and save the token (inst=
+ead of command palette).
+
+A simple 
+SSE stream
+ viewer to consume 
+/api/llm/stream
+ in the console web=
+view.
+
+A 
+trust chip overlay
+ in the console for disclosure=
+s/pivots pulled from 
+/api/ins=
+ights/timeline
+.
+
+Say the word and I=E2=80=99ll la=
+yer those on.
+
+=
+
+=
+
+You said:
+
+haha and isn

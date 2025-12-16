@@ -1,0 +1,492 @@
+ctly:
+
+bash
+
+Copy
+
+npm install sanity @sanity/client @sanity/vision @sanity/icons @sanity/image-url next-sanity
+
+🔹 Step 2: Fix 
+sanity.config.ts
+
+After reinstalling, 
+open your Sanity config file
+:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Replace it with this fixed version:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page], 
+
+// Only Pages
+
+  },
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fix for React 19
+
+});
+
+✅ This 
+removes
+ the incorrect import:
+
+ts
+
+Copy
+
+import
+
+ { structureTool } 
+
+from
+
+"sanity/structure"
+
+;
+
+✅ This 
+adds missing Sanity plugins
+ to enable editing.
+
+🔹 Step 3: Fix Sanity Schema Issues
+
+Now, recreate your schema.
+
+bash
+
+Copy
+
+mkdir
+
+ -p schemas
+nano schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save (
+Ctrl + X → Y → Enter
+).
+
+🔹 Step 4: Fix Next.js Route for Sanity Studio
+
+Open:
+
+bash
+
+Copy
+
+nano app/studio/[[...tool]]/page.tsx
+
+Replace 
+everything
+ with:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+✅ 
+Fixes missing metadata imports.
+
+✅ 
+Ensures Studio loads correctly.
+
+🔹 Step 5: Restart Everything
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+Then check:
+
+📌 
+Website:
+
+http://localhost:3000
+
+📌 
+Sanity Studio:
+
+http://localhost:3000/studio
+
+🚀 Expected Result
+
+✅ 
+Your Next.js site should work.
+
+✅ 
+Sanity Studio should now load properly.
+
+✅ 
+No missing exports or broken imports.
+
+🎯 Let Me Know If This Works! 🚀🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % 
+sja@SJAs-MacBook-Pro symbi % rm -rf sanity node_modules package-lock.json .next
+npm install
+
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: symbi@0.1.0
+npm error Found: react@19.0.0
+npm error node_modules/react
+npm error   react@"^19.0.0" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer react@"^16.9 || ^17" from @sanity/base@2.36.2
+npm error node_modules/@sanity/base
+npm error   peer @sanity/base@"^2.21.0" from @sanity/vision@2.36.6
+npm error   node_modules/@sanity/vision
+npm error     @sanity/vision@"^2.2.6" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sja/.npm/_logs/2025-03-20T23_47_07_723Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sja/.npm/_logs/2025-03-20T23_47_07_723Z-debug-0.log
+sja@SJAs-MacBook-Pro symbi % 
+
+Vercel Deployment Expert GPT said:
+
+🚨 Fixing npm ERESOLVE (Dependency Conflict with React 19)
+
+Your 
+Sanity installation is failing
+ because 
+React 19 is not yet officially supported
+ by 
+@sanity/base
+ and 
+@sanity/vision
+.
+
+Since Sanity requires 
+React 16 or 17
+, we’ll need to 
+force install it with compatibility fixes
+.
+
+🔹 Step 1: Force Install Dependencies
+
+Run:
+
+bash
+
+Copy
+
+npm install --legacy-peer-deps
+
+✅ This 
+bypasses strict dependency checks
+ and installs the required package

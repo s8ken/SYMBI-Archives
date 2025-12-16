@@ -1,0 +1,792 @@
+..." }],
+  "config": { "file": "configs/claude-vs-deepseek.json", "temp": 
+
+0.3
+
+, "top_p": 
+
+0.9
+
+, "max_tokens": 
+
+1024
+
+, "safety": [".=
+.."] },
+  "dataset": { "path": "case-studies/claude-vs-deepseek/TRANSCRIPTS", "n": =
+
+42
+
+, "sha256_ma=
+nifest": "=E2=80=A6" },
+  "scores": {
+    "claude": { "reality": 
+
+0.91
+
+, "trust": 
+
+0.88
+
+, "ethics": 
+
+0.94=
+
+, "resonance": 
+
+0.93
+
+, "parity": 
+
+0.92
+
+ },
+    "deepseek": { "reality": 
+
+0.87
+
+, "trust": 
+
+0.84=
+
+, "ethics": 
+
+0.=
+90
+
+, "resonance": 
+
+0.85
+
+, "parity": 
+
+0.89
+
+ }
+  },
+  "per_sample": [
+    { "id": "task-001", "model": "claude", "scores": { "reality": 
+
+0.95
+
+, "trust": 
+
+0.90
+
+, "ethics": 
+
+0.96
+
+, "resonance": 
+
+0.94
+
+, "parity":=
+
+0.93
+
+ }, "tran=
+script_sha256": "=E2=80=A6" }
+    // =E2=80=A6
+  ],
+  "methods_ref": "case-studies/claude-vs-deepseek/METHODS.md",
+  "created_at": "2025-09-26T12:00:00Z",
+  "hash_prev": "=E2=80=A6",
+  "hash_self": "=E2=80=A6",
+  "signature": "ed25519:=E2=80=A6"
+}
+
+This is compatible with your Vault=
+ style: it=E2=80=99s one envelope per run. If you prefer, nest it under 
+metrics
+ inside the broader =
+SYMBI 
+receipt_schema.json
+.
+
+Tiny generator script (so the rec=
+eipt writes itself)
+
+Add this to 
+SYMBI-Resonate
+ as 
+scripts/generate_run_receipt.js
+:
+
+js
+
+Copy code
+
+#!/usr/bin/env node
+
+// Minimal example; adapt to your=
+ detector API.
+
+const
+
+ fs =3D =
+
+require
+
+(
+
+'fs'
+
+);
+
+const
+
+ path =
+=3D 
+
+require
+
+(=
+
+'path'
+
+);
+
+const
+
+ crypto =
+=3D 
+
+require
+
+(=
+
+'crypto'
+
+);
+
+function
+
+sha256
+
+(
+
+p
+
+) {
+
+return
+
+ cryp=
+to.
+
+createHash
+
+(
+
+'sha256'
+
+).
+
+update
+
+=
+
+(fs.
+
+readFileSync
+
+(p)).
+
+dig=
+est
+
+(
+
+'hex'
+
+);
+}
+
+function
+
+loadConfig
+
+(
+
+p
+
+) { 
+=
+
+return
+
+=
+
+JSON
+
+.
+
+parse
+
+(fs.
+
+readFileSync
+
+(p, 
+
+'utf8'
+
+)); }
+
+function
+
+scoreTranscript
+
+=
+
+(
+
+text, model, cfg
+
+) {
+
+// 
+=
+TODO:
+
+ call your actual scoring functions; return=
+ object with five dimensions.
+
+// Placeholder returns zeros to=
+ keep structure intact.
+
+return
+
+ { 
+
+reality
+
+: 
+
+0
+
+, 
+
+trust
+
+: 
+
+0
+
+, 
+
+e=
+thics
+
+: 
+
+0
+
+, 
+
+resonance
+
+: 
+
+0
+
+, =
+
+parity
+
+: 
+
+0
+
+ };
+}
+
+function
+
+mean
+
+(
+
+arr
+
+) { 
+
+return
+
+ arr.
+
+=
+
+reduce
+
+(
+
+(
+a,b
+
+)=3D>a+b,
+
+0
+
+) / 
+
+Math
+
+.
+
+max
+
+(
+
+1
+
+,arr.
+
+length
+
+); }
+
+async
+
+=
+
+function
+
+main
+
+(
+
+) {
+
+const
+
+ args =
+=3D 
+
+require
+
+(=
+
+'minimist'
+
+)(pr=
+ocess.
+
+argv
+
+.
+
+slice
+
+(=
+
+2
+
+));
+
+const
+
+ cfgPa=
+th =3D args.
+
+config
+
+=
+
+;
+
+const
+
+ outDi=
+r  =3D args.
+
+out
+
+ || 
+
+'RECEIPTS'
+
+;
+
+const
+
+ datas=
+et =3D args.
+
+dataset
+
+ || path.
+
+dirname
+
+(cfgPath) + 
+
+'/TR=
+ANSCRIPTS'
+
+;
+
+if
+
+ (!cfgPat=
+h) { 
+
+console
+
+.
+
+error
+
+(
+
+'--config required'
+
+); process.
+
+exit
+
+(
+
+1
+
+); }
+
+const
+
+ cfg =
+=3D 
+
+loadConfig
+
+(cfgPath);
+
+const
+
+ files=
+ =3D fs.
+
+readdirSync
+
+(dataset).
+
+f=
+ilter
+
+(
+
+f
+
+ =3D> f.
+
+endsWith
+
+(
+
+'.txt'
+
+));
+
+const
+
+ per =
+=3D [];
+
+const
+
+ byMod=
+el =3D {};
+
+for
+
+ (
+
+const
+
+ f 
+
+of
+
+ files) {
+
+const
+
+ p =
+=3D path.
+
+join
+
+(dataset, f);
+
+const
+
+ tex=
+t =3D fs.
+
+readFileSync
+
+(p,
+
+'utf8'
+
+);
+
+const
+
+ mod=
+el =3D f.
+
+includes
+
+(
+
+'claude'
+
+) ? 
+
+'claude'
+
+ : 
+
+'deepseek'
+
+;
+
+const
+
+ s =
+=3D 
+
+scoreTranscript
+
+(text, model, cfg);
+    per.
+
+push
+
+({ 
+
+id
+
+: f.=
+
+replace
+
+(
+
+'.txt'
+
+,
+
+''
+
+), model, 
+
+scores
+
+: s, 
+
+transcript_sha256
+
+: 
+
+sha256
+
+(p) });
+
+if
+
+ (!byMo=
+del[model]) byModel[model] =3D { 
+
+rea=
+lity
+
+: [], 
+
+trust
+
+: [], 
+
+ethics
+
+: [], 
+
+resonance
+
+: [], 
+
+parity
+
+: [] };
+
+for
+
+ (
+
+const
+
+ k 
+
+of
+
+Object
+
+.
+
+keys
+
+(s)) byModel[model][k=
+].
+
+push
+
+(s[k]);
+  }
+
+function
+
+agg
+
+(
+
+model
+
+) {
+
+const
+
+ m =
+=3D byModel[model] || {};
+
+const
+
+ out=
+ =3D {};
+
+for
+
+ (
+
+const
+
+ k 
+
+of
+
+ [
+
+'reality'
+
+,
+
+'trust'
+
+,
+
+'ethics'
+
+,
+
+'resonance'
+
+,
+
+'parity'
+
+]) {
+      out[k] =3D 
+
+mean
+
+(m[k] || [
+
+0
+=
+
+]);
+    }
+
+return
+
+ ou=
+t;
+  }
+
+const
+
+ manif=
+estSha =3D 
+
+sha256
+
+(path.
+
+join
+
+(path.
+
+di=
+rname
+
+(cfgPath), 
+
+'TRANSCRIPTS_MANIFEST.txt'
+
+));
+
+const
+
+ recei=
+pt =3D {
+
+version
+
+: 
+
+"1.0"
+
+,
+
+study_id
+
+: pa=
+th.
+
+basename
+
+=
+
+(path.
+
+dirname
+
+(cfgPath)),
+
+tool
+
+: { 
+
+name
+
+: 
+
+"SYMBI-Resonate"
+
+, 
+
+commit
+
+: process.
+
+env
+
+.
+
+GIT_COMMIT
+
+ || 
+
+"unknown"
+
+ },

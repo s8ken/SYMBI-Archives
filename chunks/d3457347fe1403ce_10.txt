@@ -1,0 +1,394 @@
+ustDeclaration"
+],
+
+"issuer"
+: 
+"did:web:trust.symbi.example"
+,
+
+"issuanceDate"
+: 
+"2025=
+-10-05T00:00:00Z"
+,
+
+"expirationDate"
+: 
+"2026-10-05T00:00:00=
+Z"
+,
+
+"credentia=
+lSubject"
+: {
+
+"id"
+: 
+"did:web:agents.symbi.example#agent-1=
+23"
+,
+
+"agentN=
+ame"
+: 
+"Symphony Orchestrator"
+,
+
+"pillars"
+: {
+=
+
+"inspection_mandate"
+: 
+0.92
+,
+
+   =
+
+"consent_architecture"
+: 
+0.95
+,
+
+"ethical_override"
+: 
+0.88
+,
+=
+
+"continuous_validation=
+"
+: 
+0.90
+,
+
+=
+
+"right_to_disconnect"
+: 
+0.86
+,
+
+"moral_recognition"
+: 
+0.84
+
+=
+
+    },
+
+"policyVersion"
+: 
+"trust-1.3.0"
+
+  },
+
+"credentialStatus"
+: {
+
+"id"
+: 
+"https://=
+trust.symbi.example/status/1#list"
+,
+
+    =
+
+"type"
+: 
+"StatusList2=
+021Entry"
+,
+
+"=
+statusPurpose"
+: 
+"revocation"
+,
+
+"statusListIndex"
+: =
+
+"12345"
+,
+
+"statusListCredential"
+: 
+"https://trust.symbi.example/status/1"
+
+=
+  },
+
+"proof"
+: =
+{
+
+"type"
+: 
+"Ed25519Signature2020"
+,
+
+"created"
+: 
+"2025-10-05T00:00:00Z"
+,
+
+"verificationMethod"
+: 
+"did:web:=
+trust.symbi.example#auth-1"
+,
+
+"proofPurpose"
+: 
+"assertionM=
+ethod"
+,
+
+"pro=
+ofValue"
+: 
+"zExampleSignature"
+
+=
+
+B4. StatusList2021 (revocation list excerpt)
+
+{
+
+=
+"@context"
+: [
+"https://www.w3.org/2018/creden=
+tials/v1"
+, 
+"https://w3id.org/vc/status-list/=
+2021/v1"
+],
+
+"id=
+"
+: 
+"https://trust.symbi.example/status/1"
+,
+
+"type"
+: =
+[
+"VerifiableCredential"
+, 
+"StatusList2021Credential"
+],
+
+"issuer"
+: 
+"did:web:trus=
+t.symbi.example"
+,
+
+"credentialSubject"
+: {
+
+"id"
+: 
+"https://trust.symbi.=
+example/status/1#list"
+,
+
+"type"
+: 
+"StatusList2021"
+=
+,
+
+"statusPurpose"
+: 
+"revocation"
+,
+
+"encodedList"
+: 
+"H4sIAAAAA...base64url..."
+
+  },
+
+"proof"
+: {
+"type"
+:
+"Ed25519Signature20=
+20"
+,
+"created"
+:
+"2025-10-05T00:00:00Z"
+,
+"verificationMethod"=
+
+:
+"did:web:trust.symbi.example#auth-1"
+=
+,
+"proofPurpose"
+:
+"ass=
+ertionMethod"
+,
+"proofValue"
+:
+"zExampleSignature"
+}
+
+}
+
+=
+
+Note:=
+
+ Replace placeholders with generated keys; maintain d=
+eterministic field ordering for signature stability.
+
+C. Pilot Runbook Checkl=
+ist (v0.9)
+
+Roles
+
+: Pilot L=
+ead (PL), Security (SEC), Platform Eng (PE), Partner Eng (PEN), Compliance =
+(COMP).
+
+Pre=E2=80=91flight (T=E2=80=917 to T=E2=
+=80=911 days)
+
+Day 0 (Launch=
+)
+
+Operations (Daily)
+=
+
+Incident Playbooks
+
+Key compromise
+
+: rotate, re=E2=80=91issue DID VM, invalidate prior proofs, no=
+tify tenants, post=E2=80=91mortem within 48h.
+
+Resolution outage
+
+: switch to offline cache; se=
+rve stale=E2=80=91while=E2=80=91revalidate; rate=E2=80=91limit external res=
+olution.
+
+Score gaming
+
+: throttle attestations; raise issuer reputation thresholds; manual rev=
+iew queue.
+
+Exit Criteria
+
+D. Int=
+elliJ IDEA Implementation Notes
+
+Run configs
+
+: create npm run configs fo=
+r 
+
+dev
+
+, 
+
+test:unit
+
+, 
+
+test:prop
+
+, 
+
+lint
+
+, 
+
+crypto:vectors
+
+.
+
+File templates
+
+: JSON=E2=80=91LD VC, DID doc, StatusList; TypeScript int=
+erfaces for 
+
+TrustScore
+
+, 
+
+AuditEvent
+
+.
+
+=
+Live Templates
+
+: 
+
+vcDecl
+
+, 
+
+didWeb
+
+, 
+
+auditEvent
+
+ snippets pre=E2=80=91filled with required f=
+ields.
+
+Inspections
+
+: enable JSON schema validation against VC/DID contexts; ESLint for determ=
+inistic key ordering.
+
+AI prompts
+=
+
+: =E2=80=9CRefactor to deterministic field order and pure fu=
+nctions=E2=80=9D, =E2=80=9CGenerate property=E2=80=91based tests for monoto=
+nic penalties=E2=80=9D.
+
+Drop these=
+ fixtures into 
+
+/fixtures/
+
+ and wire s=
+chema checks into CI to keep IntelliJ=E2=80=99s quick=E2=80=91fixes aligned=
+ with repository rules.
+
+All three pieces are live in the canvas=E2=80=
+=94Controls Matrix, DID/VC fixtures, and a Pilot Runbook checklist=E2=80=94=
+plus IntelliJ-specific notes to speed you up in IDEA.
+
+Want me to also add:
+
+JSON Schemas for the VC/DID/AuditEve=
+nt (so IDEA validates as you type),
+
+a 
+pnpm
+-based monorepo script set,
+
+or property-b=
+ased test scaffolds (fast-check) for the scoring module?
+
+=
+
+=
+
+You said:
+
+lets wait unti=
+l that work gets finished but taks for today are for me to update the provi=
+sional patent for the trust framework that I filed for a few months ago wit=
+h updated do

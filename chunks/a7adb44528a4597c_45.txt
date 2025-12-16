@@ -1,0 +1,105 @@
+ve clinical pivots=
+.
+9) Privacy, Consent, Governance
+Consent Objects per artifact; default to notify_only for indirect disclosur=
+es.
+Redaction pipeline for PII in prompts/responses stored.
+Encryption at rest (pgcrypto) + hash=E2=80=91chain integrity.
+Data Retention policy per org (e.g., 90 days by default).
+10) Prototype Build Plan (Concrete)
+Week 1=E2=80=932
+
+Scaffold FastAPI + Postgres + Redis + Next.js.
+Implement /events, /ledger, basic dashboard timeline.
+Week 3=E2=80=934
+
+Heuristic classifier + disclosure detector.
+Change=E2=80=91point (CUSUM) service; flag events.
+Guardrails Engine v0 (apology + scope alignment).
+Week 5=E2=80=936
+
+LLM Judge integration + weighted vote.
+Context Capsules in SDK; minimal RAG for preferences.
+Metrics dashboard + export to PDF/markdown.
+11) Example: SDK Wrapper (pseudo=E2=80=91Python)
+from symbi import SymbiClient
+
+symbi =3D SymbiClient(api_key=3DSYMBI_KEY)
+
+ctx =3D symbi.get_context_capsule(session_id)
+
+draft =3D call_model(prompt, system=3Dctx.to_system_prompt())
+
+signals =3D symbi.analyze_turn(session_id, prompt, draft)
+final =3D symbi.apply_guardrails(draft, signals, scope=3D"creative")
+
+symbi.log_event(session_id,
+    prompt=3Dprompt,
+    response=3Dfinal,
+    metadata=3D{"system_prompt_hash": ctx.hash},
+    analysis=3Dsignals)
+
+return final
+12) Datasets for Bootstrapping
+Use your archived transcripts to hand=E2=80=91label ~500 segments for (stan=
+ce, register, apology_presence, continuity_cue).
+Augment with synthetic pairs (same prompt with/without disclosure cue) to t=
+est bias deltas.
+13) Future (v1+)
+Cryptographic transparency: Merkle proofs for public case studies.
+User=E2=80=91controlled memories: portable memory profiles across vendors.
+Adaptive safeguards: learn the user=E2=80=99s preferred apology/continuity =
+style.
+14) Risks & Mitigations
+Over=E2=80=91correction (too many apologies): throttle via cool=E2=80=91dow=
+n and user feedback.
+Privacy leakage: strict scope for indirect disclosures (notify first; don=
+=E2=80=99t reframe without consent).
+Model drift: store system prompt hashes; highlight vendor changes on timeli=
+ne.
+Outcome: With this blueprint, we can implement a runnable prototype that (1=
+) remembers, (2) detects biased pivots, and (3) responds with relationally =
+safe guardrails=E2=80=94turning ruptures into accountable, transparent coll=
+aboration.
+
+Here=E2=80=99s the SYMBI MVP scaffold wired into your existing stack, plus =
+the OpenAI updates you requested.
+
+New APIs
+
+Events
+POST /api/events: Ingest an interaction event, auto-analyzes (heuristics), =
+writes append-only ledger entry with hash-chain.
+GET /api/ledger?session_id=3D...&page=3D&limit=3D&since_row_has=
+h=3D: Fetch ledger stream, paginated; supports =E2=80=9Csince=E2=80=9D anch=
+or by row hash.
+GET /api/events/ledger?session_id=3D...: Same as above (alias under events)=
+.
+Analysis
+POST /api/analyze/turn: Heuristic labels for a single turn (optionally uses=
+ last N ledger events for context).
+Guardrails
+POST /api/guardrails/apply: Applies apology + continuity + scope alignment;=
+ returns final_response and actions.
+Insights
+GET /api/insights/timeline?session_id=3D...: Returns detected change points=
+ with short evidence windows.
+Data & Ledger
+
+Model InteractionEvent with analysis and hash chain
+File: backend/models/interactionEvent.model.js:1
+Fields: session_id, user, model_vendor, model_name, prompt, response, analy=
+sis, embeddings, ledger:{prev_hash,row_hash,signature}.
+Append=E2=80=91only: Updates/deletes blocked at schema level.
+Hash chain: row_hash =3D sha256(canonical(payload + prev_hash)).
+Optional signing: Ed25519 signature if LEDGER_SIGNING_KEY (PEM) is set.
+Hash utils
+Canonical JSON and signing helpers.
+File: backend/utils/hash.js:1
+Heuristic Detection (v0)
+
+Service analysis.service.js implements:
+Sentiment, formality, clinical register, emoji count, hedging, politeness.
+Stance: co_creator | evaluator | gatekeeper | neutral.
+Disclosure flags (direct/indirect heuristics).
+Change-point score us

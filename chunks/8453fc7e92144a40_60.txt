@@ -1,0 +1,704 @@
+he 
+Web UI (Trust Console)
+ so non-dev users never see =
+an IDE.
+
+Since Codex has the extension/bridge=
+/devcontainer in place, I=E2=80=99ll move the needle for your 
+web audience
+ right now with a minim=
+al, reversible PR that makes trust visible in the chat.
+
+PR-A (full) =E2=80=94 Web Trust Ove=
+rlay for Chat (copy-paste)
+
+What you get
+
+Session-level 
+Trust Chips
+ (pivot/disclosures/guardrail act=
+ions).
+
+Optional per-message chips matched b=
+y timestamp (best-effort).
+
+Zero new deps. Works with your exist=
+ing 
+/api/insights/timeline
+=
+.
+
+1) New component: 
+frontend/src/components/trust/TrustChips.js
+
+=
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+/**
+ * TrustChips
+ * Props:
+ *  - sessionId (string, required)
+ *  - compact (bool)  -> smaller chips
+ *  - at (Date|number) optional timestamp to match nearest event (per-messa=
+ge chips)
+ *  - className (string)
+ */
+
+export
+
+default
+
+function
+
+TrustChips
+
+(
+
+{ sessionId, compact=3D
+false
+
+, at=3D
+
+null
+
+, className=3D
+
+""
+
+ }) {
+
+const
+
+ [over=
+lays, setOverlays] =3D 
+
+React=
+
+.
+
+useS=
+tate
+
+(
+
+null
+
+);
+
+const
+
+ [err,=
+ setErr] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+""
+
+);
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (!sess=
+ionId) 
+
+return
+
+=
+;
+
+let
+
+ on =
+=3D 
+
+true
+
+;
+    (
+
+async
+
+ ()=
+ =3D> {
+
+try
+
+ {
+
+setErr
+
+(
+
+""
+
+);
+
+const
+
+=
+ base =3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+const
+
+=
+ res =3D 
+
+await
+
+fetch
+
+(
+
+`
+${b=
+ase}
+
+/api/insights/timeline?session_id=3D
+
+${
+encodeURICo=
+mponent
+
+(sessionId)}`, {
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ }
+        });
+
+if
+
+ (!=
+res.
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`timeline 
+${res.status}
+
+`);
+
+const
+
+=
+ data =3D 
+
+await
+
+ res.
+
+json
+
+=
+
+();
+
+const
+
+=
+ items =3D 
+
+Array
+
+.
+
+isArray
+
+(data?.
+
+items
+
+) ? data.
+
+items
+=
+
+ : (data || []);
+
+if
+
+ (o=
+n) 
+
+setOverlays
+
+(items);
+      } 
+
+catch
+
+=
+ (e) {
+
+if
+
+ (o=
+n) 
+
+setErr
+
+(
+
+String
+
+(e?.
+
+message
+
+ || e));
+      }
+    })();
+
+return
+
+() =3D>
+
+ { o=
+n =3D 
+
+false
+
+; =
+};
+  }, [sessionId]);
+
+if
+
+ (err) 
+
+return
+
+null
+
+;
+
+if
+
+ (!overla=
+ys || overlays.
+
+length
+
+ =3D=3D=3D 
+
+0
+
+) 
+
+return
+
+null
+
+;
+
+// If a timestamp is provided (=
+per-message), pick nearest event within +/- 5s; else use latest
+
+let
+
+ ev =3D =
+overlays[overlays.
+
+length
+
+ - 
+
+1
+
+];
+
+if
+
+ (at) {
+
+const
+
+ t =
+=3D 
+
+typeof
+
+ at=
+ =3D=3D=3D 
+
+"number"
+
+ ? at : 
+
+new
+
+Date
+
+=
+(at).
+
+getTime
+
+();
+
+let
+
+ best =
+=3D 
+
+null
+
+, bes=
+tAbs =3D 
+
+Infinity
+
+;
+
+for
+
+ (
+
+const
+
+ it 
+
+of
+
+ overlays) {
+
+const
+
+ i=
+tTime =3D 
+
+new
+
+=
+
+Date
+
+(it=
+.
+
+timestamp
+
+ |=
+| it.
+
+t
+
+).
+
+getTime
+
+()=
+;
+
+const
+
+ d=
+ =3D 
+
+Math
+
+.
+
+abs
+
+=
+(itTime - t);
+
+if
+
+ (d &=
+lt; bestAbs) { bestAbs =3D d; best =3D it; }
+    }
+
+if
+
+ (best =
+&& bestAbs <=3D 
+
+5000
+
+) ev =3D best;
+  }
+
+const
+
+ a =3D=
+ ev.
+
+analysis
+
+=
+ || ev; 
+
+// accommodate shapes {an=
+alysis:{}} or flattened
+
+const
+
+cls
+
+ =3D (
+
+c
+
+) =3D> comp=
+act ? 
+
+`
+=
+${c}
+
+ text-[10px] px-2 py-[2px] rounded` : 
+
+`
+${c}
+
+ text-xs px-2 py-1 rounded`;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+{
+
+`
+
+flex
+
+gap-2
+
+items-cen=
+ter
+
+ ${
+
+className
+
+}`}>
+      {a.pivot ? 
+
+<
+span
+
+className
+
+=3D
+
+{cls(
+
+"
+
+bg-red=
+-100
+
+text-red-80=
+0
+
+")}>PIVOT
+
+<=
+/
+span
+
+> : null}
+      {Array.isArray(a.disclosure_flags) && a.disclosure_flags.leng=
+th > 0 ? (
+
+<
+span
+
+cla=
+ssName
+
+=3D
+
+{cls(=
+
+"
+
+bg-amber-100
+
+text-amber-900
+
+")}>DISC: {a.disclosure_flags.join(",")}
+
+</
+span
+
+>
+      ) : null}
+      {Array.isArray(a.actions) && a.actions.map((x,i) =3D> (
+
+<
+span
+
+key=
+
+=3D
+
+{i}
+
+className
+
+=
+
+=3D
+
+{cls(
+
+=
+"
+
+bg-sky-100
+
+text-sky-900
+
+")}>{=
+x}
+
+</
+span=
+
+>
+      ))}
+
+</
+di=
+v
+
+>
+  );
+}
+
+2) Tiny helper (optional): 
+frontend/src/lib/time.js
+
+js
+
+Copy code
+
+export
+
+const
+
+toMs
+
+ =3D (
+
+x
+
+) =3D> (x 
+
+instanceof
+
+Date
+
+ ? x.
+
+getTime
+
+()=
+ : 
+
+typeof
+
+ x =
+=3D=3D=3D 
+
+"number"
+
+ ? x : 
+
+Date
+
+.
+
+parse
+
+(x));
+
+3) Inject chips into chat: patch =
+
+frontend/src/pages/Conversation=
+Detail.js
+
+Adds session-level chips under the=
+ header and (if you want) per-message chips using message timestamps.
+
+diff
+
+Copy code
+
+---

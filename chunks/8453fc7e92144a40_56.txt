@@ -1,0 +1,379 @@
+length
+
+ - 
+
+1
+
+];
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"flex gap-2 mt-2 text-xs"
+
+>
+      {latest.pivot && 
+
+<
+span
+
+className
+
+=3D
+
+"px-2 py-1 bg-red-100 rounded"
+
+>PIV=
+OT
+
+</
+span=
+
+>}
+      {latest.disclosures?.length ? 
+
+&=
+lt;
+span
+
+className
+
+=3D
+
+"px-2 py-1 bg-amber-100 rounded"
+
+=
+>DISC: {latest.disclosures.join(',')}
+
+</
+span
+
+> : nul=
+l}
+      {latest.actions?.map((a:string)=3D>
+
+<
+span
+
+key
+
+=3D
+
+{a}
+
+className
+
+=3D
+
+"px-2 py-1 bg-sky-100 rounded"
+
+>{a}
+
+</
+span
+=
+
+>)}
+
+</
+di=
+v
+
+>
+  );
+}
+
+=E2=80=9CEmbed kit=E2=80=9D (let =
+others show trust chips anywhere)
+
+html
+
+Copy code
+
+<!-- Include once --&g=
+t;
+
+<
+script
+
+>
+
+async
+
+function
+
+renderSymbiChips
+
+(
+
+el, base, sessionId
+
+){
+
+const
+
+ r =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}
+
+/public/sessions/
+
+${
+encodeURIComponent
+
+(sessionId)}/ledger`);
+
+const
+
+ { i=
+tems=3D[] } =3D 
+
+await
+
+ r.
+
+json
+
+();
+
+const
+
+ las=
+t =3D items[items.
+
+length
+
+-
+
+1
+
+=
+] || {};
+
+const
+
+ a =
+=3D last.
+
+analysis
+
+ || {};
+    el.
+
+innerHTML
+
+ =3D 
+`
+      <span style=3D"padding:4px 8px;border-radius:12px;background:#fee;=
+">
+
+${a.pivot ? 
+'PIVOT'
+
+ : 
+
+'STABLE'
+
+}</span>
+
+${a.disclosure_flags?.length =
+? 
+`<span style=3D"padding:4px 8px;border-rad=
+ius:12px;background:#ffd;">DISC: 
+${a.disclosu=
+re_flags.join(
+','
+
+)}</span>` : 
+
+''
+
+}
+    `;
+  }
+
+</
+script=
+
+>
+
+<
+div
+
+id
+
+=3D
+
+"symbi-chips"
+
+>
+
+</
+div
+
+>
+
+<
+script
+
+>
+
+renderSymbiChips=
+
+(
+
+d=
+ocument
+
+.
+
+getElementById
+
+(
+
+'symbi-chips'
+
+), 
+
+'https://api.symbi.world'
+
+, 
+
+'SESSION-UUID-HERE'
+
+);
+
+</
+script=
+
+>
+
+Governance & safety
+
+Read-only public surface
+: no write routes under 
+/public
+.
+
+Rate limit
+ public endpoints; cache GET responses with =
+ETags/
+Cache-Control
+.
+
+Signature
+: keep your existing 
+/verify
+ (hash-chain) to prove integrity.
+
+Hibernation
+: if 
+SYMBI_MODE=3Dhibernation
+, keep 
+/public
+ readable but stop streams (or label =E2=80=9Cpa=
+used=E2=80=9D).
+
+Docs
+: generate a small Mintlify/Nextra site with Quick=
+starts + embed snippets (mirroring the Mobula pattern). 
+
+docs.mobula.io
+
+If you literally want Mobula inte=
+gration
+
+Mobula is a 
+crypto/Web3 data provider
+. It=E2=80=99s re=
+levant 
+only
+ if the i=
+dea output includes on-chain assets (tokens, wallets, prices). Then:
+
+Enrich idea pages with on-chain st=
+ats (prices, balances, unlocks) via their REST/Streams. 
+
+docs.mobula.io
+
+Otherwise, 
+use the pattern
+, not the provider.
+
+Choose your next move
+
+=E2=80=9C
+Ship the public API & Explorer
+=E2=80=9D =
+=E2=86=92 I=E2=80=99ll package 
+=
+/public/*
+ routes + the Next.js page.
+
+=E2=80=9C
+Docs it
+=E2=80=9D =E2=86=92 I=E2=80=99ll scaff=
+old a Mintlify (or Nextra) docs skeleton with examples and the embed kit.
+
+Either way, you get a 
+Mobula-style, API-first output surface
+ for ideas and trust=E2=80=94distinct from the IDE client, and fit fo=
+r any audience.
+
+=
+
+=
+
+Sources
+
+You said:
+
+lets park that for the moment and come =
+right back to it as this is from Coex: What I Added
+
+VS Code Extension: Thin client with chat webview, ledger tree, status bar, =
+settings
+symbi-vscode-extension/package.json
+symbi-vscode-extension/tsconfig.json
+symbi-vscode-extension/src/extension.ts
+symbi-vscode-extension/src/net.ts
+symbi-vscode-extension/src/ledgerView.ts
+symbi-vscode-extension/src/webviewHtml.ts
+symbi-vscode-extension/.vscodeignore
+Dev Container: Reproducible Node+Mongo environment
+.devcontainer/devcontainer.json
+.devcontainer/docker-compose.dev.yml
+.vscode/tasks.json
+Bridge Orchestrator (server-side, =E2=80=9CSYMBI Bridge=E2=80=9D)
+backend/bridge/bridge.config.yaml
+backend/services/ledger.service.js
+backend/services/llm.util.js
+backend/services/bridge.service.js
+backend/controllers/bridge.controller.js
+backend/routes/bridge.routes.js
+backend/app.js: added app.use('/api/bridge', bridgeRoutes);
+How It Works
+
+Extension
+Console: sends POST /api/assistant/message from a webview (no vendor keys i=
+n IDE).
+Ledger View: lists sessions from /api/sessions/recent; verify via /api/ledg=
+er/verify.
+Status Bar: polls /healthz for normal/hibernation/offline.

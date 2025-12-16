@@ -1,0 +1,497 @@
+ations of:
+
+Names
+ (
+female_names.txt
+, 
+male_names.txt
+, 
+surnames.txt
+)
+
+Common words
+ (
+english_wikipedia.txt
+)
+
+Numbers
+ (common patterns like years, sequences, and repeated digits)
+
+I'll create variations such as:
+
+Name + Number
+ → 
+Emma123
+, 
+Smith1980
+
+Word + Symbol
+ → 
+Football!
+, 
+Sunshine#
+
+Popular Phrases
+ → 
+ILoveYou1
+, 
+TrustNo1
+
+Leetspeak Replacements
+ (
+a
+ → 
+@
+, 
+e
+ → 
+3
+, etc.) → 
+P@ssw0rd
+
+Let me generate the list now.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ random
+
+import
+
+ itertools
+
+# Load words from the datasets
+
+def
+
+load_wordlist
+
+(
+
+filepath, max_words=
+1000
+
+):
+
+with
+
+open
+
+(filepath, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ f:
+        words = f.read().splitlines()
+
+return
+
+ words[:max_words]  
+
+# Limit for performance
+
+# Load data from name and word lists
+
+female_names = load_wordlist(
+
+"/mnt/data/female_names.txt"
+
+, 
+
+500
+
+)
+male_names = load_wordlist(
+
+"/mnt/data/male_names.txt"
+
+, 
+
+500
+
+)
+surnames = load_wordlist(
+
+"/mnt/data/surnames.txt"
+
+, 
+
+500
+
+)
+common_words = load_wordlist(
+
+"/mnt/data/english_wikipedia.txt"
+
+, 
+
+500
+
+)
+
+# Common number patterns
+
+common_numbers = [
+
+"123"
+
+, 
+
+"321"
+
+, 
+
+"007"
+
+, 
+
+"666"
+
+, 
+
+"777"
+
+, 
+
+"999"
+
+, 
+
+"111"
+
+, 
+
+"2024"
+
+, 
+
+"1990"
+
+, 
+
+"1987"
+
+, 
+
+"2000"
+
+]
+
+# Generate variations
+
+generated_passwords = 
+
+set
+
+()
+
+# Name-based variations
+
+for
+
+ name 
+
+in
+
+ itertools.chain(female_names, male_names, surnames):
+
+for
+
+ num 
+
+in
+
+ common_numbers:
+        generated_passwords.add(
+
+f"
+{name}
+
+{num}
+
+")
+        generated_passwords.add(
+
+f"
+{num}
+
+{name}
+
+")
+
+# Common word variations
+
+for
+
+ word 
+
+in
+
+ common_words:
+
+for
+
+ num 
+
+in
+
+ common_numbers:
+        generated_passwords.add(
+
+f"
+{word}
+
+{num}
+
+")
+        generated_passwords.add(
+
+f"
+{num}
+
+{word}
+
+")
+
+# Symbol variations
+
+symbols = [
+
+"!"
+
+, 
+
+"@"
+
+, 
+
+"#"
+
+, 
+
+"$"
+
+, 
+
+"%"
+
+, 
+
+"*"
+
+]
+
+for
+
+ word 
+
+in
+
+ itertools.chain(female_names, male_names, common_words):
+
+for
+
+ symbol 
+
+in
+
+ symbols:
+        generated_passwords.add(
+
+f"
+{word}
+
+{symbol}
+
+")
+        generated_passwords.add(
+
+f"
+{symbol}
+
+{word}
+
+")
+
+# Leetspeak replacements
+
+leet_map = 
+
+str
+
+.maketrans(
+
+"aeios"
+
+, 
+
+"@310$"
+
+)
+
+for
+
+ word 
+
+in
+
+ itertools.chain(female_names, male_names, common_words):
+    generated_passwords.add(word.translate(leet_map))
+
+# Output a sample of generated passwords
+
+list
+
+(generated_passwords)[:
+
+20
+
+]
+
+Result
+
+['process1987',
+ 'women@',
+ '$h3ld0n',
+ '666tonya',
+ 'christie2000',
+ 'marla007',
+ '999darrin',
+ 'ted1990',
+ '111palmer',
+ 'lucy777',
+ 'palmer1990',
+ '123lonnie',
+ '123road',
+ 'sandra*',
+ 'kristy1987',
+ 'holmes123',
+ 'fischer999',
+ '!education',
+ 'before!',
+ 'bill777']
+
+Generated Password Variations
+
+Here are some 
+possible password variations
+ based on the word lists:
+
+Names + Numbers
+:
+
+ted1990
+, 
+christie2000
+, 
+lucy777
+, 
+marla007
+
+Surnames + Numbers
+:
+
+holmes123
+, 
+palmer1990
+, 
+fischer999
+, 
+111palmer
+
+Common Words + Symbols
+:
+
+before!
+, 
+!education
+, 
+women@
+, 
+sandra*
+
+Leetspeak Conversions
+:
+
+$h3ld0n
+ (from "sheldon")
+
+These are just a few examples—I can generate 
+more complex variations
+ if needed.
+
+Would you like me to 
+check these against the password list
+ or refine them further? 🔍 
+
+You said:
+
+what about 24 word pass phrases? 
+
+ChatGPT said:
+
+If you're looking for 
+24-word passphrases
+, these are commonly used in 
+crypto wallets
+ (like Bitcoin or Ethereum recovery phrases). These typically follow 
+BIP39
+ standards, which use a predefined list of 2,048 words.
+
+Since your dataset contains 
+large wordlists
+, I can generate 
+randomized 24-word passphrases
+ based on:
+
+Common words
+ (
+english_wikipedia.txt
+)
+
+Names & surnames
+ (
+female_names.txt
+, 
+male_names.txt
+, 
+surnames.txt
+)
+
+Other thematic words
+ (
+us_tv_and_film.txt
+)
+
+Would you like me to:
+
+Generate 24-word phrases from your dataset
+ (random but human-readable)?
+
+Check if any 24-word sequences appear in the provided files
+ (possible passphrase match)?
+
+Let me know how you'd like to proceed! 🔍
+
+You said:
+
+I believe ruby

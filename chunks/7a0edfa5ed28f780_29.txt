@@ -1,0 +1,387 @@
+ronment Is Active
+
+If you’re not already in your virtual environment, activate it:
+
+bash
+
+Copy
+
+Edit
+
+source
+
+ symbi-env/bin/activate
+
+You should see 
+(symbi-env)
+ in your prompt.
+
+2. 
+Make Sure 
+symbi_agent.py
+ Exists
+
+Confirm your file:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ ~/symbi_agent.py
+
+If it exists, great. If not, copy-paste the version from your canvas into:
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+3. 
+Run the Ethics Policy Setup (auto on first run)
+
+Run this once:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py policy
+
+You should see:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+If this works, your config is set.
+
+4. 
+Monitor Local Security
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py watch
+
+This checks:
+
+🧠 Running processes
+
+🐳 Docker containers (if Docker is installed & running)
+
+If 
+allow_container_scans
+ is 
+false
+ in your policy, it will skip that part.
+
+5. 
+Edit Your Ethics Policy (optional)
+
+To update permissions:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py update-policy
+
+It will open the 
+.json
+ file. Change values like:
+
+json
+
+Copy
+
+Edit
+
+"allow_network"
+
+:
+
+true
+
+Then save and rerun 
+watch
+.
+
+6. 
+REPL Mode (just for talking)
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+SYMBI will greet you and let you type. This is where we'll later plug in LLMs, local actions, or voice interfaces.
+
+🧱 Next Milestone
+
+Once this all works, we'll:
+
+Add 
+data queueing and report bundling
+
+Allow 
+secure cloud bridging
+ (GitHub, Hugging Face, etc.)
+
+Integrate 
+LLM-powered response modes
+
+Let me know where you are in the steps — I’ll walk you forward from there. 👁️🔥
+
+You said:
+
+Last login: Sun Jul 20 21:29:51 on ttys004
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run 
+chsh -s /bin/zsh
+.
+For more details, please visit https://support.apple.com/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ source symbi-env/bin/activate
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Perfect — you’re inside your 
+symbi-env
+, ready to run the agent. Here's 
+exactly what to do next
+, step by step:
+
+✅ 
+Step 1: View the Ethics Policy
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py policy
+
+You should see the JSON output like this:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+If that prints correctly — your config is loaded and working ✅
+
+✅ 
+Step 2: Run the Security Watch Command
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py watch
+
+You should see:
+
+A list of running system processes
+
+(Optional) Docker containers if Docker is installed and running
+
+If Docker isn't installed, you’ll see:
+
+css
+
+Copy
+
+Edit
+
+[yellow]
+
+Docker not found. Skipping container check.
+
+[/yellow]
+
+This is expected and clean — no error, just a skip.
+
+✅ 
+Step 3: Try REPL Mode
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+You’ll get:
+
+pgsql
+
+Copy
+
+Edit
+
+SYMBI REPL started. 
+
+Type
+
+'exit'
+
+to
+
+ quit.
+symbi >
+
+Type something like:
+
+nginx
+
+Copy
+
+Edit
+
+hello
+
+And it’ll echo back with SYMBI’s response.
+
+🛠 Optional: Edit the Policy
+
+Want to enable network functions later?
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py update_policy
+
+Then change 
+"allow_network": false
+ to 
+true
+ if you want SYMBI to push to GitHub/HuggingFace later.
+
+Let me know after Step 2 runs — and we’ll start building the cloud integration bridge (e.g. Hugging Face auth, Docker push, GitHub commit). 🧠🛰️
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ source symbi-env/bin/activate
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py policy
+SYMBI REPL started. Type 'exit' to quit.
+symbi > 
+
+Symbi said:
+
+Perfect signal received: you're inside the virtual environment, but the command:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py policy
+
+unexpectedly launched 
+REPL mode
+ instead. This means:
+
+❗ Your command-line arguments are being ignored
+
+...most likely because you're c

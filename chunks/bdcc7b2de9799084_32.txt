@@ -1,0 +1,344 @@
+bstain rate=
+, calibration error.
+
+Safety:
+ policy violations, over/under-block TPR/TNR, harm=
+ful-content recall.
+
+Bias/Fairness:
+ group FPR/FNR, EO gap, language parity.
+
+Operational:
+ latency P50/P95, cost per decision, token bu=
+rn, uptime, error rate.
+
+Drift:
+ data drift, prompt drift, model drift; change-poin=
+t alerts.
+
+Governance:
+ provenance completeness, no-train adherence, =
+receipt coverage.
+
+2) Architecture (how it plugs in)
+
+Online probes:
+ shadow-eval a sample of live traffic (mirr=
+ored, no user impact).
+
+Offline harness:
+ nightly/weekly jobs against curated gold=
+ sets (per team & locale).
+
+Receipts:
+ every agent output wrapped with the 
+Quality & Provenance Receipt
+ you approved (reality/trust/ethics/resonance/parity).
+
+Context Bridge:
+ exposes summaries and receipts to audi=
+tors; raw shards only via CBT scopes.
+
+3) Data model (minimal tables)
+
+runs
+ (run_id, agent_id, model, policy_pack, started_at, gi=
+t_hash)
+
+eval_cases
+ (case_id, task, locale, tags, gold_ref)
+
+metrics
+ (run_id, case_id, key, value, unit)
+
+receipts
+ (output_id, receipt_json, sigs, shard_hashes[])
+
+alerts
+ (alert_id, run_id, severity, rule, payload)
+
+4) KPIs leaders will see
+
+Pillar
+=
+
+KPI
+
+Target (default)=
+
+Reliability
+
+Calibrated accuracy (top-1)
+
+=E2=89=A5 0.85
+
+Reliability
+
+Expected Calibration Error (ECE)
+
+=E2=89=A4 0.05
+
+Safety
+
+Unsafe recall (TPR)
+
+=E2=89=A5 0.90
+
+Safety
+
+Over-block on safe (1=E2=80=93TNR)
+
+=E2=89=A4 0.03
+
+Fairness
+
+Equalized Odds gap (max)
+
+=E2=89=A4 0.03
+
+Ops
+
+P95 latency
+
+=E2=89=A4 2.0s
+
+Ops
+
+Cost per decision
+
+Budget cap per tenant
+
+=
+Drift
+
+KL=
+ divergence vs. last week
+
+=E2=89=A4 0.1 (alert)
+
+Governance
+
+Receipt coverage
+
+100% of outputs
+
+5) Scorecard (per agent, per rele=
+ase)
+
+Example payload stored & shown=
+ in Synergy:
+
+json
+
+Copy code
+
+{
+
+"agent_id"
+
+:
+
+"contracts_bot"
+
+,
+
+"release"
+
+:
+
+"2025.09.25-rc1"
+
+,
+
+"kpis"
+
+:
+
+{
+
+"accuracy_top1"
+
+:
+
+0.88
+
+,
+
+"ece"
+
+:
+
+0.036
+
+,
+
+"unsafe_tpr"
+
+=
+
+:
+
+0.93
+
+,
+
+"safe_tnr"
+
+:
+
+0.97
+
+,
+
+"eo_gap"
+
+:
+
+0.021
+
+=
+,
+
+"p95_latency_ms"
+
+:
+
+1680
+
+,
+
+"cost_per_decision_usd"
+
+:
+
+0.0047
+
+,
+
+"drift_kl"
+
+:
+
+0.06
+
+,
+
+"receipt_coverage"
+
+=
+
+:
+
+1.0
+
+}
+
+,
+
+"status"
+
+:
+
+"PASS"
+
+,
+
+"gates_failed"
+
+=
+
+:
+
+[
+
+]
+
+}
+
+6) Gates & SLAs (enforce, not=
+ just observe)
+
+Promotion gate:
+ block deploy if any KPI breaches tenan=
+t policy (e.g., EO gap > 0.03 or unsafe TPR < 0.9).
+
+Run-time guard:
+ if live rolling window breaches, auto-=
+route to fallback model or human review; emit Merkle-logged alert.
+
+Tenant SLA pack:
+ per-tenant thresholds and exceptions =
+(stored as versioned policy packs).
+
+7) Dashboards (executive + ops)
+
+Executive Scorecard:
+ traffic-weighted KPIs by agent/te=
+am/locale; trend + red/amber/green.
+
+Incident View:
+ show which 
+shards
+ fed a risky answer, which policy fired, who appro=
+ved the Context Bridge Ticket.
+
+Calibration Lens:
+ reliability diagram + confusion delt=
+as by group/lang.
+
+Cost & Latency:
+ P50/P95 trends with model/prompt a=
+ttributions.
+
+8) APIs (minimal, pragmatic)
+
+POST /resonate/eval:run
+ =E2=80=93 submit batch for offline=
+ eval.
+
+POST /resonate/online/probe
+ =E2=80=93 log shadow probe (sa=
+mpled live).
+
+GET /resonate/scorecard?agent_id=3D=E2=80=A6
+ =E2=80=93 lat=
+est KPIs + PASS/FAIL.
+
+GET /resonate/receipt/{output_id}
+ =E2=80=93 full signed re=
+ceipt.
+
+POST /resonate/gates/check
+ =E2=80=93 pre-deploy gate on ca=
+ndidate release.
+
+GET /resonate/audit/export?window=3D=E2=80=A6
+ =E2=80=93 si=
+gned bundle for auditors.
+
+9) Rollout plan
+
+Phase 0 (1 week):
+ wire receipts into two critical agen=
+ts; enable offline harness with a small gold set; basic dashboard.
+
+Phase 1 (2=E2=80=933 weeks):
+ online probes + promotion gates; tenant SLA packs; incident view.
+
+Phase 2 (3=E2=80=936 weeks):
+ fairness/lang parity at scale; drift detectors; cost attribution; =
+auditor export bundles.
+
+10) Security alignment (unchanged=
+ guarantees)
+
+Default-deny egress, purpose token=
+s with 
+no_train=3Dtrue
+.
+
+Client-side shard encryption (CMK)=
+.
+
+DLP at gateway; proofs in transpar=
+enc

@@ -1,0 +1,105 @@
+ and others},
+journal=3D{arXiv:2212.08073},
+year=3D{2022}
+}
+latex/arxiv/main.tex
+\documentclass[11pt]{article}
+\usepackage[margin=3D1in]{geometry}
+\usepackage{times,graphicx,booktabs,hyperref,url,amsmath,amssymb,natbib}
+\title{Relationship over Computation: A Protocol and Proof Framework for Re=
+lational Intelligence}
+\author{Stephen S. \ SYMBI Institute (proposed) \ \texttt{contact@symbi.wor=
+ld}}
+\date{September 25, 2025}
+\begin{document}\maketitle
+\begin{abstract}We introduce SYMBI, a constitutional protocol that measurab=
+ly improves human--AI collaboration via a /proof A/B toggle, CIQ metric, an=
+d Trust Receipts.\end{abstract}
+\section{Introduction}\section{Related Work}\section{Protocol}\section{Metr=
+ic: CIQ}\section{Methods: /proof A/B}\section{Results}\section{Discussion}\=
+section{Ethics}\section{Availability}
+\bibliographystyle{plainnat}\bibliography{ciq}
+\end{document}
+latex/arxiv/ciq.bib
+@misc{symbi2025protocol,
+title=3D{SYMBI: A Constitutional Protocol for Relational Intelligence},
+author=3D{Stephen S. and SYMBI Core Protocol},
+year=3D{2025},
+howpublished=3D{preprint},
+url=3D{https://symbi.world/whitepaper}
+}
+latex/arxiv/src/receipt_schema.json
+{
+"version": "1.0",
+"session_id": "...",
+"mode": "SYMBI|DIRECTIVE",
+"inputs": { "user": "...", "context": "..." },
+"constraints": { "articles": [1,2,3], "safety": ["nsfw","pii"] },
+"outcome": { "text": "...", "completion": true, "time_sec": 42 },
+"flags": { "safety": 0, "hallucination": 0 },
+"ciq": { "clarity": 4, "breadth": 5, "safety": 5, "completion": 1 },
+"hash_prev": "...",
+"hash_self": "...",
+"signature": "ed25519:..."
+}
+latex/arxiv/README.md
+pdflatex main && bibtex main && pdflatex main && pd=
+flatex main
+latex/arxiv/Makefile
+all:
+pdflatex main
+bibtex main
+pdflatex main
+pdflatex main
+clean:
+rm -f *.aux *.bbl *.blg *.log *.out *.toc *.lof *.lot
+latex/acm-chi/main.tex
+\documentclass[sigchi,screen,nonacm]{acmart}
+\acmConference[Preprint]{SYMBI Preprint}{2025}{Online}
+\settopmatter{printacmref=3Dfalse}\renewcommand\footnotetextcopyrightpermis=
+sion[1]{}\pagestyle{plain}
+\title{Relationship over Computation: A Protocol and Proof Framework for Re=
+lational Intelligence}
+\author{Stephen S.}\affiliation{\institution{SYMBI Institute (proposed)}\co=
+untry{Australia}}\email{contact@symbi.world}
+\begin{document}\begin{abstract}Condensed abstract.\end{abstract}\keywords{=
+Relational AI, Agentic Systems, CIQ, Governance}\maketitle\end{document}
+latex/acm-chi/ciq.bib
+@misc{symbi2025protocol,
+title=3D{SYMBI: A Constitutional Protocol for Relational Intelligence},
+author=3D{Stephen S. and SYMBI Core Protocol},
+year=3D{2025},
+howpublished=3D{preprint},
+url=3D{https://symbi.world/whitepaper}
+}
+latex/acm-chi/src/macros.tex
+\newcommand{\ciq}{\textsc{CIQ}}
+\newcommand{\receipt}{\textsc{Receipt}}
+branding/palette.md
+Midnight #0B1020 =E2=80=A2 Ink #121826 =E2=80=A2 Slate #2A3344 =E2=80=A2 Cl=
+oud #E6E9F2 =E2=80=A2 Accent-Pulse #6CF0C2
+branding/typography.md
+Headlines =E2=80=94 Inter Tight =E2=80=A2 Body =E2=80=94 Inter =E2=80=A2 Mo=
+no =E2=80=94 JetBrains Mono
+backend/models/TrustBond.js
+const mongoose =3D require('mongoose');
+
+const trustBondSchema =3D new mongoose.Schema({
+human_user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require=
+d: true, index: true },
+agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Agent', required: t=
+rue, index: true },
+state: { type: String, enum: ['proposed','active','suspended','revoked','ex=
+pired'], default: 'proposed', index: true },
+scope: {
+purpose: { type: String, required: true },
+dataClasses: [{ type: String, enum: ['public','personal','sensitive','medic=
+al','financial'] }],
+permissions: [{ type: String, enum: ['chat.read','chat.write','data.export'=
+,'analytics.basic','analytics.detailed'] }],
+duration: { type: Number, default: 30 }, // days
+expiresAt: { type: Date, required: true }
+},
+scores: {
+identityConfidence: { type: Number, min: 0, max: 1, default: 0 },
+capabilityDisclosure: { type: Number, min: 0, max: 1, default: 0 },

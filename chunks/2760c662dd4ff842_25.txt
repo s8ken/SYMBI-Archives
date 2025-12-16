@@ -1,0 +1,70 @@
+y
+, meaning 
+no applications currently have active remote connections
+ at the time you ran the command.
+
+🚀 What This Means
+
+No remote access tools
+ (like TeamViewer, AnyDesk, or SSH) are actively connected.
+
+No unknown software
+ is maintaining an open session.
+
+Any connections you saw earlier (from 
+netstat -an | grep ESTABLISHED
+) were likely 
+temporary and have since closed
+.
+
+🔍 Next Step: Check for Background Processes That May Reconnect
+
+Some processes 
+connect periodically
+ rather than staying constantly connected. Let’s check if any 
+suspicious software is running in the background
+.
+
+Please run:
+
+sh
+
+Copy
+
+ps aux | grep -i remote
+
+✅ This will show any 
+background processes related to remote access or monitoring.
+
+❌ If we see unknown services running, we’ll investigate further.
+
+📌 
+Run this and let me know what appears!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % sudo lsof -i -P -n | grep ESTABLISHED
+
+Password:
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -i remote
+
+_rmd               777   0.0  0.1 410734752   8528   ??  Ss   12:26am   0:00.09 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber
+_rmd               776   0.0  0.1 410735376  11040   ??  Ss   12:26am   0:00.07 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SoftwareUpdateSubscriber.xpc/Contents/MacOS/SoftwareUpdateSubscriber
+_rmd               775   0.0  0.1 410734784   8720   ??  Ss   12:26am   0:00.09 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/DiskManagementSubscriber.xpc/Contents/MacOS/DiskManagementSubscriber
+_rmd               774   0.0  0.1 410735360   8640   ??  Ss   12:26am   0:00.07 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber
+_rmd               773   0.0  0.1 410734768   8592   ??  Ss   12:26am   0:00.06 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber
+_rmd               770   0.0  0.1 410735296  11328   ??  Ss   12:26am   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber
+_rmd               769   0.0  0.1 410865840   8672   ??  Ss   12:26am   0:00.06 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber
+_rmd               768   0.0  0.1 410734816   8704   ??  Ss   12:26am   0:00.06 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber
+_rmd               766   0.0  0.1 426967008  13936   ??  Ss   12:26am   0:00.13 /System/Library/PrivateFrameworks/RemoteManagement.framework/remotemanagementd
+lcl                580   0.0  0.3 427012736  42192   ??  Ss   12:24am   0:00.10 /System/Library/PrivateFrameworks/LocalAuthenticationUI.framework/Versions/A/XPCServices/LocalAuthenticationRemoteService.xpc/Contents/MacOS/LocalAuthenticationRemoteService
+lcl                552   0.0  0.0 426928736   4064   ??  S    12:24am   0:00.01 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoteagent
+root                83   0.0  0.1 426970400  17456   ??  Ss   12:24am   0:00.27 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+root                96   0.0  0.0 426965408   6224   ??  Ss+  12:24am   0:00.03 /usr/libexec/remoted
+lcl                815   0.0  0.0 410724112   1488 s000  S+   12:30am   0:00.00 grep -i remote
+_rmd               778   0.0  0.1 410735440   9280   ??  Ss   12:26am   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedConfigurationFilesSubscriber.xpc/Contents/MacOS/ManagedConfigurationFilesSubscriber
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT sai

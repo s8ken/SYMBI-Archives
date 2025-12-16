@@ -1,0 +1,112 @@
+!bond) return res.status(404).json({ success:false, error:'Not found'=
+ });
+  await bond.revoke(req.body?.reason || 'revoked', req.user?._id || req.use=
+r?.id);
+  res.json({ success:true, data:bond });
+};
+backend/routes/trust-bonds.routes.js
+// backend/routes/trust-bonds.routes.js
+const express =3D require('express');
+const router =3D express.Router();
+const { protect } =3D require('../middleware/auth.middleware');
+const ctrl =3D require('../controllers/trustBonds.controller');
+
+router.use(protect);
+router.post('/', ctrl.createBond);
+router.get('/:id', ctrl.getBond);
+router.put('/:id', ctrl.updateBond);
+router.post('/:id/suspend', ctrl.suspendBond);
+router.post('/:id/revoke', ctrl.revokeBond);
+
+module.exports =3D router;
+backend/instrumentation/trust-metrics.js
+// backend/instrumentation/trust-metrics.js
+const client =3D require('prom-client');
+
+const trustEvalCounter =3D new client.Counter({
+  name: 'trust_evaluations_total', help: 'Count of Trust Oracle evaluations=
+', labelNames: ['recommendation']
+});
+const trustViolationCounter =3D new client.Counter({
+  name: 'trust_policy_violations_total', help: 'Policy violations by articl=
+e and severity',
+  labelNames: ['article','severity']
+});
+
+function recordTrustEvaluation(evaluation) {
+  try {
+    trustEvalCounter.inc({ recommendation: evaluation.recommendation || 'un=
+known' }, 1);
+    (evaluation.violations || []).forEach(v =3D> trustViolationCounter.i=
+nc({ article: v.articleId, severity: v.severity || 'unknown' }, 1));
+  } catch {}
+}
+
+module.exports =3D { recordTrustEvaluation, register: client.register };
+Backend: wire-up changes
+
+backend/app.js
+Import and mount bonds routes:
+const bondRoutes =3D require('./routes/trust-bonds.routes');
+// ...
+app.use('/api/trust/bonds', bondRoutes);
+If you don=E2=80=99t already expose Prometheus metrics via your existing mi=
+ddleware, add:
+const { register } =3D require('./instrumentation/trust-metrics');
+app.get('/metrics', async (_, res) =3D> {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+Wire Trust Oracle on chat send
+Identify the route file that handles sending chat messages (commonly backen=
+d/routes/conversation.routes.js or backend/routes/chat.routes.js).
+Add:
+const { createTrustMiddleware } =3D require('../core/trustOracle');
+router.post('/send', createTrustMiddleware(), controller.sendMessage);
+If your route path differs, same pattern applies where the user sends messa=
+ges (POST). If routing structure is nested, you can also call the Oracle at=
+ the top of the controller handler instead.
+Frontend: demo components
+
+frontend/src/components/TrustDashboard.tsx
+import React, { useEffect, useState } from 'react';
+
+type Props =3D { token: string; bondId: string };
+export default function TrustDashboard({ token, bondId }: Props) {
+  const [resp, setResp] =3D useState<any>(null);
+  useEffect(() =3D> {
+    fetch(
+/api/trust/bonds/${bondId}
+, { headers: { Authorizati=
+on: 
+Bearer ${token}
+ }})
+      .then(r =3D> r.json()).then(setResp).catch(console.error);
+  }, [bondId, token]);
+  const b =3D resp?.data;
+  if (!b) return <div>Loading trust=E2=80=A6</div>;
+  return (
+    <div>
+      <h3>Trust Score: {b.trustScore} ({b.trustBand})</h3>
+      <div>Purpose: {b.scope?.purpose}</div>
+      <div>Permissions: {(b.scope?.permissions||[]).join(', ')}</d=
+iv>
+      <div>Expires: {b.scope?.expiresAt ? new Date(b.scope.expiresAt)=
+.toLocaleString() : 'n/a'}</div>
+    </div>
+  );
+}
+frontend/src/components/TrustScoringDemo.tsx
+import React, { useState } from 'react';
+
+type Props =3D { token: string; bondId: string };
+export default function TrustScoringDemo({ token, bondId }: Props) {
+  const [out, setOut] =3D useState<any>(null);
+  async function send(text: string, scopes: string[]) {
+    const r =3D await fetch('/api/chat/send', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Authorization:
+Bea=
+rer ${token}
+ },
+      body: JSON.stringify({ bondId, sessionId:'demo', scopes, conten

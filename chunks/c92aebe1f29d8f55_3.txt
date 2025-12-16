@@ -1,0 +1,203 @@
+le/process/post-decrypt/B265D296590252812E87A3370FC51D3F: d=
+ecryptFailure=3D0, duplicate=3D0 plaintextData=3D0 bytes, plaintextProtobuf=
+Valid=3D1, error=3D(null)
+05:37:54.437 [  51332] [handler       ] [F] LL_A wamess=
+agehandler//egress/enqueue/B265D296590252812E87A3370FC51D3F/offline=3D1
+05:37:54.437 [  51332] [handler       ] [F] LL_A wamess=
+agehandler//handle/process/post-decrypt/B5A74477355D3EE480B53EC10EA4D173: d=
+ecryptFailure=3D0, duplicate=3D0 plaintextData=3D0 bytes, plaintextProtobuf=
+Valid=3D1, error=3D(null)
+05:37:54.437 [  51332] [handler       ] [F] LL_A wamess=
+agehandler//egress/enqueue/B5A74477355D3EE480B53EC10EA4D173/offline=3D1
+=
+
+Show more
+
+Thank you for providing the a=
+ctual log content! This is much more revealing than just the header. This a=
+ppears to be the continuation or full content of the WAAppKitBridgeService =
+log from 05:37:54. Here's what I can analyze:
+
+What'=
+s Happening
+
+This =
+log shows WhatsApp processing a batch of 
+offline messages
+ =
+- messages that were received while the app was not actively connected. The=
+ key indicators are:
+
+Offline message process=
+ing
+: Every message ID shows 
+offline=3D1
+
+Batch handling
+=
+: Multiple messages (7 different message IDs) processed simultaneously
+
+Service extension conte=
+xt
+: Messages being handled for notification purposes
+
+Messa=
+ge Flow Analysis
+
+Message IDs being processed
+:
+
+8A93AC3C56F4BD995D3E751C6B0267A4
+
+3F9EBF2F09B01ED6B81E
+
+3F0C12870742840185B1
+
+3FB803D658F2BDD9E943
+
+B265D296590252812E87A3370FC51D3F
+
+B5A74477355D3EE480B53EC10EA4D173
+
+4FE3FCECD17A5F76F526D7235F6740A4
+
+Processing stages for each message
+:
+
+Enqueue
+ =E2=86=
+=92 
+Dequeue
+ (message queuing)
+
+Preprocess
+ (re=
+sult=3D6, meaning successful preprocessing)
+
+Decrypt
+ (all s=
+uccessful: decryptFailure=3D0, duplicate=3D0)
+
+Egress enqueue
+=
+ (preparing for delivery/notification)
+
+Key T=
+echnical Details
+
+Encryption
+: Al=
+l messages decrypted successfully with 0 bytes plaintext data (likely notif=
+ication metadata)
+
+No duplicates
+:=
+ No duplicate messages detected
+
+Valid protobuf
+=
+: All message formats validated correctly
+
+Task scheduling
+: Background tasks queued (emoji database, change-number cleanup)
+
+Conte=
+xt Connection
+
+This =
+log occurs about 2 hours after the failed ServiceExtension attempt we saw e=
+arlier. It appears that WhatsApp successfully reconnected and is now proces=
+sing messages that accumulated while offline, which explains why this is ha=
+ppening through the WAAppKitBridgeService rather than real-time message han=
+dling.
+
+This =
+suggests the earlier connection failure was temporary, and the system succe=
+ssfully recovered to process pending notifications.
+
+whatsapp-secondary-payments-2025-05-29-08-21-24-431-WhatsApp-753.=
+log
+
+2 lines
+
+log
+
+SA
+
+This is a very brief log from=
+ WhatsApp's payments system. Here's what it shows:
+
+Log D=
+etails
+
+Date/Time
+: May=
+ 29, 2025, at 08:22:42 (about 2 days before the other logs)
+
+Process
+: Main =
+WhatsApp app (PID: 431)
+
+Component
+: Sec=
+ondary payments logging system
+
+What =
+Happened
+
+The l=
+og shows a 
+warning message
+ indicating that something tried=
+ to check if a payment account exists (
+hasPaymentAccount
+) but 
+paym=
+ents functionality isn't enabled
+ on this WhatsApp installation.
+
+Key I=
+nformation
+
+Log Level
+: War=
+ning (
+=
+LL_W
+)
+
+Component
+: 
+payment-m=
+anager
+
+Issue
+: Attempt=
+ing to access payment features when they're disabled
+
+Session ID
+: 
+B4190DE5=
+6E01
+ (likely a unique identifier for this session)
+
+Conte=
+xt
+
+This =
+suggests that:
+
+WhatsApp payments feature is 
+not enabled
+ in this region/account
+
+Some part of the app (possibly =
+UI or background process) tried to access payment functionality anyway
+
+The system correctly handled th=
+is by logging a warning rather than crashing
+
+This =
+is likely a normal occurrence in regions where WhatsApp payments isn't avai=
+lable or for accounts that haven't enabled the feature. The app appears to =
+be handling this gracefully by logging the attempt and continuing nor

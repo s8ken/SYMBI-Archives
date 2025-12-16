@@ -1,0 +1,381 @@
+ï¸â£ Click 
+"New Project"
+
+3ï¸â£ Select your 
+
+Symbi
+ GitHub repo
+
+4ï¸â£ Keep everything 
+default (leave "Root Directory" empty)
+
+5ï¸â£ Click 
+"Deploy"
+
+4ï¸â£ Confirm Deployment
+
+Once itâs deployed, Vercel will give you a live URL like:
+
+arduino
+
+Copy
+
+Edit
+
+https:
+
+//symbi.vercel.app
+
+ð 
+Your site is now LIVE!
+
+ð¥ 
+Next Step: Integrate Replicate for AI
+
+Once Vercel is set up, let me know and weâll 
+add AI capabilities using Replicate
+! ðð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % git remote -v
+
+origin	https://github.com/s8ken/Symbi.git (fetch)
+origin	https://github.com/s8ken/Symbi.git (push)
+sja@SJAs-MacBook-Pro symbi % git add .
+git commit -m "Initial Next.js setup with Tailwind & Turbopack"
+git push -u origin main
+
+On branch main
+nothing to commit, working tree clean
+Enumerating objects: 21, done.
+Counting objects: 100% (21/21), done.
+Delta compression using up to 10 threads
+Compressing objects: 100% (21/21), done.
+Writing objects: 100% (21/21), 57.08 KiB | 14.27 MiB/s, done.
+Total 21 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: This repository moved. Please use the new location:
+remote:   https://github.com/s8ken/symbi.git
+To https://github.com/s8ken/Symbi.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+sja@SJAs-MacBook-Pro symbi % 
+
+ChatGPT said:
+
+ð Step 6: Fix Remote URL & Deploy to Vercel
+
+GitHub 
+changed the repository URL to lowercase (
+symbi
+ instead of 
+Symbi
+)
+, so letâs quickly fix that.
+
+1ï¸â£ Update Your Git Remote to the Correct URL
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+git remote set-url origin https://github.com/s8ken/symbi.git
+
+Then 
+verify it's correct
+:
+
+bash
+
+Copy
+
+Edit
+
+git remote -v
+
+Expected output:
+
+bash
+
+Copy
+
+Edit
+
+origin  https://github.com/s8ken/symbi.git (fetch)
+origin  https://github.com/s8ken/symbi.git (push)
+
+2ï¸â£ Deploy Your Site to Vercel
+
+Now that GitHub is 
+fully set up
+, deploy it 
+live on Vercel
+:
+
+1ï¸â£ 
+Go to 
+Vercel Dashboard
+
+2ï¸â£ Click 
+"New Project"
+
+3ï¸â£ Select your 
+
+symbi
+ GitHub repo
+
+4ï¸â£ Keep everything 
+default
+ (leave "Root Directory" empty)
+
+5ï¸â£ Click 
+"Deploy"
+
+3ï¸â£ Check Your Live Site
+
+Once deployed, Vercel will give you a 
+public URL
+ like:
+
+arduino
+
+Copy
+
+Edit
+
+https:
+
+//symbi.vercel.app
+
+ð 
+Your site is now LIVE!
+ ð
+
+ð¥ 
+Next Step: Integrate Replicate AI
+
+Once Vercel is set up, let me know and weâll 
+add AI capabilities using Replicate
+! ð
+
+You said:
+
+okay so it deployed successfully into my symbiweb project on vercel
+
+ChatGPT said:
+
+ð Step 7: Your Site is Live! Now, Let's Add Replicate AI
+
+ð¥ 
+Congrats! Your Next.js site is now live on Vercel
+ (
+symbiweb
+ project). Now, letâs 
+add AI capabilities using Replicate
+ so your site can generate AI-powered content.
+
+1ï¸â£ Install the Replicate SDK
+
+Inside your 
+local 
+symbi
+ project folder
+, run:
+
+bash
+
+Copy
+
+Edit
+
+npm install replicate
+
+This installs 
+Replicateâs API SDK
+, which lets your site call AI models.
+
+2ï¸â£ Create an API Route for AI Models
+
+Since Next.js uses 
+serverless functions
+, weâll 
+create an API route
+ that calls Replicateâs AI models.
+
+ð 
+Create a new file:
+
+app/api/replicate/route.ts
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+import
+
+Replicate
+
+from
+
+"replicate"
+
+;
+
+const
+
+ replicate = 
+
+new
+
+Replicate
+
+({
+
+auth
+
+: process.
+
+env
+
+.
+
+REPLICATE_API_TOKEN
+
+, 
+
+// Store this in Vercel env variables
+
+});
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+try
+
+ {
+
+const
+
+ output = 
+
+await
+
+ replicate.
+
+run
+
+(
+
+"stability-ai/stable-diffusion"
+
+, {
+
+input
+
+: { prompt },
+    });
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+image
+
+: output });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: error.
+
+message
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+â 
+What this does:
+
+Takes a 
+prompt
+ from the user
+
+Calls Replicateâs 
+Stable Diffusion AI model
+
+Returns an 
+AI-generated image
+
+3ï¸â£ Create an AI Generation

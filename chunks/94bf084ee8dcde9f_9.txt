@@ -1,0 +1,238 @@
+ Camera
+ or 
+Microphone activation
+, it suggests audio/video were broadcasted.
+
+B. Look for Active Screen Recording Apps
+
+Check 
+System Settings â Privacy & Security â Screen Recording
+
+See if 
+any unknown apps
+ have permission.
+
+To list running screen recording processes, run:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"screencapture"
+
+If 
+screencapture, OBS, or ffmpeg
+ appears, it may have been used for streaming.
+
+5ï¸â£ (Advanced) Check Outbound Data Transfer
+
+If streaming logs were deleted, we can still check for 
+unusual outbound data transfer.
+
+A. List Recent Large Data Transfers
+
+sh
+
+Copy
+
+sudo nettop -m tcp -p -P | grep -E 
+
+"upload|send"
+
+This shows 
+which apps sent large amounts of data
+ over the network.
+
+B. Monitor Live Network Traffic
+
+To catch 
+active network traffic
+, install 
+Wireshark
+ or run:
+
+sh
+
+Copy
+
+sudo tcpdump -i en0
+
+Look for 
+large, sustained outbound traffic
+âthis could be a 
+livestream.
+
+ð¨ Summary of Next Steps
+
+1ï¸â£ 
+Check WebRTC logs (
+log show --predicate 'eventMessage contains "webrtc"'
+)
+
+2ï¸â£ 
+Look for active network connections (
+netstat -an | grep ESTABLISHED
+)
+
+3ï¸â£ 
+Search browser history for livestream platforms
+
+4ï¸â£ 
+Check if camera/mic were used (
+log show --predicate 'eventMessage contains "AVCapture"'
+)
+
+5ï¸â£ 
+List recent large data transfers (
+nettop -m tcp -p -P | grep "upload"
+)
+
+Since 
+RTMP logs came up empty
+, this suggests either 
+WebRTC livestreaming
+ or a 
+hidden network connection
+. Let me know what results you get! ð¨
+
+You said:
+
+user@Mes-MacBook-Pro ~ % sudo log show --predicate 'eventMessage contains "webrtc"' --last 7d
+
+Password:
+Filtering the log data using "composedMessage CONTAINS "webrtc""
+Skipping info and debug messages, pass --info and/or --debug to include.
+
+ChatGPT said:
+
+Since 
+both RTMP and WebRTC logs show nothing
+, the livestreaming could have been:
+
+Obfuscated (logs cleared, VPN/proxy used)
+
+Done through another method (custom protocol, hidden process)
+
+Broadcasted through browser-based streaming that didnât leave direct logs
+
+ð¨ Next Steps to Uncover Hidden Livestreaming
+
+Weâll now check 
+network connections, browser activity, and system processes
+ to catch whatâs missing.
+
+1ï¸â£ Find Active or Past Network Connections (Where Was Data Sent?)
+
+Livestreaming requires 
+constant outbound data transfer
+, so we need to check which services your Mac was communicating with.
+
+A. List All Current Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for 
+connections to unknown servers, large data transfers, or streaming services.
+
+B. Check for Past Connections
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 7d
+
+If any 
+streaming site (YouTube Live, Twitch, YouStream, Facebook Live)
+ appears, thatâs a clue.
+
+C. Check for Suspicious High-Bandwidth Processes
+
+sh
+
+Copy
+
+sudo nettop -m tcp -p -P | grep -E 
+
+"upload|send"
+
+This lists 
+apps sending large amounts of data
+âa possible livestream.
+
+2ï¸â£ Look for Browser-Based Streaming (Livestream Pages Opened)
+
+If the livestream happened through 
+YouTube, Twitch, YouStream, or another web service
+, it may still be in the browser logs.
+
+A. Search Browser History for "Stream" or "Live"
+
+For Chrome:
+
+sh
+
+Copy
+
+grep -i 
+
+"stream\|live"
+
+ ~/Library/Application\ Support/Google/Chrome/Default/History
+
+For Safari:
+
+sh
+
+Copy
+
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url FROM history_items WHERE url LIKE '%stream%';"
+
+Look for URLs related to 
+YouTube Live, Twitch, Facebook Live, YouStream, or unknown streaming sites.
+
+B. Check for Camera/Microphone Permissions in the Browser
+
+Chrome:
+ Open 
+chrome://settings/content/camera
+
+Safari:
+ Open 
+Settings â Websites â Camera & Microphone
+
+See if streaming services were granted permission.
+
+3ï¸â£ Find Evidence of Screen Recording or Camera Access
+
+Even if the livestream logs are missing, 
+camera/microphone access
+ may still be logged.
+
+A. Check for Webcam & Mic Use
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicat

@@ -1,0 +1,372 @@
+s
+ and 
+core/
+
+If 
+index.ts
+ re-exports modules from 
+core
+, any renames or refactors in 
+core
+ could silently break builds without c=
+lear errors (especially if you use 
+export *
+ syntax).
+
+=E2=9C=85 
+Fix:
+ Add explicit named exports:
+
+t=
+s
+
+Copy code
+
+export
+
+ {=
+
+TrustProtocol
+
+=
+
+ } 
+
+from
+
+=
+
+"./core/trustProtocol"
+
+;
+
+export
+
+type
+
+ { 
+
+TrustEvent
+
+ } 
+=
+
+from
+
+"./core/types"
+
+;
+
+and run 
+tsc --noEmit
+ to validate import paths.
+
+Unclear build target
+
+It=E2=80=99s not yet confirmed if 
+src/index.ts
+ compiles to 
+dist/index.js
+ with the corre=
+ct 
+"main"
+ and 
+"types"
+ entries in 
+package.json
+.
+
+=E2=9C=85 
+Check:
+
+json
+
+Copy code
+
+"main"
+
+:
+
+"dist/index.js"
+
+,
+
+"types"
+
+:
+
+"dist/index.d.ts"
+
+and that your 
+tsconfig.json
+ includes 
+"rootDir": "src"
+ and 
+"outDir": "dist"
+.
+
+Missing entry-point tests
+
+The 
+__tests__/
+ folder is in the repo root, but it=E2=80=99=
+s unclear if 
+index.ts
+ it=
+self is covered.
+
+=E2=9C=85 
+Fix:
+ Add at least one integration test:
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ symbi 
+
+from
+
+"../src"
+
+;
+
+test
+
+(=
+
+"Trust protocol bootstraps correct=
+ly"
+
+, 
+
+() =3D&=
+gt;
+
+ {
+
+expect
+
+(symbi).
+
+toBeDefined
+
+();
+});
+
+Potential circular dependencies in 
+core/
+
+Since 
+core
+ was last touched during the =E2=80=9CFix all Ty=
+peScript errors=E2=80=9D commit, circular imports may have been temporarily=
+ bypassed.
+
+=E2=9C=85 
+Fix:
+ Run 
+npx madge src/core --circular
+ to detect cycles.
+
+=F0=9F=A7=A0 Improvement Suggesti=
+ons
+
+Area
+
+Suggestion
+
+Benefit
+
+=F0=9F=A7=A9 Exports
+
+Use an explicit public API surface in 
+index.ts
+
+Avoids accidental exposure
+
+=F0=9F=A7=B1 Build
+
+Add 
+prepare
+ script to auto-build before 
+npm publish
+
+Ensures clean deploys
+
+=F0=9F=A7=AA Tests
+
+Include smoke test for 
+core
+ entrypoint
+
+Detects breakage early
+
+=F0=9F=93=A6 Packaging
+
+Add 
+"sideEffects": false
+ in 
+package.json
+
+Enables tree-shaking
+
+=F0=9F=9B=A1=EF=B8=8F Types
+
+Add 
+"strict": true
+ in 
+tsconfig.json
+
+Prevents type regressions
+
+=E2=9C=85 Next Recommended Step
+
+Let=E2=80=99s inspect 
+src/core/
+ next =E2=80=94 that=E2=80=99s where most logic (and lik=
+ely subtle bugs) live.
+
+Would you like me to open and analyze 
+
+src/core
+
+ now?
+
+You said:
+
+SYMBI-Symphony/src/core =
+at main =C2=B7 s8ken/SYMBI-Symphony
+
+ok
+
+=
+
+ChatGPT =
+said:
+
+=
+
+Great =F0=9F=91=8D =E2=
+=80=94 you=E2=80=99re now in the 
+=
+
+src/core
+
+ directory,=
+ which is the architectural heart of 
+SYMBI-Symphony
+. It contains four main modules plus an 
+index.ts
+ hub:
+
+p=
+gsql
+
+Copy code
+
+=
+
+core/
+=E2=94=9C=E2=94=80=E2=94=80 agent/
+=E2=94=9C=E2=94=80=E2=94=80 auth/
+=E2=94=9C=E2=94=80=E2=94=80 monitoring/
+=E2=94=9C=E2=94=80=E2=94=80 trust/
+=E2=94=94=E2=94=80=E2=94=80 
+
+index=
+
+.ts
+
+Here=E2=80=99s a breakdown of what l=
+ikely matters most for maintenance, and where potential bugs or regressions=
+ could emerge:
+
+=F0=9F=A7=A9 
+Module-Level Analysis
+
+1. 
+
+agent/
+
+Purpose:
+ probably manages orchestration and communication=
+ between agents.
+
+Potential Issues:
+
+Concurrency or event-loop race condi=
+tions if agents share mutable state.
+
+Missing teardown hooks (e.g., 
+stop()
+, 
+dispose()
+) could lead to memory leaks when agents =
+reload.
+
+=E2=9C=85 
+Suggestion:
+ ensure every async worker has cancel=
+lation tokens or 
+AbortController
+ support.
+
+2. 
+
+auth/
+
+=
+
+Purpose:
+ implements W3C-compliant trust credentials.
+
+Potential Issues:
+
+Incomplete verification chain (e.g.=
+, unvalidated JWT or DID resolution failure ignored).
+
+If cryptographic functions rely on=
+
+subtleCrypto
+ or externa=
+l libs, test for Node vs browser compatibility.
+
+=E2=9C=85 
+Suggestion:
+ add integration tests for both v=
+alid and invalid credential flows.
+
+=E2=9C=85 
+Add:
+ explicit error classes (
+InvalidCredentialError
+, 
+SignatureVerificationError
+) instead of =
+generic 
+Error
+.
+
+3. 
+
+monitoring/
+
+Purpose:
+ logs telemetry or trust-state metrics.
+
+Potential Issues:
+
+Over-logging or circular JSON in e=
+vent dumps (especially if recursive agent structures are logged).
+
+Possible missing async error handl=
+ing on metric flush.
+
+=E2

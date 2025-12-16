@@ -1,0 +1,265 @@
+
+📌 If these IPs show up in logs, 
+we can trace when and how they were used.
+
+4️⃣ Block These IPs (If Suspicious)
+
+If these IPs are 
+unknown or seem sketchy
+, you can 
+block them using LuLu
+:
+
+1️⃣ Open 
+LuLu → Rules
+
+2️⃣ Click 
+"+" to Add a New Rule
+
+3️⃣ 
+Select "Block outgoing connections"
+ for:
+
+185.70.42.22
+
+151.101.3.6
+
+4️⃣ Click 
+Save
+
+📌 This 
+prevents any hidden process from contacting these IPs.
+
+🚀 Next Step: Run 
+dig
+ & 
+lsof
+ & Share What You Find!
+
+🔎 
+We’ll determine if these are safe connections or signs of malware.
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % dig -x 151.101.3.6
+
+; <<>> DiG 9.10.6 <<>> -x 151.101.3.6
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 15086
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;6.3.101.151.in-addr.arpa.	IN	PTR
+
+;; AUTHORITY SECTION:
+151.in-addr.arpa.	1617	IN	SOA	pri.authdns.ripe.net. dns.ripe.net. 1742194743 3600 600 864000 3600
+
+;; Query time: 35 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Mon Mar 17 22:15:40 AEDT 2025
+;; MSG SIZE  rcvd: 113
+
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔍 Reverse Lookup for 
+151.101.3.6
+ – No Domain Found (
+NXDOMAIN
+)
+
+Your 
+
+dig -x 151.101.3.6
+
+ request returned 
+NXDOMAIN
+ (Non-Existent Domain), meaning:
+
+The IP is valid but does not resolve to a known hostname.
+
+It belongs to an organization that does not publicly expose reverse DNS records.
+
+It could be a CDN (Content Delivery Network) like Fastly or Cloudflare, often used by websites & apps.
+
+🛠 Next Steps – Let’s Investigate Further
+
+✅ 
+Run 
+dig
+ for the second IP (
+185.70.42.22
+)
+
+sh
+
+Copy
+
+Edit
+
+dig -x 185.70.42.22
+
+📌 This will check if the 
+second IP has an identifiable hostname.
+
+✅ 
+Check If Any Process Is Using These IPs
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 151.101.3.6
+sudo lsof -i -P | grep 185.70.42.22
+
+📌 
+This tells us which app is responsible for these connections.
+
+✅ 
+Use 
+whois
+ from an External Source (If macOS Blocks It)
+
+Since 
+whois
+ timed out earlier, try using 
+an online WHOIS lookup tool
+:
+
+🔹 
+For 
+151.101.3.6
+
+ → 
+WHOIS Lookup
+
+🔹 
+For 
+185.70.42.22
+
+ → 
+WHOIS Lookup
+
+📌 If 
+151.101.3.6
+ is a 
+CDN like Fastly, Cloudflare, or Akamai
+, it’s likely safe.
+
+📌 If 
+
+185.70.42.22
+ is unknown
+, we should 
+block it in LuLu until we confirm it’s safe
+.
+
+🚀 Next Step: Run 
+dig -x 185.70.42.22
+ and 
+lsof
+ & Let Me Know What You Find!
+
+🔍 If 
+an unknown process is using these IPs
+, we’ll find and block it. 🚀
+
+You said:
+
+;; QUESTION SECTION:
+;22.42.70.185.in-addr.arpa.	IN	PTR
+
+;; ANSWER SECTION:
+22.42.70.185.in-addr.arpa. 263	IN	PTR	185-70-42-22.protonmail.ch.
+
+;; Query time: 32 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Mon Mar 17 22:15:28 AEDT 2025
+;; MSG SIZE  rcvd: 94
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔍 Reverse Lookup for 
+185.70.42.22
+ – Belongs to ProtonMail (
+protonmail.ch
+)
+
+Your 
+
+dig -x 185.70.42.22
+
+ request confirms that this IP belongs to 
+ProtonMail
+ (🇨🇭 Switzerland).
+
+🛠 What This Means
+
+✅ 
+If you use ProtonMail or ProtonVPN
+, this IP is likely a 
+Proton service checking for updates or handling encrypted mail traffic
+.
+
+❌ 
+If you don’t use ProtonMail/VPN right now
+, it’s worth investigating 
+why your Mac is still connecting to Proton servers.
+
+🚀 Next Steps – Let’s Confirm What’s Using ProtonMail’s IP
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 185.70.42.22
+
+📌 This will 
+show the exact process or app
+ on your Mac making connections to ProtonMail.
+
+🛑 Should You Block This IP?
+
+✅ 
+If you’re actively using ProtonMail or ProtonVPN
+ → 
+No action needed
+ (expected behavior).
+
+❌ 
+If you aren’t running ProtonVPN/Mail right now
+ → 
+Possible hidden process or residual connection.
+
+Check running ProtonVPN processes:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i proton
+
+If ProtonVPN is 
+not running
+, but this connection is 
+active
+, consider 
+blocking it in LuLu
+:
+
+Open LuLu → Rules
+
+Block outgoi

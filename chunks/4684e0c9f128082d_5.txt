@@ -1,0 +1,297 @@
+s/Data (apfs, local, journaled, nobrowse, protect, root data)
+map auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)
+.DDPreviewDisk on /Users/lcl/.DDPreview/.DDPreviewDisk (nfs, nodev, nosuid, synchronous, mounted by lcl)
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Immediate Concern: Suspicious NFS Mount (
+.DDPreviewDisk
+)
+ 🚨
+
+This line stands out:
+
+bash
+
+Copy
+
+.DDPreviewDisk on /Users/lcl/.DDPreview/.DDPreviewDisk (nfs, nodev, nosuid, synchronous, mounted by lcl)
+
+.DDPreviewDisk
+ is mounted via NFS (Network File System)
+ – This suggests 
+a remote storage volume is attached
+.
+
+It’s in 
+
+/Users/lcl/.DDPreview/
+
+, which is 
+a hidden directory
+—this is highly unusual.
+
+You didn’t manually mount this, correct?
+ If not, it 
+could be an unauthorized remote volume.
+
+🚨 Immediate Next Steps
+
+1️⃣ Unmount 
+.DDPreviewDisk
+ (If You Didn't Intentionally Mount It)
+
+Run:
+
+bash
+
+Copy
+
+sudo umount -f /Users/lcl/.DDPreview/.DDPreviewDisk
+
+This will 
+forcefully unmount
+ the suspicious volume.
+
+2️⃣ Check If It Reappears After Reboot
+
+Run:
+
+bash
+
+Copy
+
+sudo reboot
+
+After rebooting, run 
+mount
+ again to 
+see if 
+.DDPreviewDisk
+ comes back.
+
+If it 
+remounts itself,
+ something is 
+reinstalling it automatically.
+
+3️⃣ Find Out What Mounted It
+
+Run:
+
+bash
+
+Copy
+
+ps aux | grep DDPreview
+
+This will show 
+what process created 
+.DDPreviewDisk
+.
+
+If you see a 
+suspicious app or process
+, let me know.
+
+4️⃣ List All Network Volumes
+
+Run:
+
+bash
+
+Copy
+
+showmount -e localhost
+
+This lists 
+NFS shares on your Mac.
+
+Let me know 
+if any unexpected shares appear.
+
+5️⃣ Check Launch Agents & Daemons (Persistence Mechanisms)
+
+To see if something 
+automatically mounts 
+.DDPreviewDisk
+ on startup
+, check:
+
+bash
+
+Copy
+
+ls
+
+ -la /Library/LaunchAgents/
+
+ls
+
+ -la /Library/LaunchDaemons/
+
+ls
+
+ -la ~/Library/LaunchAgents/
+
+🚨 Look for 
+files related to DDPreview, NFS, or anything suspicious.
+
+🛑 Questions for You:
+
+Did you manually set up an NFS share called 
+.DDPreviewDisk
+?
+
+Did you recently install any software related to remote file access or previews?
+
+Have you noticed files being accessed remotely or strange network activity?
+
+🚨 If you 
+didn’t
+ set this up, this could be an 
+active persistence mechanism
+ keeping an external connection open. Let me know what you find! 🚀
+
+You said:
+
+ok so I installed a program called drill disk 
+
+ChatGPT said:
+
+Ah, that makes sense! 
+Disk Drill
+ is a data recovery tool, and it likely created 
+.DDPreviewDisk
+ as a virtual preview disk for file recovery.
+
+Since 
+Disk Drill has access to deep system files and disk volumes
+, it’s important to verify that:
+
+It isn’t running anything unnecessary in the background.
+
+It isn’t creating unintended remote access points.
+
+🚀 Next Steps
+
+1️⃣ Check If Disk Drill Is Running in the Background
+
+Run:
+
+bash
+
+Copy
+
+ps aux | grep drill
+
+If you see processes related to 
+Disk Drill
+, note their 
+process IDs (PIDs)
+ and stop them:
+
+bash
+
+Copy
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+2️⃣ Fully Uninstall Disk Drill (If You Don’t Need It)
+
+If you installed Disk Drill just for testing and don’t plan to use it, remove it completely:
+
+bash
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Disk\ Drill.app
+sudo 
+
+rm
+
+ -rf ~/Library/Application\ Support/CleverFiles
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.DiskDrill.plist
+sudo 
+
+rm
+
+ -rf /Library/Extensions/DiskDrill.kext
+
+Then, 
+check if 
+.DDPreviewDisk
+ disappears
+ using 
+mount
+.
+
+3️⃣ Ensure Disk Drill Isn't Auto-Mounting Disks on Startup
+
+Check for any 
+launch agents or daemons
+ related to Disk Drill:
+
+bash
+
+Copy
+
+ls
+
+ -la /Library/LaunchAgents/ | grep -i drill
+
+ls
+
+ -la /Library/LaunchDaemons/ | grep -i drill
+
+ls
+
+ -la ~/Library/LaunchAgents/ | grep -i drill
+
+If any files are found, 
+remove them
+:
+
+bash
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /path/to/suspicious/file.plist
+
+4️⃣ Confirm If 
+.DDPreviewDisk
+ Still Exists After Reboot
+
+Run:
+
+bash
+
+Copy
+
+sudo reboot
+
+After rebooting, check 
+mount
+ again. If the 
+network volume is still there, something else is causing it
+.
+
+Should You Keep D

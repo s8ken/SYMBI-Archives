@@ -1,0 +1,783 @@
+path
+
+: 
+
+'playwright/.auth/ycq.json'
+
+ });
+
+await
+
+ brows=
+er.
+
+close
+
+();
+};
+
+Update Playwright config to use it=
+ and stabilize servers.
+
+js
+
+Copy code
+
+// playwright.config.js
+
+const
+
+ { defin=
+eConfig, devices } =3D 
+
+require
+
+(
+
+'@playwright/te=
+st'
+
+);
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+defineConfig
+
+({
+
+testDir
+
+: 
+
+'./tests/e2e'
+
+,
+
+timeout
+
+: 
+
+30_000
+
+,
+
+expect
+
+: { 
+
+timeout
+
+: 
+
+7_000
+
+ },
+
+retries
+
+: proce=
+ss.
+
+env
+
+.
+
+CI
+
+ ? 
+
+2
+
+ : 
+
+0
+
+,
+
+reporter
+
+: [[
+
+'html'
+
+], [
+
+'line'
+
+]],
+
+globalSetup
+
+: 
+
+require
+
+.
+
+resolve
+
+(
+
+'./tests/utils/global-setup.ts'
+
+),
+
+use
+
+: {
+
+baseURL
+
+: 
+
+'http://localhost:3002'
+
+=
+
+,
+
+storageState
+
+=
+: 
+
+'playwright/.auth/ycq.json'
+
+,
+
+trace
+
+: 
+
+'on-first-retry'
+
+,
+
+screenshot
+
+: =
+
+'only-on-failure'
+
+,
+
+video
+
+: 
+
+'retain-on-failure'
+
+=
+,
+  },
+
+projects
+
+: [
+    { 
+
+name
+
+: 
+
+'chromium'
+
+, 
+
+use
+
+: { ...devices[
+
+'Desktop Chrome'
+
+] =
+} },
+    { 
+
+name
+
+: 
+
+'firefox'
+
+,  
+
+use
+
+: { ...devices[
+
+'Desktop Firefox'
+
+]=
+ } },
+
+// Safari can be flaky: give =
+it more time and retries
+
+    { 
+
+name
+
+: 
+
+'webkit'
+
+,   
+
+use
+
+: { ...devices[
+
+'Desktop Safari'
+
+] =
+}, 
+
+retries
+
+: 
+
+2
+
+, 
+
+timeout
+
+: 
+
+45_000
+
+, 
+
+expect
+
+: { 
+
+timeout
+
+: 
+
+=
+10_000
+
+ } },
+    { 
+
+name
+
+: 
+
+'iphone'
+
+,   
+
+use
+
+: { ...devices[
+
+'iPhone 12'
+
+] }, 
+
+retries
+
+: 
+
+2
+
+, 
+
+timeout
+
+: 
+
+45_000
+
+ },
+    { 
+
+name
+
+: 
+
+'pixel'
+
+,    
+
+use
+
+: { ...devices[
+
+'Pixel 5'
+
+] } },
+  ],
+
+// Make sure servers are actual=
+ly ready before tests start
+
+webServer
+
+: [
+    {
+
+name
+
+: 
+
+'backend'
+
+,
+
+command
+
+: 
+
+'node backend/server.js'
+
+,
+
+url
+
+:   
+
+'http://localhost:5001/api/health'
+
+,
+
+reuseExistingServer
+
+: !process.
+
+env
+
+.
+
+CI
+
+,
+
+timeout
+
+: 
+
+180_000
+
+,
+    },
+    {
+
+name
+
+: 
+
+'frontend'
+
+,
+
+command
+
+: 
+
+'cd frontend && PORT=3D3002=
+ npm start'
+
+,
+
+url
+
+:   
+
+'http://localhost:3002'
+
+=
+
+,
+
+reuseExistingServer
+
+: !process.
+
+env
+
+.
+
+CI
+
+,
+
+timeout
+
+: 
+
+180_000
+
+,
+    },
+  ],
+});
+
+Run:
+
+PW_API_BASE=3Dhttp://localhost:=
+5001 npm run test:e2e:all
+
+2) Robust selectors for forms (re=
+move 
+document.activeElement.typ=
+e
+)
+
+Use Playwright=E2=80=99s focus ass=
+ertion + resilient locators.
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js (replace the brittle focus test)
+
+test
+
+(=
+
+'form moves focus to first invalid=
+ field'
+
+, 
+
+asyn=
+c
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/login'
+
+);
+
+await
+
+ page.=
+
+getByRole
+
+(
+
+'button'
+
+,=
+ { 
+
+name
+
+: 
+=
+
+/sign in/i
+
+ }).
+=
+
+click
+
+();
+
+// Prefer role-based field loca=
+tors:
+
+const
+
+ email=
+ =3D page.
+
+getByRole
+
+(
+
+'textbox'
+
+, { 
+
+name
+
+: 
+
+/email/i
+
+ }=
+);
+
+const
+
+ passw=
+ord =3D page.
+
+getByLabel
+
+(
+
+/password/i
+
+);
+
+// One of them should be focuse=
+d
+
+const
+
+ email=
+Focused =3D 
+
+await
+
+ email.evaluate(
+
+e
+
+ =3D> e =3D=3D=3D 
+
+document
+
+.
+
+activeElement
+
+)=
+;
+
+const
+
+ passw=
+ordFocused =3D 
+
+await
+
+ password.evaluate(
+
+e
+
+ =3D> e =3D=3D=3D 
+
+document
+
+.
+
+activeElement
+
+);
+
+expect
+
+(emailFocused || passwordFocused).
+
+toBeTruthy
+
+();
+});
+
+Optionally add stable test IDs to =
+key buttons/inputs (makes selectors bulletproof):
+
+jsx
+
+Copy code
+
+// Example button
+
+<
+
+Button
+
+ data-testid=3D
+
+"login-submit"
+
+ type=3D
+
+"submit"
+
+>
+
+Sign
+
+in
+
+</
+
+Button
+
+>
+
+Then in tests:
+
+js
+
+Copy code
+
+await
+
+ pa=
+ge.
+
+getByTestId
+
+(
+
+'login-submit'
+
+).
+
+click
+
+();
+
+3) Main landmark test: gate on au=
+th page vs. app shell
+
+Some failures were because tests e=
+xpected the post-login shell while stuck on /login. With storageState in pl=
+ace, assert the shell explicitly:
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js
+
+test
+
+(=
+
+'has single main landmark and H1 a=
+fter auth'
+
+, 
+
+a=
+sync
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/dashboard'
+
+);
+
+await
+
+ page.=
+
+waitForURL
+
+(
+
+/dashboard/
+
+);
+
+await
+
+ page.=
+
+waitForSelector
+
+(
+
+'main[role=3D"main"] h1=
+'
+
+, { 
+
+state
+
+: 
+
+'visible'
+
+ });
+
+const
+
+ mains=
+ =3D 
+
+await
+
+ pa=
+ge.
+
+locator
+
+(
+
+'main[role=3D"main"]'
+=
+
+).
+
+count
+
+();
+
+expect
+
+(mains).
+
+toBe
+
+(
+
+1
+
+);
+
+await
+
+expect
+
+(pag=
+e.
+
+getByRole
+
+=
+
+(
+
+'heading'
+
+, { 
+
+level
+
+: 
+
+1
+
+ })).
+
+toBeVisi

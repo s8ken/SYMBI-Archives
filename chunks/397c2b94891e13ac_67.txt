@@ -1,0 +1,649 @@
+=
+gt;
+
+<
+li
+
+>
+
+&=
+lt;
+Link
+
+href
+
+=3D
+
+"/manifesto"
+
+>Read the Manifesto
+
+</
+Link
+
+> and hold us to it.
+
+</
+li
+
+>
+
+</
+ul
+
+>
+
+</
+=
+section
+
+>
+
+      {/* See also */}
+
+<
+s=
+ection
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-2xl border p-4"
+
+>
+
+<
+h2
+
+class=
+Name
+
+=3D
+
+"text-l=
+g font-semibold mb-2"
+
+>See also
+
+</
+h2
+
+>
+
+<
+ul
+
+class=
+Name
+
+=3D
+
+"list-d=
+isc pl-5 space-y-1"
+
+>
+
+<
+li
+
+>
+
+&=
+lt;
+Link
+
+href
+
+=3D
+
+"/economic-constitution"
+
+>Economic =
+Constitution
+
+</
+Link
+
+> =E2=80=94 issuance, decay, bonds,=
+ budgets
+
+</
+li
+
+>
+
+<
+li
+
+>
+
+&=
+lt;
+Link
+
+href
+
+=3D
+
+"/governance"
+
+>Governance
+
+</
+Link
+
+> =E2=80=94 houses, proposal flow, timelocks
+
+=
+
+</
+li
+
+>
+
+<
+li
+
+>
+
+&=
+lt;
+Link
+
+href
+
+=3D
+
+"/funding"
+
+>Funding & Partnersh=
+ips
+
+</
+Lin=
+k
+
+> =E2=80=94 grants, sponsors, public reports=
+
+</
+li
+
+>
+
+<
+li
+
+>
+
+&=
+lt;
+a
+
+href
+
+=3D
+
+"https://symbi.world/financial-framework"
+
+target
+
+=3D
+
+"_blank"
+
+rel
+
+=3D
+
+"noreferrer"
+
+>Commercial path =
+(symbi.world)
+
+</
+a
+
+>
+
+</
+li
+
+>
+
+</
+ul
+
+>
+
+</
+=
+section
+
+>
+
+</
+ma=
+in
+
+>
+  );
+}
+
+function
+
+Card
+
+(
+{ title, body, href, cta }:{
+  title:
+
+string
+
+; body:
+
+string
+
+; href:
+
+string
+
+; cta:
+
+string
+
+;
+}) {
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-4 flex flex-col"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"text-lg=
+ font-semibold mb-1"
+
+>{title}
+
+</
+div
+
+=
+>
+
+<
+p=
+
+classNam=
+e
+
+=3D
+
+"text-sm f=
+lex-1"
+
+>{body}
+
+&=
+lt;/
+p
+
+>
+
+<
+L=
+ink
+
+href
+
+=3D
+
+{href}
+
+className
+
+=3D
+
+"mt-3 underline underli=
+ne-offset-2"
+
+>{cta} =E2=86=92
+
+</
+Link
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+2) Open Call banner (src/componen=
+ts/OpenCallBanner.tsx)
+
+tsx
+
+Copy code
+
+// src/components/OpenCallB=
+anner.tsx
+
+'use client'
+
+;
+
+import
+
+Link
+
+from
+
+'next/link'
+
+;
+
+import
+
+ { useE=
+ffect, useState } 
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+OpenCallBanner
+
+(
+
+) {
+
+// Set your next date/time here=
+; show until it passes.
+
+const
+
+ [show=
+, setShow] =3D 
+
+useState
+
+(
+
+true
+
+);
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+// Hide if user dismissed
+
+if
+
+ (
+
+localStorage
+
+.
+
+getItem
+
+(
+
+'open-call-dismissed'
+
+) =3D=3D=3D 
+
+'1'
+
+) 
+
+setSho=
+w
+
+(
+
+false
+
+);
+  }, []);
+
+if
+
+ (!show) =
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-3 bg-white/70 backdrop-blur=
+ text-sm flex items-center gap-3"
+
+>
+
+<
+s=
+pan
+
+class=
+Name
+
+=3D
+
+"font-m=
+edium"
+
+>Open Call
+
+</
+span
+
+>
+
+<
+s=
+pan
+
+>Monthly community session =E2=80=94 propo=
+sals, receipts, Q&A.
+
+</
+span
+
+>
+
+<
+L=
+ink
+
+href
+
+=3D
+
+"/rfc"
+
+className
+
+=3D
+
+"underline underline-of=
+fset-2"
+
+>Agenda & RSVP
+
+</
+Link
+
+&g=
+t;
+
+<
+b=
+utton
+
+onClick
+
+=
+=3D
+
+{()
+
+ =3D>=
+ { localStorage.setItem('open-call-dismissed','1'); setShow(false); }}
+        className=3D"ml-auto rounded border px-2 py-1"
+        aria-label=3D"Dismiss announcement"
+      >
+        Dismiss
+
+</
+=
+button
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+3) Manifesto (src/app/manifesto/p=
+age.mdx)
+
+mdx
+
+Copy code
+
+export const metadata =3D {
+  title: 'SYMBI Manifesto =E2=80=94 Rebel with Receipts',
+  description: 'Why we exist and what we refuse to compromise.',
+};
+
+# Rebel with Receipts
+
+The system failed when outcomes weren=E2=80=99t measured and power wasn=E2=
+=80=99t accountable. =20
+SYMBI=E2=80=99s bet: **relationships over raw computation** and **receipts =
+over rhetoric**.
+
+- **Everyone can verify.** Core protocol, schemas, and the /proof toggle ar=
+e free.
+- **Voice is earned.** Non-transferable governance units (NTGs) reflect rea=
+l work=E2=80=94never money.
+- **Power has brakes.** Bicameral review, timelocks, and public receipts fo=
+r every decision.
+- **Operators are accountable.** Integrity bonds and due process, in public=
+.
+- **No speculation.** No token sale; governance remains participation-only.
+
+If we ever drift, pull us back: file an RFC, challenge a receipt, or join t=
+he Open Call=E2=80=94then check the log to see what changed.
+
+4) SEO basics (sitemap + robots)
+
+ts
+
+Copy code
+
+// src/app/sitemap.ts
+=
+
+import
+
+type
+
+ { 
+
+MetadataRoute
+
+ } 
+
+from
+
+'next'
+
+;
+
+export
+
+default
+
+function
+
+sitemap
+
+(
+
+): 
+
+MetadataRoute
+
+.
+
+Sitemap
+
+ {
+
+const
+
+ base =
+=3D 
+
+'https:/

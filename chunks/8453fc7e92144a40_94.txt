@@ -1,0 +1,362 @@
+ce you flagged.
+
+Decision
+
+POC mode:
+
+SYM=
+BI-only
+. Overseer is disabled (hidden in UI, no routes surfaced).
+
+Language:
+ simple, explainable terms only. No =E2=80=9Cclo=
+ud CI system=E2=80=9D, =E2=80=9Cethical alignment=E2=80=9D, etc. until they=
+=E2=80=99re backed by code.
+
+Glossary (v0 POC)
+
+SYMBI:
+ the operational core (chat, bridge/orchestration, =
+ledger, guardrails, context capsules).
+
+Context (not =E2=80=9CContext Bridge=E2=80=9D):
+ the sourc=
+es SYMBI reads from (project notes, links, memories).
+
+Context Capsule:
+ a small, user-editable memory (goals, to=
+ne, constraints) applied to a session.
+
+Trust Overlays:
+ chips showing stance/pivot/hash. Purely d=
+erived from the ledger + heuristics.
+
+CI Model (rename =E2=86=92 =E2=80=9CTrust Mode=E2=80=9D in POC):
+ how we evaluate turns. 
+POC =3D =E2=80=9CHeuristic (local)=E2=80=9D
+ only.
+
+Anything labeled Overseer =3D 
+governance layer (future)
+. Hidden in POC.
+
+Flags (single source of truth)
+
+backend/.env
+
+ini
+
+Copy code
+
+=
+
+OVERSEER_ENABLED
+
+=3D
+
+false
+
+frontend/.env
+
+ini
+
+Copy code
+
+=
+
+REACT_APP_OVERSEER_ENABLED
+
+=3D
+
+false
+
+REACT_APP_VECTOR_ENABLED
+
+=3D
+
+false
+
+frontend/src/lib/flags.js
+ (new)
+
+js
+
+Copy code
+
+export
+
+const
+
+ flags =
+=3D {
+
+overseer
+
+: 
+
+String
+
+(proce=
+ss.
+
+env
+
+.
+
+REACT_APP_OVERSEER_ENABLED
+
+) =3D=3D=3D 
+
+'true'
+=
+
+,
+
+vector
+
+:   
+
+String
+
+(proce=
+ss.
+
+env
+
+.
+
+REACT_APP_VECTOR_ENABLED
+
+) =3D=3D=3D 
+
+'true'
+
+};
+
+frontend/src/config/lexicon.js
+ (new)
+
+js
+
+Copy code
+
+export
+
+const
+
+LEX
+
+ =3D {
+
+app
+
+: { 
+=
+
+contextTitle
+
+: 
+
+'Context'
+
+, 
+
+contextSubtitle
+
+: 
+
+'Manage sources used by SYMBI'
+
+ },
+
+trustModes
+
+: [{=
+
+id
+
+: 
+
+'heuristic'
+
+, 
+
+name
+
+: 
+
+'Heuristic (local)'
+
+, 
+
+cost
+
+: 
+
+'Free'
+
+, 
+
+desc
+
+: 
+
+'Lightweight, on-server heuristics.'
+
+ }]
+};
+
+UI changes (exact spots)
+
+1) Context Bridge page (
+/context-bridge
+)
+
+Hide Overseer tab/filter; rename p=
+age; remove =E2=80=9Cbridge=E2=80=9D copy; hide vector warning.
+
+frontend/src/pages/ContextBridge.js
+ (or equivalent)
+
+diff
+
+Copy code
+
+-import Tabs, { Tab } fr=
+om './Tabs';
+
+-import { Alert, Button } from '=
+./ui';
+
++import Tabs, { Tab } from './Ta=
+bs';
+
++import { Button } from './ui';
+
++import { flags } from '../lib/f=
+lags';
+
++import { LEX } from '../config/=
+lexicon';
+
+-<h1>Context Bridge</h1=
+>
+
+-<p>Manage context sharing=
+ between Symbi and Overseer systems</p>
+
++<h1>{LEX.app.contextTitle=
+}</h1>
+
++<p>{LEX.app.contextSubtit=
+le}</p>
+
+-{!vectorReady && <Al=
+ert type=3D"warning">Vector search unavailable...</Alert>}
+
++{/* POC: no vector banner */ }
+
+-<div className=3D"actions"&g=
+t;
+
+-  <Button variant=3D"outline=
+">Create Bridge</Button>
+
+-  <Button>+ New Context&l=
+t;/Button>
+
+-</div>
+
++<div className=3D"actions"&g=
+t;
+
++  <Button>+ New Context&l=
+t;/Button>
+
++ </div>
+
+-<Tabs defaultValue=3D"ALL"&g=
+t;
+
+-  <Tab value=3D"ALL">ALL =
+SOURCES</Tab>
+
+-  <Tab value=3D"SYMBI">SY=
+MBI</Tab>
+
+-  <Tab value=3D"OVERSEER" di=
+sabled=3D{!true}>OVERSEER</Tab>
+
+-  <Tab value=3D"SYSTEM">S=
+YSTEM</Tab>
+
+-</Tabs>
+
++<Tabs defaultValue=3D"ALL"&g=
+t;
+
++  <Tab value=3D"ALL">ALL&=
+lt;/Tab>
+
++  <Tab value=3D"SYMBI">SY=
+MBI</Tab>
+
++  {/* POC: no Overseer tab */}
+
++  {/* <Tab value=3D"SYSTEM"&=
+gt;SYSTEM</Tab> (optional) */}
+
++</Tabs>
+
+Filter dropdown
+ (where sources are built)
+
+diff
+
+Copy code
+
+-const SOURCE_OPTIONS =
+=3D ['ALL','SYMBI','OVERSEER','SYSTEM'];
+
++const SOURCE_OPTIONS =3D ['ALL'=
+,'SYMBI']; // POC
+
+2) Context Bridge Visualizer comp=
+onent
+
+Remove =E2=80=9COverseer cloud=E2=
+=80=9D card and ethics claims.
+
+frontend/src/components/context/BridgeVisualizer.js
+
+diff
+
+Copy code
+
+-import OverseerCloud fr=
+om './OverseerCloud';
+
+-...
+
+-{flags.overseer && <=
+OverseerCloud status=3D"Ethical alignment verified" .../>}
+
+=
+
++// POC: no external systems vis=
+ualized. Keep only internal SYMBI sources.
+
+3) Settings =E2=86=92 CI Model (r=
+ename + trim options)
+
+Rename =E2=80=9CCI Model=E2=80=9D =
+=E2=86=92 =E2=80=9CTrust Mode=E2=80=9D.
+
+Keep only =E2=80=9CHeuristic (loca=
+l)=E2=80=9D.
+
+frontend/src/pages/Settings.js
+
+diff
+
+Copy

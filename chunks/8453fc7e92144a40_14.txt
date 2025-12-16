@@ -1,0 +1,54 @@
+In <mcfile name=3D"security.middleware.js" path=3D"/Users/admin/Symbi=
+ Synergy/backend/middleware/security.middleware.js">, ensure Helmet head=
+ers, rate limiting, request size limits, and robust CORS policy aligned to =
+CORS_ORIGIN env.\n  4) Health, Readiness, and Timeouts (High)\n     - Add/v=
+erify /healthz , /readyz in <mcfile name=3D"server.js" path=3D"/Users/ad=
+min/Symbi Synergy/backend/server.js"> and enforce sane server timeouts (=
+header/body/idle) to prevent resource exhaustion.\n  5) Dependency & Su=
+pply Chain (High)\n     - Lockfile hygiene, audit review, and set CI to fai=
+l on high/critical vulns. Pin core images in <mcfile name=3D"Dockerfile"=
+ path=3D"/Users/admin/Symbi Synergy/Dockerfile"> to minimal, patched bas=
+e.\n  6) CI/CD Guardrails (Medium)\n     - Update <mcfile name=3D"ci.yml=
+" path=3D"/Users/admin/Symbi Synergy/.github/workflows/ci.yml"> to run: =
+install, lint, type-check (if applicable), test, build, audit, SCA/CodeQL; =
+enforce branch protection and required checks.\n  7) Observability & In=
+cident Readiness (Medium)\n     - Wire application logs to the stack in <=
+;mcfolder name=3D"observability" path=3D"/Users/admin/Symbi Synergy/observa=
+bility/">; ensure consistent trace/span IDs, error tagging, and log reda=
+ction. Add /metrics if appropriate.\n  8) API Contract Integrity (Medium)\n=
+     - Validate <mcfile name=3D"openapi.yaml" path=3D"/Users/admin/Symbi=
+ Synergy/openapi.yaml"> against implemented routes. Add contract tests a=
+nd route coverage.\n  9) Frontend Hardening (Medium)\n     - Ensure CSP via=
+ meta or headers from backend/edge; dependency audit in <mcfile name=3D"=
+package.json" path=3D"/Users/admin/Symbi Synergy/frontend/package.json">=
+; sanitize any dynamic HTML usage.\n  10) Documentation & Policy (Low)\=
+n      - Refresh <mcfile name=3D"SECURITY.md" path=3D"/Users/admin/Symbi=
+ Synergy/SECURITY.md"> and <mcfile name=3D"PRIVACY.md" path=3D"/Users=
+/admin/Symbi Synergy/PRIVACY.md"> to match actual controls; add runbooks=
+ for incident and key rotation.\n- Rollback: All proposed changes are rever=
+sible via branch-based workflow. Each change shipped behind PR with diff re=
+view; if regressions arise, revert commit or toggle feature flags where app=
+licable.\n\n### DRY-RUN / DIFF\nNo changes executed. Proposed read-only che=
+cks and previews:\n- Repo & CI status\n bash\ngit status -s\ncat .githu=
+b/workflows/ci.yml | sed -n '1,160p'\ncat .github/workflows/codeql.yml | se=
+d -n '1,200p'\n \n- Backend health & middleware inventory\n bash\nls -l=
+a backend/middleware\nsed -n '1,200p' backend/server.js\n \n- Dependency an=
+d vulnerability surface\n bash\nnpm --version && node --version\nnp=
+m audit --audit-level=3Dhigh --json | jq '.metadata.vulnerabilities'\n( cd =
+frontend && npm audit --audit-level=3Dhigh --json | jq '.metadata.v=
+ulnerabilities' )\n \n- Observability config preview\n bash\nls -la observa=
+bility\nsed -n '1,200p' observability/otel/config.yaml || true\n \n- API co=
+ntract check\n bash\nhead -n 80 openapi.yaml\n \n- Env template inventory (=
+names only)\n bash\nsed -n '1,160p' .env.example\n \n\n### ON APPROVAL\nI w=
+ill execute the following, stepwise, stopping on any deviation:\n1) Create =
+branch and baseline\n bash\ngit checkout -b ops/remediate-baseline\n \n2) S=
+ecrets & config hygiene\n bash\n# augment .env.example with required na=
+mes only (no secrets)\n \n3) Security middleware hardening\n bash\n# apply =
+Helmet, rate limiting, body size limits, strict CORS in backend/middleware/=
+security.middleware.js\n \n4) Health/readiness + timeouts\n bash\n# add /he=
+althz and /readyz and server timeouts in backend/server.js\n \n5) CI enforc=
+ement\n bash\n# update .github/workflows/ci.yml to run lint/test/build/audi=
+t and fail on high/critical\n \n6) Dependency audit and minimal updates\n b=
+ash\nnpm ci\nnpm audit fix --only=3Dprod || true\n( cd frontend && =
+npm ci && npm audit fix --only=3Dprod || true )\n \n7) Observabilit=
+y wiring\n bash\n# ensure logs/

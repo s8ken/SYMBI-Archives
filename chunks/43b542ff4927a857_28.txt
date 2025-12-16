@@ -1,0 +1,427 @@
+ons"
+
+,
+
+"model"
+
+:
+
+"gpt-4o-mini"
+
+,
+
+"tool_ids"
+
+:
+
+[
+
+"rag.query"
+
+]
+
+,
+
+"sdk_version"
+
+:
+
+"unknown"
+
+,
+
+"policy_id"
+
+:
+
+"default"
+
+,
+
+"input_hash"
+
+=
+
+:
+
+"sha256:=E2=80=A6"
+
+,
+
+"output_hash"
+
+:
+
+"sha256:=E2=80=A6"
+
+,
+
+"timestamp"
+
+:
+
+"2025-10-04T10:12:00Z"
+
+,
+
+"status"
+
+:
+
+"UNSIGNED"
+
+}
+
+,
+
+"next"
+
+:
+
+"=
+POST https://your-domain/api/exec with JSON and x-symbi-hmac"
+
+=
+
+}
+
+Executor returns
+
+json
+
+Copy code
+
+{
+
+"ok"
+
+:
+
+true
+
+,
+
+"output"
+
+:
+
+{
+
+"html"
+
+:
+=
+
+"<section>=E2=
+=80=A6</section>"
+
+,
+
+"notes"
+
+:
+
+"added 1 partner"
+
+}
+
+,
+
+"receipt"
+
+:
+
+{
+
+"id"
+
+:
+
+"=
+rcpt_01JC=E2=80=A6"
+
+,
+
+"signature"
+
+:
+
+"ed25519:=E2=80=A6"
+
+,
+
+"payload"
+
+:
+
+{
+
+"task_id"
+
+:
+
+"01JC=E2=80=A6"
+
+,=
+
+"endpoint"
+
+=
+
+:
+
+"chat_completions"
+
+,
+
+"model"
+
+:
+
+"gpt-4o-mini"
+
+,
+
+"tool_ids"
+
+=
+
+:
+
+[
+
+"rag.query"
+
+]
+
+,
+
+"policy_id"
+
+:
+
+"default"
+
+,
+
+"sdk_version"
+
+:
+
+"openai@5.23.1"
+
+,
+
+"input_hash"
+
+:
+
+"sha256:=E2=80=A6"
+
+,
+
+"output_hash"
+
+:
+
+"sha256:=E2=80=A6"
+
+,
+
+"timestamp"
+
+:
+
+"2025-10-04T10:12:05Z"
+
+,
+
+"chain_prev"
+
+:
+
+"sha256:<prev_receipt>"
+
+}
+
+}
+
+}
+
+4) Guardrails the agents should f=
+ollow (maps your =E2=80=9CBoundary Enforcement=E2=80=9D)
+
+Web allow-list
+ per site (e.g., 
+ycq.example
+, 
+symbi.world
+)
+
+Model allow-list:
+
+["gpt-4o-mini","claude-3.7-sonnet"]
+
+Budgets:
+
+m=
+ax_input_tokens=3D8000
+, 
+=
+max_output_tokens=3D1500
+, 
+cost_ceiling_usd=3D1.00
+
+Repo actions:
+ read/analysis OK; 
+writes gated
+ (no push, comment only via ap=
+proved intent)
+
+Receipts required:
+ every tool call and final answer
+
+5) =E2=80=9CColleague Effect=E2=
+=80=9D =E2=86=92 operationalization (how it shows up in outputs)
+
+When an agent replies, it should i=
+nclude 4 quick panels:
+
+Continuity
+ =E2=80=94 what I remember from prior steps
+
+Role focus
+ =E2=80=94 what I=E2=80=99m prioritizing now=
+ and why
+
+Boundaries
+ =E2=80=94 what I will/won=E2=80=99t do this=
+ step (with policy refs)
+
+Value assessment
+ =E2=80=94 why this step increases tru=
+st/velocity
+
+(This turns the philosophy into a repeatable output template.)
+
+6) Definition of Done for Phase 1=
+, Step 1
+
+/partners
+ renders from 
+SYMBI Vault
+ entries (schema above)
+
+At least 
+one live receipt
+ displayed (or link to a rece=
+ipt verifier)
+
+Agent replies conform to 
+intent JSON
+ + 
+receipt stub
+
+Web & model 
+allow-lists enforced
+
+CI check to reject PRs that add pa=
+rtners without a receipt id
+
+If you want, I can now generate:
+
+the 
+partners React component
+ (clean, responsive), or
+
+the 
+/api/exec
+ endpoint that verifies HMAC and emits 
+Ed25519 receipts
+.
+
+Tell me which artifact you want fi=
+rst, and I=E2=80=99ll drop it in ready to paste.
+
+=
+
+You said:
+
+we can use Gamma Tria in greek alphabet for the inverted Y?
+
+2/2
+
+ChatGPT said:
+
+Thought =
+for 14s
+
+Short answer: yes=E2=80=94but if you literally=
+ want an 
+=E2=80=9Cinverted Y=E2=
+=80=9D
+ glyph, the Greek letter you=E2=80=99re picturing is 
+Lambda (=CE=9B)
+, not Gamma. H=
+ere=E2=80=99s how to express 
+Gamma =
+Tria
+ while keeping that look:
+
+Which Greek letter looks like an in=
+verted Y?
+
+=CE=9B (Lambda)
+ =E2=86=92 looks like an inverted 
+V/Y
+. Great if the shape is the=
+ priority.
+
+=CE=A5 (Upsilon)
+ =E2=86=92 looks like a Latin 
+Y
+ (not inverted).
+
+=CE=93 (Gamma)
+ =E2=86=92 
+=CE=93
+ is a right-angle; 
+=CE=B3
+ (lowercase) can look 
+y-ish
+ in some fonts but not an inverted Y.
+
+=CE=A8 (Psi)
+ =E2=86=92 trident-Y vibe; visually suggests =
+=E2=80=9Cthree=E2=80=9D (three prongs).
+
+Good mark directions (pick one)
+
+=CE=93=C2=B3
+ =E2=80=94 
+Gamma Tria =3D =E2=80=9CGamma to the third=E2=80=9D
+
+Clean, literal, and mathematically n=
+eat. Works well as a logomark and in text.
+
+=CE=9B=C2=B3
+ =E2=80=94 if you want the 
+inverted-Y
+ silhouette but still encode =
+=E2=80=9Cthree.=E2=80=9D
+
+Honest note: this is 
+Lambda
+, not Gamma=E2=80=94but the vis=
+ual likely matches your intent.
+
+=CE=A8
+ =E2=80=94 the prongs suggest 
+three
+, so it=E2=80=99s an elegant single-gl=
+yph for =E2=80=9CTria.=E2=80=9D
+
+You can pair 
+=CE=A8
+ with the wordmark =E2=80=9CGAMMA T=
+RIA=E2=80=9D (Latin) or =E2=80=9C=CE=93=CE=AC=CE=

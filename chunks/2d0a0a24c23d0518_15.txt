@@ -1,0 +1,264 @@
+Biome is transmitting data 
+without your knowledge
+, it might be a 
+privacy risk
+.
+
+B. Disable Biome Logging
+
+Apple doesn’t let you fully disable 
+Biome
+, but you can 
+block its data collection
+:
+
+Go to
+ → 
+System Settings → Privacy & Security → Analytics & Improvements
+
+Disable
+ all options related to analytics.
+
+3️⃣ Scan for Any Active Streaming
+
+Since 
+OBS was still running a camera extension
+, we need to ensure nothing else is livestreaming.
+
+A. Check Again for Streaming Processes
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"stream\|ffmpeg\|screencapture"
+
+If anything 
+other than Biome or OBS appears
+, that could be a 
+hidden streaming service
+.
+
+B. Find Apps Accessing Your Camera/Microphone
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 7d
+
+If you see logs showing 
+camera/mic usage
+, it means your video/audio may have been used in a stream.
+
+🚨 
+Summary: What to Do Next
+
+✅ 
+1. Remove the OBS Camera Extension (
+systemextensionsctl uninstall
+)
+
+✅ 
+2. Delete the OBS Camera Extension Files (
+sudo rm -rf /Library/SystemExtensions/...
+)
+
+✅ 
+3. Restart Mac (
+sudo shutdown -r now
+)
+
+✅ 
+4. Investigate Biome (
+log show --predicate 'eventMessage contains "biome"'
+)
+
+✅ 
+5. Check for Camera/Mic Access Logs (
+log show --predicate 'eventMessage contains "AVCapture"'
+)
+
+🚨 
+Since OBS’s camera extension was still running, someone may have had access to your webcam even after uninstalling OBS.
+ Remove it completely and let me know if anything else looks suspicious!
+
+You said:
+
+no I am not worried about shutting it down given I am aware of it now 
+
+ChatGPT said:
+
+Got it—you want to 
+analyze past livestreaming activity
+, not just shut things down. Since we now know 
+OBS’s camera extension was active
+, let’s focus on 
+where video was sent and if anything else streamed without your knowledge.
+
+🚨 Next Steps: Track Past Livestreaming Activity
+
+Now that we know OBS was at least 
+partially active
+, we need to answer:
+
+1️⃣ 
+Where were livestreams sent?
+
+2️⃣ 
+Was OBS the only streaming tool used?
+
+3️⃣ 
+Were there any hidden screen or audio streams?
+
+1️⃣ Find Past Video Stream Destinations
+
+Since 
+OBS’s camera extension was running
+, let’s check where 
+it or other apps sent video.
+
+A. Check Past Network Connections for Streaming Servers
+
+Run:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+If a livestream was active, you should see 
+connections to streaming services (Twitch, YouTube, YouStream, etc.).
+
+Now, expand the search to 
+past connections
+:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 21d
+
+🔍 
+Look for domains like:
+
+rtmp://live.twitch.tv/
+
+rtmp://a.rtmp.youtube.com/
+
+youstream.com
+
+facebook.com/live
+
+If 
+unknown IPs
+ appear, we can 
+trace them back
+ to see what services were contacted.
+
+2️⃣ Find If Other Apps Were Streaming
+
+Since 
+OBS was partially removed
+, it’s possible another app was also livestreaming.
+
+A. List All Apps That Had Screen Recording Permissions
+
+Go to 
+System Settings → Privacy & Security → Screen Recording
+
+Look for any 
+apps other than OBS
+ that still have permission.
+
+If something unexpected is listed, it could have been used for a stream.
+
+B. Check If Other Streaming Software Was Running
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"stream\|ffmpeg\|screencapture"
+
+If any 
+other apps
+ appear (like 
+ffmpeg
+ or 
+QuickTime
+), they may have streamed video/audio.
+
+C. Check for Background Streaming Services
+
+sh
+
+Copy
+
+launchctl list | grep -i 
+
+"stream\|ffmpeg"
+
+If any 
+background streaming services
+ are active, this will show them.
+
+3️⃣ Check Browser History for Streaming Activity
+
+Since some livestreams can happen through 
+browser-based streaming
+, check past activity.
+
+A. Search for Streaming Sites
+
+sh
+
+Copy
+
+grep -i 
+
+"stream\|live"
+
+ ~/Library/Application\ Support/Google/Chrome/Default/History
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url FROM history_items WHERE url LIKE '%stream%';"
+
+🔍 
+Look for:
+
+YouTube Live
+
+Twitch
+
+YouStream
+
+Facebook Live
+
+Unknown streaming s

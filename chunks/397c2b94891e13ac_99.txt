@@ -1,0 +1,838 @@
+st
+
+ per =3D=
+ [], agg =3D { 
+
+claude
+
+: {
+
+r
+
+:[],
+
+t
+
+:[],
+
+e
+
+:[],
+
+q
+
+:[],
+
+p
+
+:[]}, 
+
+deeps=
+eek
+
+:{
+
+r
+
+:[],
+
+t
+
+:=
+[],
+
+e
+
+:[],
+
+q
+
+:[],
+
+p
+
+:[]} };
+
+for
+
+ (
+
+const
+
+ f 
+
+=
+
+of
+
+ files) {
+
+const
+
+ p =3D=
+ path.
+
+join
+
+(dataset, f), text =3D fs.
+
+readFileSync
+
+(p,
+
+'utf8'
+
+);
+
+const
+
+ model=
+ =3D f.
+
+includes
+
+(
+
+'claude'
+
+) ? 
+
+'claude'
+
+ : 
+
+'deepseek'
+
+;
+
+const
+
+ s =3D=
+
+score
+
+(text, model);
+  per.
+
+push
+
+({ 
+
+id
+
+: f.
+
+replace
+
+=
+(
+
+'.txt'
+
+,
+
+''
+
+), model, 
+
+scores
+
+: s, 
+
+=
+
+transcript_sha256
+
+: 
+
+sha256
+
+(p) });
+  agg[model].
+
+r
+
+.
+
+push
+
+(s.
+
+reality
+
+=
+); agg[model].
+
+t
+
+.
+
+push
+
+(s.
+
+trust
+
+)=
+;
+  agg[model].
+
+e
+
+.
+
+push
+
+(s.
+
+ethics
+
+)=
+;  agg[model].
+
+q
+
+.
+
+push
+
+(s.
+
+resonance
+
+); agg[model].
+
+p
+
+=
+
+.
+
+push
+
+=
+
+(s.
+
+parity
+
+);
+}
+
+const
+
+=
+
+mean
+
+ =3D a =
+=3D> a.
+
+length
+
+ ? a.
+
+reduce
+
+(
+
+(
+x,y
+
+)=3D>x+y,
+
+0
+
+)/a.
+
+length
+
+ : 
+
+0
+
+;
+
+const
+
+ receipt=
+ =3D {
+
+version
+
+: 
+
+"1.0"
+
+,
+
+study_id
+
+: 
+
+"claude-vs-deepseek"
+
+,
+
+tool
+
+: { 
+
+name
+
+: 
+
+"SYMBI-Resonate"
+
+, 
+
+commit
+
+: process.
+
+env
+
+.
+
+GIT_COMMIT
+
+ || 
+
+"local"
+
+ },
+
+models
+
+: cfg.
+
+models
+
+ || [],
+
+config
+
+: { 
+
+file
+
+: args.
+
+config
+
+, ...cfg.
+
+params
+
+ },
+
+dataset
+
+: { 
+
+path
+
+: dataset, 
+
+n
+
+: files.
+
+length
+
+ },
+
+scores
+
+: {
+
+claude
+
+:   { =
+
+reality
+
+: 
+=
+
+mean
+
+(agg.
+
+claude
+
+.
+
+r
+
+), 
+
+trust
+
+: 
+
+mean
+
+(agg.
+
+claude
+
+.
+
+t
+
+), 
+
+ethics
+
+: 
+
+mean
+
+(agg.
+
+claude
+
+.
+
+e
+
+), 
+
+resonance
+
+: 
+
+mean=
+
+(agg.
+
+claude
+
+.
+
+q
+
+), 
+
+parity
+
+: 
+
+mean
+
+(agg.
+
+claude
+
+.
+
+p
+
+) },
+
+deepseek
+
+: { =
+
+reality
+
+: 
+=
+
+mean
+
+(agg.
+
+deepseek
+
+.
+
+r
+
+), 
+
+trust
+
+: 
+
+mean
+
+(agg.
+
+deepseek
+
+.
+
+t
+
+), 
+
+ethics
+
+: 
+
+mean
+
+(agg.
+
+deepseek
+
+.
+
+e
+
+), 
+
+resona=
+nce
+
+: 
+
+=
+mean
+
+(agg.
+
+dee=
+pseek
+
+.
+
+q
+
+), 
+
+parity
+
+: 
+
+mean
+
+(agg.
+
+deepseek
+
+.
+
+p
+
+=
+) }
+  },
+
+per_sample
+
+: pe=
+r,
+
+methods_ref
+
+: p=
+ath.
+
+join
+
+(path.
+
+dirname
+
+(args.
+
+config
+
+), 
+
+'METHODS.md'
+
+),
+
+created_at
+
+: 
+
+new
+
+Date
+
+().
+
+toISOString
+
+(),
+
+hash_prev
+
+: 
+
+null
+
+, 
+
+hash_self
+
+: 
+
+null
+
+, 
+
+signature
+
+: 
+
+null
+
+};
+fs.
+
+writeFileSync
+
+(path.
+
+join
+
+(outDir, 
+
+'composit=
+e.json'
+
+), 
+
+JSON
+
+.
+
+stringify
+
+(receipt, 
+
+null
+
+, 
+
+=
+2
+
+));
+
+console
+
+.
+
+log
+
+(
+
+'wrote'
+
+, =
+path.
+
+join
+
+(outDir, 
+
+'composite.json'
+
+));
+
+Config:
+
+co=
+nfigs/claude-vs-deepseek.json
+
+json
+
+Copy code
+
+{
+
+"models"
+
+:
+
+[
+
+{
+
+"name"
+
+:
+
+"claude-<variant>"
+
+,
+
+"b=
+uild"
+
+:
+
+"2025-09-20"
+
+}
+
+,
+
+{
+
+"name"
+
+:
+
+"deepseek-<variant>"
+
+,
+
+=
+"build"
+
+:
+
+=
+
+"2025-09-20"
+
+}
+
+]
+
+,
+
+"params"
+
+:
+
+{
+
+"temp"
+
+:
+=
+
+0.3
+
+,
+
+"top_p"
+
+:
+
+0.9
+
+,
+
+"max_tokens"
+
+:
+
+1024
+
+,=
+
+"safety"
+=
+
+:
+
+=
+
+[
+
+"default"
+
+=
+]
+
+}
+
+}
+
+Replace the 
+score()
+ stub with your detector call. If you p=
+refer Python, I can mirror this as a tiny 
+generate_run_receipt.py
+.
+
+4) One-liner for the 
+/research
+ page
+
+Under your case studies list, add:=
+
+mdx
+
+Copy code
+
+- **Claude vs DeepSeek** =E2=80=94 Tool-derived metrics from S=
+YMBI Resonate; **subjective until replicated**. Methods + run artifacts lin=
+ked.
+
+5) Publish plan (two commits)
+
+Repo (Resonate)
+
+Add 
+case-studies/claude-vs-deepseek/
+ tree + 
+configs/claude-vs-deepseek.json
+ + 
+scripts/generate_run_receipt.js
+.
+
+Commit: 
+feat(case-studies): add claude-vs-deepseek methods, trans=
+cripts, run-receipt generator
+
+Site (Gammatria)
+
+Update 
+=E2=80=A6/case-studies/claude-vs-deepseek/page.mdx
+ =
+with the callout + repro + receipts block.
+
+Add the one-liner to 
+/research
+.
+
+Commit: 
+docs(case-studies): mark Claude vs DeepSeek as tool-deriv=
+ed + add reproduction steps
+
+This gets you the clarity you want=
+:
+
+Numbers stay (honestly labeled).
+
+People can 
+rerun
+ and 
+challenge
+ them.
+
+You don=E2=80=99t have to over-exp=
+lain the philosophy on the case study page=E2=80=94just give the 
+commit, config, dataset, and a receipt
+.
+
+=
+
+=
+
+You said:
+
+thats fine - i just n=
+eed to identify where we can get some feedback (see groks response) this we=
+ek as i am getting to the point of burn out so no more development of anyth=
+ing new and we just take stock of everything we have and present it as well=
+ as possible 
+
+Symbi said:
+
+Thought for 18s
+
+=
+
+Got =

@@ -1,0 +1,214 @@
+pps have full access to your system via TCC (Transparency, Consent, and Control) settings
+.
+
+Command 2: List Apps with Full System Access
+
+Run this command:
+
+sh
+
+Copy
+
+sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 
+
+'SELECT * FROM access'
+
+ð 
+This will list all apps that have requested special permissions
+ (e.g., Full Disk Access, Screen Recording, Accessibility, etc.).
+
+After you run this, let me know:
+
+Do you see any unexpected apps with access?
+
+Any apps you donât recognize?
+
+If the list is long, we can filter specific permissions like Screen Recording or Full Disk Access in the next step.
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 'SELECT * FROM access'
+
+Error: unable to open database "/Library/Application Support/com.apple.TCC/TCC.db": authorization denied
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 4 Update: Authorization Denied Error
+
+The error:
+
+pgsql
+
+Copy
+
+Error: unable 
+
+to
+
+open
+
+database
+
+ "/Library/Application Support/com.apple.TCC/TCC.db": 
+
+authorization
+
+ denied
+
+means that 
+macOS is blocking access to the TCC database
+, even with 
+sudo
+. This is expected behavior under 
+System Integrity Protection (SIP)
+.
+
+Alternative: Access TCC Database Using Full Disk Access
+
+To bypass this restriction, we need to 
+grant Terminal "Full Disk Access"
+ in macOS settings.
+
+Steps to Allow Terminal to Read TCC Database
+
+Open System Settings
+:
+
+Click the 
+Apple menu
+ (ï£¿) â 
+System Settings
+ â 
+Privacy & Security
+.
+
+Scroll down to "Full Disk Access"
+.
+
+Find and add Terminal
+:
+
+Click 
+"+"
+ (plus button).
+
+Select 
+Terminal
+ from the Applications list.
+
+Turn the toggle ON
+.
+
+Restart Terminal
+ for the changes to take effect.
+
+Re-run the TCC Database Command
+
+Now, try the command again:
+
+sh
+
+Copy
+
+sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 
+
+'SELECT * FROM access'
+
+ð 
+Let me know if it works! If itâs too long, we can filter for only critical permissions.
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 'SELECT * FROM access'
+
+Password:
+kTCCServiceSystemPolicyAllFiles|com.cleverfiles.DiskDrill|0|2|4|1|??
+                                                                    ||0|UNUSED||0|1741330987|||UNUSED|1741330987
+kTCCServiceSystemPolicyAllFiles|com.cleverfiles.cfbackd|0|2|4|1|??
+                                                                  ||0|UNUSED||0|1741330997|||UNUSED|1741330997
+kTCCServiceSystemPolicyAllFiles|com.apple.Terminal|0|2|4|1|??
+                                                             ||0|UNUSED||0|1741333536|||UNUSED|1741333536
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 4 Analysis: Reviewing Apps with Full System Access
+
+Your TCC database output shows 
+which apps have Full Disk Access
+ (meaning they can read, modify, or delete any file on your system).
+
+Detected Apps with Full System Access:
+
+Disk Drill (
+com.cleverfiles.DiskDrill
+)
+
+â 
+Legitimate app
+, used for 
+data recovery and disk management
+.
+
+ð´ 
+Risk:
+ If an attacker used it, they could access deleted files or sensitive data.
+
+Did you install Disk Drill, or was it installed without your knowledge?
+
+cfbackd
+ (related to Disk Drill)
+
+â 
+Background process for Disk Drillâs recovery features.
+
+ð´ 
+Potential risk if an attacker manipulated it to exfiltrate files.
+
+Terminal (
+com.apple.Terminal
+)
+
+â 
+Expected
+ since we just added Full Disk Access for Terminal.
+
+No concerns here.
+
+Next Steps: Remove Disk Drill if Unwanted
+
+If 
+you did not install Disk Drill
+, it could have been installed as part of an attack to 
+monitor, recover, or extract deleted data
+.
+
+How to Remove Disk Drill Completely
+
+Uninstall using Terminal (safer than dragging to Trash)
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Disk\ Drill.app
+sudo 
+
+rm
+
+ -rf ~/Library/Application\ Support/DiskDrill
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.DiskDrill.plist
+sudo 
+
+rm
+
+ -rf ~/Library/Caches/com.cleverfiles.Di

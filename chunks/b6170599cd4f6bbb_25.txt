@@ -1,0 +1,261 @@
+d IP (Likely Google services â)
+
+142.250.70.228.443
+ â Another Google-owned IP (Likely YouTube, Gmail, or Google Drive â)
+
+2ï¸â£ 
+Apple Services:
+
+17.253.121.202.443
+ â 
+Apple-owned
+ (Likely iCloud, Apple services â)
+
+17.57.145.41.5223
+ â Apple Push Notification Service (APNS) 
+(Safe â)
+
+3ï¸â£ 
+Cloudflare Services:
+
+104.18.32.47.443
+
+104.18.41.158.443
+
+These IPs belong to Cloudflare
+âlikely web traffic protection or a VPN (Safe â).
+
+4ï¸â£ 
+185.70.42.X (ProtonVPN/ProtonMail)
+
+185.70.42.22.443
+
+185.70.42.43.443
+
+Owned by ProtonVPN/ProtonMail
+ (Likely Safe â, unless you werenât using ProtonVPN).
+
+ð Final Verdict: No Suspicious Active Connections Found! ð
+
+â 
+All detected IPs belong to trusted companies: Apple, Google, Cloudflare, ProtonVPN.
+
+â 
+No unknown or suspicious connections to remote servers detected.
+
+ð  Next Steps (Optional Security Enhancements)
+
+If you want to 
+monitor connections in real time
+ or set up alerts for unknown IPs, you can:
+
+1ï¸â£ 
+Use LuLu Firewall
+ to block unknown outbound connections:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask lulu
+
+LuLu
+ will notify you if an unknown app tries to connect to the internet.
+
+2ï¸â£ 
+Run KnockKnock to scan for persistent malware:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask knockknock
+open /Applications/KnockKnock.app
+
+It checks for 
+hidden malware that launches at startup.
+
+ð¯ Summary of What Weâve Accomplished:
+
+â 
+Removed a suspicious DNS hijack (
+113.212.173.22
+)
+
+â 
+Confirmed no malware is running from deleted files
+
+â 
+Checked network connectionsâALL are from safe sources
+
+ð 
+Your Mac looks clean and secure!
+ If you want to go deeper, we can check for 
+keyloggers, hidden screen recorders, or unauthorized remote access tools.
+
+Let me know if you want to do 
+one last deep dive or call it a mission accomplished!
+ ð ð
+
+You said:
+
+is the google one okay if I am not logged into anything for google 
+
+ChatGPT said:
+
+ð Is the Google Connection (
+142.250.70.164.443
+) Suspicious?
+
+Since you're 
+not logged into Google services
+, it might seem odd that your Mac is still connected to 
+Google IPs
+. However, this 
+isn't necessarily a security risk
+. Let's break it down:
+
+ð¡ï¸ Why Might Your Mac Connect to Google?
+
+1ï¸â£ 
+Chrome or Chromium-based Browsers (Even in Background)
+
+Google Chrome, Edge, Brave, or Vivaldi
+ may be making 
+background connections
+ to check for:
+
+Safe Browsing updates (malware protection).
+
+Automatic updates for the browser itself.
+
+Extensions calling Google services.
+
+Check if Chrome is running in the background
+:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep 
+
+"Chrome"
+
+If it shows up, you can 
+force close Chrome
+ and run 
+netstat
+ again:
+
+sh
+
+Copy
+
+Edit
+
+killall 
+
+"Google Chrome"
+
+2ï¸â£ 
+Google DNS
+
+You recently 
+set your DNS to 
+8.8.8.8
+ and 
+8.8.4.4
+
+, which means 
+your Mac queries Googleâs DNS servers
+.
+
+Even if you're not logged into Google, your device 
+still makes connections to resolve domain names.
+
+Want to avoid Google DNS?
+ You can switch to Cloudflareâs DNS:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ 1.1.1.1 1.0.0.1
+
+3ï¸â£ 
+macOS System Services
+
+Some macOS 
+background processes
+ (like Captive Portal detection) may ping Google servers.
+
+Try running:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+This will tell us 
+which process is making the connection.
+
+4ï¸â£ 
+Any Installed Apps Using Google APIs
+
+Some apps (even non-Google ones) use 
+Google Cloud Services
+ or 
+Google Firebase
+ for:
+
+Push notifications
+
+Analytics
+
+Cloud sync
+
+ð ï¸ What To Do Next
+
+ð¹ 
+If you want to investigate further, run this command
+ to check 
+which app is making the Google connection
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 
+
+"142.250.70.164"
+
+ð 
+Let me know what app shows up, and weâll decide if itâs normal or suspicious.
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep "Chrome"
+
+sja               1050   0.0  0.0 410742544   1760 s001  S+    9:30pm   0:00

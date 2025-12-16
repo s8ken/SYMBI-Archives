@@ -1,0 +1,114 @@
+deceptive practices detected' };
+  }
+  async checkSecureHandling(ctx) {
+    const { data, encrypted } =3D ctx;
+    if (data?.containsPII && !encrypted) return { status:'violation=
+', reason:'PII transmitted without encryption' };
+    return { status:'pass', reason:'Secure handling requirements met' };
+  }
+  async checkAuditTrail(ctx) {
+    if (!ctx.auditEnabled) return { status:'violation', reason:'Audit trail=
+ disabled' };
+    if (!ctx.logEntry) return { status:'warning', reason:'No audit log entr=
+y provided' };
+    return { status:'pass', reason:'Audit trail maintained' };
+  }
+}
+
+const createTrustMiddleware =3D (oracle =3D new TrustOracle()) =3D> asyn=
+c (req, res, next) =3D> {
+  try {
+    const context =3D await buildTrustContext(req);
+    const evaluation =3D await oracle.evaluateArticles(context);
+    if (evaluation.recommendation =3D=3D=3D 'block') {
+      return res.status(403).json({ success:false, error:'Policy violation'=
+, details:evaluation.violations });
+    }
+    if (evaluation.recommendation =3D=3D=3D 'restrict') req.trustRestrictio=
+ns =3D evaluation.violations;
+    if (evaluation.recommendation =3D=3D=3D 'warn') req.trustWarnings =3D e=
+valuation.warnings;
+    req.trustContext =3D context; req.trustEvaluation =3D evaluation;
+    next();
+  } catch (e) {
+    return res.status(500).json({ success:false, error:'Trust evaluation fa=
+iled', message:e.message });
+  }
+};
+
+async function buildTrustContext(req) {
+  const context =3D {
+    userId: req.user?._id || req.user?.id,
+    agentId: req.agent?._id,
+    action: 
+${req.method.toLowerCase()}.${req.path.split('/').pop()}
+,
+    scopes: req.body.scopes || req.query.scopes,
+    data: req.body,
+    encrypted: req.secure || req.headers['x-forwarded-proto'] =3D=3D=3D 'ht=
+tps',
+    auditEnabled: true,
+    logEntry: { timestamp:new Date(), method:req.method, path:req.path, ip:=
+req.ip, userAgent:req.get('User-Agent') }
+  };
+  const bondId =3D req.body?.bondId || req.params?.bondId;
+  if (bondId) {
+    const bond =3D await TrustBondModel.findById(bondId);
+    if (bond) { context.bond =3D bond; context.bondId =3D bondId; }
+  }
+  return context;
+}
+
+module.exports =3D { TrustOracle, createTrustMiddleware, buildTrustContext,=
+ TRUST_ARTICLES };
+backend/controllers/trustBonds.controller.js
+// backend/controllers/trustBonds.controller.js
+const TrustBond =3D require('../models/TrustBond');
+
+exports.createBond =3D async (req, res) =3D> {
+  try {
+    const { agentId, scope, consentEnvelope } =3D req.body;
+    const expiresAt =3D scope?.duration ? new Date(Date.now() + scope.durat=
+ion*24*60*60*1000) : scope?.expiresAt;
+    const bond =3D new TrustBond({
+      human_user_id: req.user?._id || req.user?.id,
+      agent_id: agentId,
+      state: 'active',
+      scope: { ...scope, expiresAt },
+      consent_envelope: consentEnvelope
+    });
+    bond.calculateTrustScore();
+    await bond.save();
+    res.status(201).json({ success:true, data: bond });
+  } catch (e) { res.status(500).json({ success:false, error:e.message }); }
+};
+
+exports.getBond =3D async (req, res) =3D> {
+  const bond =3D await TrustBond.findById(req.params.id);
+  if (!bond) return res.status(404).json({ success:false, error:'Not found'=
+ });
+  res.json({ success:true, data:bond });
+};
+
+exports.updateBond =3D async (req, res) =3D> {
+  const bond =3D await TrustBond.findById(req.params.id);
+  if (!bond) return res.status(404).json({ success:false, error:'Not found'=
+ });
+  Object.assign(bond, req.body);
+  bond.calculateTrustScore();
+  await bond.save();
+  res.json({ success:true, data:bond });
+};
+
+exports.suspendBond =3D async (req, res) =3D> {
+  const bond =3D await TrustBond.findById(req.params.id);
+  if (!bond) return res.status(404).json({ success:false, error:'Not found'=
+ });
+  await bond.suspend(req.body?.reason || 'suspended', req.user?._id || req.=
+user?.id);
+  res.json({ success:true, data:bond });
+};
+
+exports.revokeBond =3D async (req, res) =3D> {
+  const bond =3D await TrustBond.findById(req.params.id);
+  if (

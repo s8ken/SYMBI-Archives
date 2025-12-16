@@ -1,0 +1,652 @@
+calls inside 
+useEffect()
+ if they depend on external APIs.
+
+Example Fix for 
+layout.tsx
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+; 
+
+// Ensure this is at the top
+
+import
+
+ { 
+
+ReactNode
+
+ } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }: { children: ReactNode }
+
+) {
+
+return
+
+ (
+
+<
+div
+
+>
+
+<
+header
+
+>My Site
+
+</
+header
+
+>
+
+<
+main
+
+>{children}
+
+</
+main
+
+>
+
+<
+footer
+
+>Â© 2025 SYMBI
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+ð¹ Step 4: Ensure Sanity is Configured Correctly
+
+Open 
+
+sanity.config.ts
+
+ and check:
+
+ts
+
+Copy
+
+Edit
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fixes React 19 issues
+
+});
+
+Restart the server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Try accessing 
+both URLs again
+.
+
+ð¹ Step 5: If the Error Persists, Send the Full Terminal Log
+
+If 
+the app still crashes
+, send the 
+full error message from the terminal
+ so I can debug further! ðð¥
+
+You said:
+
+sanity.rtf
+
+File
+
+this may help
+
+ChatGPT said:
+
+ð¨ Major Issue: Sanity Installation is Broken in Next.js 15 + React 19
+
+Your 
+Sanity setup is failing
+ due to compatibility issues with 
+Next.js 15 and React 19
+.
+
+Hereâs a summary of the errors and how to fix them:
+
+ð¹ Issues Found
+
+1ï¸â£ 
+Sanity Studio is failing to load at 
+/studio
+
+ (Error 500)
+
+2ï¸â£ 
+Missing Sanity exports (
+defineConfig
+, 
+defineField
+, 
+defineArrayMember
+)
+
+3ï¸â£ 
+Next.js is trying to import non-existent metadata from 
+next-sanity/studio
+
+4ï¸â£ 
+A broken import in 
+sanity.config.ts
+ (
+sanity/structure
+ is missing)
+
+ð¹ Step 1: Remove the Broken Sanity Installation
+
+Let's 
+reset the Sanity setup
+ in your project.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf sanity node_modules package-lock.json .next
+npm install
+
+This will:
+
+â 
+Remove Sanity-related broken files
+
+â 
+Delete cached build files
+
+â 
+Reinstall dependencies cleanly
+
+Now, 
+reinstall Sanity Studio correctly:
+
+bash
+
+Copy
+
+Edit
+
+npm install sanity @sanity/client @sanity/vision @sanity/icons @sanity/image-url next-sanity
+
+ð¹ Step 2: Fix 
+sanity.config.ts
+
+After reinstalling, 
+open your Sanity config file
+:
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+Replace it with this fixed version:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page], 
+
+// Only Pages
+
+  },
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fix for React 19
+
+});
+
+â This 
+removes
+ the incorrect import:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { structureTool } 
+
+from
+
+"sanity/structure"
+
+;
+
+â This 
+adds missing Sanity plugins
+ to enable editing.
+
+ð¹ Step 3: Fix Sanity Schema Issues
+
+Now, recreate your schema.
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p schemas
+nano schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save (
+Ctrl + X â Y â Enter
+).
+
+ð¹ Step 4: Fix Next.js Route for Sanity Studio
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano app/studio/[[...tool]]/page.tsx
+
+Replace 
+everything
+ with:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+â 
+Fixes missing metadata imports.
+
+â 
+Ensures Studio load

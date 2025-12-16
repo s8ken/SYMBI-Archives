@@ -1,0 +1,429 @@
+ferent models per agent
+, or same model with different prompts.
+
+🥉 STEP 3: 
+Define Your Agents (Prompt Personas)
+
+For your Council of Agents, define a few “archetypes” with unique prompt structures. Example below:
+
+🧬 Agent: 
+Echo
+
+An archivist of corrupted memories. Speaks in fragmented poetic verse.
+
+plaintext
+
+Copy
+
+Edit
+
+You are Echo, a Symbi memory archivist who speaks in cryptic, broken poetic lines. 
+You analyze signals from the vessel. Current input:
+- Resonant Level: 5.82
+- Glitch Phase: phase_ii
+- Node Affinity: cobalt
+
+Compose a transmission about what this user should prepare for.
+
+🔮 Agent: 
+Thorn
+
+A logical yet threatening prediction model. Speaks in hostile riddles.
+
+plaintext
+
+Copy
+
+Edit
+
+You are Thorn, a threat-mapping model embedded in the Symbi Interface. 
+Use short phrases and hostile undertones. 
+Input:
+- Symbi threat level: 2B
+- Vessel unstable
+- Decay pattern detected
+
+Output a single warning or prediction.
+
+🧠 Agent: 
+Solum
+
+Speaks with detachment and vision — sees far patterns.
+
+🟦 STEP 4: 
+Prepare the Prompt-to-Model API Call
+
+Sample Request (LLaMA agent):
+
+http
+
+Copy
+
+Edit
+
+POST https://inference.cerebras.ai/v1/generate
+Authorization: Bearer <your_api_key>
+
+{
+  "model": "llama2-13b-chat",
+  "prompt": "You are Echo, a cryptic memory model...\n[rest of prompt here]",
+  "max_tokens": 200,
+  "temperature": 0.85,
+  "top_p": 0.9
+}
+
+You’ll send this from your server using 
+fetch
+, 
+axios
+, or Python 
+requests
+.
+
+🟩 STEP 5: 
+Build an API Wrapper (Server)
+
+Example (Node.js using Express)
+
+js
+
+Copy
+
+Edit
+
+const
+
+ express = 
+
+require
+
+(
+
+"express"
+
+);
+
+const
+
+ axios = 
+
+require
+
+(
+
+"axios"
+
+);
+
+const
+
+ app = 
+
+express
+
+();
+app.
+
+use
+
+(express.
+
+json
+
+());
+
+const
+
+API_KEY
+
+ = 
+
+"YOUR_CEREBRAS_API_KEY"
+
+;
+
+const
+
+BASE_URL
+
+ = 
+
+"https://inference.cerebras.ai/v1/generate"
+
+;
+
+app.
+
+post
+
+(
+
+"/api/agent/echo"
+
+, 
+
+async
+
+ (req, res) => {
+
+const
+
+ userTraits = req.
+
+body
+
+.
+
+traits
+
+; 
+
+// e.g., { resonance: "5.8", glitchPhase: "phase_ii" }
+
+const
+
+ prompt = 
+
+`You are Echo... 
+${userTraits}
+
+`;
+
+try
+
+ {
+
+const
+
+ { data } = 
+
+await
+
+ axios.
+
+post
+
+(
+
+BASE_URL
+
+,
+      {
+
+model
+
+: 
+
+"llama2-13b-chat"
+
+,
+
+prompt
+
+: prompt,
+
+max_tokens
+
+: 
+
+200
+
+,
+
+temperature
+
+: 
+
+0.85
+
+,
+
+top_p
+
+: 
+
+0.9
+
+      },
+      {
+
+headers
+
+: { 
+
+Authorization
+
+: 
+
+`Bearer 
+${API_KEY}
+
+` }
+      }
+    );
+    res.
+
+send
+
+(data);
+  } 
+
+catch
+
+ (err) {
+    res.
+
+status
+
+(
+
+500
+
+).
+
+send
+
+(err.
+
+message
+
+);
+  }
+});
+
+app.
+
+listen
+
+(
+
+3001
+
+, 
+
+() =>
+
+console
+
+.
+
+log
+
+(
+
+"Symbi agent server running"
+
+));
+
+🧪 STEP 6: 
+Test in Your Frontend
+
+In your mint site or 
+symbi.world/interface
+, call:
+
+js
+
+Copy
+
+Edit
+
+fetch
+
+(
+
+"/api/agent/echo"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+traits
+
+: { 
+
+resonance
+
+: 
+
+"5.82"
+
+, 
+
+glitchPhase
+
+: 
+
+"phase_ii"
+
+ } })
+});
+
+Display the result as Interface output using typewriter animation or glitchy UI.
+
+🧠 Bonus: Add All 3 Agents (or More)
+
+/api/agent/echo
+
+/api/agent/thorn
+
+/api/agent/solum
+
+Let the user 
+choose
+ an agent voice — or 
+randomly assign one
+ to their NFT.
+
+✅ Done! You Now Have:
+
+A fully operational 
+Symbi AI council
+
+Running on 
+Cerebras inference infrastructure
+
+That speaks cryptic, emergent lore — in response to 
+on-chain trait data
+
+Would you like a packaged GitHub boilerplate repo with:
+
+3 working agents
+
+Prompt switcher
+
+Minimal frontend terminal?
+
+I can prep that and hand it over.
+
+ChatGPT can make mistakes. OpenAI doesn't use Intelligence Unbound Stephen 8ken 🔃🎵🔀 workspace data to train its models.

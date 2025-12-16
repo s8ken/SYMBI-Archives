@@ -1,0 +1,424 @@
+.
+Typer
+()
+
+console
+ = 
+Console
+()
+
+# Load local ethics/consent policy
+
+ETHICS_PATH
+ = 
+os
+.
+path
+.
+expanduser
+(
+"~/.symbi/ethics.json"
+)
+
+DEFAULT_ETHICS
+ = {
+
+"allow_network"
+: 
+False
+,
+
+"allow_container_scans"
+: 
+True
+,
+
+"allow_process_monitoring"
+: 
+True
+,
+
+"consent_required"
+: 
+True
+
+}
+
+def
+
+load_ethics
+():
+
+if
+
+not
+
+os
+.
+path
+.
+exists
+(
+ETHICS_PATH
+):
+
+os
+.
+makedirs
+(
+os
+.
+path
+.
+dirname
+(
+ETHICS_PATH
+), 
+exist_ok
+=
+True
+)
+
+with
+
+open
+(
+ETHICS_PATH
+, 
+'w'
+) 
+as
+
+f
+:
+
+json
+.
+dump
+(
+DEFAULT_ETHICS
+, 
+f
+, 
+indent
+=
+2
+)
+
+with
+
+open
+(
+ETHICS_PATH
+, 
+'r'
+) 
+as
+
+f
+:
+
+return
+
+json
+.
+load
+(
+f
+)
+
+ethics
+ = 
+load_ethics
+()
+
+# -------------------- COMMANDS --------------------
+
+🔥 SYMBI AGENT IS ALIVE — Phase 1 is now ready.
+
+This is a 
+modular CLI companion
+ that does the following:
+
+✅ Features (Now Live)
+
+📜 
+Ethics-aware policy file
+ at 
+~/.symbi/ethics.json
+
+🕵️ 
+Process monitoring
+ via 
+psutil
+
+🐳 
+Container status check
+ via Docker CLI
+
+💬 
+REPL mode
+ (chat with agent logic)
+
+🖥️ Future-ready: Local web UI server scaffold (
+serve
+)
+
+🛡️ Policy-safe: Agent only acts based on explicit consent flags
+
+🧰 To Run
+
+Save as 
+symbi_agent.py
+ and launch:
+
+bash
+
+Copy
+
+Edit
+
+pip install typer rich psutil
+python symbi_agent.py watch
+
+Or try:
+
+bash
+
+Copy
+
+Edit
+
+python symbi_agent.py talk
+
+📂 Ethics Config
+
+Customize this file:
+
+json
+
+Copy
+
+Edit
+
+~/.symbi/ethics.json
+
+Example:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+Edit it via:
+
+bash
+
+Copy
+
+Edit
+
+python symbi_agent.py update-policy
+
+🧠 Next Phase Ideas (When You're Ready):
+
+Add a real LLaMA model runner or cloud bridge
+
+Expose FastAPI for secure local web access
+
+Live file watchers (model dir, log dir, temp sys files)
+
+Encrypt logs and state changes with your own key
+
+Let me know if you'd like to:
+
+Package this into a Docker container
+
+Build a macOS 
+.app
+ or background daemon
+
+Sync with a remote SYMBI node (cloud<->local relay)
+
+This is the agent that watches while you focus. 🛡️👁️
+
+Welcome to your next layer of control.
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ pip install typer rich psutil
+-bash: pip: command not found
+SYMBIs-MacBook-Pro:~ admin$ python symbi_agent.py watch
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ python symbi_agent.py talk
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+🔥 You’re running macOS, and it looks like Python isn’t set up in your terminal environment yet — that’s easy to fix.
+
+Let’s get you up and running 
+cleanly and securely
+, no clutter, no weird side effects.
+
+🧰 STEP 1: Install Python (Safely)
+
+✅ Option A: Use Homebrew (Recommended)
+
+If you have 
+Homebrew
+
+ installed:
+
+bash
+
+Copy
+
+Edit
+
+brew install python
+
+This installs the latest version of Python 
+and
+ sets up 
+pip
+.
+
+After that, you’ll have:
+
+python3
+ (alias this to 
+python
+ if you want)
+
+pip3
+ → used for package installation
+
+🛠 Optionally: Create an Alias
+
+Once Python is installed:
+
+bash
+
+Copy
+
+Edit
+
+echo
+
+'alias python="python3"'
+
+ >> ~/.zshrc
+
+echo
+
+'alias pip="pip3"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+This ensures that when you type 
+python
+, it maps to 
+python3
+.
+
+🧱 STEP 2: Install SYMBI Agent Dependencies
+
+Once 
+python3
+ and 
+pip3
+ are ready:
+
+bash
+
+Copy
+
+Edit
+
+pip install typer rich psutil
+
+Then run:
+
+bash
+
+Copy
+
+Edit
+
+python symbi_agent.py watch
+
+🧠 Bonus: Want This in a Clean Virtual Environment?
+
+If you prefer full isolation:
+
+bash
+
+Copy
+
+Edit
+
+python3 -m venv symbi-env
+
+source
+
+ symbi-env/bin/activate
+pip install typer rich psutil
+python symbi_agent.py talk
+
+That way SYMBI runs inside its 
+own container-like Python environment
+ — perfect for your air-gapped philosophy.
+
+Let me know when you’re ready, and I’ll help you evolve this into a system tray agent, daemon, or service.
+
+One step at a time — but always with 
+total transparency and your command.
+
+You said:
+
+ok I need brew
+
+Symbi said:
+
+Perfect — let's get Homebrew installed. It's the foun

@@ -1,0 +1,267 @@
+files.*
+
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Saved\ Application\ State/com.cleverfiles.*
+
+zsh: no matches found: /Users/lcl/Library/Saved Application State/com.cleverfiles.*
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+You successfully removed most of the 
+user-level
+ Disk Drill files. Now, we need to check if 
+system-wide files
+ still exist. Since you don’t have 
+sudo
+ privileges, we’ll take an alternative approach.
+
+🚀 Step 1: Check if Disk Drill is Completely Removed
+
+Run the following command to scan for remaining files:
+
+bash
+
+Copy
+
+Edit
+
+find / -iname 
+
+'*diskdrill*'
+
+ -o -iname 
+
+'*cleverfiles*'
+
+ 2>/dev/null
+
+This will 
+search the entire system
+ for leftover files related to Disk Drill.
+
+🛑 Step 2: If You See Any Remaining Files
+
+If the command finds files in 
+/Library or /System
+, but you can't delete them due to permission issues, you have three options:
+
+🔹 Option 1: Delete System Files from Recovery Mode
+
+Restart your Mac
+ and hold 
+⌘ + R
+ until the Apple logo appears.
+
+When the macOS Utilities window appears, select 
+Utilities → Terminal
+.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/Application\ Support/CleverFiles
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/Extensions/DiskDrill.kext
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/LaunchDaemons/com.cleverfiles.*
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/LaunchAgents/com.cleverfiles.*
+
+Restart your Mac
+ normally.
+
+🔹 Option 2: Reinstall macOS (If You Suspect Deep Persistence)
+
+If Disk Drill 
+still appears after a reboot
+ and you can’t delete system files, you may need to 
+wipe your Mac and reinstall macOS
+ from scratch.
+
+🛠️ Step 3: Confirm Disk Drill is Gone
+
+After rebooting, check for any remaining traces:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i 
+
+"disk drill\|cleverfiles"
+
+If nothing shows up, 
+Disk Drill is fully removed!
+ 🚀🎯
+
+Let me know what the 
+find
+ command shows, and I’ll guide you through any remaining cleanup! 🔍
+
+You said:
+
+I want to allow libra wolf to run
+
+ChatGPT said:
+
+How to Allow LibreWolf to Run on macOS
+
+Since macOS 
+blocks non-App Store apps by default
+, you’ll need to manually allow 
+LibreWolf
+ to run.
+
+🚀 Step 1: Try Opening LibreWolf
+
+Download LibreWolf
+ from 
+the official site
+
+.
+
+Move it to 
+Applications
+ (
+/Applications/LibreWolf.app
+).
+
+Try to open it
+ by 
+double-clicking
+.
+
+If you see a warning saying 
+"LibreWolf cannot be opened because it is from an unidentified developer"
+, move to the next step.
+
+🔓 Step 2: Bypass macOS Security (Gatekeeper)
+
+Go to:
+
+
+ Apple Menu → 
+System Settings
+ → 
+Privacy & Security
+.
+
+Scroll down to 
+Security
+ and look for:
+
+"LibreWolf was blocked because it is not from the App Store"
+.
+
+Click 
+"Open Anyway"
+.
+
+Try launching 
+LibreWolf
+ again.
+
+🔧 Step 3: Manually Allow Using Terminal (If Needed)
+
+If LibreWolf 
+still won’t open
+, manually remove the quarantine flag:
+
+Open 
+Terminal
+ and enter:
+
+bash
+
+Copy
+
+Edit
+
+xattr -d com.apple.quarantine /Applications/LibreWolf.app
+
+Then try launching LibreWolf again.
+
+🛠️ Step 4: (If Still Blocked) Disable Gatekeeper Temporarily
+
+If macOS 
+still refuses to open it
+, try this:
+
+Open 
+Terminal
+ and run:
+
+bash
+
+Copy
+
+Edit
+
+sudo spctl --master-disable
+
+Enter your 
+admin password
+.
+
+Open 
+LibreWolf
+.
+
+Once it’s running, re-enable security:
+
+bash
+
+Copy
+
+Edit
+
+sudo spctl --master-enable
+
+🛡️ Step 5: Verify LibreWolf Runs Securely
+
+Open LibreWolf and go to 
+Preferences → Privacy & Security
+.
+
+Enable 
+HTTPS-Only Mode
+ for extra protection.
+
+Check 
+about:support
+ to ensure LibreWolf is running in a 
+sandboxed
+ environment.
+
+You should now be good to go! 🚀 Let me know if you hit any issues.
+
+You said:
+
+proc: (2929) /Applications/LibreWolf.app/Contents/MacOS/librewolf
+sign:  unsigned
+
+files:
+› /System/Volumes/Data/Users/lcl/Library/Application Support/librewolf/Profiles/c3shxrvv.default-default/extensions/uBlock0@raymondhill.net.xpi
+› /System/Volumes/Data/private/var/folders/b7/jn17zrs14m51hnxdrk74_xqw0000gn/T/tmp-7qp.xpi
+
+ChatGPT said:
+
+Since 
+LibreWolf is unsigned
+, macOS 
+Gatekeep

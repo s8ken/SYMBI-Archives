@@ -1,0 +1,298 @@
+rsation=
+
+A thread of messages between you and an assi=
+stant/agent.
+
+Conversations page, Chat UI
+
+Session ID
+
+The canon=
+ical ID for a conversation/flow, formatted 
+
+conv:<mong=
+oId>
+
+.
+
+Request payloads, Trust c=
+hips, Ledger
+
+Assistant
+
+A configured model + instructions (e.g., GPT=E2=80=914o) us=
+ed in chat.
+
+Assistants list, Assistant chat
+
+Roundtable (Bridge)
+
+A multi=E2=80=91agent proposal flow. SYMBI gathers suggestions from conn=
+ected agents and ranks them.
+
+Dashboard =E2=86=92 Round=
+table, VS Code command
+
+Proposal Recei=
+pt
+
+A tamper=E2=80=91evident record of why a R=
+oundtable pick was chosen.
+
+Review Console (Receipts), =
+Ledger
+
+Ledger
+
+Append=E2=80=91only event log (hash=E2=80=91chained) for integrity a=
+nd audit.
+
+Review Console, API 
+
+/api/=
+ledger
+
+ & 
+
+verify
+
+Trust Overlays / Chips
+
+Inline indicators of dynamics (e.g., pivots, stance shifts) and inte=
+grity breadcrumbs.
+
+Chat header & per=E2=80=91messa=
+ge chips
+
+Context
+
+=
+
+Sources SYMBI can use (notes, links, snippets). Not the model; ju=
+st input.
+
+Context page
+
+Context Capsule
+
+Small, user=E2=80=91ed=
+itable memory for a session (goals, tone, constraints, tags, notes).
+=
+
+Chat sidebar =E2=86=92 Capsule panel
+
+Trust Mode
+
+The evaluation meth=
+od for turns. 
+
+POC:
+
+ =E2=80=9CHeur=
+istic (local)=E2=80=9D.
+
+Settings =E2=86=92 Trust Mode,=
+ Agent config
+
+/metrics
+
+Prometheus=E2=80=91style endpoint exposing request counts a=
+nd latency.
+
+Ops/monitoring
+
+Future (hidden in POC):
+
+ Overseer (governance layer), Vector search, Additional trust modes.
+
+Cor=
+e Definitions (user=E2=80=91facing copy)
+
+SYMBI
+
+What:
+
+ SYMBI is the system that r=
+uns your assistants, coordinates multi=E2=80=91agent rounds, and maintains =
+a tamper=E2=80=91evident ledger of what happened and why.
+
+Why:
+
+ To produce helpful outcomes=
+ while keeping actions auditable and safe.
+
+Conversation=
+
+What:
+
+ A running thread w=
+ith an assistant.
+
+Why:
+
+ Keeps messages, context, an=
+d trust signals in one place.
+
+Note:
+
+ Each conversation has a 
+
+Session ID
+
+ like 
+
+conv:<id>
+
+ used by the ledger and APIs.
+
+Assistant
+
+What:
+
+ A configured model plus instructions (and optional tools).
+
+You can:
+
+ pick a model, edit inst=
+ructions, and chat using the 
+
+most recent
+
+ assistant.
+
+Roundtable (Bridge)
+
+What:
+
+ Ask multiple agents to propose sol=
+utions; SYMBI ranks and returns a recommendation.
+
+Why:
+
+ Different agents have diffe=
+rent strengths; Roundtable compares them.
+
+Receipts:
+
+ After a run, SYMBI wri=
+tes a 
+
+Proposal Receipt
+
+ to the le=
+dger recording the agents considered, scores, and the chosen plan.
+
+Ledger
+
+What:
+
+ =
+An append=E2=80=91only log that links every entry with the previous entry=
+=E2=80=99s hash.
+
+Why:
+
+ If entries are altered, ver=
+ification fails.
+
+You can:
+
+ view events, verify int=
+egrity, and export.
+
+Trust Overlays (Chips)
+
+What:
+
+ Compact signals drawn from the =
+ledger and heuristics.
+
+Pivot:
+
+ Detected change in stance/register after =
+sensitive content.
+
+Change %:
+
+ Magnitude of the shift.
+
+Sta=
+nce:
+
+ e.g., co=E2=80=91creator =E2=86=92 clinician.
+
+Row hash:
+
+ Short has=
+h of the event for integrity reference.
+
+Why:
+
+ Makes dynamics visible at a=
+ glance.
+
+Context
+
+=
+What:
+
+ Sources SYMBI may reference (links, notes, arti=
+facts).
+
+Not:
+
+ It=E2=80=99s not model memo=
+ry.
+
+Use:
+
+ Add or tag items so SYMBI c=
+an pull relevant context when responding.
+
+Context Capsu=
+le
+
+What:
+
+ A small, session=
+=E2=80=91scoped memory you control: goals, tone preferences, constraints, t=
+ags, notes.
+
+How used:
+
+ SYMBI prepends a capsu=
+le summary to the assistant=E2=80=99s system instructions so replies honor =
+your preferences.
+
+Privacy:
+
+ Stored on the server; n=
+ot shipped to clients wholesale.
+
+Trust Mode
+
+=
+
+What:
+
+ How SYMBI evaluates turns.
+
+POC Mode:
+
+H=
+euristic (local)
+
+ =E2=80=94 lightweight, on=E2=80=91se=
+rver rules (no external calls).
+
+Planned:
+
+ Additional evaluators a=
+nd model=E2=80=91assisted judges.
+
+/metrics
+
+What:
+
+ A Prometheus endpoint exposing =
+request counters an

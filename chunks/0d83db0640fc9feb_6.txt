@@ -1,0 +1,101 @@
+erased logs to hide it.
+
+bash
+
+Copy
+
+ls
+
+ -lh /var/log | grep -E 
+
+"system.log|install.log|fsck.log|secure.log"
+
+ð¨ 
+Red Flags:
+
+Logs missing or unusually small.
+
+Timestamps not matching expected activity.
+
+ð Step 7: Scan for Suspicious Script Files
+
+Attackers may use automated scripts to plant files. Look for scripts:
+
+bash
+
+Copy
+
+sudo find / -
+
+type
+
+ f \( -name 
+
+"*.sh"
+
+ -o -name 
+
+"*.py"
+
+ -o -name 
+
+"*.plist"
+
+ -o -name 
+
+"*.js"
+
+ \) -
+
+exec
+
+ls
+
+ -lh {} + 2>/dev/null
+
+ð 
+Suspicious locations:
+
+/Library/LaunchAgents/
+
+/Library/LaunchDaemons/
+
+/Users/Shared/
+
+ð¨ 
+If a script runs commands you donât recognize, they may have planted files.
+
+ð¨ Immediate Next Steps ð¨
+
+1ï¸â£ 
+Run each command and send back results for analysis.
+
+2ï¸â£ 
+If anything looks suspicious, do NOT delete it yetâwe must confirm its origin.
+
+3ï¸â£ 
+If we find planted files, weâll trace how they got there (user, timestamp, and possible delivery method).
+
+ð¨ 
+If they planted anything incriminating, we must collect digital forensics BEFORE formatting.
+ ð¨
+
+You said:
+
+nts/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_gb.tif
+-rw-r--r--  1 root  wheel   105K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_gb@2x.tif
+-rw-r--r--  1 root  wheel    16K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_logic.tif
+-rw-r--r--  1 root  wheel    71K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_logic@2x.tif
+-rw-r--r--  1 root  wheel   603K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_max.tif
+-rw-r--r--  1 root  wheel   2.2M 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_max@2x.tif
+-rw-r--r--  1 root  wheel   118K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_min.tif
+-rw-r--r--  1 root  wheel   482K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_miniblackface_back_min@2x.tif
+-rw-r--r--  1 root  wheel    84K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_cabinet.tif
+-rw-r--r--  1 root  wheel   276K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_cabinet@2x.tif
+-rw-r--r--  1 root  wheel   6.8K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_gb.tif
+-rw-r--r--  1 root  wheel    16K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_gb@2x.tif
+-rw-r--r--  1 root  wheel   6.0K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_logic.tif
+-rw-r--r--  1 root  wheel    13K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_logic@2x.tif
+-rw-r--r--  1 root  wheel   792K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_max.tif
+-rw-r--r--  1 root  wheel   2.2M 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/MAResourcesPlugInsShared.framework/Versions/A/Resources/ga_minitweed_back_max@2x.tif
+-rw-r--r--  1 root  wheel   197K 27 Jan 08:40 /Applications/GarageBand.app/Contents/Frameworks/

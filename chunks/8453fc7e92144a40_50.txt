@@ -1,0 +1,381 @@
+
+
+risk
+
+*risk + weights.
+
+confidenc=
+e
+
+*confidence + weights.
+
+cost
+
+*cost + weights.
+
+completeness
+
+*completeness;
+
+return
+
+ { =
+...x, score };
+  }).
+
+sort
+
+(
+
+(
+a,b
+
+) =3D> b.
+
+score
+
+ - a.
+
+score
+
+);
+};
+
+exports
+
+.
+
+executeProposal
+
+ =
+=3D 
+
+async
+
+ ({ =
+agent_key, proposal, context }) =3D> {
+
+// Minimal placeholder: emit a =
+plan for human approval or call a specific adapter endpoint
+
+return
+
+ { 
+
+dispatched
+
+: agent_=
+key, 
+
+proposal_id
+
+=
+: proposal.
+
+proposal_id
+
+, 
+
+mode
+
+=
+: 
+
+"dry-run"
+
+, c=
+ontext };
+};
+
+function
+
+clamp
+
+(
+
+n, a, b
+
+){ 
+=
+
+return
+
+=
+
+Math
+
+.
+
+max
+
+(a, 
+
+Math
+
+.
+
+min
+
+(b, n)); }
+
+function
+
+scoreInverse
+
+(
+
+n
+
+){ 
+
+return
+
+1
+
+ / (
+
+1
+
+ + n); }
+
+Routes
+
+js
+
+Copy code
+
+// backend/routes/bridge.rou=
+tes.js
+
+const
+
+ r =3D 
+
+require
+
+(
+
+"express"
+
+).
+
+Router
+
+();
+
+const
+
+ { requi=
+reAuth } =3D 
+
+require
+
+(
+
+"../middleware/auth.middl=
+eware"
+
+);
+
+const
+
+ c =3D 
+
+require
+
+(
+
+"../controllers/bridge.controller"
+
+);
+
+r.
+
+use
+
+=
+(requireAuth); 
+
+// SYMBI token/JWT=
+ required
+
+r.
+
+post
+
+(
+
+"/orchestrate"
+
+, c.
+
+orchestrate
+
+);      
+
+// gather + rank pro=
+posals
+
+r.
+
+post
+
+(
+
+"/dispatch"
+
+,=
+ c.
+
+dispatchChosen
+
+);      
+
+// execute chosen pl=
+an (dry-run or real)
+
+module
+
+.
+
+exports
+
+=
+ =3D r;
+
+// in app.js
+
+app.
+
+use
+
+(
+
+'/api/bridge'
+
+, 
+
+require
+
+(=
+
+'./routes/bridge.routes'
+
+));
+
+4) Security (webhooks & appro=
+vals)
+
+Keep inbound 
+webhooks
+ signed (you already have 
+verifyWebhookSignature
+).
+
+Require 
+explicit approval
+ before 
+dispatch
+ does anything destructive (keep 
+dry-run
+ default).
+
+Log every orchestration event to y=
+our 
+ledger
+.
+
+5) VS Code extension: one new com=
+mand
+
+Add a 
+Roundtable
+ command that hits 
+/api/bridge/orchestrate
+ and shows proposals=
+.
+
+diff
+
+Copy code
+
+// package.json
+"activationEvents": [..., "onCommand:symbi.roundtable"],
+"contributes": { "commands": [
+  ..., { "command": "symbi.roundtable", "title": "SYMBI: Roundtable (Gather=
+ Proposals)" }
+]}
+
+// src/extension.ts
+ctx.subscriptions.push(vscode.commands.registerCommand("symbi.roundtable", =
+async () =3D> {
+  const task =3D await vscode.window.showInputBox({ prompt: "Describe the g=
+oal/task for agents to propose on" });
+  if (!task) return;
+  try {
+    const data =3D await fetchJson("/api/bridge/orchestrate", ctx, { method=
+:"POST", body: JSON.stringify({ task, agents:["v0","codex","trae"], context=
+:{} }) });
+    const picks =3D (data.proposals||[]).map(p =3D> ({ label:`${p.agent_=
+key} =E2=80=A2 ${p.proposal?.proposal_id} =E2=80=A2 score ${p.score.toFixed=
+(2)}`, detail:p.proposal?.goal, p }));
+    const choice =3D await vscode.window.showQuickPick(picks, { placeHolder=
+: "Pick a proposal to inspect/dispatch" });
+    if (!choice) return;
+    const approve =3D await vscode.window.showQuickPick(["Dispatch (dry-run=
+)","Cancel"], { placeHolder:"Approve?" });
+    if (approve?.startsWith("Dispatch")) {
+      const res =3D await fetchJson("/api/bridge/dispatch", ctx, { method:"=
+POST", body: JSON.stringify({ agent_key: choice.p.agent_key, proposal: choi=
+ce.p.proposal, context:{} }) });
+      vscode.window.showInformationMessage(`Dispatched to ${choice.p.agent_=
+key}: ${res.ok ? "ok" : "error"}`);
+    }
+  } catch(e:any) {
+    vscode.window.showErrorMessage(String(e?.message||e));
+  }
+}));
+
+Typical flow (what you=E2=80=99ll=
+ do)
+
+In the 
+extension
+, run 
+=E2=80=9CSYMBI: Roundtable (Gather Proposals)=E2=80=9D
+.
+
+SYMBI pings 
+v0 / Codex / Trae
+ with the 
+Bridge Contract
+; they return JSON p=
+roposals.
+
+SYMBI ranks them and shows you a l=
+ist.
+
+You pick one =E2=86=92 SYMBI 
+dispatches
+ (still dry-run=
+ unless you approve otherwise).
+
+Everything is 
+ledgered
+ and visible in your Review Co=
+nsole.
+
+Why this solves your pain
+
+One conversation
+ (you =E2=86=94 SYMBI). SYMBI handles =
+cross-tool messaging, format normalization, ranking, and audit.
+
+No bloat:
+ small service + adapters, all server-side. =
+The VS Code extension just triggers orchestrations and shows results.
+
+Reversible:
+ default is 
+dry-run
+; you approve before execution.

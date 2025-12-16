@@ -1,0 +1,112 @@
+Users/sja/Downloads/autopsy-4.21.0/platform/core/asm-9.3.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/core.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/core-base.jar:/Users/sja/Downloads/autopsy-4.21.0/autopsy/core/locale/core_autopsy.jar
+-------------------------------------------------------------------------------
+WARNING [org.sleuthkit.autopsy.corelibs.OpenCvLoader]: Failed to load core OpenCV library
+java.lang.UnsatisfiedLinkError: no opencv_java2413 in java.library.path: /usr/local/lib:/usr/local/lib:/usr/local/lib::/Users/sja/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+	at java.base/java.lang.ClassLoader.loadLibrary(ClassLoader.java:2434)
+	at java.base/java.lang.Runtime.loadLibrary0(Runtime.java:818)
+	at java.base/java.lang.System.loadLibrary(System.java:2006)
+[catch] at org.sleuthkit.autopsy.corelibs.OpenCvLoader.<clinit>(OpenCvLoader.java:39)
+	at org.sleuthkit.autopsy.core.Installer.<clinit>(Installer.java:77)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481)
+	at org.openide.util.SharedClassObject.createInstancePrivileged(SharedClassObject.java:633)
+	at org.openide.util.SharedClassObject$SetAccessibleAction.run(SharedClassObject.java:993)
+	at org.openide.util.SharedClassObject$SetAccessibleAction.run(SharedClassObject.java:985)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.openide.util.SharedClassObject.findObject(SharedClassObject.java:507)
+	at org.netbeans.core.startup.NbInstaller.prepare(NbInstaller.java:185)
+	at org.netbeans.ModuleManager.enable(ModuleManager.java:1362)
+	at org.netbeans.ModuleManager.enable(ModuleManager.java:1254)
+	at org.netbeans.core.startup.ModuleList.installNew(ModuleList.java:316)
+	at org.netbeans.core.startup.ModuleList.trigger(ModuleList.java:252)
+	at org.netbeans.core.startup.ModuleSystem.restore(ModuleSystem.java:298)
+	at org.netbeans.core.startup.Main.getModuleSystem(Main.java:173)
+	at org.netbeans.core.startup.Main.getModuleSystem(Main.java:142)
+	at org.netbeans.core.startup.Main.start(Main.java:299)
+	at org.netbeans.core.startup.TopThreadGroup.run(TopThreadGroup.java:98)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+J2KImageReader not loaded. JPEG2000 files will not be processed.
+See https://pdfbox.apache.org/2.0/dependencies.html#jai-image-io
+for optional dependencies.
+org.xerial's sqlite-jdbc is not loaded.
+Please provide the jar on your classpath to parse sqlite files.
+See tika-parsers/pom.xml for the correct version.
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Autopsy is Running, But Fails Due to Missing Libraries (OpenCV, JPEG2000, SQLite, & 
+libtsk_jni
+) 🔥
+
+Great progress! 🚀 
+Autopsy is now launching
+, but it’s 
+failing to load key dependencies
+:
+
+1️⃣ 
+
+libtsk_jni.dylib
+ is still not found
+
+2️⃣ 
+OpenCV library (
+opencv_java2413
+) is missing
+
+3️⃣ 
+JPEG2000 support is missing
+
+4️⃣ 
+SQLite JDBC driver is missing
+
+✅ Step 1: Fix 
+libtsk_jni.dylib
+ (Again, But More Aggressive)
+
+Even though we 
+copied 
+libtsk_jni.dylib
+
+, Java 
+still isn’t finding it
+. Let’s 
+force Java to use the correct library
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo install_name_tool -add_rpath /usr/local/lib /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
+
+export
+
+ DYLD_LIBRARY_PATH=/usr/local/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 
+Now, check if Java recognizes the file:
+
+sh
+
+Copy
+
+Edit

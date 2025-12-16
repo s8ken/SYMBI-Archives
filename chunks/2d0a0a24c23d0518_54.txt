@@ -1,0 +1,316 @@
+inal
+
+After logging into 
+Safe Mode
+, open 
+Terminal
+ and check:
+
+✅ 
+1. Are there any hidden user accounts?
+
+sh
+
+Copy
+
+dscl . list /Users | grep -v 
+
+'^_'
+
+🔍 
+Look for unknown accounts
+ (if an attacker created a hidden user, we’ll remove it).
+
+✅ 
+2. Is Remote Access still running?
+
+sh
+
+Copy
+
+sudo launchctl list | grep -i 
+
+"remotemanagement\|screensharing\|ssh"
+
+🔍 
+If remote management is back, we’ll investigate how it’s restarting.
+
+✅ 
+3. Is an unknown network device connected?
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+🔍 
+If unknown IPs appear, something is still controlling your Mac externally.
+
+📩 
+Let me know what these checks show after booting into Safe Mode!
+ 🔒🔥
+
+You said:
+
+brb
+
+ChatGPT said:
+
+Got it! Boot into 
+Safe Mode
+, run the checks, and let me know what you find. I’ll be here when you’re back. 🔒🔥
+
+You said:
+
+ok I am back and I selected safe mode but am unsure I am in safe mode as the clock time is not red 
+
+ChatGPT said:
+
+Good observation! On 
+M1/M2 Macs,
+ Safe Mode 
+does not
+ turn the clock red like older Intel Macs.
+
+🛠 How to Confirm You’re in Safe Mode
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+system_profiler SPSoftwareDataType | grep 
+
+"Boot Mode"
+
+🔍 
+If it says:
+
+✅ 
+"Safe"
+ → You’re in Safe Mode.
+
+❌ 
+"Normal"
+ → You need to try again.
+
+📩 
+Let me know what it says!
+ If you’re not in Safe Mode, we’ll try again with a different method. 🔒🔥
+
+You said:
+
+cool we are in safe
+
+ChatGPT said:
+
+✅ 
+Great! Now that we’re in Safe Mode, let’s investigate what’s still running.
+
+🛠 Step 1: Check for Hidden User Accounts
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+dscl . list /Users | grep -v 
+
+'^_'
+
+🔍 
+Look for any unknown accounts
+ that could be used for persistence.
+
+📩 
+Copy the results here.
+
+🛠 Step 2: Check for Remote Access Services
+
+Even in Safe Mode, some backdoors might still be running. Run:
+
+sh
+
+Copy
+
+sudo launchctl list | grep -i 
+
+"remotemanagement\|screensharing\|ssh"
+
+🔍 
+If anything appears, the attacker still has a way in.
+
+📩 
+Copy the results so we can remove anything suspicious.
+
+🛠 Step 3: Check for Active Network Connections
+
+To see if your Mac is still talking to an external attacker, run:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+🔍 
+If unknown IPs appear, we’ll trace them back.
+
+📩 
+Send me the results, and we’ll take the next step! 🔒🔥
+
+You said:
+
+user@Mes-MacBook-Pro ~ % dscl . list /Users | grep -v '^_'
+
+daemon
+djlcl
+m
+me
+nobody
+root
+user
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 Suspicious User Accounts Found!
+
+Your 
+Mac should NOT have "djlcl" or "m" as user accounts.
+
+✅ 
+Legitimate Accounts:
+
+root
+ → The main system administrator.
+
+daemon
+ → Normal system process user.
+
+nobody
+ → Standard non-privileged system account.
+
+user
+ → Your main user account (assuming this is your normal login).
+
+🚨 
+Potentially Malicious or Unauthorized Accounts:
+
+djlcl
+
+ → Unknown, possibly attacker-created.
+
+m
+
+ → Very unusual, possibly a hidden backdoor account.
+
+🛠 Step 1: Check If These Users Have a Home Directory
+
+Run this to see if these accounts have active home folders:
+
+sh
+
+Copy
+
+ls
+
+ -la /Users/
+
+🔍 
+If 
+djlcl
+ or 
+m
+ have a folder here, they may have been used for persistence.
+
+📩 
+Send me the results!
+
+🛠 Step 2: Check If These Users Have Administrator Privileges
+
+Run this to check if 
+they have admin access
+:
+
+sh
+
+Copy
+
+dscl . -
+
+read
+
+ /Users/djlcl | grep -i 
+
+"admin"
+
+dscl . -
+
+read
+
+ /Users/m | grep -i 
+
+"admin"
+
+🔍 
+If they have admin rights, the attacker could still control your Mac!
+
+📩 
+Tell me what shows up!
+
+🛠 Step 3: Check If These Users Are Logged In
+
+Run:
+
+sh
+
+Copy
+
+who
+
+🔍 
+If 
+djlcl
+ or 
+m
+ appear, they are currently active!
+
+📩 
+If they are logged in, we will immediately remove them.
+
+🚨 
+Next Steps
+
+1️⃣ 
+Check if they have home directories (
+ls -la /Users/
+).
+
+2️⃣ 
+Check if they have admin access (
+dscl . -read /Users/[username]
+).
+
+3️⃣ 
+Check if they are actively logged in (
+who
+).
+
+📩 
+Send me the results ASAP so we can kick them out and remove them! 🔥🔒
+
+You said:
+
+dilcl is legitimate - m is not 
+
+ChatGPT said:
+
+Upda

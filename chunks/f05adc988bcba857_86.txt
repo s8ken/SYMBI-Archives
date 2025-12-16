@@ -1,0 +1,303 @@
+ssues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi-main-site %  
+
+ChatGPT said:
+
+Great, you've cleaned the cache and reinstalled dependencies. Now let's 
+install the missing Sanity core packages
+ and get everything running.
+
+â 
+Step 1: Install Sanity Core Packages
+
+Now, install the 
+Sanity-related dependencies
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install sanity @sanity/vision @sanity/client @sanity/image-url next-sanity --legacy-peer-deps
+
+This will ensure you have:
+
+sanity
+ â Core Sanity SDK
+
+@sanity/vision
+ â Query testing tool
+
+@sanity/client
+ â Fetch content in your app
+
+@sanity/image-url
+ â Handle images dynamically
+
+next-sanity
+ â Next.js-friendly Sanity integration
+
+â 
+Step 2: Restart the Server
+
+After installation, restart your development server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then check:
+
+ð 
+
+http://localhost:3001/studio
+
+ð¯ 
+Expected Outcome
+
+If the Sanity Studio 
+loads successfully
+, we're good to go!
+
+If there's 
+another error
+, copy it here and I'll troubleshoot further.
+
+ð 
+You're almost there! Let me know the result.
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % npm install sanity @sanity/vision @sanity/client @sanity/image-url next-sanity --legacy-peer-deps
+
+added 787 packages, and audited 1368 packages in 46s
+
+164 packages are looking for funding
+  run 
+npm fund
+ for details
+
+12 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+Awesome! You've successfully installed the required 
+Sanity core packages
+. Now, let's get 
+Sanity Studio running
+ ð.
+
+â 
+Step 1: Start Your Next.js Server
+
+Run the following command:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Once it's running, check:
+
+ð 
+
+http://localhost:3001/studio
+
+ð 
+Step 2: If Studio Still Shows a 404
+
+Make sure the 
+Sanity Studio route exists
+.
+
+ð Open 
+app/studio/[[...index]]/page.tsx
+
+bash
+
+Copy
+
+Edit
+
+nano app/studio/[[...index]]/page.tsx
+
+Paste this:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+Save & exit:
+
+Press 
+CTRL + X
+
+Press 
+Y
+ to confirm
+
+Hit 
+Enter
+
+Then 
+restart your server
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð¯ 
+Final Checks
+
+â 
+Sanity Studio should load at
+
+http://localhost:3001/studio
+
+â 
+No 
+module not found
+ errors for 
+sanity
+
+â 
+No 500 errors
+
+ð 
+Try it now and let me know if Studio is running!
+ ð
+
+You said:
+
+> next dev
+
+ â  Port 3000 is in use, trying 3001 instead.
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1228ms
+ â Compiling / ...
+ â¨¯ ./sanity.config.ts:5:1
+Module not found: Can't resolve './schemas/page'
+  3 | import { deskTool } from 'sanity/desk'
+  4 | import { visionTool } from '@sanity/vision'
+> 5 | import page from './schemas/page'
+    | ^
+  6 |
+  7 | export default defineConfig({
+  8 |   name: 'default',
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/studio/[[...index]]/page.tsx
+ â¨¯ ./sanity.config.ts:5:1
+Module not found: Can't resolve './schemas/page'
+  3 | import { deskTool } from 'sanity/desk'
+  4 | import { visionTool } from '@sanity/vision'
+> 5 | import page from './schemas/page'
+    | ^
+  6 |
+  7 | export default defineConfig({
+  8 |   name: 'default',
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/studio/[[..

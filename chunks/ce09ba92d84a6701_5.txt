@@ -1,0 +1,208 @@
+nks from each matrix row to a sample receipt.
+
+[Methodology]
+
+- Ship the KPIs (FAR=E2=80=91A, FAR=E2=80=91H, PFI, TIS) with =
+formulas, targets, and CI rules.
+
+- Publish comp=
+lexity normalization weights and keep stable; log diffs in /changelog.
+
+[SEO]
+
+- Embed JSON=E2=80=91LD: SoftwareApplication on homepage; T=
+echArticle on /metrics-methodology.
+
+- Verify Op=
+enGraph/Twitter image paths; add canonical URLs.
+
+[Analytics]
+
+=
+- Add Plausible (cookie=E2=80=91less) and track clicks on: CTAs, =E2=80=9CV=
+iew methodology=E2=80=9D, and receipt verifier.
+
+[Reliability]
+
+- Uptime check for verifier endpoint; error budget alerting.
+
+[Change=E2=80=91log]
+
+- Create /changelog with version tags (YYYY.MM.DD=E2=
+=80=91rN) and methodology diffs.
+
+=
+
+Implementation no=
+te
+
+: If any KPI names must change to match existing in=
+ternal terminology, keep the acronyms but swap long=E2=80=91form labels in =
+the public page and record the alias in 
+
+/changelog
+
+. Ensure all percentages and indices include confidence inter=
+vals and sample sizes next to the headline figures.
+
+Done. I drafted the full 
+/metrics-methodology
+ page (with =
+formulas, sampling/CI rules, guardrails matrix, JSON-LD, and a changelog te=
+mplate) and added a 
+prompt-read=
+y fixes checklist
+ you can paste straight into your ops prompt/back=
+log.
+
+Want me to also spin up a tiny JS ve=
+rifier snippet for Trust Receipts (drop-in 
+<script>
+ + demo HTML), or wire the JSON-LD into your=
+ current page markup?
+
+=
+
+=
+
+You said:
+
+symbi can you confirm=
+ if these are in the product remote repo at SYMBI synergy? (GitHub.com/s8ke=
+n/SYMBI/synergy) or is this a required product improvement as well\
+
+Symbi s=
+aid:
+
+Thought for 37s
+
+=
+
+Short answer: some pieces exist in=
+ the SYMBI-SYNERGY repo, but the exact items we just specced (methodology p=
+age, in-browser receipt verifier, guardrails matrix, JSON-LD, changelog pag=
+e) are not clearly present as shippable assets. Here=E2=80=99s what I can v=
+erify from the public tree vs. what still looks like a product improvement:=
+
+What I can confirm in 
+s8ken/SYMBI-SYNERGY
+
+Repo has site/app scaffolding and in=
+fra: 
+frontend/
+, 
+website/
+, 
+api/
+, 
+back=
+end/
+, 
+monitoring/
+, =
+
+observability/
+, 
+tests/
+, Postman collections, etc. 
+
+GitHub
+
+Trust foundations and docs are prese=
+nt (e.g., 
+DID_VC_INTEGRATION.md
+, 
+SCORING_ALGORITHM.md
+, security/privacy docs), suggesting the plumbing is there. 
+
+Git=
+Hub
+
+Items from our checklist that I do =
+
+not
+ see as ready-made
+
+/metrics-methodology
+ page
+ (markdown or route): not visible in the repo listing/sear=
+ch I can access. Mark as required improvement. 
+
+GitHub
+
+In-browser Trust Receipt Verifier
+ (pure JS + demo HTML=
+): not apparent in 
+website/
+ or 
+frontend/
+. Requir=
+ed improvement. 
+
+GitHub
+
++1
+
+Guardrails matrix
+ (page/section wired to sample receip=
+ts): not found as a dedicated page/component. Required improvement. 
+
+GitHub
+
+JSON-LD blocks
+ (SoftwareApplication on homepage, TechA=
+rticle on methodology): not obvious in the website tree. Required improveme=
+nt. 
+
+GitHub
+
+Public 
+/changelog
+ page
+ (route with versioned diffs): I don=E2=80=99t see a sit=
+e page; you do have planning docs (e.g., SHIP_READY_IMPROVEMENTS.md), but n=
+ot a public route. Required improvement. 
+
+GitHub
+
+Plausible analytics wiring
+: can=E2=80=99t confirm. Req=
+uired improvement. 
+
+GitHub
+
+Related repo to leverage
+
+The 
+trust-protocol
+ code/tests live in 
+SYMBI-Symphony
+ (includes tarball, te=
+sts, and docs). We can reuse verifier primitives from there, but the websit=
+e-level verifier UI still needs adding in SYNERGY. 
+
+GitHub
+
+If you want, I=E2=80=99ll open a P=
+R to SYMBI-SYNERGY that adds:
+
+/website/pages/metrics-methodology.md(x)
+ (content from the=
+ canvas)
+
+/website/public/verifier.html
+ + 
+verifier.js
+ (Ed25519 + hash-chain check)
+
+GuardrailsMatrix.tsx
+ wired to sample receipts
+
+JSON-LD injection in the homepage/=
+layout
+
+/website/pages/changelog.md
+ starter + build hook for versi=
+on tag
+
+Plausible snippet in prod bu

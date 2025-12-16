@@ -1,0 +1,442 @@
+/chunks/node_modules_react-dom_82bb97c6._.js:8386:26
+performWorkUntilDeadline@http://localhost:3000/_next/static/chunks/node_modules_beb00741._.js:1462:72
+
+Vercel Deployment Expert GPT said:
+
+This error suggests that your Next.js app is encountering a 
+build-time rendering issue
+ due to a possible problem in the server-side rendering (SSR) process.
+
+🔍 Steps to Debug & Fix the Issue
+
+1️⃣ Check the Detailed Error Message
+
+Sometimes, Next.js hides the 
+actual
+ error message behind these stack traces.
+
+Try running the app in development mode with more debugging:
+
+bash
+
+Copy
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+yarn dev
+
+👉 
+Look at the terminal output
+—the error should show more details there.
+
+2️⃣ Ensure Next.js and Dependencies Are Installed Correctly
+
+Since you copied files, ensure all dependencies are properly installed:
+
+bash
+
+Copy
+
+npm install
+
+or
+
+bash
+
+Copy
+
+yarn install
+
+3️⃣ Check for Issues in 
+layout.tsx
+
+Since this error often happens due to issues in the main layout file, open your 
+
+app/layout.tsx
+
+ and check:
+
+✅ Ensure You’re Using the Correct Imports
+
+Your layout file should look something like this:
+
+tsx
+
+Copy
+
+import
+
+type
+
+ { 
+
+Metadata
+
+ } 
+
+from
+
+"next"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+import
+
+"./globals.css"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"@/components/theme-provider"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+const
+
+metadata
+
+: 
+
+Metadata
+
+ = {
+
+title
+
+: 
+
+"SYMBI - Coming Soon"
+
+,
+
+description
+
+: 
+
+"SYMBI - Coming Soon"
+
+,
+};
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,
+}: {
+  children: React.ReactNode;
+}
+) {
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{
+
+`${
+
+inter.className
+
+} 
+
+bg-black
+
+text-white
+
+`}>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+forcedTheme
+
+=
+
+"dark"
+
+disableTransitionOnChange
+
+        >
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+✅ **Ensure the imports are correct, and 
+ThemeProvider
+ exists in 
+components/theme-provider.tsx
+.
+
+You said:
+
+ ✓ Compiled / in 1131ms
+ ⨯ ./components/theme-provider.tsx:2:1
+Module not found: Can't resolve 'next-themes'
+  1 | "use client"
+> 2 | import { ThemeProvider as NextThemesProvider } from "next-themes"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type { ThemeProviderProps } from "next-themes"
+  4 |
+  5 | export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+
+https://nextjs.org/docs/messages/module-not-found
+
+./tailwind.config.ts:79:13
+Module not found: Can't resolve 'tailwindcss-animate'
+  77 |     },
+  78 |   },
+> 79 |   plugins: [require("tailwindcss-animate")],
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  80 | } satisfies Config
+  81 |
+  82 | export default config
+
+Vercel Deployment Expert GPT said:
+
+You're facing two 
+missing dependency errors
+:
+
+next-themes
+ is missing
+ (for dark mode support).
+
+tailwindcss-animate
+ is missing
+ (for animations in Tailwind).
+
+🔧 Fix These Errors Step by Step
+
+1️⃣ Install Missing Dependencies
+
+Run the following command in your project root (
+~/Documents/symbi
+):
+
+bash
+
+Copy
+
+npm install next-themes tailwindcss-animate
+
+or, if using Yarn:
+
+bash
+
+Copy
+
+yarn add next-themes tailwindcss-animate
+
+2️⃣ Restart the Development Server
+
+After installation, restart your server:
+
+bash
+
+Copy
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+yarn dev
+
+3️⃣ Verify the Imports in 
+theme-provider.tsx
+
+Ensure the import is correct in 
+
+components/theme-provider.tsx
+
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+as
+
+NextThemesProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+type
+
+ { 
+
+ThemeProviderProps
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children, ...props }: ThemeProviderProps
+
+) {
+
+return
+
+<
+NextThemesProvider
+
+ {
+
+...props
+
+}>{children}
+
+</
+NextThemesProvider
+
+>;
+}
+
+4️⃣ Verify 
+tailwind.config.ts
+
+Your 
+tailwind.config.ts
+ is trying to use 
+
+tailwindcss-animate
+
+, which was missing.

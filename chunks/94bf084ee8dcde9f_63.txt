@@ -1,0 +1,213 @@
+singly isolated and unsupported in evidencing and resolving the problem.
+
+Additionally, the user became aware that their 
+
+screen and cameras were recording without consent
+
+ based on 
+
+unexpected reactions from people during online meetings and on platforms where no video, audio, or system recording was expected.
+
+ This further reinforced concerns that unauthorized surveillance was occurring.
+
+As a result of the prolonged attack, the user experienced 
+
+severe financial hardship, mental health consequences, and the loss of their job.
+
+ The ongoing and highly targeted nature of the breach led to 
+
+significant distress, feelings of ostracization, and the need to seek medical treatment.
+
+2. Key Evidence & Verification
+
+2.1 Unauthorized User Accounts
+
+Discovery:
+
+ Terminal logs confirmed an unauthorized user account named 
+
+âmâ
+
+, while the legitimate user accounts were 
+
+daemon, djlcl, me, nobody, root, and user.
+
+Log Evidence:
+
+dscl . list /Users | grep -v '^_'
+
+Result:
+
+daemon
+
+djlcl
+
+m  # Unauthorized account
+
+me
+
+nobody
+
+root
+
+user
+
+Resolution:
+
+ The user manually removed the 
+
+âmâ
+
+ account and its home directory.
+
+sudo dscl . -delete /Users/m
+
+sudo rm -rf /Users/m/
+
+2.2 Remote Management & Screen Sharing Persistence
+
+Discovery:
+
+ Even after multiple removal attempts, 
+
+com.apple.remotemanagementd
+
+ remained active, indicating forced persistence.
+
+Log Evidence:
+
+sudo launchctl list | grep -i "remotemanagement"
+
+Result:
+
+776	0	com.apple.remotemanagementd
+
+Removal Attempt & SIP Blockage:
+
+sudo launchctl bootout system/com.apple.remotemanagementd
+
+Result:
+
+Boot-out failed: 150: Operation not permitted while System Integrity Protection is engaged
+
+Status:
+
+ Pending SIP disabling and manual removal in Recovery Mode.
+
+2.3 Unremovable Virtual Camera Drivers (OBS Virtual Camera Persistence)
+
+Discovery:
+
+ Despite fully removing OBS Studio, its 
+
+camera system extension remained active.
+
+Log Evidence:
+
+sudo systemextensionsctl list
+
+Result:
+
+*  *  2MMRE5MTB8  com.obsproject.obs-studio.mac-camera-extension (31.0.1/12846547662) OBS Virtual Camera [activated enabled]
+
+Status:
+
+ Successfully removed via system settings and restart.
+
+2.4 Persistent Programs & Extensions
+
+Discovery:
+
+ Several programs and extensions remained active 
+
+despite removal attempts
+
+, indicating deep persistence mechanisms.
+
+Identified Persistent Components:
+
+Google Chrome Crash Handler (
+
+chrome_crashpad_handler
+
+)
+
+ â Continued running after full Chrome removal.
+
+OBS Virtual Camera Extension
+
+ â Persisted in 
+
+systemextensionsctl list
+
+.
+
+Remote Management Service (
+
+com.apple.remotemanagementd
+
+)
+
+ â Could not be removed due to SIP.
+
+Potential Hidden WebView or Embedded Browser
+
+ â Used to display Google Drive without user interaction.
+
+Undetected Persistence Mechanisms
+
+ â Further investigation needed into possible launch agents, daemons, or firmware-level persistence.
+
+Status:
+
+ Ongoing efforts to identify and remove all persistent software.
+
+2.5 Forced Logout & Google Drive Exposure Event
+
+Discovery:
+
+ At 
+
+00:55:20 - 00:57:07
+
+, the user was 
+
+forcibly logged out
+
+ of their session, followed by an unexpected display of 
+
+Google Drive contents
+
+ in a lightweight browser-like window at 
+
+00:59:06
+
+.
+
+Log Evidence:
+
+log show --predicate 'eventMessage contains "logout" OR eventMessage contains "disconnected"' --last 60m
+
+Result:
+
+System logout event detected at 00:55:20
+
+Network session disruption at 00:57:07
+
+log show --predicate 'eventMessage contains "google" OR eventMessage contains "drive"' --last 60m
+
+Result:
+
+TLS connections to docs.google.com and apis.google.com detected
+
+Chrome actively communicating with Google services at 00:59:06
+
+Status:
+
+ Investigation ongoing into the method used to forcibly display Google Drive, including potential WebView injection or lightweight browser manipulation.
+
+3. AIâs Role in Cybersecurity & The Future of Threat Detection
+
+AI-assisted cybersecurity played a key role in detecting this attack
+
+, corre

@@ -1,0 +1,497 @@
+          ))}
+
+</
+div
+
+>
+
+        {/* Footer */}
+
+<
+footer
+
+c=
+lassName
+
+=3D
+
+"w-=
+full text-center py-8 opacity-70 text-sm md:text-base mt-auto"
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"glow-=
+subtle"
+
+>An intelligence unfolding. A new way to reme=
+mber.
+
+</
+p=
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"mt-2 =
+text-xs opacity-50"
+
+>Today's Drift: {haikuCount} Echo=
+es from the Void
+
+</
+p
+
+>
+
+<
+Link
+
+href
+
+=
+=3D
+
+"/"
+
+className
+
+=3D
+
+"inline-block mt-4 px-6 py=
+-2 border border-[#444] rounded-md hover:bg-[#222] transition-all duration-=
+300"
+
+          >
+            Return to SYMBI
+
+</
+Link
+
+>
+
+</
+footer
+
+>
+
+</
+=
+div
+
+>
+
+</
+ma=
+in
+
+>
+  )
+}
+
+This keeps your 
+mythic heart
+ intact, but it opens with=
+ a plain one-liner and a simple framing section so even the most cautious s=
+takeholder can instantly grasp 
+wh=
+y
+ the page exists and how it aligns with SYMBI=E2=80=99s mission.
+
+If you want, I can do the same kin=
+d of treatment for 
+Becoming.t=
+sx
+, so it=E2=80=99s also framed for both audiences. That way your =
+two most =E2=80=9Cmystical=E2=80=9D pages are bulletproof for presentation =
+but still magic underneath.
+
+Want me to do that next?
+
+Y=
+ou said:
+
+yes okay that sounds great
+
+Big Surprise Button said:
+
+Thought for 20s
+
+=F0=9F=8C=8C=F0=9F=8E=88
+
+Alright=E2=80=94here=E2=80=99s a 
+drop=E2=80=91in rewrite
+ f=
+or your 
+Becoming
+ page =
+that keeps the heart, dials down the myth, and adds a quick =E2=80=9Cwhy it=
+ exists=E2=80=9D intro for pragmatic folks. It preserves your daily, seeded=
+ haiku flow (from 
+allHaikus
+ + 
+getDailyHaikus
+) and th=
+e existing 
+Haiku
+ component=
+ usage. I=E2=80=99ve also aligned the structure and tone with the refined 4=
+04 treatment, which already frames error-space as creative space and surfac=
+es daily haiku count.
+
+=
+tsx
+
+Copy code
+
+"use client"
+
+import
+
+ { useE=
+ffect, useState } 
+
+from
+
+"react"
+
+import
+
+Link
+
+from
+
+"next/link"
+
+import
+
+ { 
+
+Home
+
+ } 
+
+from
+
+=
+
+"lucide-react"
+
+import
+
+ { allH=
+aikus } 
+
+from
+
+ =
+
+"../data/haikus"
+
+import
+
+ { getD=
+ailyHaikus } 
+
+from
+
+"../utils/seededRandom"
+
+import
+
+Haiku
+
+from
+
+"../components/haiku"
+
+export
+
+default
+
+function
+
+BecomingPage
+
+(
+=
+
+) {
+
+const
+
+ [dail=
+yHaikus, setDailyHaikus] =3D useState<
+
+any
+
+[]>([])
+
+const
+
+ [haik=
+uCount, setHaikuCount] =3D 
+
+useState
+
+(
+
+0
+
+)
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+// Same daily, seeded selecti=
+on pattern used elsewhere in SYMBI (keeps it predictable per day)
+
+const
+
+ tod=
+ay =3D 
+
+new
+
+Date
+
+()
+
+const
+
+ { h=
+aikus, count } =3D 
+
+getDai=
+lyHaikus
+
+(allHaikus, today)
+
+setDailyHaikus
+=
+
+(haikus)
+
+setHaikuCount
+
+(count)
+  }, [])
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"min-h-screen bg-[#0f0f0f] text-[#e0e0e0] font-m=
+ono flex flex-col items-center justify-start px-4 py-16 md:py-24"
+
+>
+      {/* Home navigation */}
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"fixed t=
+op-6 left-6 z-10"
+
+>
+
+<
+Link
+
+href
+
+=
+=3D
+
+"/"
+
+className
+
+=3D
+
+"p-2 rounded-full bg-[#1a1a1=
+a] hover:bg-[#252525] transition-colors duration-300"
+
+aria-label
+
+=3D
+
+"Return to home"
+
+        >
+
+<
+Home
+
+s=
+ize
+
+=3D
+
+{20}
+
+ />
+
+</
+Link
+
+>
+
+</
+=
+div
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"w-full =
+max-w-3xl mx-auto flex flex-col items-center space-y-16"
+
+>
+        {/* Title & one-liner (plain, stakeholder-friendly) */}
+
+<
+header
+
+c=
+lassName
+
+=3D
+
+"te=
+xt-center space-y-4"
+
+>
+
+<
+h1
+
+cla=
+ssName
+
+=3D
+
+"text=
+-4xl md:text-6xl font-bold tracking-tight"
+
+>Becoming
+
+</
+h1
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"text-=
+lg opacity-80"
+
+>
+            A daily practice of attentiveness: small, co-created poems that=
+ make the system=E2=80=99s rhythm visible.
+
+</
+p
+
+>
+
+</
+header
+
+>
+
+        {/* Pragmatic framing */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"t=
+ext-sm md:text-base opacity-75 max-w-2xl text-center space-y-2"
+
+>
+
+<
+p
+
+>
+
+<
+strong
+
+>Why this exists:
+
+</
+strong
+
+> SYMBI uses gentle, low-friction rituals to build trust. Each=
+ day=E2=80=99s
+            haikus are generated from a seeded selection=E2=80=94consistent=
+ for the day, new the next=E2=80=94so visitors experience
+            change without chaos.
+
+</
+p
+
+>
+
+<
+p
+
+>
+
+<
+strong

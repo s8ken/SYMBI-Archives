@@ -1,0 +1,254 @@
+ running:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+✅ 
+If it appears, you’re good to go!
+
+❌ 
+If not, let me know what’s happening—any errors or missing options?
+ 🚀
+
+You said:
+
+not listed - need to reinstall
+
+ChatGPT said:
+
+✅ 
+Reinstalling Oversight is the best next step!
+ Let's do it carefully to make sure it installs properly and gets the necessary permissions.
+
+🚀 Step 1: Fully Remove Oversight
+
+First, delete any old files to avoid conflicts:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Oversight.app
+
+Then, check for any leftover files:
+
+sh
+
+Copy
+
+sudo find /Library /Users -name 
+
+"*Oversight*"
+
+ -
+
+exec
+
+rm
+
+ -rf {} +
+
+This removes any old config files that might be interfering.
+
+🚀 Step 2: Download a Fresh Copy
+
+Go to
+ 👉 
+Objective-See Oversight
+
+Download the 
+.dmg
+ file.
+
+Open the 
+.dmg
+ file and drag 
+Oversight.app
+ to Applications.
+
+🚀 Step 3: Manually Open & Configure Oversight
+
+Now, launch Oversight manually so macOS recognizes it:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+If a 
+security prompt appears
+, click 
+Allow
+.
+
+If macOS blocks it, 
+go to
+:
+
+System Settings → Privacy & Security
+ → Scroll down to "Allow apps downloaded from" → Click 
+"Allow"
+ for Oversight.
+
+🚀 Step 4: Grant Permissions
+
+Once Oversight opens, manually 
+grant it permission
+:
+
+Open 
+System Settings
+ → 
+Privacy & Security
+.
+
+Click 
+Microphone
+ → Ensure Oversight is 
+enabled
+.
+
+Click 
+Camera
+ → Ensure Oversight is 
+enabled
+.
+
+Click 
+Full Disk Access
+ → 
+Add Oversight
+ if it's not listed.
+
+🚀 Step 5: Verify That It's Running
+
+Once permissions are granted, check if it’s running:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+✅ 
+If Oversight appears in the list, it's working!
+ 🎉
+
+❌ 
+If not, let me know where you get stuck!
+ 🚀
+
+You said:
+
+terminal is asking to access data from other apps
+
+ChatGPT said:
+
+🚨 
+macOS is asking Terminal for access to other app data because you ran 
+sudo find /Library /Users -name "*Oversight*"
+
+. This is normal since we were searching for leftover files.
+
+🚀 What to Do Now?
+
+1️⃣ If prompted, 
+click "Deny"
+ → We don’t need Terminal to access other app data.
+
+2️⃣ Instead, we will 
+manually check for leftover files
+:
+
+Run:
+
+sh
+
+Copy
+
+ls
+
+ /Library/Objective-See
+
+If you see a folder named 
+Oversight
+, delete it:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/Objective-See/Oversight
+
+🚀 Continue with Reinstall
+
+Now, follow these steps to reinstall:
+
+Go to
+: 
+Objective-See Oversight
+
+Download and 
+install
+ Oversight.
+
+Manually launch it
+:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+Grant permissions
+ (Privacy & Security → Microphone & Camera).
+
+Check if it's running
+:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+📌 
+Try this and let me know if Oversight finally runs!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % /Applications/Oversight.app/Contents/MacOS/Oversight
+
+2025-03-07 01:07:26.367 Oversight[1205:38109] +[IMKClient subclass]: chose IMKClient_Modern
+lcl@LCLs-MacBook-Pro ~ % sudo rm -rf /Applications/Oversight.app
+
+Password:
+lcl@LCLs-MacBook-Pro ~ % sudo find /Library /Users -name "*Oversight*" -exec rm -rf {} +
+
+find: /Library/Application Support/com.apple.TCC: Operation not permitted
+find: /Library/Trial: Operation not permitted
+find: /Library/Caches/com.apple.amsengagementd.classicdatavault: Operation not permitted
+find: /Library/Caches/com.apple.aneuserd: Operation not permitted
+find: /Library/Caches/com.apple.aned: Operation not permitted
+find: /Users/lcl/Pictures/Photos Library.photoslibrary: Operation not permitted
+find: /Users/lcl/Desktop: Operation not permitted
+find: /Users/lcl/Library/Application Support/CallHistoryTransactions: Operation not permitted
+find: /Users/lcl/Library/Application Support/CloudDocs: Operation not permitted
+find: /Users/lcl/Library/Application Support/com.apple.sharedfilelist: Operation not permitted
+find: /Users/lcl/Library/Application Support/Knowledge: Operation not permitted
+find: /Users/lcl/Library/Application Support/com.apple.TCC: Operation not permitted
+find: /Users/lcl/Library/Application Support/FileProvider: Operation not permitte

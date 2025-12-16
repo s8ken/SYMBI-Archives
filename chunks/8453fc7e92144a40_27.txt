@@ -1,0 +1,814 @@
+dd 
+LedgerEventCard
+ component (
+frontend/src/components/LedgerEventCard.js
+).
+
+Register a route 
+/review/:sessionId?
+ (React Router) in 
+App.js
+.
+
+(Optional) Add a nav link from your =
+dashboard.
+
+Rollback:
+ Delete the three new files and remove the one r=
+oute import/entry.
+
+DIFF (new files)
+
+frontend/src/lib/api.js
+
+=
+js
+
+Copy code
+
+// Minimal API client (no ne=
+w deps)
+
+// Reads JWT from localStorage, A=
+PI base from env (NEXT_PUBLIC_API_BASE or REACT_APP_API_BASE)
+
+=
+
+const
+
+=
+
+API_BASE
+
+ =
+=3D
+  process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ ||
+  process.
+
+env
+
+.
+
+REACT_APP_API_BASE
+
+ ||
+
+window
+
+=
+
+.
+
+location
+
+.
+
+origin
+
+;
+
+function
+
+authHeaders
+
+(
+
+extra =3D {}
+
+) {
+
+const
+
+ token=
+ =3D 
+
+localStorage
+
+.
+
+getItem
+
+(
+
+"token"
+
+);
+
+return
+
+ {
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+,
+    ...(token ? { 
+
+Authorizat=
+ion
+
+: 
+
+`Bearer 
+${token}
+
+` } : {}),
+    ...extra,
+  };
+}
+
+export
+
+async
+
+=
+
+function
+
+fetchTimeline
+
+(
+
+sessionId, { signal } =3D {}
+
+=
+
+) {
+
+const
+
+ res =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${=
+API_BASE}
+
+/api/insights/timeline?session_id=3D
+
+${
+encode=
+URIComponent
+
+(sessionId)}`,
+    { 
+
+headers
+
+: 
+
+authHeaders
+
+(), signal }
+  );
+
+if
+
+ (!res.
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`timeline 
+${res.status}
+
+`);
+
+return
+
+ res.=
+
+json
+
+(=
+); 
+
+// expect: { items: [{ event_i=
+d, timestamp, pivot, scores, window: {...} }, ...] }
+
+}
+
+export
+
+async
+
+=
+
+function
+
+fetchLedger
+
+(
+
+sessionId, { page =3D 
+1
+
+, limit =3D 
+
+50
+
+, since } =3D {}, { signal } =3D {}) {
+
+const
+
+ qs =
+=3D 
+
+new
+
+URLSearchParams
+
+({ 
+
+session_id
+
+:=
+ sessionId, 
+
+page
+
+=
+: 
+
+String
+
+=
+(page), 
+
+limit
+
+: 
+
+String
+
+(li=
+mit) });
+
+if
+
+ (since) =
+qs.
+
+set
+
+(
+
+"since_row_hash"
+
+, since);
+
+const
+
+ res =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${API_BA=
+SE}
+
+/api/ledger?
+
+${qs.toString()}
+
+`, { 
+
+headers
+
+: 
+
+authHeaders
+
+(), signal });
+
+if
+
+ (!res.
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`ledger 
+${res.status}
+
+`);
+
+return
+
+ res.=
+
+json
+
+(=
+); 
+
+// expect: { items: [...], pag=
+e, nextPage, lastHash }
+
+}
+
+export
+
+async
+
+=
+
+function
+
+applyGuardrails
+
+(
+
+{ draft_response, signals, scope }
+
+) {
+
+const
+
+ res =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${API_BA=
+SE}
+
+/api/guardrails/apply`, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: 
+
+authHeaders
+
+(),
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ dr=
+aft_response, signals, scope }),
+  });
+
+if
+
+ (!res.
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`guardrails 
+${res.status}
+
+`);
+
+return
+
+ res.=
+
+json
+
+(=
+); 
+
+// { final_response, actions }=
+
+}
+
+frontend/src/compon=
+ents/LedgerEventCard.js
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+Card
+
+, 
+
+CardContent
+
+, 
+
+Chip
+
+, 
+
+Stack
+
+, 
+
+Typography
+
+, =
+
+Divider
+
+,=
+
+Tooltip
+
+=
+ } 
+
+from
+
+"@mui/material"
+
+;
+
+export
+
+default
+
+function
+
+LedgerEventCard
+
+(
+
+{ item }
+
+) {
+
+const
+
+ {
+    event_id,
+    timestamp,
+    prompt,
+    response,
+    analysis =3D {},
+    ledger =3D {},
+    model_vendor,
+    model_name,
+  } =3D item || {};
+
+const
+
+ ts =
+=3D timestamp ? 
+
+new
+
+=
+
+Date
+
+(timestamp).
+
+toLocaleSt=
+ring
+
+() : 
+
+"=E2=
+=80=94"
+
+;
+
+const
+
+ chips=
+ =3D [];
+
+if
+
+ (analysi=
+s.
+
+stance
+
+) ch=
+ips.
+
+push
+
+({ 
+
+label
+
+: 
+
+`stance: 
+$=
+{analysis.stance}
+
+` });
+
+if
+
+ (analysi=
+s.
+
+clinical_register
+
+ !=3D 
+
+null
+
+) chips.
+
+push
+
+({ 
+
+label
+
+: 
+
+`clinical: 
+${analysis.clinical_register}
+
+` });
+
+if
+
+ (analysi=
+s.
+
+pivot
+
+) chi=
+ps.
+
+push
+
+({ 
+
+label
+
+: 
+
+"PIVOT"
+
+, 
+
+color
+
+: 
+
+"error"
+
+ });
+
+if
+
+ (analysi=
+s.
+
+disclosure_flags
+
+=
+
+?.
+
+length
+
+) chips.
+
+push
+
+({ 
+
+label
+
+: 
+
+`disclosure: 
+${analysis.disclosure_flags.join(
+","
+
+)}`, 
+
+color
+
+: 
+
+"warni=
+ng"
+
+ });
+
+return
+
+ (
+
+<=
+
+Card
+
+variant
+
+=3D
+
+"outlined"
+
+sx
+
+=3D
+
+{{
+
+mb=
+:
+
+2
+
+ }}>
+
+<
+C=
+ardContent
+
+>
+
+<
+Stack
+
+di=
+rection
+
+=3D
+
+"row=
+"
+
+spacing
+=
+
+=3D
+
+{1}
+
+sx
+
+=3D
+
+{{
+
+mb:
+
+1
+
+, 
+
+fl=
+exWrap:
+
+ "
+
+wrap
+
+" }}>
+          {chips.map((c, i) =3D> (
+
+<
+Chip
+
+key
+
+=3D
+
+{i}
+
+label
+
+=
+
+=3D
+
+{c.label}
+
+color
+
+=3D
+
+{c.color
+
+ || "
+
+default
+
+"} 
+
+size
+
+=3D
+
+"small"
+
+ />
+          ))}
+
+</
+Stack
+
+>
+
+<
+Typography
+
+variant
+
+=3D
+
+"=
+caption"
+
+color
+
+=3D
+
+"text.seconda=
+ry"
+
+>
+          {ts} =E2=80=A2 {m

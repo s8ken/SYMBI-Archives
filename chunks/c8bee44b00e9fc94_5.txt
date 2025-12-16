@@ -1,0 +1,304 @@
+V0.dev, paste the full endpoint URL and key i=
+nto the action setup.
+
+=E2=9C=85 Checklist to Fix
+
+=E2=9C=85 Use this 
+exact endpoint
+:
+
+https://api.openai.com/v1/chat/=
+completions
+
+=E2=9C=85 Confirm the key starts w=
+ith 
+sk-
+ and is not expir=
+ed or revoked
+
+=E2=9C=85 Test with 
+curl
+ or Postman to verify it's not a V=
+ercel/V0 issue
+
+=E2=9C=85 Use backend to call Open=
+AI API, not frontend browser directly (or it will expose the key)
+
+Would you like to paste your code or setup here (redact the key=
+), and I=E2=80=99ll check it line-by-line for issues?
+
+=
+
+=
+
+You =
+said:
+
+no=
+ for service acc
+
+ChatGPT said:
+
+Ah, =
+you're getting 
+=E2=80=9CPage Not =
+Found=E2=80=9D
+ while using a 
+service account key
+ from OpenAI =E2=80=94 and you're likely c=
+alling something like:
+
+b=
+ash
+
+Copy code
+
+=
+
+https://api.openai.com/v1/chat/completions
+
+Let=E2=80=99s break this down, becau=
+se 
+service accounts use a diffe=
+rent endpoint and authentication flow
+ from regular 
+sk-
+ keys.
+
+=F0=9F=94=90 Service Account Keys W=
+ork Differently
+
+When you use a 
+Service Account key
+ in OpenAI, the key is 
+not
+ a direct-use 
+sk-
+ string.
+
+Instead, it=E2=80=99s a 
+JSON key file
+ that includes:
+
+client_email
+
+private_key
+
+project_id
+
+And more...
+
+You cannot use this key directly with curl or fetch.
+
+You must first exchange it for an 
+access token
+ using 
+OAuth 2.0 JWT flow
+. Then yo=
+u use 
+that token
+ in th=
+e 
+Authorization
+ header.
+
+=E2=9C=85 Here's How to Use a Servi=
+ce Account with OpenAI's API
+
+=F0=9F=94=81 1. Generate an Access =
+Token
+
+You need to:
+
+Create a 
+JWT (JSON Web Token)
+ signed with your service acc=
+ount's private key
+
+Exchange it for an access token via=
+:
+
+bash
+
+Copy code
+
+POST https://auth.openai.com/oauth2/token
+
+With this payload:
+
+json
+
+Copy code
+
+{
+
+"grant_type"
+
+:
+
+"urn:ietf:params:oauth:grant-type:jwt-bearer"
+
+,
+
+"assertion"
+
+:
+
+"<your-signed-jwt>"
+
+}
+
+(You can do this in Node.js, Pytho=
+n, or with Google=E2=80=99s 
+goo=
+gle-auth-library
+.)
+
+=E2=9A=99=EF=B8=8F 2. Use the Acc=
+ess Token
+
+Once you have the token, then you =
+call:
+
+bash
+
+Copy code
+
+https://api.openai.com/v1/chat/completions
+
+With:
+
+http
+
+Copy code
+
+Authorization: Bearer <access-token>
+
+=E2=9C=85 Now your request will wo=
+rk!
+
+=E2=9A=A0=EF=B8=8F Why You're See=
+ing =E2=80=9CPage Not Found=E2=80=9D
+
+You likely tried to call the OpenA=
+I API with the raw 
+service ac=
+count key
+ like this:
+
+bash
+
+Copy code
+
+curl https://api.openai.com/v1/chat/completions \
+  -H 
+
+"Authorization: Bearer <se=
+rvice-account-private-key>"
+
+ \
+  ...
+
+This 
+doesn=E2=80=99t work
+, and OpenAI will return 
+404
+ or 
+401
+.
+
+=F0=9F=9B=A0 Want a Working Code =
+Sample?
+
+I can generate a 
+Node.js
+ or 
+Python
+ snippet that:
+
+Loads the service account JSON
+
+Exchanges it for an access token
+
+Calls the 
+chat/completions
+ endpoint securely
+
+Just let me know which language yo=
+u prefer.
+
+=E2=9C=85 TL;DR
+
+You Tried
+
+What Went=
+ Wrong
+
+H=
+ow to Fix
+
+Called OpenAI API with service key directly
+=
+
+=E2=9D=8C Se=
+rvice account keys aren=E2=80=99t direct-use 
+sk-
+ keys
+
+Use 
+OAu=
+th 2.0 JWT flow
+ to get an access token
+
+Got 404 or 401
+
+Invalid or unrecognized bearer
+
+Follow correct token exchange flo=
+w first
+
+Expected chat/completion t=
+oggle
+
+Do=
+esn=E2=80=99t exist =E2=80=94 access is controlled by scopes in the JWT
+
+Let me know your language stack (Node.js, Python, Vercel backen=
+d, etc.) and I=E2=80=99ll give you a working snippet.
+
+=
+
+=
+
+You =
+said:
+
+okay this is my first time using the https://api.openai.c=
+om site at all and im new to this and not too familiar with code 
+
+ChatGPT =
+said:
+
+=
+
+Thanks for sharing that, Stev=
+e =E2=80=94 that helps a 
+lot
+. Si=
+nce this is your first time using the 
+OpenAI API platform
+
+ and you're not super familiar with code, let's take i=
+t 
+step-by-step
+ in a 
+low-code / beginner-friendly
+ way.
+
+We'll walk through 
+exactly how to use your service account key prop=
+erly
+ =E2=80=94 without getting lost in developer jargon.
+
+=F0=9F=A7=A0 First, Quick Recap of =
+Where You're

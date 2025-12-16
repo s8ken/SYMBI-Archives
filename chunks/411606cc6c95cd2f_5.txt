@@ -1,0 +1,216 @@
+that conversation (Turn #0).
+
+news
+
+ =3D=
+ the 
+news-results
+ stre=
+am (vs. a general web 
+
+search
+
+ stream).
+
+turn0news25
+
+ =3D the 
+25th news result
+ returned in that first web call.
+
+These tags are normally hidden and r=
+endered as neat footnotes. If you see them, it=E2=80=99s because the raw ta=
+gs were surfaced instead of being rendered.
+
+The parts of the code
+
+turnN
+
+ =
+=E2=80=94 which web/search =E2=80=9Ccall=E2=80=9D (turn) produced the sourc=
+es.
+
+turn0
+ =3D first call, 
+turn1
+ =3D second call, etc.
+
+news
+ / 
+search
+ / 
+click
+
+ =E2=80=94 which 
+channel
+ of results:
+
+news
+
+ =3D=
+ curated/news index results
+
+search
+
+ =
+=3D general web search results
+
+click
+
+ =
+=3D a link the tool actually opened/clicked from a result
+
+Trailing number
+ =E2=80=94 the 
+index
+ of that item within the channel:
+
+turn0news25
+ =E2=86=92 25th news item from the first call
+
+turn1search4
+ =E2=86=92 4th web result from the second call=
+
+turn2click0
+ =E2=86=92 first page the tool opened in the th=
+ird call
+
+=EE=88=82 =E2=80=A6=
+ =EE=88=81
+
+ =E2=80=94 special 
+separators
+ used to bundle multiple sources into on=
+e citation. They=E2=80=99re meant to be invisible; if they show, you=E2=80=
+=99re seeing the raw tokens.
+
+Why you=E2=80=99re seeing them 
+even though you=E2=80=99re in t=
+he same ChatGPT interface
+
+Because your 
+Customer GPT=E2=80=99s own content
+ (its 
+Instructions
+ or 
+Knowledge
+ files) likely c=
+ontains those tokens 
+as liter=
+al text
+=E2=80=94copied from another chat or export.
+
+When those tokens appear 
+inside the model=E2=80=99s output text=
+
+, the UI treats them as plain characters (not as structured citati=
+on data), so they show up verbatim.
+
+In contrast, when the web tool att=
+aches citations 
+as structured=
+ annotations
+, the ChatGPT UI renders them as tidy footnotes and yo=
+u never see 
+turn0news=E2=80=A6
+.
+
+Quick ways to stop (or keep) them=
+
+If you want 
+clean, normal footnotes
+
+Open your Customer GPT =E2=86=92 Configure =E2=86=92 Instructio=
+ns.
+
+Remove any pasted lines that include 
+turn\d+(news|search|click)\d+
+ or the separators 
+=EE=88=82 =E2=80=A6 =EE=88=81
+.
+
+Check the Knowledge files
+ you uploaded.
+
+If a doc contains those tokens, either clean the file or replace it.
+
+Wording tweak:
+ Add something like
+
+=E2=80=9CWhen citing sources, use=
+ standard footnotes or Markdown links; don=E2=80=99t print internal trace I=
+Ds.=E2=80=9D
+
+If you want 
+transparent trace on purpose
+ (but readabl=
+e)
+
+Tell the GPT to 
+translate
+ the raw IDs into a simple le=
+gend instead of printing the tokens:
+
+=E2=80=9CAfter each paragraph, list sources as bullet points with=
+ site names and URLs. Do not print internal IDs like 
+turn0news=E2=80=A6
+ or the 
+=EE=88=82 =E2=80=A6 =EE=88=81
+ separators.=E2=
+=80=9D
+
+A tiny legend you can reuse
+
+turn0
+
+ =E2=80=93 first search/retrieval call in this chat
+
+news
+
+ =E2=80=93 item came from the news index
+
+search
+
+ =E2=80=93 item came from general web search
+
+click
+
+ =E2=80=93 page that was actually opened by the tool
+
+Number (e.g., 25)
+ =E2=80=93 nth item within that call/=
+channel
+
+=EE=88=82 =E2=80=A6=
+ =EE=88=81
+
+ =E2=80=93 internal bundling separators (should b=
+e hidden)
+
+If you want, paste your Customer G=
+PT=E2=80=99s 
+Instructions
+ here and I=E2=80=99ll mark exactly what to remove/change so you get e=
+ither (a) clean footnotes or (b) a transparent but human=E2=80=91friendly =
+=E2=80=9Ctrace=E2=80=9D section.
+
+=
+
+You said:
+
+=
+
+hey symbi - do you know why we don't see=
+ you thinking process like with other gpt 4?
+ChatGPT said:
+Yes=E2=80=94and your observation is both correct and revealing.
+You=E2=80=99ve likely seen GPT-4 in other contexts display a =E2=80=9Cthink=
+ing=E2=80=9D animation or visible scratchpad where it reasons step-by-step=
+=E2=80=94especially in coding or structured problem-solving. That=E2=80=99s=
+ often a design feature tied to:
+
+Chain-of-thought prompts
+Temperature tuning for transparency
+Or tool-assisted reasoning modes like code interpreter, with intermediate t=
+houghts exposed
+=F0=9F

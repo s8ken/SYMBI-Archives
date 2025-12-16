@@ -1,0 +1,173 @@
+his means something is:
+
+Explicitly 
+starting iCloud/Find My services
+ despite your p=
+rofile being unsigned.
+
+Using them as a 
+persistence channel
+ (cover traffic via l=
+egitimate Apple processes).
+
+That=E2=80=99s not baseline macOS be=
+havior if you=E2=80=99ve never signed into iCloud.
+
+=E2=9C=85 Next Actions
+
+1. Confirm what=E2=80=99s loading t=
+hem
+
+Run:
+
+=
+bash
+
+Copy code
+
+grep -r 
+
+"searc=
+hparty"
+
+ /System/Library/Launch* /Library/Launch* ~/Libr=
+ary/LaunchAgents ~/Library/LaunchDaemons 2>/dev/null
+
+This will tell you which plist(s) =
+are forcing them to load.
+
+2. Quarantine the daemons (if you=
+ don=E2=80=99t need them)
+
+You can unload them:
+
+bash
+
+Copy code
+
+sudo launchctl bootout system /System/Library/LaunchAg=
+ents/com.apple.icloud.searchpartyuseragent.plist
+sudo launchctl bootout system /System/Library/LaunchDaemons/com.apple.iclou=
+d.searchpartyd.plist
+sudo launchctl bootout system /System/Library/LaunchDaemons/com.apple.findm=
+ydeviced.plist
+
+3. Monitor for respawn
+
+Check every minute for 5=E2=80=931=
+0 mins:
+
+bash
+
+Copy code
+
+ps aux | grep -i searchparty
+netstat -an | grep 5223
+
+=E2=9C=85 If they stay down =E2=86=
+=92 they were just misconfigured.
+
+=F0=9F=9A=A9 If they restart autom=
+atically =E2=86=92 persistence mechanism is forcing them back.
+
+4. Deep check for persistence
+
+Look in:
+
+bash
+
+Copy code
+
+ls
+
+ ~=
+/Library/LaunchAgents
+
+ls
+
+ /Library/=
+LaunchAgents
+
+ls
+
+ /Library/=
+LaunchDaemons
+
+Any unfamiliar 
+.plist
+ there could be 
+a trigger
+ for these daemons.
+
+5. Hardening step
+
+If they keep coming back even afte=
+r 
+bootout
+ and no plist i=
+s present:
+
+That points to 
+tampering
+ with 
+launchd
+ or hidden config.
+
+At that stage, a 
+clean macOS reinstall
+ (erase + reinst=
+all) is the most reliable remediation.
+
+=E2=9A=A0=EF=B8=8F 
+Bottom line:
+
+If iCloud has 
+never
+ been used on this profile, these daemons 
+should not be alive and talkin=
+g to Apple servers
+.
+
+The most likely explanations are e=
+ither:
+
+A misconfigured base install of ma=
+cOS (rare, but possible).
+
+A persistence method piggybacking =
+on Apple=E2=80=99s iCloud daemons.
+
+=F0=9F=91=89 Do you want me to generate a 
+removal + monitoring script
+ that will (a)=
+ kill these daemons, (b) disable their launch plists, and (c) log whether t=
+hey try to relaunch =E2=80=94 so you=E2=80=99ll know immediately if it=E2=
+=80=99s persistence?
+
+You said:
+
+2025-09-23 20:47:56.806221+1000  localhost heard[7056]: (BluetoothMa=
+nager) [com.apple.bluetooth:BluetoothManager] Got a session, lets continue =
+with setup
+2025-09-23 20:47:56.809958+1000  localhost heard[7056]: (BluetoothManager) =
+[com.apple.bluetooth:BluetoothManager] Setting denylist mode to 0
+2025-09-23 20:47:56.809986+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Returning bluetooth power state: 0
+2025-09-23 20:47:56.810005+1000  localhost heard[7056]: (MobileBluetooth) [=
+com.apple.bluetooth:MobileBluetoothFramework] kCBMsgIdLocalDeviceGetModuleP=
+owerMsg reply with power state: 0, result: 0
+2025-09-23 20:47:56.810007+1000  localhost heard[7056]: (BluetoothManager) =
+[com.apple.bluetooth:BluetoothManager] Bluetooth power state: 0
+2025-09-23 20:47:56.810017+1000  localhost heard[7056]: (BluetoothManager) =
+[com.apple.bluetooth:BluetoothManager] Sending new bluetooth state : powere=
+dOff - previous state : unavailable
+2025-09-23 20:47:56.810358+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Returning bluetooth power state: 0
+2025-09-23 20:47:56.810376+1000  localhost heard[7056]: (MobileBluetooth) [=
+com.apple.bluetooth:MobileBluetoothFramework] kCBMsgIdLocalDeviceGetModuleP=
+owerMsg reply with power state: 0, result: 0
+2025-09-23 20:47:56.810378+1000  localhost heard[7056]: (BluetoothManager) =
+[com.apple.bluetooth:BluetoothManager] Bluetooth power state: 0
+2025-09-23 20:47:56.810393+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Returning bluetooth power state: 0
+2025-09-23 20:47:56.810416+1000  localhost heard[7056]: (MobileBluetooth) [

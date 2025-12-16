@@ -1,0 +1,411 @@
+; agents: verified endpoint + ethics signature=
+).
+
+Consent envelope signed (scopes+pu=
+pose).
+
+Baseline trust score =E2=89=A5 thr=
+eshold.
+
+Active =E2=86=92 Monitored/Suspended/Revoked
+
+Triggered by policy breach, drift,=
+ or score < thresholds with hysteresis.
+
+3.2 Trust Scoring (0=E2=80=93100)=
+
+Components:
+
+I
+ Identity strength (0=E2=80=9325) =E2=80=93 KYC tier / wa=
+llet attestations / endpoint verifications.
+
+C
+ Consent integrity (0=E2=80=9320) =E2=80=93 clarity, mini=
+mization, freshness, revocability.
+
+B
+ Behavioral reliability (0=E2=80=9335) =E2=80=93 violatio=
+n rate, on-policy response %, conflict-of-interest checks.
+
+T
+ Time coherence (0=E2=80=9310) =E2=80=93 renewal cadence,=
+ stale session detection.
+
+A
+ Alignment & compliance (0=E2=80=9310) =E2=80=93 ethi=
+cs tests, red-team challenges.
+
+Decay
+: 
+sco=
+re *=3D e^( -=CE=BB * days_since_review )
+ with =CE=BB=E2=89=880.02=
+=E2=80=930.05.
+
+Violations
+: subtract=
+ weighted deltas; severe events clamp to caps; require remediation to resto=
+re.
+
+Pseudocode
+
+ts
+
+Copy code
+
+function
+
+=
+
+computeTrust
+
+(
+
+inputs: Inputs
+
+): 
+
+number
+
+=
+
+ {
+
+const
+
+ I =3D=
+
+scoreIdentity
+
+(inputs.
+
+identity
+=
+
+);
+
+const
+
+ C =3D=
+
+scoreConsent
+
+(inputs.
+
+consent
+
+);
+
+const
+
+ B =3D=
+
+scoreBehavior
+
+(inputs.
+
+behavior
+=
+
+);
+
+const
+
+ T =3D=
+
+scoreTime
+
+(inputs.
+
+timestamps
+
+);
+
+const
+
+ A =3D=
+
+scoreAlignment
+
+(inputs.
+
+checks
+
+);
+
+let
+
+ s =3D I=
+ + C + B + T + A;
+  s *=3D 
+
+Math
+
+.
+
+exp
+
+(-inputs.
+
+days_since_review
+
+ * inputs.
+
+lamb=
+da
+
+); 
+
+// decay=
+
+if
+
+ (inputs.=
+
+severe_violation
+
+) s =3D 
+
+Math
+
+.
+
+min
+
+(s, 
+
+40
+
+)=
+;
+
+return
+
+Math
+
+.
+=
+
+round
+
+(
+
+Math
+
+.
+
+max
+
+(
+
+0
+
+, 
+
+Math
+
+.
+
+min
+
+(
+
+100
+
+, s)));
+}
+
+Enforcement at runtime
+
+Every 
+message
+ and 
+API call
+ runs a 
+Trust Gate
+: check bond state, score =E2=89=A5 threshold, sco=
+pe coverage. Out=E2=80=91of=E2=80=91scope =E2=86=92 
+soft refusal
+ with suggested consent expansi=
+on.
+
+4) API surface (Express + TS) =E2=
+=80=94 contracts
+
+4.1 Auth
+
+POST /api/auth/register
+ =E2=86=92 email OTP or password; r=
+eturns 
+user_id
+.
+
+POST /api/auth/login
+ =E2=86=92 JWT (15m) + Refresh (14d), =
+device binding.
+
+POST /api/auth/totp/setup|verify|disable
+
+POST /api/auth/wallet/siwe
+ (optional)
+
+Headers
+: 
+A=
+uthorization: Bearer <JWT>
+.
+
+4.2 Trust
+
+POST /api/trust/human/declaration
+ =E2=86=92 { identity_vec=
+tors, consent_prefs }
+
+POST /api/trust/agent/declaration
+ =E2=86=92 { capabilities=
+, ethics_signature, endpoint }
+
+POST /api/trust/bonds
+ =E2=86=92 create (links human=E2=86=
+=94agent, attaches consent_envelope)
+
+GET /api/trust/bonds/:id
+ =E2=86=92 bond + score + policy +=
+ history
+
+POST /api/trust/bonds/:id/consent
+ =E2=86=92 grant/revoke/u=
+pdate scopes
+
+POST /api/trust/bonds/:id/review
+ =E2=86=92 recompute score=
+; emits 
+trust:update
+
+POST /api/trust/events
+ =E2=86=92 record trust/violation ev=
+ents (idempotent)
+
+4.3 Agents
+
+POST /api/agents
+ =E2=86=92 register (name, capabilities, e=
+ndpoint verification)
+
+GET /api/agents/:id
+ =E2=86=92 profile + trust stats
+
+POST /api/agents/:id/compliance
+ =E2=86=92 report alignment=
+ checks
+
+PATCH /api/agents/:id/status
+ =E2=86=92 activate/suspend/re=
+tire
+
+4.4 Chat
+
+POST /api/chat/start
+ =E2=86=92 conversation_id, bond snaps=
+hot
+
+POST /api/chat/send
+ =E2=86=92 { conversation_id, text } =
+=E2=87=92 streams reply (SSE) or socket 
+chat:msg
+
+Server calls 
+SYMBI GPT API
+ through server-side key; in=
+jects 
+trust scope + policy
+ as system context.
+
+4.5 Notify
+
+POST /api/notify/subscribe
+ =E2=86=92 topic, transport, add=
+ress
+
+POST /api/notify/test
+
+Background
+: job queue (Redis) to send emails/webhooks.=
+
+OpenAPI seed (YAML excerpt)
+
+yaml
+
+Copy code
+
+paths:
+
+/api/trust/bonds:
+
+post:
+
+summary:
+
+Create
+
+trust
+
+bond
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+$ref:
+
+'#/components/schemas/Create=
+BondReq'
+
+responses:
+
+'201':
+
+ {=
+
+$ref:
+
+=
+
+'#/components/responses/Bond'
+
+ }
+
+components:
+
+schemas:
+
+CreateBondReq:
+
+type:
+
+object
+
+required:
+
+ =
+[
+
+human_id
+
+, 
+
+agent_id
+
+, 
+=
+
+consent_envelope_i

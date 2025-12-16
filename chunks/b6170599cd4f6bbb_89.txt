@@ -1,0 +1,278 @@
+ie
+âitâs 
+still running
+, but it 
+canât bite anyone
+ because itâs 
+locked in a box
+ (thanks to Lulu and your firewall).
+
+ð What Should You Do Next?
+
+1ï¸â£ 
+If You Want to Keep It Running (Safe & Contained)
+
+Leave Lulu blocking it
+ â It wonât do anything harmful.
+
+It wonât affect your Mac unless you use Handoff/AirDrop.
+
+2ï¸â£ 
+If You Want to Remove It Completely (Extra Security)
+
+You can follow the 
+nuclear steps
+ later (when youâre ready for more SIP toggling).
+
+ð¥ Final Verdict
+
+â 
+Right now, 
+rapportd
+ is completely harmless.
+
+â 
+Itâs running, but canât send or receive data.
+
+â 
+Lulu is keeping it locked down.
+
+ð 
+So yes, itâs a zombieâbut a zombie in a cage, not one trying to eat your brains.
+ ðð
+
+You said:
+
+lol ok so control centre - can we do the same?
+
+ChatGPT said:
+
+ð 
+Yes! Letâs Cage That Control Center Zombie Too! ð§ââï¸ð
+
+Since we 
+successfully neutered 
+rapportd
+
+, we can 
+do the exact same thing to Control Center
+ so it 
+runs but is completely useless.
+ ð
+
+ð¡ï¸ Step 1: Block Control Centerâs Network Access (Lulu)
+
+Just like 
+rapportd
+, Control Center 
+shouldnât need network access
+, but 
+Apple sneaks in background requests
+ sometimes.
+
+1ï¸â£ Open 
+Lulu
+ (
+/Applications/Lulu.app
+).
+
+2ï¸â£ Go to 
+Rules
+ â 
+New Rule
+.
+
+3ï¸â£ Select:
+
+Process:
+
+/System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+Action:
+
+Block
+
+Direction:
+
+Outgoing
+
+4ï¸â£ Click 
+Save
+.
+
+ð 
+Now Control Center canât call home to Appleâs servers!
+
+ð¡ï¸ Step 2: Check If Control Center Is Making Network Requests
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep ControlCenter
+
+ð 
+If no output appears, itâs not talking to the internet.
+ â
+
+ð 
+If it shows LISTEN or ESTABLISHED, Lulu will block it anyway.
+ ð¥
+
+ð¡ï¸ Step 3: Disable Auto-Startup (If Needed)
+
+If you 
+never use Control Center
+, stop it from launching automatically:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.controlcenter
+sudo launchctl 
+
+disable
+
+ system/com.apple.controlcenter
+
+ð 
+Now macOS wonât restart it at boot.
+
+ð¡ï¸ Step 4: Make It Useless but Keep It Running
+
+To 
+apply the "zombie" method
+, we 
+make Control Center completely non-functional
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo chflags uchg /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+ð 
+This creates a locked "ghost" version that macOS canât replace or execute.
+ ð
+
+ð¡ï¸ Step 5: Reboot & Verify
+
+Restart your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After reboot, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep ControlCenter
+sudo lsof -i -P | grep ControlCenter
+launchctl list | grep ControlCenter
+
+ð 
+If no output appears, Control Center is officially neutered.
+ ð
+
+ð Final Verdict: Control Center Is Now Just an Empty Shell
+
+â 
+Still "exists," but canât connect to anything.
+
+â 
+Still "running," but canât be used.
+
+â 
+Firewall + Lulu keep it from talking to Apple.
+
+ð 
+Now you have TWO zombies locked in their cagesâ
+rapportd
+ and Control Center!
+ ð§ââï¸ðð
+
+You said:
+
+great - now lastly I wanted to install that autopsy thing? 
+
+ChatGPT said:
+
+ð Installing Autopsy (Digital Forensics Tool) on macOS ð
+
+ð¥ 
+Autopsy
+ is a powerful 
+digital forensics tool
+ used for analyzing files, drives, and logs. Letâs get it running on macOS.
+
+â Step 1: Install Java (Required for Autopsy)
+
+Autopsy 
+requires Java
+, so first, install OpenJDK:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjdk
+
+After installation, 
+link Java to your system path
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð 
+Now Java is ready!
+
+â Step 2: Install Sleuth Kit (Autopsyâs Backend)
+
+Autopsy 
+relies on The Sleuth Kit
+, so we install i

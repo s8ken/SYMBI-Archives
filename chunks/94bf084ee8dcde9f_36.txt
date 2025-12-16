@@ -1,0 +1,231 @@
+ionsctl uninstall [UUID]
+).
+
+3ï¸â£ 
+Restart Mac (
+shutdown -r now
+).
+
+ð¨ 
+After restarting, letâs confirm that Remote Management and OBS are completely gone.
+ Let me know if you run into any issues!
+
+You said:
+
+done will need a reboot but lets do the camera now as well
+
+ChatGPT said:
+
+Great! Now letâs 
+fully remove the OBS Virtual Camera extension
+ before you reboot.
+
+ð  Step 1: Identify the OBS Camera Extension
+
+Run this in 
+Terminal
+ to find the exact identifier:
+
+sh
+
+Copy
+
+sudo systemextensionsctl list
+
+ð 
+Look for an entry related to 
+OBS
+ or 
+com.obsproject.obs-studio.mac-camera-extension
+.
+
+It should look something like this:
+
+markdown
+
+Copy
+
+*
+
+	FA1EB7A0-8C85-4041-A19F-C28AF36B7501	com.obsproject.obs-studio.mac-camera-extension	(1.0)
+
+ð© 
+Copy the full identifier (UUID) of the OBS extension and share it here if you're unsure.
+
+ð  Step 2: Unload & Remove the OBS Camera Extension
+
+Once you have the UUID from Step 1, replace it in the command below:
+
+sh
+
+Copy
+
+sudo systemextensionsctl uninstall FA1EB7A0-8C85-4041-A19F-C28AF36B7501
+sudo 
+
+rm
+
+ -rf /Library/SystemExtensions/FA1EB7A0-8C85-4041-A19F-C28AF36B7501/
+
+ð 
+This will:
+
+â 
+Uninstall the OBS virtual camera extension.
+
+â 
+Remove all OBS-related system files.
+
+ð© 
+If you get an error, let me know what it says, and Iâll troubleshoot it with you.
+
+ð  Step 3: Restart Your Mac
+
+Since we have disabled 
+Remote Management, Screen Sharing, and OBS Camera
+, rebooting now will ensure that:
+
+No background services restart.
+
+OBS Virtual Camera is completely removed.
+
+Remote Management does not re-enable itself.
+
+â Restart Your Mac
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+ð© Next Steps
+
+1ï¸â£ 
+Run 
+systemextensionsctl list
+ to find the OBS Camera extension UUID.
+
+2ï¸â£ 
+Run 
+systemextensionsctl uninstall [UUID]
+ to remove it.
+
+3ï¸â£ 
+Restart your Mac to finalize the changes (
+shutdown -r now
+).
+
+ð¨ 
+After the reboot, weâll confirm that everything is fully removed.
+ Let me know if you run into any issues!
+
+You said:
+
+Starting...
+Removed preference to start ARD after reboot.
+Done.
+user@Mes-MacBook-Pro ~ % sudo systemextensionsctl list
+
+1 extension(s)
+--- com.apple.system_extension.cmio (Go to 'System Settings > General > Login Items & Extensions > Camera Extensions' to modify these system extension(s))
+enabled	active	teamID	bundleID (version)	name	[state]
+*	*	2MMRE5MTB8	com.obsproject.obs-studio.mac-camera-extension (31.0.1/12846547662)	OBS Virtual Camera	[activated enabled]
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ OBS Virtual Camera is Still Active!
+
+Your system reports that 
+OBS Virtual Camera is still enabled and active.
+
+Now, weâll 
+forcefully remove it
+ step by step.
+
+ð  Step 1: Disable OBS Camera in System Settings (Manual Step)
+
+Before we uninstall it via Terminal, try 
+disabling it manually
+:
+
+Go to
+ â 
+System Settings > General > Login Items & Extensions > Camera Extensions
+
+Look for
+
+OBS Virtual Camera
+
+Click Disable
+ (if available)
+
+Restart your Mac
+
+ð  Step 2: Force Uninstall the OBS Camera Extension
+
+If the manual method fails, weâll force-remove it using 
+Terminal
+.
+
+â Run This in Terminal
+
+sh
+
+Copy
+
+sudo systemextensionsctl uninstall 2MMRE5MTB8 com.obsproject.obs-studio.mac-camera-extension
+
+ð 
+This will:
+
+Unload the OBS Virtual Camera extension.
+
+Prevent it from running after a reboot.
+
+ð© 
+If an error appears, copy the message here.
+
+ð  Step 3: Delete OBS Camera Extension Files
+
+Once the extension is uninstalled, remove its files:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/CoreMediaIO/Plug-Ins/DAL/obs-mac-virtualcam.plugin
+sudo 
+
+rm
+
+ -rf /Library/Application Support/obs-studio
+
+ð 
+This will:
+
+â 
+Delete OBS Camera system files.
+
+â 
+Ensure it cannot restart after rebooting.
+
+ð  Step 4: Restart Your Mac
+
+Now that weâve disabled and removed OBS Virtual Camera, restart your system to finalize changes:
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+ð© Next Steps
+
+1ï¸â£ 
+Try disabling OBS Camera manually in System Settin

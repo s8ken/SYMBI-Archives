@@ -1,0 +1,177 @@
+il=
+able, fallback to last segment
+
++  const routeTail =3D (req.rout=
+e && req.route.path) ? String(req.route.path) : req.path;
+
++  const actionObj =3D `${action=
+Verb}.${(routeTail || '').split('/').filter(Boolean).pop() || 'unknown'}`;
+
++  const context =3D {
+
+     userId: req.user?._id,
+     agentId: req.agent?._id,
+
+-    action: `${req.method.toLow=
+erCase()}.${req.path.split('/').pop()}`,
+
++    action: actionObj,
+
+     scopes: req.body.scopes || req.query.scopes,
+     data: req.body,
+     encrypted: req.secure,
+
++    reqProto: req.protocol,
+
++    headers: req.headers,
+
+     auditEnabled: true,
+     logEntry: {
+
+-      timestamp: new Date(),
+
++      requestId: req.get('x-req=
+uest-id') || crypto.randomUUID(),
+
++      timestamp: new Date(),
+
+       method: req.method,
+       path: req.path,
+       ip: req.ip,
+       userAgent: req.get('User-Agent')
+     }
+   };
+@@
+   if (req.body.bondId || req.params.bondId) {
+     const bondId =3D req.body.bondId || req.params.bondId;
+
+-    const bond =3D await TrustB=
+ond.findById(bondId);
+
++    let bond =3D null;
+
++    try { bond =3D await TrustB=
+ond.findById(bondId); }
+
++    catch(e) { logger.error('Bo=
+nd lookup failed', { bondId, err: e.message }); }
+
+     if (bond) {
+       context.bond =3D bond;
+       context.bondId =3D bondId;
+     }
+   }
+@@
+   if (context.agentId) {
+
+-    const agent =3D await Agent=
+.findById(context.agentId);
+
++    let agent =3D null;
+
++    try { agent =3D await Agent=
+.findById(context.agentId); }
+
++    catch(e) { logger.error('Ag=
+ent lookup failed', { agentId: context.agentId, err: e.message }); }
+=
+
+     if (agent) {
+       context.agent =3D agent;
+     }
+   }
+
+   return context;
+ }
+
+Why these help:
+
+Scope hygiene
+: always treat scopes as arrays; prevents=
+ false positives/negatives.
+
+Dates
+: normalize 
+expiresAt
+ and 
+upd=
+atedAt
+ to real 
+Date
+s.
+
+Encryption
+: handle proxies/CDNs by checking 
+x-forwarded-proto
+.
+
+Action naming
+: use 
+req.route.path
+ when available; last=E2=80=90segment fallba=
+ck is brittle on routes with 
+:i=
+d
+.
+
+Observability
+: add a 
+requestId
+ for log correlation; wrap DB lookups with try/c=
+atch.
+
+If you want me to apply a more opi=
+nionated pass (types via JSDoc/TS, a scoring matrix by severity, or signed =
+
+Trust Receipts
+ gener=
+ation right after 
+evaluateArtic=
+les
+), say the word and I=E2=80=99ll drop that patch too.
+
+=
+
+=
+
+You said:
+
+you cant respond dire=
+ctly in there can you? Got it =E2=80=94 we=E2=80=99ll target SYMBI Synergy =
+(v3 layout) and add Trust Bonds + Trust Oracle + a Scoring Demo. Since you=
+=E2=80=99re unsure of the chat endpoint path, I=E2=80=99ll show exactly whe=
+re to wire the middleware; you can confirm which route file handles =E2=80=
+=9Csend=E2=80=9D and I=E2=80=99ll finalize it.
+
+What I=E2=80=99ll add
+
+backend/core/trustOracle.js: A1=E2=80=93A7 policy engine + middleware + con=
+text builder
+backend/models/TrustBond.js: Consent envelope, scopes/permissions, trust sc=
+ore with decay, trust bands
+backend/controllers/trustBonds.controller.js: CRUD, state changes, score re=
+compute
+backend/routes/trust-bonds.routes.js: REST routes for bonds
+backend/instrumentation/trust-metrics.js: Prometheus counters for evaluatio=
+ns/violations
+Frontend demo:
+frontend/src/components/TrustDashboard.(tsx|jsx): shows trust score/band/sc=
+ope/expiry
+frontend/src/components/TrustScoringDemo.(tsx|jsx): buttons to exercise all=
+ow/block/warn
+Backend: new files to add
+
+backend/models/TrustBond.js
+Core bond with consent + scope + scoring + decay; essential parts below.
+// backend/models/TrustBond.js
+const mongoose =3D require('mongoose');
+
+const trustBondSchema =3D new mongoose.Schema({
+  human_user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', requi=
+red: true, index: true },
+  agent_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Agent', required:=
+ true, index: true },
+  state: { type: String, enum: ['proposed', 'active', 'suspended', 'revoked=
+', 'expired'], default: 'proposed', index: true },
+  scope: {
+    purpo

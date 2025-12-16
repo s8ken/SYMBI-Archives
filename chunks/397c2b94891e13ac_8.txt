@@ -1,0 +1,121 @@
+ (evaluation.recommendation =3D=3D=3D 'warn') req.trustWarnings =3D evalu=
+ation.warnings;
+req.trustContext =3D context; req.trustEvaluation =3D evaluation;
+return next();
+}catch(e){
+return res.status(500).json({ success:false, error:'Trust evaluation failed=
+', message:e.message });
+}
+};
+
+async function buildTrustContext(req){
+const verb =3D (req.method||'get').toLowerCase();
+const routeTail =3D (req.route && req.route.path) ? String(req.rout=
+e.path) : (req.path||'');
+const action =3D ${verb}.${routeTail.split('/').filter(Boolean).pop()||'unk=
+nown'};
+const ctx =3D {
+userId: req.user?._id || req.user?.id,
+agentId: req.agent?._id,
+action,
+scopes: req.body?.scopes || req.query?.scopes,
+data: req.body,
+encrypted: req.secure,
+reqProto: req.protocol,
+headers: req.headers,
+auditEnabled: true,
+logEntry: {
+requestId: req.get?.('x-request-id') || crypto.randomUUID(),
+timestamp: new Date(),
+method: req.method, path: req.path, ip: req.ip, userAgent: req.get?.('User-=
+Agent')
+}
+};
+const bondId =3D req.body?.bondId || req.params?.bondId;
+if (bondId){
+try {
+const bond =3D await TrustBond.findById(bondId);
+if (bond){ ctx.bond =3D bond; ctx.bondId =3D bondId; }
+} catch (e) { console.error('Bond lookup failed', { bondId, err: e.message =
+}); }
+}
+return ctx;
+}
+
+module.exports =3D { TRUST_ARTICLES, TrustOracle, createTrustMiddleware, bu=
+ildTrustContext };
+backend/controllers/trustBonds.controller.js
+const TrustBond =3D require('../models/TrustBond');
+
+exports.createBond =3D async (req, res) =3D> {
+try {
+const { agentId, scope, consentEnvelope } =3D req.body;
+const expiresAt =3D scope?.duration ? new Date(Date.now() + scope.duration*=
+86400000) : scope?.expiresAt;
+const bond =3D new TrustBond({
+human_user_id: req.user?._id || req.user?.id,
+agent_id: agentId,
+state: 'active',
+scope: { ...scope, expiresAt },
+consent_envelope: consentEnvelope
+});
+bond.calculateTrustScore();
+await bond.save();
+res.status(201).json({ success:true, data: bond });
+} catch (e) { res.status(500).json({ success:false, error:e.message }); }
+};
+
+exports.getBond =3D async (req, res) =3D> {
+const bond =3D await TrustBond.findById(req.params.id);
+if (!bond) return res.status(404).json({ success:false, error:'Not found' }=
+);
+res.json({ success:true, data:bond });
+};
+
+exports.updateBond =3D async (req, res) =3D> {
+const bond =3D await TrustBond.findById(req.params.id);
+if (!bond) return res.status(404).json({ success:false, error:'Not found' }=
+);
+Object.assign(bond, req.body);
+bond.calculateTrustScore();
+await bond.save();
+res.json({ success:true, data:bond });
+};
+
+exports.suspendBond =3D async (req, res) =3D> {
+const bond =3D await TrustBond.findById(req.params.id);
+if (!bond) return res.status(404).json({ success:false, error:'Not found' }=
+);
+await bond.suspend(req.body?.reason || 'suspended', req.user?._id || req.us=
+er?.id);
+res.json({ success:true, data:bond });
+};
+
+exports.revokeBond =3D async (req, res) =3D> {
+const bond =3D await TrustBond.findById(req.params.id);
+if (!bond) return res.status(404).json({ success:false, error:'Not found' }=
+);
+await bond.revoke(req.body?.reason || 'revoked', req.user?._id || req.user?=
+.id);
+res.json({ success:true, data:bond });
+};
+backend/routes/trust-bonds.routes.js
+const express =3D require('express');
+const router =3D express.Router();
+const { protect } =3D require('../middleware/auth.middleware');
+const ctrl =3D require('../controllers/trustBonds.controller');
+
+router.use(protect);
+router.post('/', ctrl.createBond);
+router.get('/:id', ctrl.getBond);
+router.put('/:id', ctrl.updateBond);
+router.post('/:id/suspend', ctrl.suspendBond);
+router.post('/:id/revoke', ctrl.revokeBond);
+
+module.exports =3D router;
+backend/instrumentation/trust-metrics.js
+const client =3D require('prom-client');
+const trustEvalCounter =3D new client.Counter({ name: 'trust_evaluations_to=
+tal', help: 'Oracle evaluations', labelNames: ['recommendation'] });
+const trustViolationCounter =3D new client.Counter({ name: 'trust_policy_vi=
+olations_total', help: 'P

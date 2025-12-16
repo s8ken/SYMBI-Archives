@@ -1,0 +1,255 @@
+ Devices
+
+### Get paired peers failed: NSXPCConnectionInvalid
+ â AirPlay is 
+trying to check for past AirPlay devices
+ but failing.
+
+This could be a sign that something previously connected 
+persistently
+, or macOS is struggling to reset the AirPlay state.
+
+AirPlay is Being Activated Despite No Devices Being Connected
+
+APEndpointAggregate activated for features 0x6
+ â This suggests 
+something is triggering AirPlay to activate
+ even when no active session is shown in System Settings.
+
+This could be 
+malware, a rogue background process, or a macOS bug keeping AirPlay enabled.
+
+ð§ Next Steps: Force Stop AirPlay Services
+
+Since 
+AirPlay is still running
+ despite being disabled, letâs 
+force it to stop and prevent it from restarting.
+
+Step 1: Kill the Running AirPlay Processes
+
+Run the following 
+in Terminal
+ to manually stop AirPlay:
+
+sh
+
+Copy
+
+Edit
+
+sudo pkill -9 AirPlayXPCHelper
+
+Then, check if the 
+purple AirPlay icon disappears from the menu bar
+.
+
+Step 2: Prevent AirPlay from Restarting
+
+To 
+disable AirPlayXPCHelper permanently
+, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+
+This should 
+stop it from relaunching when you restart
+.
+
+Step 3: Restart & Check If Itâs Gone
+
+Restart your Mac.
+
+After booting up, 
+run this command to check if AirPlay is still running:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+â 
+If no processes appear
+, AirPlay is finally disabled.
+
+ð¨ 
+If itâs still running
+, something is 
+forcing it back on
+, and we need to look deeper into persistence mechanisms.
+
+What This Tells Us
+
+If AirPlay keeps coming back:
+
+There may be another service triggering it
+ (we can check hidden launch agents).
+
+It could be linked to a persistence method
+ (malware, unauthorized access, or a corrupted AirPlay configuration).
+
+We may need to manually remove AirPlay system files
+ to stop it permanently.
+
+Let me know what happens 
+after running the kill and disable commands
+! ð¨
+
+You said:
+
+its still there
+
+ChatGPT said:
+
+Since 
+AirPlay is still running despite disabling it
+, this suggests 
+a persistence mechanism is forcing it back on.
+ We need to dig deeper to 
+find whatâs triggering it and remove it.
+
+Step 4: Check for Hidden Launch Agents or Daemons
+
+There may be 
+hidden system services or third-party apps
+ that are automatically restarting AirPlay.
+
+1ï¸â£ List All AirPlay-Related Launch Agents
+
+Run this command in 
+Terminal
+:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la /Library/LaunchAgents | grep -i airplay
+
+This will show 
+any user-level services
+ that could be restarting AirPlay.
+
+2ï¸â£ List All AirPlay-Related System Daemons
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la /Library/LaunchDaemons | grep -i airplay
+
+This will show 
+system-level services
+ that could be forcing AirPlay to restart.
+
+3ï¸â£ Check User-Specific Launch Agents
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la ~/Library/LaunchAgents | grep -i airplay
+
+This will check if 
+anything in your user account is triggering AirPlay
+ at login.
+
+Step 5: Check for AirPlay Persistence Using Plist Files
+
+Some AirPlay settings might be 
+hardcoded into configuration files
+. Letâs check:
+
+sh
+
+Copy
+
+Edit
+
+defaults 
+
+read
+
+ com.apple.airplay
+
+ð¨ 
+If this returns results
+, AirPlay settings may be getting forced at a system level.
+
+Step 6: Scan for AirPlay-Related Processes
+
+Since AirPlayXPCHelper is restarting, we need to 
+trace whatâs keeping it alive
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+If any 
+other process besides 
+AirPlayXPCHelper
+ appears
+, that could be whatâs reactivating it.
+
+Next Steps Based on Results
+
+If we 
+find hidden Launch Agents/Daemons
+, we 
+delete them
+ and reboot.
+
+If 
+defaults read com.apple.airplay
+
+returns values
+, we manually 
+reset them
+.
+
+If another 
+process is keeping AirPlay alive
+, we investigate further.
+
+Let me know what these commands return, and weâll 
+take the next step to fully disable AirPlay.
+ ð¨
+
+You said:
+
+Password:
+lcl@LCLs-MacBook-Pro ~ % ls -la /Library/LaunchAgents | grep -i
+
+usage: grep [-abcdDEFGHhIiJLlMm

@@ -1,0 +1,397 @@
+ose requests
+
+Apple system services making network requests without logging a domain
+
+🚀 
+Running the comparison now!
+ Stay tuned.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Load the iPad report data for comparison
+
+ipad_file_path = 
+
+"/mnt/data/App_Privacy_Report_v4_2025-03-01T13_03_23.ndjson"
+
+# Read the NDJSON file (each line is a separate JSON object)
+
+ipad_report_data = []
+
+with
+
+open
+
+(ipad_file_path, 
+
+"r"
+
+) 
+
+as
+
+ file:
+
+for
+
+ line 
+
+in
+
+ file:
+
+try
+
+:
+            ipad_report_data.append(json.loads(line))
+
+except
+
+ json.JSONDecodeError:
+
+continue
+
+# Skip any malformed lines
+
+# Compare overall entry counts
+
+comparison_summary = {
+
+"total_entries_iphone"
+
+: 
+
+len
+
+(report_data),
+
+"total_entries_ipad"
+
+: 
+
+len
+
+(ipad_report_data),
+}
+
+comparison_summary
+
+Result
+
+{'total_entries_iphone': 4863, 'total_entries_ipad': 4863}
+
+🔍 Initial Comparison: iPhone vs. iPad App Privacy Reports
+
+Surprisingly, 
+both reports contain exactly 4,863 entries
+—which is unexpected given that the 
+iPad is used only 20% as much as the iPhone
+.
+
+🚨 
+Key Concern:
+
+The iPad report 
+should have significantly fewer entries
+, yet it matches the iPhone 
+exactly
+.
+
+This suggests 
+either:
+
+The reports are identical
+ (possible data logging issue).
+
+Apps or services are syncing activity across devices
+, inflating the iPad’s report.
+
+🛠 Next Steps: Deeper Comparison
+
+I’ll now compare 
+specific patterns
+ between the two reports:
+
+1️⃣ 
+Are the "Unknown Domain" counts the same?
+
+2️⃣ 
+Does the iPad show the same Firebase & Google Login activity?
+
+3️⃣ 
+Are the most contacted domains the same, or does the iPad have different app behavior?
+
+🚀 
+Running this deeper analysis now!
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Compare "Unknown Domain" occurrences in iPhone vs iPad reports
+
+# Count occurrences of "Unknown Domain" in both reports
+
+iphone_unknown_domain_count = 
+
+sum
+
+(
+
+1
+
+for
+
+ entry 
+
+in
+
+ report_data 
+
+if
+
+ entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) == 
+
+"Unknown Domain"
+
+)
+ipad_unknown_domain_count = 
+
+sum
+
+(
+
+1
+
+for
+
+ entry 
+
+in
+
+ ipad_report_data 
+
+if
+
+ entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) == 
+
+"Unknown Domain"
+
+)
+
+# Compare Firebase and Google Login activity
+
+iphone_firebase_count = 
+
+sum
+
+(
+
+1
+
+for
+
+ entry 
+
+in
+
+ report_data 
+
+if
+
+"firebase"
+
+in
+
+str
+
+(entry).lower() 
+
+or
+
+"googleapis"
+
+in
+
+str
+
+(entry).lower())
+ipad_firebase_count = 
+
+sum
+
+(
+
+1
+
+for
+
+ entry 
+
+in
+
+ ipad_report_data 
+
+if
+
+"firebase"
+
+in
+
+str
+
+(entry).lower() 
+
+or
+
+"googleapis"
+
+in
+
+str
+
+(entry).lower())
+
+# Compare most contacted domains
+
+iphone_domains = Counter(entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) 
+
+for
+
+ entry 
+
+in
+
+ report_data)
+ipad_domains = Counter(entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+) 
+
+for
+
+ entry 
+
+in
+
+ ipad_report_data)
+
+# Get top 5 contacted domains on each device
+
+top_iphone_domains = iphone_domains.most_common(
+
+5
+
+)
+top_ipad_domains = ipad_domains.most_common(
+
+5
+
+)
+
+# Output comparison
+
+detailed_comparison = {
+
+"unknown_domain_count"
+
+: {
+
+"iPhone"
+
+: iphone_unknown_domain_count,
+
+"iPad"
+
+: ipad_unknown_domain_count,
+    },
+
+"firebase_google_activity"
+
+: {
+
+"iPhone"
+
+: iphone_firebase_count,
+
+"iPad"
+
+: ipad_firebase_count,
+    },
+
+"top_contacted_domains"
+
+: {
+
+"iPhone"
+
+: top_iphone_domains,
+
+"iPad"
+
+: top_ipad_domains,
+    },
+}
+
+detailed_comparison
+
+Result
+
+{'unknown_domain_count': {'iPhone': 2858, 'iPad': 2858},
+ 'firebase_google_activity': {'iPhone': 212, 'iPad': 212},
+ 'top_contacted_domains': {'iPhone': [('Unknown Domain', 2858),
+   ('www.google.com', 29),
+   ('firebase-settings.crashlytics.com', 29),
+   ('firebaselogging-pa.googleapis.com', 26),
+   ('fonts.gstatic.com', 24)],
+  'iPad': [('Unknown Domain', 2858),
+   ('www.google.com', 29),
+   ('firebase-settings.crashlytics.com', 29),
+   ('firebaselogging-pa.googleapis.com', 26),
+   ('fonts.gstatic.com', 24)]}}
+
+🔍 iPhone vs. iPad Report Comparison: Identical Data Logged
+
+The iPhone and iPad 
+have identical logging patterns
+, which is highly unusual given that the 
+iPad is used only

@@ -1,0 +1,295 @@
+og in (check the router sticker for username/password).
+
+2️⃣ 
+Find DNS settings
+ (usually under "Internet" or "LAN Settings").
+
+If 
+113.212.173.22
+ is listed, 
+change it to
+:
+
+Copy
+
+Edit
+
+8.8.8.8
+8.8.4.4
+
+3️⃣ 
+Save & Restart Router
+
+After making changes, 
+restart your router and Mac
+.
+
+🚀 Next Step
+
+📌 
+Run 
+scutil --dns
+ again.
+
+If 
+113.212.173.22
+ is gone
+, the problem is solved! ✅
+
+If it’s still there
+, we need to 
+scan for hidden processes modifying network settings
+.
+
+Let me know the results! 🔍🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+Ethernet is not a recognized network service.
+** Error: The parameters were not valid.
+Ethernet is not a recognized network service.
+** Error: The parameters were not valid.
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Ah, macOS 
+doesn't always use "Ethernet" as the exact network service name
+. We need to find the correct name for your wired connection first.
+
+Step 1: Find Your Network Service Name
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+networksetup -listallnetworkservices
+
+📌 
+Look for the correct name of your Ethernet connection.
+ It might be named:
+
+Ethernet
+
+USB Ethernet
+
+Thunderbolt Ethernet
+
+USB 10/100/1000 LAN
+
+Something else entirely!
+
+Step 2: Reset DNS for the Correct Ethernet Service
+
+Once you find the correct name, run these commands (replacing 
+YourEthernetName
+ with the actual name):
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"YourEthernetName"
+
+ empty
+sudo networksetup -setdnsservers 
+
+"YourEthernetName"
+
+ 8.8.8.8 8.8.4.4
+
+Then, 
+flush DNS cache
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 3: Check If the Bad DNS is Gone
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+Let me know if 
+113.212.173.22
+ is still there!
+ 🚀
+
+You said:
+
+An asterisk (*) denotes that a network service is disabled.
+USB 10/100/1000 LAN
+Wi-Fi
+ProtonVPN
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 1: Reset DNS for Ethernet (USB 10/100/1000 LAN)
+
+Since your Ethernet connection is labeled 
+
+USB 10/100/1000 LAN
+
+, let’s force-reset its DNS settings.
+
+Step 2: Remove the Rogue DNS & Set a Trusted One
+
+Run these commands 
+exactly
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ empty
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ 8.8.8.8 8.8.4.4
+
+Then, 
+flush the DNS cache
+ to apply the changes:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 3: Check If the Rogue DNS is Gone
+
+Now, check your DNS settings again:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+If 
+113.212.173.22
+ is gone
+, the issue is fixed. ✅
+
+📌 
+If it’s still there
+, your 
+VPN or router might be enforcing it.
+
+Step 4: (If Still Present) Check If VPN is Forcing DNS
+
+You have 
+ProtonVPN
+ active, which might be enforcing its own DNS settings.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+👉 
+If 
+113.212.173.22
+ appears here
+, ProtonVPN (or your router) is 
+overriding your DNS settings.
+
+👉 
+Try disconnecting ProtonVPN
+ and check 
+
+scutil --dns
+
+ again.
+
+🚀 Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+If 
+
+113.212.173.22
+ disappears
+, the issue is resolved.
+
+If it 
+remains
+, we'll need to investigate ProtonVPN or your router! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo networksetup -setdnsservers "USB 10/100/1000 LAN" empty
+sudo networksetup -setdnsservers "USB 10/100/1000 LAN" 8.8.8.8 8.8.4.4
+
+sja@SJAs-MacBook-Pro ~ % sudo killall -HUP mDNSResponder
+
+sja@SJAs-MacBook-Pro ~ % scutil --dns
+
+DNS configuration
+
+resolver #1
+  nameserver[0] : 8.8.8.8
+  nameserver[1] : 8.8.4.4
+  flags    : Request A records
+  reach    : 0x00000002 (Reachable)
+
+resolver #2
+  domain   : local
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300000
+
+resolver #3
+  domain   : 254.169.in-addr.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  

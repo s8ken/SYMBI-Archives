@@ -1,0 +1,444 @@
+eate or Edit 
+.env.local
+
+Navigate to your project folder
+ (if you haven't already):
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Open or create the 
+.env.local
+ file
+:
+
+bash
+
+Copy
+
+Edit
+
+nano .env.local
+
+Paste the following (update with your actual keys if needed):
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=your_actual_token_here
+
+Replace 
+your_actual_token_here
+ with your Sanity API token (should be a long string starting with 
+sk...
+).
+
+Save the file
+:
+
+Press 
+CTRL + O
+ â then 
+Enter
+ to save.
+
+Press 
+CTRL + X
+ to exit.
+
+Restart your Next.js dev server
+ so the new environment variables take effect:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Once that's done, let me know â then weâll move forward with creating the API integration in 
+lib/symbi.ts
+.
+
+You said:
+
+ok done
+
+ChatGPT said:
+
+Excellent ð
+
+Now let's move on to the next file to handle API interactions between your Next.js site and Sanity â this is where your GPT will read from and write to Sanity.
+
+â Step 2: Create 
+lib/symbi.ts
+
+This will contain helper functions for Symbi to 
+read
+, 
+create
+, and 
+update
+ content in Sanity.
+
+Make sure you're in your project root
+:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Create the 
+lib
+ folder if it doesn't exist
+:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p lib
+
+Open the file for editing
+:
+
+bash
+
+Copy
+
+Edit
+
+nano lib/symbi.ts
+
+Paste this code inside
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// Required for write operations
+
+useCdn
+
+: 
+
+false
+
+, 
+
+// Set to false for freshest data
+
+})
+
+export
+
+async
+
+function
+
+fetchPages
+
+(
+
+) {
+
+return
+
+await
+
+ sanityClient.
+
+fetch
+
+(
+
+`*[_type == "page"]`
+
+)
+}
+
+export
+
+async
+
+function
+
+createPage
+
+(
+
+title: 
+string
+
+, content: 
+
+any
+
+[]) {
+
+return
+
+await
+
+ sanityClient.
+
+create
+
+({
+
+_type
+
+: 
+
+'page'
+
+,
+    title,
+    content,
+  })
+}
+
+export
+
+async
+
+function
+
+updatePage
+
+(
+
+id: 
+string
+
+, updates: Partial<{ title: 
+
+string
+
+; content: 
+
+any
+
+[] }>) {
+
+return
+
+await
+
+ sanityClient.
+
+patch
+
+(id).
+
+set
+
+(updates).
+
+commit
+
+()
+}
+
+export
+
+default
+
+ sanityClient
+
+Save the file
+ (
+CTRL + O
+, 
+Enter
+, then 
+CTRL + X
+).
+
+Once thatâs saved, your Symbi GPT will have full read/write access to the CMS.
+
+Let me know and weâll wire up this functionality to your pages or API routes next.
+
+You said:
+
+so the same sanity token from the last step?
+
+ChatGPT said:
+
+Yes â exactly â
+
+The 
+SANITY_API_TOKEN
+ you already added in your 
+.env.local
+ file is 
+exactly whatâs needed
+ here. That token is used in the 
+lib/symbi.ts
+ file we just created to:
+
+â 
+Create
+ new documents
+
+âï¸ 
+Edit
+ existing documents
+
+ð 
+Fetch
+ pages (or anything else)
+
+ð Recap: Your 
+.env.local
+ should already have this:
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn
+
+If thatâs already there â and youâve saved 
+lib/symbi.ts
+, weâre ready to move forward with:
+
+â A test read from Sanity
+
+ð§  A GPT-generated route or interface to 
+add/edit
+ content automatically
+
+Want to create a test route next or wire this into the main homepage?
+
+You said:
+
+so how does it look when I add it on that line?
+
+ChatGPT said:
+
+Perfect timing â here's 
+exactly
+ what it looks like when your 
+SANITY_API_TOKEN
+ is used inside the file (which should be 
+lib/symbi.ts
+):
+
+ts
+
+Copy
+
+Edit
+
+// lib/symbi.ts
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sy

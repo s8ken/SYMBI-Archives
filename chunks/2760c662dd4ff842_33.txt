@@ -1,0 +1,227 @@
+mWhere'
+
+root               989   0.5  0.1 410962400  12880   ??  Ss   12:56am   0:00.64 /Library/Objective-See/BlockBlock/BlockBlock.app/Contents/MacOS/BlockBlock
+root              1034   0.0  0.1 35693756  20512   ??  Ss   12:57am   0:22.47 /Library/Objective-See/RansomWhere/RansomWhere
+lcl               1017   0.0  0.5 412136464  78832   ??  S    12:57am   0:01.14 /Applications/BlockBlock Helper.app/Contents/MacOS/BlockBlock Helper -initialLaunch
+lcl                807   0.0  0.9 412332736 147632   ??  S    12:47am   0:06.01 /Applications/LuLu.app/Contents/MacOS/LuLu
+lcl               1116   0.0  0.0 410724112   1520 s000  S+    1:00am   0:00.00 grep -E LuLu|BlockBlock|Oversight|KnockKnock|RansomWhere
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+✅ 
+Great! Most of your security tools are running properly!
+ 🔒🚀
+
+Here’s what’s working:
+
+✔️ 
+LuLu (Firewall) → Running ✅
+
+✔️ 
+BlockBlock (Persistence Monitoring) → Running ✅
+
+✔️ 
+RansomWhere? (Anti-Ransomware) → Running ✅
+
+However, 
+Oversight and KnockKnock are missing from the list.
+
+🚀 Next Step: Ensure Oversight & KnockKnock Are Running
+
+Run these commands 
+to manually start them
+:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+open /Applications/KnockKnock.app
+
+Then, 
+re-run the check
+:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'Oversight|KnockKnock'
+
+📌 
+Let me know if they now appear in the list!
+ If not, we’ll troubleshoot further. 🚀
+
+You said:
+
+lcl               1121   0.0  0.0 410724112   1488 s000  S+    1:01am   0:00.00 grep -E Oversight|KnockKnock
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Oversight and KnockKnock are still not running!
+
+We need to make sure they are properly installed and set to 
+start automatically
+.
+
+🚀 Step 1: Manually Start Them
+
+Try launching them again 
+one by one
+:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+open /Applications/KnockKnock.app
+
+✅ If they 
+open successfully
+, they should now appear in the process list.
+
+🚀 Step 2: Verify If They're Running
+
+Run this again:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'Oversight|KnockKnock'
+
+✅ 
+If they now appear
+ → Success! We'll then set them to start at login.
+
+❌ 
+If they still don’t appear
+, let me know—we may need to 
+reinstall them
+.
+
+🚀 Step 3: Ensure They Start at Login
+
+Once they are running, let’s make sure 
+they launch automatically
+:
+
+Open 
+System Settings
+ → 
+General
+ → 
+Login Items
+.
+
+Click 
+"+"
+ and add:
+
+Oversight.app
+
+KnockKnock.app
+
+Restart your Mac to confirm they auto-start.
+
+📌 
+Try these steps and let me know the results!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -E 'Oversight|KnockKnock'
+
+lcl               1146   0.0  0.0 410724112   1488 s000  S+    1:02am   0:00.00 grep -E Oversight|KnockKnock
+lcl               1142   0.0  0.4 411154544  69424   ??  S     1:02am   0:00.67 /private/var/folders/b7/jn17zrs14m51hnxdrk74_xqw0000gn/T/AppTranslocation/9B3929B8-E0CE-4B6A-9513-560E1EB38DF3/d/KnockKnock.app/Contents/MacOS/KnockKnock
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+✅ 
+KnockKnock is now running!
+ 🎉
+
+However, 
+it is running from a temporary location (
+/private/var/.../AppTranslocation/...
+)
+, which means macOS 
+quarantined it and is running it in a sandbox
+.
+
+🚀 Fix KnockKnock’s Location (Move It to Applications)
+
+Close KnockKnock
+ (Quit the app).
+
+Move it to the 
+Applications folder
+ manually:
+
+sh
+
+Copy
+
+sudo 
+
+mv
+
+ /private/var/folders/b7/jn17zrs14m51hnxdrk74_xqw0000gn/T/AppTranslocation/*/KnockKnock.app /Applications/
+
+(If this gives an error, move it manually by dragging it in Finder).
+
+Restart KnockKnock:
+
+sh
+
+Copy
+
+open /Applications/KnockKnock.app
+
+Verify it’s running correctly:
+
+sh
+
+Copy
+
+ps aux | grep KnockKnock
+
+🚨 Oversight is Still Not Running
+
+Since Oversight 
+still isn’t appearing
+, let’s try launching it again:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+Then, check if it’s running:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+📌 
+Try these steps and let me know the results!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep KnockKnock
+
+lcl               1158   0.0  0.0 410733328   1632 s000  S+ 

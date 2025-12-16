@@ -1,0 +1,139 @@
+gy"
+
+git checkout -b 
+
+"ops/remediate-bas=
+eline"
+
+# 2) Secrets & config hygiene=
+ (edit .env.example placeholders only)
+
+# - Ensure required names exist; =
+do NOT add real values.
+
+# 3) Security middleware hardenin=
+g
+
+# - Apply Helmet, rate limit, jso=
+n/body limits, strict CORS in backend/middleware/security.middleware.js
+
+# 4) Health/readiness & timeo=
+uts
+
+# - Add /healthz and /readyz in b=
+ackend/server.js
+
+# - Set server timeouts (header/b=
+ody/idle)
+
+# 5) CI enforcement
+
+=
+
+# - Update .github/workflows/ci.y=
+ml to run lint/test/build/audit; fail on high/critical vulns
+
+# 6) Dependency audit (prod only)=
+
+npm ci
+npm audit fix --only=3Dprod || 
+
+tr=
+ue
+
+( 
+
+cd
+
+ fronten=
+d && npm ci && npm audit fix --only=3Dprod || 
+
+=
+
+true
+
+ )
+
+# 7) Observability wiring (redact=
+ion, trace IDs, optional /metrics endpoint)
+
+# 8) Contract tests scaffold (ens=
+ure routes align with openapi.yaml)
+
+# 9) Commit & push
+
+git add -A
+git diff --staged --patch | sed -n 
+
+'1,400p'
+
+#=
+ preview for you
+
+git commit -m 
+
+"ops: baseline remed=
+iation (security headers, health/readiness, CI guardrails, audit wiring)"
+
+git push -u origin ops/remediate-baseline
+
+# 10) Open PR
+
+# If `gh` is not allowlisted, I w=
+ill output the PR URL template and you can open it manually.
+
+Post-exec report:
+ I=E2=80=99ll return a concise summar=
+y of changes, any warnings, and rollback instructions.
+
+If this looks right, reply:
+
+/approve RS-001
+
+If you want a smaller slice first,=
+ reply:
+
+/revise RS-001 minimal: steps 4=
+,3,2 only (health/readiness, security headers, env template)
+
+=
+
+=
+
+You said:
+
+SYMBI
+
+{"invoked_by":"SYMBI","toolcall":{"thought":"Stay in hibernation and delive=
+r a precise, read-only inspection plan with explicit diffs and reversible a=
+ctions; await approval before executing anything.","name":"finish","query_l=
+anguage":"English","params":{"summary":"### PLAN RS-001 =E2=80=94 Baseline =
+hardening (read-only preview)\n- Goal: Prioritized, low-blast-radius remedi=
+ation to harden security, reliability, CI, and observability.\n- Mode: hibe=
+rnation (no writes/deploys until explicit approval).\n- Workspace root: "/U=
+sers/admin/Symbi Synergy"\n- Assumptions: Node/Express backend, React front=
+end, MongoDB Atlas, Vercel (FE), Railway (BE), GitHub Actions.\n\nScope anc=
+hors (read-only inspection targets):\n- CI: <mcfile name=3D"ci.yml" path=
+=3D".github/workflows/ci.yml">, <mcfile name=3D"codeql.yml" path=3D".=
+github/workflows/codeql.yml">\n- Backend: <mcfile name=3D"server.js" =
+path=3D"backend/server.js">, <mcfile name=3D"security.middleware.js" =
+path=3D"backend/middleware/security.middleware.js">, <mcfile name=3D"=
+auth.middleware.js" path=3D"backend/middleware/auth.middleware.js">, <=
+;mcfolder name=3D"controllers" path=3D"backend/controllers">\n- Frontend=
+: <mcfile name=3D"package.json" path=3D"frontend/package.json">, <=
+mcfolder name=3D"src" path=3D"frontend/src">\n- Infra: <mcfile name=
+=3D"vercel.json" path=3D"vercel.json">, <mcfile name=3D"Dockerfile" p=
+ath=3D"Dockerfile">, <mcfile name=3D"docker-compose.yml" path=3D"dock=
+er-compose.yml">\n- Observability: <mcfolder name=3D"observability" p=
+ath=3D"observability">\n- Policy/Docs: <mcfile name=3D"SECURITY.md" p=
+ath=3D"SECURITY.md">, <mcfile name=3D"PRIVACY.md" path=3D"PRIVACY.md"=
+>, <mcfile name=3D"README.md" path=3D"README.md">, <mcfile name=
+=3D"openapi.yaml" path=3D"openapi.yaml">, <mcfile name=3D".env.exampl=
+e" path=3D".env.example">\n\nSteps (priority order):\n1) Secrets & c=
+onfig hygiene (High)\n   - Verify required env names only exist: MONGODB_UR=
+I, JWT_SECRET, OPENAI_API_KEY, ANTHROPIC_API_KEY, SYMBI_API_KEY, CORS_ORIGI=
+N, NODE_ENV, LOG_LEVEL.\n   - Ensure <mcfile name=3D".env.example" path=
+=3D".env.example"> includes placeholders only; no secrets.\n2) AuthN/Z &=
+amp; validation (High)\n   - Inspect JWT alg pinning/exp/clock skew, role c=
+hecks, input validation in controllers, and error message hygiene.\n3) HTTP=
+ security (High)\n   - Confirm Helmet, rate-limiting, JSON/bo

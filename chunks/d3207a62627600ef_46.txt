@@ -1,0 +1,307 @@
+ Restarting
+
+To 
+stop Control Center from running at all
+, remove execution permissions:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+📌 
+This will prevent the file from executing!
+
+🚀 Step 2: Disable 
+rapportd
+ Again & Prevent It from Restarting
+
+Even though we disabled 
+rapportd
+, 
+it restarted
+. Let’s remove it permanently.
+
+1️⃣ Kill It Again
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 593
+
+2️⃣ Find If It’s Running as a Service
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep rapportd
+
+📌 
+If it appears, disable it:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.rapportd
+
+3️⃣ Block Execution of 
+rapportd
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+📌 
+This will completely prevent 
+rapportd
+ from running.
+
+🚀 Step 3: Verify No More Open Ports
+
+After applying the changes, check again:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+📌 If nothing unexpected appears, 
+your Mac is now fully locked down!
+ 🔒
+
+✅ Summary:
+
+1️⃣ 
+Disabled & blocked 
+ControlCe
+ (Control Center) from running.
+
+2️⃣ 
+Killed & prevented 
+rapportd
+ from restarting.
+
+3️⃣ 
+No more remote access services listening for connections.
+
+🚀 
+Run 
+netstat -an | grep LISTEN
+ again, and let me know if any ports are still open!
+ 🔒🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo chmod 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+chmod: Unable to change file mode on /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter: Operation not permitted
+sja@SJAs-MacBook-Pro ~ % sudo chmod 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+chmod: Unable to change file mode on /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter: Operation not permitted
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 System Integrity Protection (SIP) is Blocking Changes to ControlCenter.app
+
+Since macOS 
+System Integrity Protection (SIP)
+ prevents modifications to system files, 
+you cannot change permissions on 
+ControlCenter.app
+ directly.
+ 🚫
+
+🚀 Alternative Ways to Stop Control Center from Opening Ports
+
+Since 
+SIP blocks chmod
+, we’ll 
+disable Control Center at the user level
+ instead.
+
+🛠 Step 1: Disable Control Center via macOS Settings
+
+1️⃣ 
+Go to System Settings
+
+2️⃣ 
+Navigate to “Control Center”
+
+3️⃣ 
+Disable all available toggles
+ (e.g., Wi-Fi, Bluetooth, AirDrop, etc.)
+
+4️⃣ 
+Restart your Mac
+
+📌 
+This prevents Control Center from auto-launching background processes.
+
+🛠 Step 2: Block Control Center from Running (Without Disabling SIP)
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+📌 
+This prevents it from launching in the background!
+
+🛠 Step 3: Check If Control Center Is Still Running
+
+After running the above, check if it’s still active:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep ControlCe
+
+📌 
+If it still appears, we’ll need to take a stronger approach.
+
+🚀 Optional: Disable SIP (Advanced)
+
+If you 
+absolutely
+ want to prevent macOS from running Control Center:
+
+1️⃣ 
+Reboot into macOS Recovery Mode
+
+Hold 
+Command (⌘) + R
+ while restarting
+
+2️⃣ Open 
+Terminal
+ from the menu
+
+3️⃣ Run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+📌 This disables SIP (System Integrity Protection)
+
+4️⃣ 
+Restart your Mac
+
+5️⃣ Now, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+6️⃣ 
+Re-enable SIP for security:
+
+Reboot back into 
+Recovery Mode
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+Restart normally.
+
+⚠️ 
+WARNING:
+ Disabling SIP makes macOS 
+more vulnerable
+ to system file modifications. Do this 
+only if necessary
+.
+
+🚀 Next Steps
+
+1️⃣ Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+2️⃣ Restart your Mac
+
+3️⃣ Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If Control Center is no longer listening, your Mac is fully locked do

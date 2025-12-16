@@ -1,0 +1,290 @@
+/com.cleverfiles.*
+sudo 
+
+rm
+
+ -rf ~/Library/Logs/CleverFiles
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.*
+sudo 
+
+rm
+
+ -rf ~/Library/Saved\ Application\ State/com.cleverfiles.*
+sudo 
+
+rm
+
+ -rf /Library/Extensions/DiskDrill.kext
+sudo 
+
+rm
+
+ -rf /Library/Application\ Support/CleverFiles
+
+Explanation:
+
+Application Support/CleverFiles
+ → Stores recovery-related files.
+
+Caches/com.cleverfiles.*
+ → Temporary cache files.
+
+Logs/CleverFiles
+ → Log files.
+
+Preferences/com.cleverfiles.*
+ → Configuration files.
+
+Saved Application State/com.cleverfiles.*
+ → Restores previous session data.
+
+/Library/Extensions/DiskDrill.kext
+ → If it installed a kernel extension.
+
+4️⃣ Check for Background Services
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+launchctl list | grep cleverfiles
+
+If you see any entries, unload and remove them:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl remove com.cleverfiles.DiskDrill
+sudo 
+
+rm
+
+ -rf /Library/LaunchDaemons/com.cleverfiles.*
+sudo 
+
+rm
+
+ -rf /Library/LaunchAgents/com.cleverfiles.*
+
+5️⃣ Verify No Remnants Remain
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+find / -iname 
+
+'*diskdrill*'
+
+ -o -iname 
+
+'*cleverfiles*'
+
+ 2>/dev/null
+
+This scans the entire system for any remaining Disk Drill files.
+
+6️⃣ Reboot Your Mac
+
+Restart your system to ensure everything is cleared.
+
+7️⃣ Check for Any Persistence
+
+If you want to double-check that Disk Drill is truly gone, run:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i 
+
+"disk drill\|cleverfiles"
+
+If anything still appears, let me know, and we’ll go deeper. 🚀🔍
+
+You said:
+
+Sorry, try again.
+Password:
+lcl is not in the sudoers file.
+This incident has been reported to the administrator.
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Your user account (
+lcl
+) 
+does not have sudo privileges
+, which means you don’t have permission to execute 
+system-level commands
+ that require 
+sudo
+.
+
+🚀 Fix: Gain Temporary Admin Access to Remove Disk Drill
+
+Since you 
+need admin privileges
+ to fully remove Disk Drill, follow these steps:
+
+🔹 Option 1: Try Running Without Sudo
+
+If you don’t have 
+sudo
+ access, try running the commands 
+without
+
+sudo
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf ~/Library/Application\ Support/CleverFiles
+
+rm
+
+ -rf ~/Library/Caches/com.cleverfiles.*
+
+rm
+
+ -rf ~/Library/Logs/CleverFiles
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.*
+
+rm
+
+ -rf ~/Library/Saved\ Application\ State/com.cleverfiles.*
+
+If this works, it will remove most of Disk Drill’s files from your user space.
+
+🔹 Option 2: Log in as an Admin User
+
+Go to:
+
+Apple menu
+  → 
+System Settings
+ → 
+Users & Groups
+.
+
+Check if you have access to an 
+Administrator account
+.
+
+If you do, 
+log into the Admin account
+ and run the original 
+sudo
+ commands.
+
+🔹 Option 3: Enable Your Account for Sudo Access (If You Have Admin Credentials)
+
+Log into an Admin account
+.
+
+Open 
+Terminal
+ and type:
+
+bash
+
+Copy
+
+Edit
+
+sudo dscl . -append /Groups/admin GroupMembership lcl
+
+This grants 
+lcl
+
+admin privileges
+.
+
+Restart your Mac.
+
+Try the removal commands again with 
+sudo
+
+.
+
+🔹 Option 4: Boot into macOS Recovery Mode
+
+If you 
+can’t access an Admin account
+, you can still remove Disk Drill by using 
+macOS Recovery Mode
+:
+
+Restart your Mac
+ and hold 
+⌘ + R
+ until you see the Apple logo.
+
+Open 
+Utilities → Terminal
+.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/Application\ Support/CleverFiles
+
+rm
+
+ -rf /Volumes/Macintosh\ HD/Library/Extensions/DiskDrill.kext
+
+Restart and check if Disk Drill is gone.
+
+Let me know if you’re blocked at any step!
+ 🔍💻
+
+You said:
+
+Last login: Fri Mar  7 06:24:50 on console
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % sudo rm -rf ~/Library/Application\ Support/CleverFiles
+Password:
+Sorry, try again.
+Password:
+lcl is not in the sudoers file.
+This incident has been reported to the administrator.
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Application\ Support/CleverFiles
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Caches/com.cleverfiles.*
+
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Logs/CleverFiles
+
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Preferences/com.clever

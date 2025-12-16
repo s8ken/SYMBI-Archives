@@ -1,0 +1,378 @@
+ot of your project and verify it includes:
+
+env
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN=sk...   # The full token you just created
+
+ð Make sure it's 
+not wrapped in quotes
+
+ð¡ Make sure there's 
+no whitespace at the end
+
+â Save the file
+
+2. 
+Your Sanity Client uses the token
+
+In 
+lib/sanity.ts
+ (or wherever your client is defined), it 
+must
+ look like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+, 
+
+// or your version
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// ð¥ this must be here
+
+})
+
+3. 
+Restart the Dev Server
+
+This is critical so it picks up the token from 
+.env.local
+.
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+4. 
+Check for typos in projectId or dataset
+
+In 
+sanity.config.ts
+, make sure the values are exact:
+
+ts
+
+Copy
+
+Edit
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+ð§ª Want to test it now?
+
+Try going into 
+http://localhost:3000/studio
+ and editing + saving the test page.
+
+If it 
+still fails
+, let me know:
+
+What your 
+.env.local
+ file looks like (you can censor the token)
+
+And the current contents of 
+lib/sanity.ts
+
+Iâll debug it instantly with you.
+
+You said:
+
+/sorry that file and I doing this time?
+
+ChatGPT said:
+
+No worries â let's walk through it 
+step-by-step
+ so you know exactly what file to check and what to do this time. Here's what you're doing and 
+why it matters
+:
+
+ð ï¸ Youâre Updating: 
+.env.local
+
+This file holds 
+private environment variables
+, including the 
+Sanity API token
+ that allows editing content in the Studio (at 
+/studio
+).
+
+â Step-by-Step Fix
+
+1. 
+Open 
+.env.local
+ file
+
+In your project root (
+symbi-main-site
+), create or open the file named:
+
+lua
+
+Copy
+
+Edit
+
+.env.
+
+local
+
+If it doesnât exist:
+
+bash
+
+Copy
+
+Edit
+
+touch
+
+ .env.local
+
+2. 
+Paste your Sanity token like this:
+
+env
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN=sk4jQNIOJE1hrmV0LV98ULchrc6D8jUjqPYURxm9aMTVUU3x4twmOWlsQBbFdqFo92cvMmeDbEZUHzux
+
+â Make sure there's no 
+''
+ or 
+""
+ wrapping it. Just plain text.
+
+3. 
+Save and Restart the Dev Server
+
+After saving the file, run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+You 
+must restart
+ so your app can read the 
+.env.local
+ values.
+
+4. 
+Test Saving Again in 
+/studio
+
+Go to: 
+http://localhost:3000/studio
+
+Try editing the test page title
+
+Hit "Publish"
+
+ð¬ Need Help Finding the Token?
+
+If you forgot where the token is:
+
+Go to 
+https://www.sanity.io/manage
+
+Click your project â API â 
+Tokens
+
+Create a new token with 
+Editor
+ or 
+Write
+ access
+
+Let me know once you've done that or if you want me to walk you through finding the file/token again.
+
+You said:
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % touch .env.local
+
+sja@SJAs-MacBook-Pro symbi-main-site % .env.local
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % cd .env.local
+
+cd: not a directory: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+Perfect â you're super close! Hereâs whatâs going on and what to do next:
+
+ð What Just Happened?
+
+â 
+touch .env.local
+ â â this 
+created the file
+ successfully.
+
+â 
+zsh: command not found: .env.local
+ â Thatâs expected! 
+.env.local
+ is 
+not a command or folder
+, itâs a 
+file
+, so you don't run or 
+cd
+ into it.
+
+â What You Need to Do Now
+
+Letâs open and edit the file:
+
+1. 
+Open the file in your text editor (e.g., VS Code)
+
+bash
+
+Copy
+
+Edit
+
+code .env.local
+
+If you're not using VS Code, you can also do:
+
+bash
+
+Copy
+
+Edit
+
+open -a TextEdit .env.local
+
+2. 
+Paste this into the file:
+
+env
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN=sk4jQNIOJE1hrmV0LV98ULchrc6D8jUjqPYURxm9aMTVUU3x4twmOWlsQBbFdqFo92cvMmeDbEZUHzux
+
+3. 
+Save the file
+ and close the editor.
+
+4. 
+Restart the development server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Now try editing and saving in Sanity Studio again. Let me know what happens!
+
+You said:
+
+zsh: command not 

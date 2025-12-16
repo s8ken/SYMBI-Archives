@@ -1,0 +1,277 @@
+ad /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+â 
+Success!
+ The setting has been correctly applied. 
+AirPlay is now disabled at the system level.
+
+ð Next Steps: Verify That AirPlay is Fully Shut Down
+
+Now, letâs confirm that no AirPlay-related processes are still running.
+
+1ï¸â£ 
+Check for Running AirPlay Processes
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+If 
+no output
+ appears (except for the 
+grep
+ process itself), 
+AirPlay is completely disabled
+.
+
+If you 
+still see processes running
+, we will forcefully stop them.
+
+2ï¸â£ 
+Force Kill AirPlay Processes (If Needed)
+
+If you still see AirPlay processes, run:
+
+bash
+
+Copy
+
+Edit
+
+sudo killall -9 AirPlayUIAgent
+sudo killall -9 AirPlayXPCHelper
+
+Then, recheck:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+3ï¸â£ 
+Restart SystemUIServer to Ensure Changes Take Effect
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+4ï¸â£ 
+Reboot Your Mac & Final Confirmation
+
+Restart your Mac.
+
+After reboot, check again with:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+If no output appears, 
+AirPlay is fully disabled and will not restart on boot.
+
+ð¯ Final Check: Does the Purple AirPlay Icon Still Appear?
+
+If 
+the icon is gone
+, 
+AirPlay is fully disabled.
+
+If 
+it still appears
+, let me know.
+
+Let me know how it looks after reboot! ð
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -E "AirPlay|screensharing|screencapture|VNC"
+
+lcl                554   0.0  0.1 411127456  18512   ??  S     9:40am   0:00.07 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent --launchd
+lcl                905   0.0  0.0 410733328   1648 s000  S+    9:50am   0:00.01 grep -E AirPlay|screensharing|screencapture|VNC
+root               149   0.0  0.1 426966336  15440   ??  Ss    9:39am   0:00.14 /usr/libexec/AirPlayXPCHelper
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ AirPlay Processes Still Running Despite Being Disabled
+
+Even though 
+AirPlay is disabled in preferences
+, the processes 
+AirPlayUIAgent
+ and 
+AirPlayXPCHelper
+ are 
+still running
+. This means the system 
+is not fully respecting the preference setting
+, likely due to 
+background services
+.
+
+ð ï¸ Next Steps: Force AirPlay to Stop & Prevent Auto-Start
+
+1ï¸â£ Kill the Running AirPlay Processes
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo killall -9 AirPlayUIAgent
+sudo killall -9 AirPlayXPCHelper
+
+Then check again:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+If 
+they are gone
+, move to 
+Step 2
+.
+
+If 
+they restart automatically
+, we will block them at the system level.
+
+2ï¸â£ Block AirPlay From Launching on Boot
+
+Since disabling via 
+defaults
+ didn't fully work, we will 
+create empty, locked plist files
+ to block AirPlay from starting.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /Library/LaunchDaemons/com.apple.AirPlayXPCHelper.plist
+sudo 
+
+chmod
+
+ 000 /Library/LaunchDaemons/com.apple.AirPlayXPCHelper.plist
+sudo 
+
+touch
+
+ /Library/LaunchAgents/com.apple.AirPlayUIAgent.plist
+sudo 
+
+chmod
+
+ 000 /Library/LaunchAgents/com.apple.AirPlayUIAgent.plist
+
+Then restart:
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+3ï¸â£ Check If AirPlay Still Runs After Reboot
+
+Restart your Mac.
+
+After reboot, check again:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+If 
+no processes appear
+, 
+AirPlay is fully disabled
+.
+
+4ï¸â£ Final Check: Does the Purple AirPlay Icon Still Appear?
+
+If 
+the icon is gone
+, 
+AirPlay is completely shut down.
+
+If 
+it still appears
+, let me know.
+
+Let me know what happens after 

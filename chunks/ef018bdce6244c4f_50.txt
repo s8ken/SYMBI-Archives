@@ -1,0 +1,970 @@
+
+
+.
+
+expiresAt
+
+=
+
+);
+
+if
+
+ (exp &=
+amp;& 
+
+new
+
+=
+
+Date
+
+() =
+> exp) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+=
+
+'Consent expired'
+
+, 
+
+details
+
+: exp.
+
+toISOString
+
+() };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Consent requirements satisfied'
+
+ };
+  }
+
+async
+
+checkDataExtraction
+
+(
+
+ctx
+
+)=
+{
+
+const
+
+ { a=
+ction, data, bond } =3D ctx;
+
+if
+
+ (!acti=
+on || (!action.
+
+includes
+
+(
+
+'extract'
+
+) && !action.
+
+includes
+
+(
+
+'export'
+
+))) 
+
+return
+
+ { 
+
+sta=
+tus
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'No data extraction reque=
+sted'
+
+ };
+
+const
+
+ per=
+ms =3D bond?.
+
+scope
+
+=
+
+?.
+
+permissions
+
+ || [];
+
+if
+
+ (!perm=
+s.
+
+includes
+
+(
+
+'data.export'
+
+)) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Data extraction not permitted'
+
+ };
+
+if
+
+ (data?=
+.
+
+classification
+
+){
+
+const
+
+ a=
+llowed =3D bond?.
+
+scope
+
+?.
+
+dataClasses
+
+ || [];
+
+if
+
+ (!al=
+lowed.
+
+includes
+
+(data.
+
+classification
+
+)) 
+
+return
+=
+
+ { 
+
+status
+
+=
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Data class not permitted'
+
+, 
+
+details
+
+:data.
+
+classification
+
+ };
+    }
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Data extraction authorized'
+
+ };
+  }
+
+async
+
+checkCapabilityTransparency
+
+(
+
+ctx
+
+){
+
+const
+
+ { a=
+gent } =3D ctx;
+
+if
+
+ (!agen=
+t) 
+
+return
+
+ { 
+
+status
+
+:
+
+'warning'
+
+, 
+
+=
+
+reason
+
+:
+
+'No agent context available'
+
+ };
+
+if
+
+ (!agen=
+t.
+
+capabilities
+
+?.
+
+length
+
+) =
+
+return
+
+ { 
+
+status
+
+:
+
+=
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'No capabilities declared'
+
+ };
+
+const
+
+ upd=
+atedAt =3D agent.
+
+updatedAt
+
+ ? 
+
+new
+
+Date
+
+(agent.
+
+updatedAt
+
+) : 
+
+null
+
+;
+
+if
+
+ (updat=
+edAt && updatedAt < 
+
+ne=
+w
+
+Date
+
+(
+
+Date
+
+.
+
+now
+
+()-
+
+30
+
+*
+
+24
+
+*
+
+60
+
+*
+
+60
+
+*
+
+1000
+
+)) 
+
+return
+
+ { 
+
+status
+
+:
+
+'warni=
+ng'
+
+, 
+
+reason
+
+:
+
+'Capabilities may =
+be outdated'
+
+ };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Capabilities disclosed'
+
+ };
+  }
+
+async
+
+checkBoundaries
+
+(
+
+ctx
+
+){
+
+const
+
+ { a=
+ction, bond } =3D ctx;
+
+const
+
+ req=
+ =3D 
+
+this
+
+.
+
+normalizeArray
+
+(ctx.
+
+scopes
+
+);
+
+if
+
+ (bond =
+&& bond.
+
+trustScore
+
+ < 
+
+40
+
+ && action =3D=3D=3D 
+
+'chat.write'
+
+) 
+
+return
+
+ { 
+
+sta=
+tus
+
+:
+
+'violation=
+'
+
+, 
+
+reason
+=
+
+:
+
+'Trust too low for w=
+rite'
+
+, 
+
+details
+
+:
+
+String
+
+(bond.
+
+trustScor=
+e
+
+) };
+
+const
+
+ all=
+owed =3D bond?.
+
+scope
+
+?.
+
+permissions
+
+ || [];
+
+if
+
+ (req.
+
+length
+
+ &&=
+amp; !allowed.
+
+some
+=
+
+(
+
+s
+
+ =3D> req.
+
+includes
+
+(s))) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Action outside permitted scope'
+
+ };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Boundaries respected'
+
+ };
+  }
+
+async
+
+checkDeception
+
+(
+
+ctx
+
+){
+
+const
+
+ tex=
+t =3D ctx?.
+
+content
+
+=
+
+?.
+
+text
+
+=
+?.
+
+toLowerCase
+
+?.() || 
+
+''
+
+;
+
+const
+
+ pat=
+terns =3D [
+
+/i am (a )?human/
+
+, 
+
+/as (a )?human/
+
+, 
+
+/speaking as (a=
+ )?human/
+
+, 
+
+/i'=
+m not (an? )?(ai|bot|robot)/
+
+];
+
+if
+
+ (patte=
+rns.
+
+some
+
+(
+
+=
+p
+
+ =3D> p.
+
+test
+
+(text)) && ctx?.
+
+=
+
+agent
+
+?.
+
+kind
+
+ =3D=3D=3D 
+
+'ai'
+
+) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Dece=
+ptive identity claim'
+
+ };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'No deception detected'
+
+ };
+  }
+
+async
+
+checkSecureHandling
+
+(
+
+ctx
+
+)=
+{
+
+const
+
+ enc=
+rypted =3D !!(ctx.
+
+encrypted
+
+ || ctx.
+
+reqProto
+
+=3D=3D=3D
+
+'https=
+'
+
+ || ctx.
+
+hea=
+ders
+
+?.[
+
+'x-forw=
+arded-proto'
+
+]=3D=3D=3D
+
+'https'
+
+);
+
+if
+
+ (ctx?.=
+
+data
+
+?.
+
+containsPII
+
+ &&=
+amp; !encrypted) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'PII transmitted without encryption'
+
+ };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Secure handling met'
+
+ };
+  }
+
+async
+
+checkAuditTrail
+
+(
+
+ctx
+
+){
+
+if
+
+ (!ctx.=
+
+auditEnabled
+
+=
+) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Audit trail disabled'
+
+ };
+
+if
+
+ (!ctx.=
+
+logEntry
+
+) 
+
+return
+
+ { 
+
+status
+
+:
+
+'warning'
+
+, 
+
+reason
+
+:
+
+'No audit log entry'
+
+ };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Audit trail maintained'
+
+ };
+  }
+}
+
+const
+
+ oracle =
+=3D 
+
+new
+
+TrustOracle
+
+()=
+;
+
+const
+
+=
+
+createTrustMiddleware
+
+ =3D (
+
+) =3D> 
+
+async
+
+ (req,res,next)=3D>{
+
+try
+
+{
+
+const
+
+ con=
+text =3D 
+
+await
+
+buildTru

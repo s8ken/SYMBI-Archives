@@ -1,0 +1,456 @@
+
+
+ = {
+
+title
+
+: 
+
+"SYMBI - Coming Soon"
+
+,
+
+description
+
+: 
+
+"SYMBI - Coming Soon"
+
+,
+};
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,
+}: {
+  children: React.ReactNode;
+}
+) {
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{
+
+`${
+
+inter.className
+
+} 
+
+bg-black
+
+text-white
+
+`}>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+forcedTheme
+
+=
+
+"dark"
+
+disableTransitionOnChange
+
+        >
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+â **Ensure the imports are correct, and 
+ThemeProvider
+ exists in 
+components/theme-provider.tsx
+.
+
+You said:
+
+ â Compiled / in 1131ms
+ â¨¯ ./components/theme-provider.tsx:2:1
+Module not found: Can't resolve 'next-themes'
+  1 | "use client"
+> 2 | import { ThemeProvider as NextThemesProvider } from "next-themes"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type { ThemeProviderProps } from "next-themes"
+  4 |
+  5 | export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+
+https://nextjs.org/docs/messages/module-not-found
+
+./tailwind.config.ts:79:13
+Module not found: Can't resolve 'tailwindcss-animate'
+  77 |     },
+  78 |   },
+> 79 |   plugins: [require("tailwindcss-animate")],
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  80 | } satisfies Config
+  81 |
+  82 | export default config
+
+ChatGPT said:
+
+You're facing two 
+missing dependency errors
+:
+
+next-themes
+ is missing
+ (for dark mode support).
+
+tailwindcss-animate
+ is missing
+ (for animations in Tailwind).
+
+ð§ Fix These Errors Step by Step
+
+1ï¸â£ Install Missing Dependencies
+
+Run the following command in your project root (
+~/Documents/symbi
+):
+
+bash
+
+Copy
+
+Edit
+
+npm install next-themes tailwindcss-animate
+
+or, if using Yarn:
+
+bash
+
+Copy
+
+Edit
+
+yarn add next-themes tailwindcss-animate
+
+2ï¸â£ Restart the Development Server
+
+After installation, restart your server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn dev
+
+3ï¸â£ Verify the Imports in 
+theme-provider.tsx
+
+Ensure the import is correct in 
+
+components/theme-provider.tsx
+
+:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+as
+
+NextThemesProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+type
+
+ { 
+
+ThemeProviderProps
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children, ...props }: ThemeProviderProps
+
+) {
+
+return
+
+<
+NextThemesProvider
+
+ {
+
+...props
+
+}>{children}
+
+</
+NextThemesProvider
+
+>;
+}
+
+4ï¸â£ Verify 
+tailwind.config.ts
+
+Your 
+tailwind.config.ts
+ is trying to use 
+
+tailwindcss-animate
+
+, which was missing. After installation, ensure that your config includes:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+type
+
+ { 
+
+Config
+
+ } 
+
+from
+
+"tailwindcss"
+
+;
+
+const
+
+config
+
+: 
+
+Config
+
+ = {
+
+content
+
+: [
+
+"./app/**/*.{ts,tsx}"
+
+,
+
+"./components/**/*.{ts,tsx}"
+
+,
+
+"./public/**/*.{ts,tsx}"
+
+,
+  ],
+
+theme
+
+: {
+
+extend
+
+: {},
+  },
+
+plugins
+
+: [
+
+require
+
+(
+
+"tailwindcss-animate"
+
+)],
+};
+
+export
+
+default
+
+ config;
+
+ð Final Step
+
+Run your app again
+ (
+npm run dev
+ or 
+yarn dev
+).
+
+If no more errors appear, 
+check the website in your browser
+ (
+http://localhost:3000
+).
+
+Let me know if you hit any more issues!
+ ð
+
+You said:
+
+tailwind.config.ts
+
+TypeScript
+
+here what it was 
+
+ChatGPT said:
+
+It looks like you uploaded an updated 
+
+tailwind.config.ts
+
+ file. Iâll check it and make sure everything is correctly set up. Let me review it now.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Load and display the contents of the uploaded tailwind.config.ts file
+
+file_path = 
+
+"/mnt/data/tailwind.config.ts"
+
+with
+
+open
+
+(file_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+) 
+
+as
+
+ file:
+    tailwind_config_content = file.read()
+
+tailwind_config_content
+
+Result
+
+'import type { Config } from "tailwindcss"\n\nconst config = {\n  darkMode: ["class"],\n  content: [\n    "./pages/**/*.{ts,tsx}",\n    "./components/**/*.{ts,tsx}",\n    "./app/**/*.{ts,tsx}",\n    "./src/**/*.{ts,tsx}",\n    "*.{js,ts,jsx,tsx,mdx}",\n  ],\n  prefix: "",\n  

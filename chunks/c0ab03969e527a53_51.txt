@@ -1,0 +1,236 @@
+ 
+chmod
+ commands were 
+denied
+ due to 
+System Integrity Protection (SIP)
+.
+
+LaunchDaemon/LaunchAgent files were 
+touched and permission-blocked
+, but it did not prevent execution.
+
+The logs indicate it is discovering devices and enabling AirPlay features
+.
+
+Next Steps to Fully Disable AirPlay:
+
+Since AirPlayXPCHelper is still actively running, we need to take a 
+more aggressive
+ approach.
+
+Method 1: Ensure AirPlay is Disabled in macOS Settings
+
+System Settings → General → AirDrop & Handoff
+
+Disable
+:
+
+AirDrop
+
+Handoff
+
+Allow Handoff between this Mac and your iCloud devices
+
+Turn Off
+: "AirPlay Receiver"
+
+System Settings → Displays
+
+Uncheck
+: "Allow AirPlay Receiver"
+
+Method 2: Disable AirPlay Directly via Terminal
+
+Run the following to disable AirPlay at the system level:
+
+bash
+
+Copy
+
+Edit
+
+defaults write /Library/Preferences/com.apple.airplay receiver-enabled -bool NO
+
+Block AirPlay from running at launch:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+sudo killall AirPlayUIAgent
+sudo killall AirPlayXPCHelper
+
+Restart SystemUIServer to Apply Changes
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+Method 3: Move or Restrict AirPlay Components
+
+If 
+AirPlayXPCHelper is still running after restart
+, you may need to move it in 
+Recovery Mode
+.
+
+1. Boot into macOS Recovery
+
+Shut down your Mac
+.
+
+Turn it back on
+ while holding 
+Command (⌘) + R
+ until you see the Apple logo.
+
+Open 
+Terminal
+ from the Utilities menu.
+
+2. Remount the System Drive as Writable
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+sudo mount -uw /
+
+3. Rename or Move AirPlay Binaries
+
+bash
+
+Copy
+
+Edit
+
+mv
+
+ /System/Library/CoreServices/AirPlayUIAgent.app /System/Library/CoreServices/AirPlayUIAgent.bak
+
+mv
+
+ /usr/libexec/AirPlayXPCHelper /usr/libexec/AirPlayXPCHelper.bak
+
+4. Re-enable SIP and Restart
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+reboot
+
+Final Check
+
+Once the system restarts, confirm again:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.airplay"'
+
+ --info --last 30m
+
+This 
+should permanently disable AirPlay
+. If you 
+still see activity
+, then 
+another process is re-enabling it
+, meaning we might need to check for deeper system modifications. Let me know what happens after the restart.
+
+You said:
+
+can airplay run if I am connected by ethernet to the router and my wireless adaptor is removed?
+
+ChatGPT said:
+
+Good question. 
+AirPlay primarily relies on wireless technologies
+ such as Wi-Fi and AWDL (Apple Wireless Direct Link), but 
+it can still function over Ethernet
+ in some cases.
+
+🧐 Can AirPlay Run Over Ethernet?
+
+✅ 
+Yes, but with limitations.
+
+Standard AirPlay streaming (to Apple TV, smart TVs, AV receivers, etc.) can work over a wired Ethernet connection.
+
+AWDL (Apple Wireless Direct Link), used for features like AirDrop and direct device discovery, requires Wi-Fi and won’t work over Ethernet.
+
+Peer-to-peer AirPlay requires Wi-Fi
+ and won’t function over Ethernet alone.
+
+If a Bonjour service is running over Ethernet, AirPlay can still be advertised on the local network.
+
+🛠️ What Happens If You Disable Wi-Fi?
+
+If you 
+remove your wireless adapter (disable or physically detach it)
+ and are 
+only using Ethernet
+, the following should happen:
+
+AWDL & Peer-to-Peer AirPlay Will Be Disabled
+
+Features like 
+AirDrop, Continuity, and direct AirPlay connections (like Mac to Apple TV)
+ should 
+no longer work
+.
+
+AirPlay Can Still Work If Your Router Supports Bonjour Over Ethernet
+
+Some routers allow AirPlay traffic to work over wired connections.
+
+If your 
+AV Receiver, Smart TV, or another device is on the same network via Ethernet
+, AirPlay 
+might still function
+.
+
+Check if your router has IGMP Snooping or Multicast options enabled.
+
+AirPlay Processes Might Still Run, But Won’t Have a Connection
+
+Even if Wi-Fi is off, you may still 
+see AirPlayUIAgent or AirPlayXPCHelper running
+, but they shouldn’t be able t

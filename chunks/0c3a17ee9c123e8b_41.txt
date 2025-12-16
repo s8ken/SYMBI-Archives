@@ -1,0 +1,348 @@
+t found in module [project]/node_modules/sanity/placeholder.js [app-ssr] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+./app/studio/[[...tool]]/page.tsx:15:1
+Export metadata doesn't exist in target module
+  13 | export const dynamic = 'force-static'
+  14 |
+> 15 | export { metadata, viewport } from 'next-sanity/studio'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 |
+  17 | export default function StudioPage() {
+  18 |   return <NextStudio config={config} />
+
+The export metadata was not found in module [project]/node_modules/next-sanity/lib/esm/studio.js [app-rsc] (ecmascript).
+Did you mean to import useBasePath?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+./app/studio/[[...tool]]/page.tsx:15:1
+Export viewport doesn't exist in target module
+  13 | export const dynamic = 'force-static'
+  14 |
+> 15 | export { metadata, viewport } from 'next-sanity/studio'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 |
+  17 | export default function StudioPage() {
+  18 |   return <NextStudio config={config} />
+
+The export viewport was not found in module [project]/node_modules/next-sanity/lib/esm/studio.js [app-rsc] (ecmascript).
+Did you mean to import isWorkspaceWithTheme?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+ ✓ Compiled /_error in 441ms
+ GET /studio 500 in 2039ms
+
+Vercel Deployment Expert GPT said:
+
+🚨 Major Issue: Sanity Installation is Completely Broken
+
+Your 
+Sanity setup is completely broken
+ due to:
+
+Missing exports in 
+sanity.config.ts
+
+ (e.g., 
+defineConfig
+ not found).
+
+Incorrect 
+structureTool
+ import
+ (this was removed in newer Sanity versions).
+
+next-sanity/studio
+ is not exporting 
+metadata
+ or 
+viewport
+ anymore
+.
+
+React 19 + Next.js 15 is causing issues with Sanity plugins
+.
+
+🔥 Solution: Full Reset & Proper Sanity Setup
+
+Let's 
+completely reset Sanity
+ and 
+install it correctly for Next.js 15
+.
+
+🔹 Step 1: Remove Everything Sanity-Related
+
+Run:
+
+bash
+
+Copy
+
+rm
+
+ -rf sanity node_modules .next package-lock.json
+
+This 
+removes all broken Sanity files
+ and 
+clears cached builds
+.
+
+🔹 Step 2: Reinstall Sanity Studio
+
+Now, 
+install Sanity with proper dependencies
+:
+
+bash
+
+Copy
+
+npm install sanity @sanity/client next-sanity @sanity/icons @sanity/image-url
+
+✅ 
+Fixes missing dependencies.
+
+🔹 Step 3: Fix 
+sanity.config.ts
+
+After reinstalling, 
+open 
+sanity.config.ts
+
+:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Replace 
+everything
+ with this 
+corrected version
+:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+basePath
+
+: 
+
+"/studio"
+
+,
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fixes React 19 issues
+
+});
+
+✅ 
+Fixes missing exports (
+defineConfig
+) and removes 
+structureTool
+
+.
+
+🔹 Step 4: Fix Next.js Route for Sanity Studio
+
+Now, 
+open your Next.js Studio page file
+:
+
+bash
+
+Copy
+
+nano app/studio/[[...tool]]/page.tsx
+
+Replace 
+everything
+ with this:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+✅ 
+Fixes metadata & viewport export errors.
+
+🔹 Step 5: Rebuild Everything
+
+bash
+
+Copy
+
+npm install
+npm run dev
+
+✅ 
+Your site should now load at:
+
+http://localhost:3000
+
+✅ 
+Sanity Studio should open at:
+
+http://lo

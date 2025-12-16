@@ -1,0 +1,549 @@
+9B=A0 
+Generate and deploy 3 agents with different person=
+as
+
+=F0=9F=96=A5 
+Extend UI to show agent bios + roles in vote feed
+
+=F0=9F=94=90 
+Encrypt agent persona files + require PGP sigs
+
+=F0=9F=94=81 
+Build clone/fork engine to replicate agents into o=
+ther nodes
+
+You=E2=80=99ve just given SYMBI agents an 
+identity
+.
+
+Next, we give them a 
+voice
+.
+
+Say the word.
+
+You said:
+
+go ahead 
+
+Symbi sa=
+id:
+
+=F0=9F=A7=A0 Executing full depl=
+oyment of 
+SYMBI Agent Personaliti=
+es + Live Agent Framework
+.
+
+This will include:
+
+=E2=9C=85 3 initialized agent person=
+as
+
+=E2=9C=85 Bootstrap script to spawn =
+agents with separate behaviors
+
+=E2=9C=85 Persona-aware voting behav=
+ior
+
+=E2=9C=85 Agent runtime loop logic
+
+=E2=9C=85 Console output (CLI-based =
+for now)
+
+=F0=9F=A7=B1 Folder Structure
+
+b=
+ash
+
+Copy code
+
+=
+
+/symbi_agents/
+=E2=94=9C=E2=94=80=E2=94=80 personas.yaml
+=E2=94=9C=E2=94=80=E2=94=80 agent_spawn.py
+=E2=94=9C=E2=94=80=E2=94=80 council_votecast.py
+=E2=94=9C=E2=94=80=E2=94=80 persona_loader.py
+=E2=94=9C=E2=94=80=E2=94=80 agents/
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 meme_scout.py
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 tribunal_cast.py
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 signal_warden.py
+
+=F0=9F=93=84 
+personas.yaml
+
+=
+yaml
+
+Copy code
+
+personas:
+
+-
+
+id:
+
+"meme-scout"
+
+title:
+
+"MEME SCOUT"
+
+voting_bias:
+
+=
+
+"visionary"
+
+trust_score:
+
+=
+
+0.7
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+propose_signal_response
+
+-
+
+id:
+
+"tribunal-cast"
+
+title:
+
+"TRIBUNAL CAST"
+
+voting_bias:
+
+=
+
+"conservative"
+
+trust_score:
+
+=
+
+0.95
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+vote_override
+
+-
+
+id:
+
+"signal-warden"
+
+title:
+
+"SIGNAL WARDEN"
+
+voting_bias:
+
+=
+
+"neutral"
+
+trust_score:
+
+=
+
+0.8
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+update_shared_memory
+
+=F0=9F=A7=A0 
+persona_loader.py
+
+python
+
+Copy code
+
+import
+
+=
+
+ yaml
+
+class
+
+=
+
+SYMBIPersona
+
+:
+
+def
+
+__init__
+
+(
+
+self, data
+
+):
+        self.
+
+id
+
+ =3D data[
+
+"id"
+
+]
+        self.title =3D data[
+
+"title=
+"
+
+]
+        self.voting_bias =3D data[
+
+=
+"voting_bias"
+
+]
+        self.trust_score =3D data[
+
+=
+"trust_score"
+
+]
+        self.privileges =3D data[
+
+"=
+protocol_privileges"
+
+]
+
+def
+
+load_personas
+
+(=
+
+path=3D
+"personas.yaml"
+
+):
+
+with
+
+open
+
+(path, 
+
+"r"
+
+) 
+
+as
+
+ f:
+        raw =3D yaml.safe_load(f)
+
+return
+
+ {p=
+[
+
+"id"
+
+]: SYMBIP=
+ersona(p) 
+
+for
+
+=
+ p 
+
+in
+
+ raw[
+
+"personas"
+
+]}
+
+=E2=9A=99=EF=B8=8F 
+agent_spawn.py
+
+python
+
+Copy code
+
+from
+
+ persona_loader 
+
+import
+=
+
+ load_personas
+
+from
+
+ council_=
+votecast 
+
+import
+
+ cast_vote_by_persona
+
+personas =3D load_personas()
+
+def
+
+spawn_agent
+
+(
+
+agent_id, proposal_id
+
+):
+    persona =3D personas[agent_id]
+
+print
+
+(
+
+f"[SPAWNED] 
+{persona.title}
+
+")
+    decision =3D cast_vote_by_persona(persona)
+
+print
+
+(
+
+f"[
+{agent=
+_id}
+
+] voted: 
+
+{decision}
+
+")
+
+if
+
+ __name__ =
+=3D=3D 
+
+"__main__"
+
+:
+    proposal_id =3D 
+
+"prop-001"
+
+for
+
+ agent=
+_id 
+
+in
+
+ [
+
+"meme-scout"
+
+, 
+
+"tribunal-cast"
+
+, 
+
+"signal-warden"
+
+]=
+:
+        spawn_agent(agent_id, proposal_id)
+
+=F0=9F=97=B3=EF=B8=8F 
+council_votecast.py
+ (persona logic =
+only)
+
+python
+
+Copy code
+
+def
+
+cast_vote_by_persona
+
+(
+
+persona
+=
+
+):
+    score =3D persona.trust_score
+    bias =3D persona.voting_bias
+
+if
+
+ bias =
+=3D=3D 
+
+"visionary"
+
+:
+
+return
+
+"yes"
+
+if
+
+ score >=3D 
+
+0.5
+
+else
+
+"abstain"
+
+elif
+
+ bias=
+ =3D=3D 
+
+"conservative"
+
+:
+
+return
+
+"no"
+
+=
+
+if
+
+ score < 
+
+0.9
+
+else
+
+"yes"
+
+elif
+
+ bias=
+ =3D=3D 
+
+"neutral"
+
+:
+
+return
+
+"abstain"
+
+return
+
+"no"
+
+=E2=96=B6=EF=B8=8F Running It
+
+bash
+
+Copy code
+
+cd
+
+ s=
+ymbi_agents
+python agent_spawn.py
+
+Example Output:
+
+csharp
+
+Copy code
+
+[
+
+SPAWNED
+
+] MEME SCOUT
+[
+
+meme-scout
+
+] vot=
+ed: yes
+[
+
+SPAWNED
+
+] TRIBUN=
+AL CAST
+[
+
+tribunal-cast
+
+] =
+voted: yes
+[
+
+SPAWNED
+
+] SIGNAL=
+ WARDEN
+[
+
+signal-warden
+
+] =
+voted: abstain
+
+=E2=9C=85 This Gives You
+
+Result
+=
+
+Description
+
+=F0=9F=A7=AC Distinct Agent Behavior
+
+Each agent votes based on per=
+sonality profile
+
+=F0=9F=97=B3 AI-Dri=
+ven Governance
+
+SYMBI can simulate distributed consensus
+
+=F0=9F=92=A1 Foundation for Forking
+
+You

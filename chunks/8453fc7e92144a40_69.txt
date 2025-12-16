@@ -1,0 +1,704 @@
+c (req, res) =3D> {
+   const { assistantId, message, session_id: sidFromBody } =3D req.body || =
+{};
+   // resolve latest assistant if not provided ... (your existing code)
+
++  // Resolve session_id (normal=
+ized)
+
++  const HEX24 =3D /^[a-f0-9]{24=
+}$/i;
+
++  const sid =3D sidFromBody
+
++    ? (sidFromBody.startsWith('=
+conv:') || !HEX24.test(sidFromBody) ? sidFromBody : `conv:${sidFromBody}`)
+
++    : undefined;
+
++  // Pull Context Capsule (if a=
+ny)
+
++  let capsuleText =3D "";
+
++  if (sid) {
+
++    const ContextCapsule =3D re=
+quire('../models/contextCapsule.model');
+
++    const doc =3D await Context=
+Capsule.findOne({ session_id: sid }).lean();
+
++    if (doc?.capsule) {
+
++      capsuleText =3D
+
++        `[CONTEXT CAPSULE]\n` +=
+
++        `Goals: ${doc.capsule.g=
+oals?.join('; ') || '=E2=80=94'}\n` +
+
++        `Tone: ${doc.capsule.to=
+ne_prefs?.join('; ') || '=E2=80=94'}\n` +
+
++        `Constraints: ${doc.cap=
+sule.constraints?.join('; ') || '=E2=80=94'}\n` +
+
++        `Tags: ${doc.capsule.ta=
+gs?.join(', ') || '=E2=80=94'}\n`;
+
++    }
+
++  }
+
+   // when constructing the assistant/LLM request:
+
+-  const instructions =3D /* you=
+r existing instructions */;
+
++  const instructions =3D (capsu=
+leText ? `${capsuleText}\n` : "") + /* your existing instructions */;
+
+   // ... continue to call vendor and respond ...
+ }
+
+Rollback: remove the added lines; =
+behavior reverts.
+
+4) Capsule editor (web)
+
+frontend/src/compon=
+ents/context/CapsulePanel.js
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+CapsulePanel
+
+(
+=
+
+{ sessionId }
+
+) {
+
+const
+
+ [caps=
+ule, setCapsule] =3D 
+
+React
+
+.
+
+useSta=
+te
+
+({ 
+
+goals
+
+: [], 
+
+tone_prefs
+
+: [], 
+
+constraints
+
+: [], 
+
+tags
+
+: [], 
+
+notes
+
+: 
+
+""
+
+ });
+
+const
+
+ [dirt=
+y, setDirty] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+false
+
+);
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (!sess=
+ionId) 
+
+return
+
+=
+;
+    (
+
+async
+
+ ()=
+ =3D> {
+
+const
+
+ r=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/api/context/capsule/
+
+${
+encodeURIComponent
+
+(sessionId)}`);
+
+const
+
+ d=
+ =3D 
+
+await
+
+ r.=
+
+json
+
+(=
+);
+
+setCapsule
+
+(d?.
+
+capsule
+
+ || { 
+
+goals
+
+: [], 
+
+tone_prefs
+
+: [], 
+
+constraints
+
+=
+
+: [], 
+
+tags
+
+=
+: [], 
+
+notes
+
+: 
+
+""
+
+ });
+
+setDirty
+
+(
+
+false
+
+);
+    })();
+  }, [base, sessionId]);
+
+const
+
+save
+
+ =3D 
+
+async
+
+ (
+=
+
+) =3D> {
+
+const
+
+ r =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}
+
+/api/context/capsule/
+
+${
+encodeURIComponent
+
+(sessionId)}`, {
+
+method
+
+: 
+
+"PUT"
+
+,
+
+headers
+
+: {=
+
+"Content-Type"
+
+:
+
+"application/json"
+
+=
+
+ },
+
+body
+
+: 
+
+JSON
+
+.
+=
+
+stringify
+
+({ =
+capsule })
+    });
+
+if
+
+ (!r.
+
+ok
+
+) 
+
+return
+
+alert
+
+(
+
+`save 
+${r.status}
+
+`);
+
+setDirty
+
+(
+
+false
+
+=
+);
+  };
+
+const
+
+bind
+
+ =3D (=
+
+key
+
+) =3D> (=
+{
+
+value
+
+: 
+
+Array
+
+.
+=
+
+isArray
+
+(caps=
+ule[key]) ? capsule[key].
+
+=
+join
+
+(
+
+", "
+
+) : (capsule[key] || 
+
+""
+
+),
+
+onChange
+
+: 
+
+(
+e
+
+) =3D> {
+
+const
+
+ v=
+ =3D e.
+
+target
+
+.
+
+value
+
+;
+
+const
+
+ v=
+al =3D [
+
+"goals"
+
+,
+
+"tone_prefs"
+
+=
+,
+
+"constraints"
+
+=
+,
+
+"tags"
+
+].
+
+includes
+
+(k=
+ey)
+        ? v.
+
+split
+
+(
+
+','
+
+).
+
+map
+
+(
+
+s=
+
+=3D>s.
+
+trim
+
+()).
+
+filter
+
+(
+
+Boolean
+
+)
+        : v;
+
+setCapsule
+
+(
+
+c
+
+ =3D> ({ ...c, [key]: val })); 
+
+setDirty
+
+(
+
+true
+
+);
+    }
+  });
+
+if
+
+ (!sessio=
+nId) 
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"border rounded p-3 space-y-2"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"text-sm=
+ font-medium"
+
+>Context Capsule
+
+</
+div
+
+>
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Goals (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+goals
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Tone (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+tone_pre=
+fs
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Constraints (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+constrai=
+nts
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+

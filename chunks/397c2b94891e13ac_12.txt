@@ -1,0 +1,74 @@
+decentr=
+alized persistence.
+
+How they fit: Tactical Command Interface (Next.js + liberation stack) is th=
+e ops console UI; symbi0 is a Sanity CMS; uAgents is the general Fetch.ai f=
+ramework. SYMBI Agent complements the dashboard with a production-grade API=
+ service, while SYMBI_EVOLUTION experiments with autonomous evolution and d=
+ecentralized memory atop uAgents. Together they map UI =E2=86=92 backend au=
+tomation =E2=86=92 research agent pipeline; gaps include missing root manif=
+ests in the dashboard repo and unfinished integrations between these compon=
+ents.
+
+looking broadly at symbi vault, symbi synergy and symbi resonate / symbi-we=
+bstie-main do you see a larger ecosystem here
+
+Ecosystem Shape
+
+You=E2=80=99ve got a hub=E2=80=91and=E2=80=91spoke setup. SYMBI-vault/ is t=
+he canonical =E2=80=9Csource pack=E2=80=9D: partner collateral, whitepapers=
+, academic templates, governance backend snippets, and React demo widgets. =
+It=E2=80=99s the authoritative content/code bundle whose pieces can be drop=
+ped into any surface.
+SYMBI-Website-main/ is the production web stack: a full Next.js app (fronte=
+nd + /backend Express services) wired for Frontegg auth, agent APIs, contra=
+cts, docs, and deployment playbooks. It already vendors the vault assets, h=
+osts the live site, and orchestrates downstream services.
+SYMBI Resonance/ (React + Vite) and SYMBI Synergy V2/ (Next.js via v0.dev a=
+uto-sync) are design sandboxes. They carry the shadcn/Radix UI kit, charts,=
+ dashboards, and interaction experiments that feed the main site. Resonance=
+ is a more bespoke build; Synergy V2 stays in lockstep with Figma/v0 protot=
+ypes.
+Other Synergy variants (SYMBI Synergy v3, Symbi-Synergy-Rebuilt, etc.) sit =
+alongside as historical iterations, showing how UI and messaging evolved be=
+fore hardening in SYMBI-Website-main.
+How They Interlock
+
+Content & Messaging: The vault=E2=80=99s markdown, latex, and academic =
+files are referenced verbatim across marketing (Resonance/Synergy dashboard=
+s) and production (app/ pages, collateral downloads). Updating the vault ke=
+eps everything aligned.
+UI Evolution Loop: Prototype UIs live in Resonance/Synergy; once patterns s=
+ettle, they hop to SYMBI-Website-main/app/ or into shared components/. The =
+v0.dev pipeline keeps design output fresh without touching the stable site =
+until you merge.
+Backend/Agent Hooks: The vault=E2=80=99s backend samples (backend/core, mod=
+els) mirror real services implemented in SYMBI-Website-main/backend/ and th=
+e separate symbi-agent/ project. The website exposes dashboards that visual=
+ize those trust/agent metrics; the prototypes showcase the same data in pit=
+ch-friendly form.
+Ecosystem Takeaways
+
+Content hub (SYMBI-vault) =E2=86=92 Production site (SYMBI-Website-main) =
+=E2=86=92 Prototype labs (SYMBI Resonance, SYMBI Synergy V2). That flow kee=
+ps narrative, design, and code synchronized while letting each evolve at it=
+s own cadence.
+The naming conventions (Synergy, Resonance, Vault) aren=E2=80=99t random=E2=
+=80=94they map to pipeline stages: ideation/resonance, polished synergy UX,=
+ and vault-ready exports. Everything ultimately feeds the live site and tru=
+st protocol tooling.
+Consolidating shared packages (UI kit, trust-model modules) into a mono-rep=
+o or package registry would reduce duplication across the prototypes and ma=
+in site, but even today the structure clearly reflects a larger coordinated=
+ SYMBI platform rather than isolated experiments.
+and then this which is the crowning product https://github.com/s8ken/SYMBI-=
+SYNERGY/tree/feat/trust-oracle-integration
+
+Enterprise Spine (SYMBI=E2=80=91SYNERGY) =E2=80=93 feat/trust-oracle-integr=
+ation
+
+backend/ now bakes the SYMBI trust protocol straight into the production st=
+ack. The Ajv middleware (backend/middleware/trust.middleware.js:1) compiles=
+ the JSON schema exposed by the TrustDeclaration model (backend/models/trus=
+t.model.js:1) so every receipt, bonding ritual, or policy update that hits =
+/a

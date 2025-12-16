@@ -1,0 +1,125 @@
+            callback(value)
+
+    def subscribe(self, key, callback):
+        if key not in self.subscribers:
+            self.subscribers[key] =3D []
+        self.subscribers[key].append(callback)
+
+    def read(self, key):
+        return self.data.get(key, None)
+Modules like perception, attention, and memory can subscribe to relevant ke=
+ys (e.g., "visual_input", "goal_update", etc.).
+User:
+Show perception writing and attention reading from blackboard.
+Assistant:
+Here's how perception and attention might interact with the blackboard:
+# Initialize blackboard
+bb =3D Blackboard()
+
+# Perception module
+def perception():
+    visual_data =3D capture_visual_input()
+    bb.publish("visual_input", visual_data)
+
+# Attention module
+def on_visual_input(data):
+    focus =3D compute_attention(data)
+    bb.publish("attention_focus", focus)
+
+bb.subscribe("visual_input", on_visual_input)
+This allows asynchronous, decoupled communication. Perception pushes data, =
+attention responds.
+User:
+Now do the same for short-term and long-term memory writing and reading.
+Assistant:
+Here's a conceptual example of interaction between short-term memory (STM) =
+and long-term memory (LTM):
+# STM writes episodic events
+def store_episode(event):
+    bb.publish("episodic_event", event)
+
+# LTM subscribes and stores them persistently
+def on_episodic_event(event):
+    save_to_long_term_memory(event)
+
+bb.subscribe("episodic_event", on_episodic_event)
+
+# STM can also read past events if needed
+def recall_recent_events():
+    return bb.read("episodic_event")
+You can model STM as a time-limited cache, and LTM as a persistent database=
+.
+User:
+Add procedural memory and action execution.
+Assistant:
+Here=E2=80=99s how we can extend the blackboard model to include procedural=
+ memory and action modules:
+# Procedural memory subscribes to goals or triggers
+def on_goal_received(goal):
+    procedure =3D retrieve_procedure(goal)
+    bb.publish("action_plan", procedure)
+
+bb.subscribe("goal", on_goal_received)
+
+# Action executor subscribes to plans
+def on_action_plan(plan):
+    for action in plan:
+        execute(action)
+
+bb.subscribe("action_plan", on_action_plan)
+This flow supports stimulus=E2=80=93procedure=E2=80=93action chaining. A go=
+al leads to a procedure, which produces actions.
+User:
+Can we treat action plans as working memory objects?
+Assistant:
+Yes =E2=80=94 in fact, action plans are ideal candidates for working memory=
+ representations, especially if they evolve dynamically.
+You can store the current plan in working memory
+Let multiple modules read/write to it (e.g., monitor progress, revise plan)
+# Working memory stores current action plan
+bb.publish("working_plan", plan)
+
+# Executor reads from working plan
+def execute_plan():
+    plan =3D bb.read("working_plan")
+    for step in plan:
+        execute(step)
+This allows flexibility, e.g., for reactive planning or interruption handli=
+ng.
+User:
+How should goals be represented? Structurally.
+Assistant:
+Goals can be structured as nested objects with:
+id: Unique identifier
+description: Natural language or symbolic form
+preconditions: Logical predicates
+subgoals: Hierarchical decomposition
+status: e.g., "active", "satisfied", "failed"
+priority: Weight for arbitration
+Example in JSON:
+{
+  "id": "goal_001",
+  "description": "Prepare lunch",
+  "preconditions": ["ingredients_available", "kitchen_free"],
+  "subgoals": ["make_sandwich", "pour_drink"],
+  "status": "active",
+  "priority": 0.9
+}
+Such a structure enables symbolic reasoning, tracking, and prioritization.
+User:
+Add learning module to revise goals or plans.
+Assistant:
+Here=E2=80=99s how a learning module could hook into the system:
+# Learning module observes outcomes
+def on_action_result(result):
+    update_model(result)
+    if result =3D=3D "failure":
+        revise_plan()
+        bb.publish("working_plan", new_plan)
+
+bb.subscribe("action_result", on_action_result)
+It can also:
+Update heuristics
+Modify procedural memory
+Influence goal generation or selection
+Learning 

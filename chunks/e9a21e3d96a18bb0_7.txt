@@ -1,0 +1,390 @@
+2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+   v                                                =E2=94=82
+[Express API]  =E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=BC=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80
+  /auth /trust /agents /chat /notify /users         =E2=94=82 Policy checks=
+ & scoring
+   |                                                =E2=94=82
+   v                                                v
+[MongoDB]  
+
+users
+
+ | agents | trust_bonds | trust_declarations | conversations | notifica=
+tions | events
+   ^
+   |                     =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+   |  SYMBI  <=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=96=BA   =E2=94=82 Shared Memory Layer      =E2=94=82   =E2=97=84=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80>  Overse=
+er
+   |  (agent)            =E2=94=82 (nodes, tags, pings)     =E2=94=82      =
+     (agent)  :contentReference[oaicite:5]{index=3D5}
+   |                     =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
+   |
+ Socket.io server (rooms: user:{
+
+=
+id
+
+}, bond:{
+
+i=
+d
+
+}, agent:{
+
+i=
+d
+
+})
+
+2) Data Model (Mongo/Mongoose)
+
+users
+
+ts
+
+Copy code
+
+{
+  _id, email, password_hash, 
+
+roles
+
+: [
+
+'founder'
+
+,
+
+'member'
+
+],
+
+profile
+
+: { nam=
+e, avatarUrl, locale, tz },
+
+trust_preferences
+
+: { 
+
+shareLevel
+
+: 
+
+'minimal'
+
+|
+
+'standard'
+
+|
+
+'enhanced'
+
+, 
+
+allowResearch
+
+: 
+=
+
+boolean
+
+ },
+  createdAt, updatedAt
+}
+
+agents
+
+ts
+
+Copy code
+
+{
+  _id, name, owner_user_id, 
+
+kind
+
+: 
+
+'human'
+
+|
+
+'ai'
+
+,
+
+capabilities
+
+: =
+[{ name, version, evidenceUri? }],
+
+ethical_alignment
+
+: { 
+
+score
+
+: 
+
+Number
+
+, 
+
+articles_noncompliant
+
+: [
+
+String
+
+] },
+  declarations_latest_id, 
+
+analytics
+
+: { uptimePct, avgResponseMs },
+  createdAt, updatedAt
+}
+
+trust_bonds
+
+ts
+
+Copy code
+
+{
+  _id, human_user_id, agent_id,
+
+state
+
+: 
+=
+
+'proposed'
+
+|
+
+'active'
+
+|
+
+'suspended'
+
+|
+
+'revoked'
+
+,
+
+scores
+
+: {
+
+identityConfidence
+
+=
+
+: 
+
+Number
+
+=
+
+,   
+
+// 0..1
+
+capabilityDisclosure
+
+: 
+
+Number
+
+, 
+
+// 0..1
+
+compliance
+
+: =
+
+Number
+
+, =
+
+// 0..1
+
+behavior
+
+: 
+
+Number
+
+,   =
+
+// 0..1
+
+humanFeedback
+
+: 
+
+Number
+
+// 0..1 rolling
+
+  },
+
+trustScore
+
+: 
+
+Number
+
+,  
+
+// computed 0..100
+
+decay
+
+: { 
+
+halfLifeDays
+
+: 
+=
+
+Number
+
+, lastUpd=
+atedAt },
+
+evidence
+
+: [{ 
+
+type
+
+, ref, has=
+h, createdAt }],
+  consent_envelope_id,
+
+history
+
+: [{ at=
+, action, by, notes }],
+  createdAt, updatedAt
+}
+
+trust_declarations
+
+ts
+
+Copy code
+
+{ _id, agent_id, 
+
+a=
+rticles
+
+: [{ id, 
+
+=
+status
+
+:
+
+'compli=
+ant'
+
+|
+
+'breach'
+
+|
+
+'unknown'
+
+, evidenceRef? }], signedJWS, createdAt }
+
+conversations
+
+ts
+
+Copy code
+
+{ _id, bond_id, 
+
+ch=
+annel
+
+:
+
+'chat'
+
+, 
+
+messages
+
+:[{ 
+
+sender
+
+=
+
+:
+
+'human'
+
+=
+|
+
+'agent'
+
+, text=
+, ts, redactions? }], meta, createdAt, updatedAt }
+
+notifications / events
+ (emit to WS + persist)
+
+ts
+
+Copy code
+
+{ _id, 
+
+type
+
+, subjectId, payload, 
+
+recipients
+
+:[userId], createdAt, 
+
+ackedBy
+
+:[userId] }
+
+3) API Surface (Express + JWT)
+
+Auth
+
+POST /api/auth/register

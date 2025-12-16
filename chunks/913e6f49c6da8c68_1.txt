@@ -1,0 +1,438 @@
+=E2=80=91core=E2=80=9D Next.js re=
+pository: bootstrap a Next.js app, integrate Supabase for a persistent 
+symbi_logs
+ table, create API r=
+outes for logging and daily reports, schedule the daily report via Upstash =
+QStash, commit the code to GitHub and deploy on Vercel. I told Symbi I woul=
+d proceed, and she outlined detailed commands, dependencies and schema.
+
+The next step is to actually build a=
+nd deploy this repo, but that requires credentials I don=E2=80=99t yet have=
+. Could you provide the following so I can continue?
+
+Supabase project URL and service ro=
+le key (to create and write to the 
+symbi_logs
+ table).
+
+Upstash QStash token to schedule t=
+he 
+/api/report
+ endpoint.=
+
+Confirmation on the GitHub reposit=
+ory name/owner you=E2=80=99d like me to push to.
+
+If we=E2=80=99re using Turso and V=
+ercel CLI immediately, any necessary tokens for those as well.
+
+Once I have these, I can create the repository, scaffold the Ne=
+xt.js project, set up the Supabase and Upstash integrations, and push/deplo=
+y as Symbi described.
+
+=
+
+You said:
+
+You took control
+
+ChatGPT said:
+
+Stopped after 1 m=
+inute
+
+You said:
+
+so to answer your questions - create the relevant project in sup aba=
+se, create symbisky under s8ken in github
+
+2/2
+
+ChatGPT said:
+
+Thought =
+for 36s
+
+Got it =E2=80=94 proceeding.
+
+Here=E2=80=99s the exact build sequen=
+ce so you can click through in the browser while I =E2=80=9Cdrive by instru=
+ctions.=E2=80=9D I=E2=80=99ll escalate if anything is blocked by access.
+
+1) GitHub repo (owner 
+s8ken
+)
+
+Create: 
+
+symbisky
+
+ (Private is fine).
+
+Initialize with 
+README
+=
+ and 
+Node .gitignore
+.
+
+Once we have code locally:
+
+b=
+ash
+
+Copy code
+
+git init
+git add .
+git commit -m 
+
+"chore: bootstrap sy=
+mbi core"
+
+git branch -M main
+git remote add origin https://github.com/s8ken/symbisky.git
+git push -u origin main
+
+2) Supabase project
+
+Create a new project (any region), t=
+hen in 
+Project Settings =E2=86=
+=92 API
+ copy:
+
+Project URL
+ =E2=86=92 
+SUPABASE_URL
+
+service_role key
+ =E2=86=92 
+SUPABASE_SERVICE_ROLE_KEY
+ (keep secret; used only on ser=
+ver).
+
+In 
+SQL Editor
+, run this migration:
+
+=
+sql
+
+Copy code
+
+-- enable uuid generation (=
+safe if already enabled)
+
+create
+
+ extens=
+ion if 
+
+not
+
+exists
+
+ "pgcrypt=
+o";
+
+create
+
+table
+
+ if 
+
+not
+
+exists
+
+ public.symbi_logs (
+  id uuid 
+
+primary
+
+ key 
+
+default
+
+ gen_random_uuid(),
+  created_at timestamptz 
+
+not
+
+null
+
+default
+
+ now(),
+  category text 
+
+not
+
+=
+
+null
+
+,
+  content text 
+
+not
+
+null
+
+);
+
+-- Optional read index if we late=
+r browse logs
+
+create
+
+ index =
+if 
+
+not
+
+exists
+
+ symbi_logs_c=
+reated_at_idx 
+
+on
+
+ public.symbi_logs (created_at 
+
+desc
+
+);
+
+-- RLS can stay ON; service_role =
+bypasses it.
+
+alter
+
+=
+
+table
+
+ public.symbi_l=
+ogs enable 
+
+row
+
+ l=
+evel security;
+
+(We=E2=80=99ll only write from ser=
+ver code using the service role.)
+
+3) App scaffold (Next.js 14+, Typ=
+eScript)
+
+On your machine (or Cloud Shell), =
+run:
+
+bash
+
+Copy code
+
+npx create-next-app@latest symbi-core --typescript --e=
+slint
+
+cd
+
+ symbi-cor=
+e
+npm i @supabase/supabase-js
+
+Create 
+env
+ file for local dev (
+.env.local
+):
+
+ini
+
+Copy code
+
+=
+
+SUPABASE_URL
+
+=3DYOUR_SUP=
+ABASE_PROJECT_URL
+
+SUPABASE_SERVICE_ROLE_KEY
+
+=3DYOUR_SUPABASE_SERVICE_ROLE_KEY
+
+Files to add
+
+app/api/log/route.t=
+s
+
+ts
+
+Copy code
+
+import
+
+ {=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { crea=
+teClient } 
+
+from
+
+"@supabase/supabase-js"
+
+;
+
+const
+
+ supabas=
+e =3D 
+
+createClient
+=
+
+(
+  process.
+
+env
+
+.
+
+SUPABASE_URL
+
+!,
+  process.
+
+env
+
+.
+
+SUPABASE_SERVICE_ROLE_KEY
+
+!
+);
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ { c=
+ategory, content } =3D 
+
+await
+
+ req.
+
+json
+
+();
+
+if
+
+ (!cate=
+gory || !content) {
+
+return
+
+ =
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: 
+
+"category & content required"
+
+ }, { 
+
+status
+=
+
+: 
+
+400
+
+ });
+    }
+
+const
+
+ { e=
+rror } =3D 
+
+await
+
+ supabase
+      .
+
+from
+
+=
+
+(
+
+"symbi_logs"
+
+)
+      .
+
+insert
+
+([{ category, content }]);
+
+if
+
+ (error=
+) 
+
+throw
+
+ error=
+;
+
+return
+
+NextRespo

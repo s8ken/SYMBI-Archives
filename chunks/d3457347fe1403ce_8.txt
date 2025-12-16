@@ -1,0 +1,314 @@
+.
+
+Revocation
+
+: Sta=
+tus List 2021 or equivalent; pluggable registry; soft=E2=80=91fail policy w=
+ith explicit flags.
+
+Key Management
+
+: Rotation, compromise procedures; KMS adapters (AWS/GCP);=
+ audit of key events.
+
+Session/JWT Harde=
+ning
+
+: Rotating signing keys; aud/iss checks; short TT=
+L + refresh; JTI replay cache.
+
+Signed A=
+udit Log
+
+: 
+
+decision_id
+
+, 
+
+agent_id
+
+, 
+
+inputs_digest
+
+, 
+
+policy_version
+
+, 
+
+signature
+
+, 
+
+verdict
+
+.
+
+Scoring Determinism
+
+: Versioned policy; monotonic pen=
+alties; temporal decay invariants.
+
+P1 (Should=
+ for GA)
+
+Fairness=
+ & Drift
+
+: Calibration scripts; subgroup analysis;=
+ proxy detection; model cards for scoring.
+
+Privacy Enhancements
+
+: Data minimization; roadmap =
+for selective disclosure (BBS+/SD=E2=80=91JWT).
+
+Observability
+
+: Redacted structured events; t=
+race correlation; dashboards with SLOs.
+
+3. AP=
+Is (v0.9)
+
+POST /trus=
+t/verify
+
+In=
+put
+
+: 
+
+{ agentId, evidence[], policy=
+Version? }
+
+Output
+
+: 
+
+{ score, ciLow, ciHigh, rationale[], evidenceRe=
+fs[], decisionId, signature }
+
+Er=
+rors
+
+: 
+
+INVALID_EVIDENCE
+
+, 
+
+UNSUPPORTED_METHOD
+
+, 
+
+SIGNATURE_MISSING
+
+, 
+
+POLI=
+CY_UNAVAILABLE
+
+POST /vc/=
+issue
+
+Input=
+
+: 
+
+{ subjectDid, type: ["TrustDecla=
+ration"], claims, expiry? }
+
+Outp=
+ut
+
+: 
+
+{ vc, proof }
+
+POST /vc/verify
+
+Input
+
+: 
+
+{ vc }
+
+Output
+
+: 
+
+{ valid, reasons[], issuerDid, revoked=
+?, proofCheck }
+
+GET /did=
+/:method/:id
+
+Behavior
+
+: Resolution with cache; ETag; 429 protecti=
+on; method allowlist.
+
+4. Data Contr=
+acts
+
+TrustScore
+
+: 
+
+{ value: number, ci: [low, high], =
+pillars: {=E2=80=A6}, policyVersion }
+
+=
+
+DIDDocument
+
+: W3C=E2=80=91compliant with verific=
+ation methods + service endpoints.
+
+Veri=
+fiableCredential
+
+: Context=E2=80=91pinned, determinist=
+ic field ordering; revocation status reference.
+
+AuditEvent
+
+: Canonical JSON; signed.
+
+5. Security & Threat Model
+
+Replay
+
+: Nonces, a=
+udience binding, JTI cache.
+
+Method Down=
+grade
+
+: Tenant policy to block weaker DID methods; exp=
+licit overrides logged.
+
+Score Gaming
+
+: Rate=E2=80=91limits, issuer reputation weighting, anom=
+aly detection on deltas.
+
+Supply Chain
+
+: Pin crypto libs; reproducible builds; SBOM generation=
+.
+
+6. Testing Strategy
+
+Unit
+
+: =E2=89=A595%=
+ for 
+
+scoring.ts
+
+, 
+
+=
+validator.ts
+
+, 
+
+did.ts
+
+.
+
+Property=E2=80=91Based
+
+: Weight constraints; monotonicity; temporal decay; CI widths sh=
+rink with evidence volume.
+
+Crypto Vecto=
+rs
+
+: Official vectors for Ed25519/secp256k1; positive/=
+negative corpora.
+
+Interop
+
+: Verify VCs from two external toolchains; resolve 50+ real 
+=
+
+did:web
+
+ domains.
+
+Fuzz/Robustness
+
+: Malformed DIDs/VCs; unicod=
+e confusables; oversize fields.
+
+Perf
+
+: p95 verification < 50 ms with warm cache; resolutio=
+n cache hit > 80%.
+
+7. Observability & =
+KPIs
+
+Dashboard surfacing:=
+ median trust score, pass rate, top failure reasons, DID resolution p50/p95=
+, cache hit %, revocation churn, issuer reliability score, key rotations pe=
+r quarter, unsigned decisions (target: 0).
+
+8.=
+ Rollout Plan (14 Days)
+
+D1=E2=80=932
+
+: Lock primitives & canonicali=
+zation; publish test vectors; Controls Matrix draft (EU AI Act, SOC 2, ISO =
+27001/42001).
+
+D3=E2=80=936
+
+: Implement signature verification, DID drivers, revocation; wire =
+KMS; sign audit events.
+
+D7=E2=80=939
+
+: Property + fuzz tests; load test cache; JWT hardening;=
+ rotate keys.
+
+D10=E2=80=9312
+
+: Minimal Trust Dashboard (read=E2=80=91only); Pilot Runbook (en=
+roll =E2=86=92 issue VC =E2=86=92 verify =E2=86=92 revoke).
+
+=
+
+D13=E2=80=9314
+
+: Red=E2=80=91team=
+ on replay/score gaming; freeze API v0.9; select design partners.
+
+9. Risks & Mitigations
+
+Crypto implementation errors
+
+ =E2=86=92 Use vetted libs; independent code review; test vectors.
+
+Regulatory misinterpretation
+
+ =E2=86=92 Maintain Controls Matrix; external advisory review.
+
+Adoption friction
+
+ =
+=E2=86=92 Free verification allowance; SDKs; quickstarts.
+
+10. Exit Criteria for Pilot Green=E2=80=91Light
+
+All P0 items complete;
+
+Test coverage thresholds met;
+
+Das

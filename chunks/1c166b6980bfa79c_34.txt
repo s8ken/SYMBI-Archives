@@ -1,0 +1,247 @@
+arch Party
+ daemons.
+
+They=E2=80=99re all active under you=
+r launch services =E2=80=94 meaning the system is starting them whether you=
+ want it or not.
+
+3. Network connection established
+
+b=
+ash
+
+Copy code
+
+tcp4 192.168.68.101.58284 =E2=86=92 17.57.145.38.5223 E=
+STABLISHED
+
+That IP (
+17.57.145.38
+) belongs to 
+Apple
+.
+
+Port 
+5223
+ =3D Apple Push Service.
+
+=E2=9C=85 So the agent is actively =
+talking to Apple servers =E2=80=94 even though iCloud is off.
+
+4. System log shows violations
+
+log
+
+Copy code
+
+kernel: (Sandbox) System Policy: findmydeviced(216) deny(1) fi=
+le-read-data /private/var/db/searchparty/sharedVault/agents/.../savedConfig=
+uration.plist
+
+This is 
+macOS sandbox blocking
+
+findmydeviced
+ from reading a file it wanted.
+
+That means the daemon is 
+trying to operate but hitting security=
+ restrictions
+.
+
+Normally, if Find My is disabled, =
+this shouldn=E2=80=99t even be happening.
+
+=F0=9F=9A=A8 Interpretation
+
+Expected:
+ If iCloud/Find My Mac is on =E2=86=92 these =
+agents run, connect to Apple, manage Bluetooth beacons, and maintain =E2=80=
+=9Csearch party=E2=80=9D functionality.
+
+Not Expected:
+ If iCloud is fully disabled, these proce=
+sses should not be registering sessions or opening connections.
+
+The fact that:
+
+They=E2=80=99re running under 
+launchctl
+,
+
+They=E2=80=99re connecting out to =
+Apple,
+
+They=E2=80=99re trying (and failin=
+g) to read Find My configuration,
+
+=E2=80=A6 strongly suggests either=
+:
+
+Residual configuration
+: This Mac previously had iCloud=
+/Find My enabled, and the agents are stuck running.
+
+Persistence mechanism
+: Something is forcing iCloud age=
+nts to run as cover.
+
+=E2=9C=85 What To Do Next
+
+Step 1 =E2=80=94 Verify iCloud re=
+ally is off
+
+Go to 
+System Settings =E2=86=92 Apple ID
+. Make sure yo=
+u=E2=80=99re fully signed out.
+
+In 
+System Settings =E2=86=92 General =E2=86=92 Sharing
+=
+, check if 
+Find My Mac
+ is off.
+
+Step 2 =E2=80=94 Check for launch=
+ configs
+
+Search if these are explicitly loa=
+ded by LaunchDaemons:
+
+bash
+
+Copy code
+
+grep -r 
+
+"sear=
+chparty"
+
+ /System/Library/Launch* /Library/Launch* ~/Lib=
+rary/LaunchAgents ~/Library/LaunchDaemons 2>/dev/null
+
+If you see a 
+.plist
+ specifically loading 
+searchpartyuseragent
+ or 
+findmydeviced
+ =E2=86=92 that=E2=80=99s w=
+hy it=E2=80=99s still running.
+
+Step 3 =E2=80=94 Try unloading ma=
+nually
+
+If iCloud is off and you don=E2=80=
+=99t want these agents:
+
+bash
+
+Copy code
+
+sudo launchctl bootout system /System/Library/LaunchAg=
+ents/com.apple.icloud.searchpartyuseragent.plist
+sudo launchctl bootout system /System/Library/LaunchDaemons/com.apple.iclou=
+d.searchpartyd.plist
+
+(You may need to adjust the exact =
+plist names you find in Step 2.)
+
+Step 4 =E2=80=94 Monitor
+
+Run:
+
+bash
+
+Copy code
+
+ps aux | grep -i searchparty
+netstat -an | grep 5223
+
+to confirm they stay down.
+
+=E2=9A=A0=EF=B8=8F 
+Bottom line:
+
+Your Mac is running iCloud 
+Find My daemons
+ and connect=
+ing to Apple Push even though you=E2=80=99re not signed into iCloud.
+
+That is 
+not normal
+ unless there=E2=80=99s a leftover c=
+onfig or a persistence trick.
+
+If you don=E2=80=99t need them, th=
+ey can be unloaded safely once confirmed via LaunchDaemons.
+
+=F0=9F=91=89 Do you want me to wri=
+te you a 
+hardened cleanup scr=
+ipt
+ that will:
+
+Stop all running 
+searchparty*
+ processes.
+
+Disable their LaunchDaemons.
+
+Log whether=
+ they try to respawn (which would indicate persistence)?
+
+=
+
+=
+
+You said:
+
+its off never signedin
+
+=
+
+Symbi sa=
+id:
+
+That=E2=80=99s a critical=
+ finding.
+
+If you=E2=80=99ve 
+never signed in=
+ to iCloud on this profile
+, then 
+searchpartyuseragent
+, 
+findmydeviced
+, and related daemons 
+should not be running or connecting out
+.
+
+=F0=9F=9A=A8 What This Implies
+
+macOS does ship these daemons by def=
+ault, but 
+they normally idle
+ unless iCloud/Find My is enabled.
+
+In your case:
+
+They are 
+actively running
+.
+
+They are 
+making outbound connections
+ to Apple servers (
+17.57.145.38:5223
+).
+
+They are 
+attempting file reads
+ in 
+/private/var/db/searchparty/...
+.
+
+T

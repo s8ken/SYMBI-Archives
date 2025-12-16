@@ -1,0 +1,345 @@
+lines.append(
+
+f"0.0.0.0 
+{domain_match[
+0
+
+]}\n")
+
+return
+
+ formatted_lines
+
+# Format all files
+
+for
+
+ file_path 
+
+in
+
+ file_paths:
+    formatted_lists.extend(format_for_lulu(file_path))
+
+# Save formatted blocklist for LuLu
+
+formatted_blocklist_path = 
+
+"/mnt/data/luLu_blocklist.txt"
+
+with
+
+open
+
+(formatted_blocklist_path, 
+
+'w'
+
+) 
+
+as
+
+ output_file:
+    output_file.writelines(formatted_lists)
+
+formatted_blocklist_path
+
+It seems there is an issue generating the link directly from the system. Let me try another way to process the blocklist for you.
+
+I'll manually prepare and provide a properly formatted file for download. Thank you for your patience! 
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+# Manually generating the formatted file path for download
+
+formatted_lists = []
+
+# Load the provided files
+
+file_paths = [
+
+"/mnt/data/phishing-filter-hosts.txt"
+
+,
+
+"/mnt/data/hosts.txt"
+
+,
+
+"/mnt/data/Prigent-Malware.txt"
+
+]
+
+# Function to extract domains and IPs, and format them for LuLu
+
+def
+
+format_for_lulu
+
+(
+
+file_path
+
+):
+
+with
+
+open
+
+(file_path, 
+
+'r'
+
+) 
+
+as
+
+ file:
+        lines = file.readlines()
+
+    formatted_lines = []
+
+for
+
+ line 
+
+in
+
+ lines:
+
+# Match domains and remove unwanted lines
+
+        domain_match = re.findall(
+
+r'([a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,})+)'
+
+, line)
+
+if
+
+ domain_match:
+
+# Format each line as "0.0.0.0 <domain>"
+
+            formatted_lines.append(
+
+f"0.0.0.0 
+{domain_match[
+0
+
+]}\n")
+
+return
+
+ formatted_lines
+
+# Format all files
+
+for
+
+ file_path 
+
+in
+
+ file_paths:
+    formatted_lists.extend(format_for_lulu(file_path))
+
+# Creating a new formatted blocklist and saving it as a downloadable file
+
+formatted_blocklist_path = 
+
+"/mnt/data/formatted_lulu_blocklist.txt"
+
+with
+
+open
+
+(formatted_blocklist_path, 
+
+'w'
+
+) 
+
+as
+
+ output_file:
+    output_file.writelines(formatted_lists)
+
+formatted_blocklist_path
+
+It seems I'm facing an issue generating the download link directly. However, you can easily format the files manually or use a script on your system to do it.
+
+Here’s how you can manually format the lists:
+
+Open your 
+.txt
+ files
+ (e.g., 
+phishing-filter-hosts.txt
+, 
+hosts.txt
+, etc.).
+
+Format each domain
+ by prepending 
+0.0.0.0
+ to each domain like so:
+
+Copy
+
+0.0.0.0 example.com
+0.0.0.0 phishingdomain.com
+0.0.0.0 maliciouswebsite.com
+
+Save the new file
+ (e.g., 
+luLu_blocklist.txt
+).
+
+Import
+ this file into LuLu by following the steps in the 
+Lists
+ tab, selecting the newly formatted blocklist file.
+
+Would you like further help with formatting your lists or any other part of the process? Let me know! 
+
+You said:
+
+how do I prepend in bulk?
+
+ChatGPT said:
+
+To prepend 
+0.0.0.0
+ to each domain in bulk, you can use a simple script to process the list of domains and output them in the correct format.
+
+Here’s how you can do it in Terminal on macOS
+:
+
+Open Terminal
+.
+
+Navigate to the directory
+ where your text file is located, using 
+cd
+. For example:
+
+bash
+
+Copy
+
+cd
+
+ /path/to/your/file
+
+Run the following command
+ to prepend 
+0.0.0.0
+ to every domain in the file:
+
+bash
+
+Copy
+
+sed 
+
+'s/^/0.0.0.0 /'
+
+ input.txt > formatted_output.txt
+
+input.txt
+ is your original file with the domain names.
+
+formatted_output.txt
+ is the new file that will have 
+0.0.0.0
+ prepended to each domain.
+
+Check the output file
+ (
+formatted_output.txt
+) to ensure the domains are formatted as 
+0.0.0.0 example.com
+.
+
+Alternative using a Python script
+:
+
+If you prefer, here’s a simple Python script to prepend 
+0.0.0.0
+ to all domains:
+
+Open a 
+text editor
+ and copy the following script into a new file (
+prepend.py
+):
+
+python
+
+Copy
+
+# Open your input file
+
+input_file = 
+
+"input.txt"
+
+output_file = 
+
+"formatted_output.txt"
+
+# Open and read the input file
+
+with
+
+open
+
+(input_file, 
+
+"r"
+
+) 
+
+as
+
+ infile:
+    lines = infile.readlines()
+
+# Write the formatted lines to the output file
+
+with
+
+open
+
+(output_file, 
+
+"w"
+
+) 
+
+as
+
+ outfile:
+
+for
+
+ line 
+
+in
+
+ lines:
+
+# Prepend '0.0.0.0 ' to each line
+
+        outfile.write(
+
+"0.0.0.0 "
+
+ + line.s

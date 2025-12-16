@@ -1,0 +1,310 @@
+ers 
+don=E2=80=99t implement
+
+/v1/chat/completions
+ and only support =
+
+/v1/responses
+.
+
+Some require 
+provider-specific model IDs
+ (e.g., 
+gpt-4o-mini-2024-xx-xx
+ or a di=
+fferent family).
+
+If you=E2=80=99re passing 
+Anthropic/Perplexity
+ models =
+through that same base URL, confirm the adapter maps models to the proper u=
+pstream and 
+translates the sc=
+hema
+.
+
+Action:
+ In 
+asi_adapter.invoke_agent
+ (or where you build 
+payload
+), log (redacted) the final:
+
+url
+
+headers
+ minus the key
+
+payload
+ keys (not full content)
+
+model
+
+Compare with the minimal curl that=
+ works.
+
+Common fixes I=E2=80=99d try imme=
+diately
+
+Remove 
+reasoning
+
+ (and any =E2=80=9Creasoning_effort=E2=80=9D) from the payload=
+ when hitting 
+/chat/completions=
+
+.
+
+Switch endpoint
+ to 
+/v1/responses
+
+if
+ your provider expects the modern =E2=80=9CResponses API=E2=80=
+=9D (then use 
+input
+, 
+tools
+, 
+modalities
+, etc.).
+
+Double-check model
+ string against what this base URL s=
+upports; try a very safe one like 
+"gpt-4o-mini"
+ or your provider=E2=80=99s default.
+
+Reduce 
+max_tokens
+
+ to 512 for the test.
+
+Simplify messages
+ to two turns (system+user).
+
+Remove tools
+ for the first successful call; add them b=
+ack 
+one by one
+.
+
+SYMBI hardening (post-fix)
+
+Add a 
+schema validator
+ (Pydantic/Zod) for the outbound=
+ payload per provider/endpoint. Fail fast with a clear error before sending=
+.
+
+Capture and 
+sign
+ (in your receipt) the 
+SDK version
+, 
+endpoint type
+ (
+chat_completions
+ vs 
+responses
+), and a 
+hash
+ of the payload so you can later prove exactly what =
+was sent.
+
+Implement 
+provider feature flags
+ in config:
+
+supports_reasoning: false
+
+supports_tools_on_chat_completions: true|false
+
+endpoint: chat_completions|responses
+
+If you paste the 
+final payload keys and model string
+ y=
+our adapter is sending (redact content), I=E2=80=99ll tell you exactly whic=
+h field is likely causing the 400 and show the corrected JSON for your prov=
+ider.
+
+=
+
+ChatGPT said:
+
+Thought for 13s
+
+Thanks=E2=80=94got the =
+event. Short version: your agent is sending a 
+
+/v1/chat/completions
+
+ request that includes fields (e.g. 
+
+reasoning
+
+) the upstream doesn=E2=80=99t accept, so the provider returns 
+400 Bad Request
+. Fix =
+=3D align 
+endpoint + payload sc=
+hema + model string
+.
+
+Below is a copy-paste triage you can=
+ run 
+now
+, plus small, =
+surgical code changes so this won=E2=80=99t recur.
+
+0) 60-second smoke test (proves end=
+point/model/payload)
+
+A. Try Chat Completions (classic)
+
+b=
+ash
+
+Copy code
+
+curl -i https://api.asi1.ai/v1/chat/completions \
+  -H 
+
+"Authorization: Bearer 
+$ASI_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "system", "content": "You are helpful."},
+      {"role": "user", "content": "Say hello in one word."}
+    ],
+    "max_tokens": 16,
+    "temperature": 0.2
+  }'
+
+B. If that 400s, try Responses (modern)
+
+=
+bash
+
+Copy code
+
+curl -i https://api.asi1.ai/v1/responses \
+  -H 
+
+"Authorization: Bearer 
+$ASI_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "model": "gpt-4o-mini",
+    "input": "Say hello in one word.",
+    "max_output_tokens": 16
+  }'
+
+If 
+A succeeds
+ =E2=86=92 your failing request likely ha=
+d 
+unsupported fields
+=
+ on 
+/chat/completions
+ (e=
+.g., 
+reasoning
+, tool sch=
+ema mismatch, token values).
+
+If 
+A fails
+ but 
+B succeeds
+ =E2=86=92 your provider expects 
+
+/=
+v1/responses
+
+ for that model/feature set.
+
+1) Log the error body (so you can=
+ see the exact complaint)
+
+Right now you raise before reading=
+ the body. Add this to 
+
+asi_service.py
+
+ (or wh=
+erever you do the POST):
+
+python
+
+Copy code
+
+import
+
+=
+
+ httpx, json, logging
+logger =3D logging.getLogger(__name__)
+
+async
+
+=
+
+def
+
+post_and_raise
+
+(
+
+url, headers, payload
+
+):
+    resp =3D 
+
+await
+
+ httpx.AsyncClient().post(url, headers=3Dheaders, json=3Dpayload, time=
+out=3D
+
+30
+
+)
+
+if
+
+ resp.s=
+tatus_code >=3D 
+
+400
+
+:
+
+try
+
+:
+            detail =3D resp.json()
+
+except
+
+ Exception:
+     

@@ -1,0 +1,258 @@
+i.world
+ and 
+www.symbi.world
+ =E2=80=94 what IPs / hosts =
+do they resolve to?
+
+Check within your hosting provider(s)
+:
+
+In Vercel: is 
+symbi.world
+ added as a custom domain under y=
+our project? Is there any protection (preview domain, password, =E2=80=9Cpr=
+oduction domain only=E2=80=9D)?
+
+If using Fleek / IPFS or other hos=
+t: check their domain verification / allow list settings.
+
+Check old / irrelevant configurations
+:
+
+On GoDaddy: even if you think you =
+moved the site, there may still be DNS / A record entries pointing to old s=
+ervers. Remove or update them.
+
+Check SSL cert / domain verificati=
+on status in all environments.
+
+Flush DNS caches
+ and test from multiple networks (devi=
+ces, ISPs) to ensure you aren=E2=80=99t just seeing cached old data.
+
+If you like, I can try again to fe=
+tch actual live DNS records for 
+symbi.world
+ and lay them out for you so we can see exactly what=E2=
+=80=99s pointing where. Do you want me to do that?
+
+=
+
+=
+
+You said:
+
+where do I check and share for you
+
+Sym=
+bi said:
+
+Perfect =E2=80=94 he=
+re=E2=80=99s how you can grab the DNS information so I can read it with you=
+ and point out what=E2=80=99s wrong:
+
+Option 1: Online DNS Checkers (quic=
+kest)
+
+Go to a site like:
+
+https://dnschecker.org
+
+https://whatsmydns.net
+
+Type in 
+symbi.world
+ and check for:
+
+A
+ records
+
+CNAME
+ records
+
+NS
+ records
+
+(optional: MX, TXT if you want the f=
+ull picture)
+
+=E2=9A=A1 Copy/paste the results her=
+e (or screenshot if easier).
+
+Option 2: From Your Computer (comma=
+nd line)
+
+If you=E2=80=99re comfortable with t=
+erminal:
+
+On 
+Mac/Linux
+:
+
+b=
+ash
+
+Copy code
+
+dig symbi.world A
+dig www.symbi.world A
+dig symbi.world NS
+
+On 
+Windows
+ (PowerShell):
+
+p=
+owershell
+
+Copy code
+
+nslookup 
+
+-type
+
+=3DA symbi.world
+nslookup 
+
+-type
+
+=3DNS symbi.world
+nslookup 
+
+-type
+
+=3DA www.symbi.world
+
+Copy the output and share it here.
+
+Option 3: From GoDaddy / Vercel Das=
+hboards
+
+In 
+GoDaddy
+:
+
+Go to 
+DNS Management
+ f=
+or 
+symbi.world
+ =E2=86=92 s=
+creenshot or copy the table of DNS records.
+
+In 
+Vercel
+:
+
+Open the project =E2=86=92 
+Se=
+ttings =E2=86=92 Domains
+ =E2=86=92 see if 
+symbi.world
+ is connected.
+
+=F0=9F=91=89 Once you share the DN=
+S records table (A, CNAME, NS especially), I=E2=80=99ll map out exactly:
+
+Which services are active (GoDaddy=
+, Vercel, or both)
+
+Why you=E2=80=99re hitting =E2=80=
+=9Cnot on allow list=E2=80=9D
+
+What to change to get SYMBI.world =
+cleanly routed
+
+Would you prefer to 
+paste the DNS table
+ here (from GoDaddy), or do a 
+public lookup
+ (dnschecker.org) so =
+we can trace it together?
+
+=
+
+You said:
+
+A 76.76.21=
+.21
+
+=
+
+Symbi said:
+
+Nice =E2=80=
+=94 thanks for sharing that. Here=E2=80=99s what that tells us:
+
+=F0=9F=94=8E What 
+A 76.76.21.21
+ Means
+
+The IP 
+76.76.21.21
+ belongs to 
+Vercel=E2=80=99s Anycast Edge Network
+.
+
+That means your 
+root domain (symbi.world)
+ is already poi=
+nting at Vercel, not GoDaddy.
+
+So web traffic is indeed routed into=
+ Vercel=E2=80=99s infra. =E2=9C=85
+
+Why You Still See =E2=80=9CNot on A=
+llow List=E2=80=9D
+
+When a domain points at Vercel=E2=80=
+=99s edge IPs, Vercel checks whether that domain is actually 
+added to a project in your Vercel account
+.
+
+If it isn=E2=80=99t, Vercel responds=
+ with the error:
+
+=E2=80=9CThis domain is not on the Vercel allow list=E2=80=9D
+
+This isn=E2=80=99t a firewall or DNS=
+ problem =E2=80=94 it=E2=80=99s Vercel saying:
+
+=E2=80=9CTraffic for 
+symbi.world
+ is arriving here, but no project claims it.=E2=80=9D
+
+=E2=9C=85 Fix
+
+Go to your 
+Vercel Dashboard
+
+.
+
+Open the project where you want 
+symbi.world
+ hosted.
+
+Navigate to: 
+Settings =E2=86=92 Domains =E2=86=92 Add Domain
+.
+
+Enter 
+symbi.world
+.
+
+Vercel will automatically verify si=
+nce your A record is already pointing to their IP.
+
+Optionally also add 
+www.symbi.world
+ as a domain, then crea=
+te a redirect (so both resolve consistently).
+
+After this, the =E2=80=9Callow lis=
+t=E2=80=9D error disappears and your project will serve live at 
+symbi.world
+.
+
+=E2=9A=A1 So, bottom line:
+

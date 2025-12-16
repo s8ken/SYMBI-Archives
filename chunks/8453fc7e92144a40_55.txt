@@ -1,0 +1,960 @@
+e
+
+(
+
+'/public'
+
+, =
+
+require
+
+(
+
+'./routes/public.routes'
+
+=
+
+)); 
+
+// note: read-only; rat=
+e-limit it
+
+Verify util (hash-chain):
+
+js
+
+Copy code
+
+// utils/trust.js
+
+const
+
+=
+
+InteractionEvent
+
+ =3D 
+
+require
+
+(
+
+'../models/interactionEvent.mode=
+l'
+
+);
+
+const
+
+ crypto =
+=3D 
+
+require
+
+(=
+
+'crypto'
+
+);
+
+exports
+
+.
+
+verifyChain
+
+ =3D =
+
+async
+
+ (sessio=
+n_id) =3D> {
+
+const
+
+ items=
+ =3D 
+
+await
+
+InteractionEvent
+
+=
+
+.
+
+find
+
+=
+
+({ session_id }).
+
+so=
+rt
+
+({ 
+
+timestamp
+
+: 
+
+1
+
+ }).
+
+lean
+
+();
+
+let
+
+ prev =
+=3D 
+
+null
+
+;
+
+for
+
+ (
+
+let
+
+ i=3D
+
+0
+
+; i<items.
+
+length
+
+; i++) {
+
+const
+
+ wit=
+houtHashes =3D { ...items[i], 
+
+ledger=
+
+: { ...items[i].
+
+ledger
+
+, 
+
+row_=
+hash
+
+: 
+
+undefin=
+ed
+
+, 
+
+prev_hash
+
+: prev } };
+
+const
+
+ exp=
+ect =3D 
+
+sha256
+
+(
+
+JSON
+
+=
+
+.
+
+stringify
+
+(withoutHashes));
+
+if
+
+ (items=
+[i].
+
+ledger
+
+.
+
+prev_hash
+
+ !=
+=3D=3D prev || items[i].
+
+ledger
+
+.
+
+row_hash
+
+ !=3D=3D expect) {
+
+return
+
+ =
+{ 
+
+ok
+
+:
+
+false
+
+, 
+
+break_at
+
+:i, 
+
+event_id
+
+: items[i].
+
+event_id
+
+ };
+    }
+    prev =3D items[i].
+
+ledger
+
+.
+
+row_hash
+=
+
+;
+  }
+
+return
+
+ { 
+
+ok
+
+:
+
+true
+
+, 
+
+count
+
+: items.
+
+length
+
+ };
+};
+
+exports
+
+.
+
+toTrustChips
+
+ =3D=
+
+async
+
+ ({ ses=
+sion_id }) =3D> {
+
+// derive compact overlays: piv=
+ot/disclosure/apology flags over last N events
+
+const
+
+ items=
+ =3D 
+
+await
+
+InteractionEvent
+
+=
+
+.
+
+find
+
+=
+
+({ session_id }).
+
+so=
+rt
+
+({ 
+
+timestamp
+
+: 
+
+1
+
+ }).
+
+lean
+
+();
+
+return
+
+ item=
+s.
+
+map
+
+=
+(
+
+e
+
+ =3D> ({
+
+t
+
+: e.
+=
+
+timestamp
+
+,
+
+pivot
+
+: !!e.
+
+analysis
+
+?.
+
+pivot
+
+,
+
+disclosures
+
+:=
+ e.
+
+analysis
+
+?=
+.
+
+disclosure_flags
+
+ || [],
+
+actions
+
+: e.
+
+analysis
+
+?.
+
+actions
+
+ || [] 
+
+// e.g., ['apology','scope_alignme=
+nt']
+
+  }));
+};
+
+function
+
+sha256
+
+(
+
+s
+
+){ 
+
+return
+
+ crypto.
+
+createHash
+
+(
+
+'sha256'
+
+).
+
+update
+
+(s).
+
+digest
+
+(
+
+'hex'
+
+); }
+
+Explorer page skeleton (Next.js)
+
+tsx
+
+Copy code
+
+// app/explore/page.tsx
+
+'use client'
+
+;
+
+import
+
+ { useE=
+ffect, useState } 
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+Explore
+
+(
+
+) {
+
+const
+
+ [q, s=
+etQ] =3D 
+
+useState
+
+(
+
+''
+
+);
+
+const
+
+ [item=
+s, setItems] =3D useState<
+
+any=
+
+[]>([]);
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+''
+
+;
+
+async
+
+function
+
+search
+
+(
+=
+
+) {
+
+const
+
+ res=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/public/ideas?q=3D
+
+${
+encodeURIComponent
+
+(q)}`);
+
+const
+
+ dat=
+a =3D 
+
+await
+
+ r=
+es.
+
+json
+
+();
+
+setItems
+
+(data.
+
+items
+
+=
+
+ || []);
+  }
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ { 
+
+search
+
+(); }, []);
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"p-6 space-y-4"
+
+>
+
+<
+h=
+1
+
+classNa=
+me
+
+=3D
+
+"text-xl =
+font-semibold"
+
+>SYMBI Ideas Explorer
+
+</
+h1
+
+=
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex ga=
+p-2"
+
+>
+
+<
+input
+
+cl=
+assName
+
+=3D
+
+"bor=
+der p-2 flex-1"
+
+=
+value
+
+=3D
+
+{q}
+
+onChange
+
+=3D
+
+{e
+
+=3D>setQ(e.target.value)} placeholder=3D"Search ideas=E2=80=A6" />
+
+<
+button
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder px-3"
+
+onCli=
+ck
+
+=3D
+
+{search}
+
+>Search
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+<
+u=
+l
+
+classNa=
+me
+
+=3D
+
+"space-y-=
+3"
+
+>
+        {items.map(it =3D> (
+
+<
+li
+
+key=
+
+=3D
+
+{it._id}
+
+className
+
+=3D
+
+"border rounded p-3"=
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+ont-medium"
+
+>{it.title}
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"t=
+ext-sm opacity-70"
+
+>{it.summary}
+
+</
+div
+
+>
+
+<
+TrustChips
+
+overlays
+
+=3D
+
+{it.overlays}
+
+ />
+
+<
+div
+
+=
+className
+
+=3D
+
+"t=
+ext-xs mt-2"
+
+>
+
+<
+a
+
+=
+className
+
+=3D
+
+"u=
+nderline"
+
+href
+
+=3D
+
+{
+
+`/
+
+explore
+
+/${
+
+it._id
+
+}`}>=
+;Open
+
+</
+a=
+
+>
+              {' =E2=80=A2 '}
+
+<
+a
+
+=
+className
+
+=3D
+
+"u=
+nderline"
+
+href
+
+=3D
+
+{
+
+`${
+
+base
+
+}=
+/
+
+public
+
+/
+
+sessions
+
+/${
+
+=
+
+it.session_id
+
+}/
+
+verify
+
+`} 
+
+target
+
+=3D
+
+"_blank"
+
+>Verify
+
+</
+a
+
+&g=
+t;
+              {' =E2=80=A2 '}
+
+<
+a
+
+=
+className
+
+=3D
+
+"u=
+nderline"
+
+href
+
+=3D
+
+{
+
+`${
+
+base
+
+}=
+/
+
+public
+
+/
+
+sessions
+
+/${
+
+=
+
+it.session_id
+
+}/
+
+ledger
+
+`} 
+
+target
+
+=3D
+
+"_blank"
+
+>Export
+
+</
+a
+
+&g=
+t;
+
+</
+div
+
+>
+
+</
+li
+
+>
+        ))}
+
+</
+=
+ul
+
+>
+
+</
+ma=
+in
+
+>
+  );
+}
+
+function
+
+TrustChips
+
+(
+
+{ overlays }: { overlays?: 
+any
+
+[] }) {
+
+if
+
+ (!overla=
+ys?.
+
+length
+
+) =
+
+return
+
+null
+
+;
+
+const
+
+ lates=
+t =3D overlays[overlays.
+

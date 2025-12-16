@@ -1,0 +1,411 @@
+his removes the existing code, line by line.
+
+2ï¸â£ 
+Method 2: Use 
+CTRL + A
+ + 
+CTRL + K
+ (Fastest)
+
+Press 
+CTRL + A
+
+ (Moves cursor to start of the line).
+
+Press 
+CTRL + K
+
+ (Cuts the entire line).
+
+Repeat until the file is empty
+.
+
+3ï¸â£ 
+Method 3: Hold 
+Backspace
+ or 
+Delete
+
+If 
+CTRL + K
+ isnât working, just 
+hold the Backspace key
+ until all text is gone.
+
+ð¹ Step 3: Add the New Code
+
+Once the file is empty, 
+copy and paste the fixed code into Nano
+.
+
+To paste in 
+Nano
+, you can:
+
+Right-click inside Terminal and select "Paste"
+
+Or 
+press 
+Shift + CTRL + V
+
+ (on Linux)
+
+ð¹ Step 4: Save & Exit
+
+1ï¸â£ 
+Press 
+CTRL + X
+
+ (to exit Nano)
+
+2ï¸â£ 
+Press 
+Y
+
+ (to confirm saving changes)
+
+3ï¸â£ 
+Press 
+Enter
+
+ (to save and close the file)
+
+ð¹ Step 5: Restart Next.js & Test
+
+Now restart your local server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Check if the error is gone in Safariâs console (
+CMD + Option + C
+).
+
+ð¥ 
+Try this and let me know if the fix works!
+ ðð
+
+You said:
+
+Build Error
+
+Next.js (15.1.0) out of date (learn more)
+Failed to compile
+
+./app/layout.tsx
+Error:   Ã You're importing a component that needs 
+useEffect
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  â 
+  â  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  â 
+  â 
+   â­â[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 â import { useEffect, useState } from "react";
+   Â·          âââââââââ
+ 2 â import { ThemeProvider } from "next-themes";
+ 3 â import { Inter } from "next/font/google";
+   â°ââââ
+  Ã You're importing a component that needs 
+useState
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  â 
+  â  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  â 
+  â 
+   â­â[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 â import { useEffect, useState } from "react";
+   Â·                     ââââââââ
+ 2 â import { ThemeProvider } from "next-themes";
+ 3 â import { Inter } from "next/font/google";
+   â°ââââ
+
+ChatGPT said:
+
+ð¥ 
+Easy fix!
+ You need to add 
+"use client";
+ at the top of your 
+layout.tsx
+ file. 
+Next.js requires it for files using 
+useState
+ or 
+useEffect
+.
+ ðð
+
+ð¹ Step 1: Update 
+app/layout.tsx
+
+Open the file again in Nano:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+Add this line at the very top of the file:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;  
+
+// â This tells Next.js this is a client-side file
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+        {isClient ? (
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+>
+            {children}
+
+</
+ThemeProvider
+
+>
+        ) : (
+
+<>
+
+{children}
+
+</>
+
+        )}
+
+</
+body
+
+>
+    </html>
+  );
+}
+
+â 
+Why This Works:
+
+"use client";
+ tells Next.js this file should run on the client.
+
+Fixes 
+"React hook only works in a client component"
+ errors.
+
+Ensures 
+dark mode logic runs correctly without breaking SSR.
+
+ð¹ Step 2: Save & Restart
+
+1ï¸â£ 
+Save & exit Nano:
+
+Press 
+CTRL + X
+
+Press 
+Y
+ (to confirm save)
+
+Press 
+Enter
+
+2ï¸â£ 
+R

@@ -1,0 +1,161 @@
+x-sdk-11.0.2/lib/libdecora_sse.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx.base.jar  
+  inflating: javafx-sdk-11.0.2/lib/libjfxmedia.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libprism_sw.dylib  
+   creating: javafx-sdk-11.0.2/legal/
+   creating: javafx-sdk-11.0.2/legal/javafx.media/
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/glib.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/gstreamer.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/libffi.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/applecoreaudio.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.media/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.web/
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/icu_web.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/webkit.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/libxslt.md  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/ASSEMBLY_EXCEPTION  
+  inflating: javafx-sdk-11.0.2/legal/javafx.web/libxml2.md  
+   creating: javafx-sdk-11.0.2/legal/javafx.swing/
+  inflating: javafx-sdk-11.0.2/legal/javafx.swing/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.swing/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.swing/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.graphics/
+  inflating: javafx-sdk-11.0.2/legal/javafx.graphics/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.graphics/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.graphics/ASSEMBLY_EXCEPTION  
+  inflating: javafx-sdk-11.0.2/legal/javafx.graphics/jpeg_fx.md  
+   creating: javafx-sdk-11.0.2/legal/javafx.base/
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.controls/
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.fxml/
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/ASSEMBLY_EXCEPTION  
+sja@SJAs-MacBook-Pro ~ % sudo mv openjfx-11.0.2 /opt/javafx
+
+Password:
+mv: rename openjfx-11.0.2 to /opt/javafx: No such file or directory
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Fixing the "No such file or directory" Error When Moving JavaFX
+
+It looks like the 
+/opt/javafx
+ directory 
+doesn't exist
+, so macOS is preventing the move. Let's 
+create the directory and move JavaFX manually.
+
+✅ Step 1: Create the 
+/opt/javafx
+ Directory
+
+Since 
+/opt/
+ is 
+a protected system directory
+, we need to create the 
+javafx
+ folder with 
+sudo
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /opt/javafx
+
+✅ Step 2: Move JavaFX to the System Directory
+
+Now that the directory exists, move JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /opt/javafx
+
+📌 
+Make sure you're moving 
+javafx-sdk-11.0.2
+ (not 
+openjfx-11.0.2
+)
+.
+
+✅ Step 3: Set JavaFX Path
+
+Now, link JavaFX to your Java environment:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it 
+permanent
+ by adding it to 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Run

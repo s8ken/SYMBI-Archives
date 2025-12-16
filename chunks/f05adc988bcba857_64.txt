@@ -1,0 +1,478 @@
+
+ branch is now live on GitHub!
+
+And Vercel should 
+automatically detect it
+ and begin deploying a preview.
+
+ð Hereâs Whatâs Happening Now:
+
+â GitHub
+
+Branch: 
+
+main-site
+
+You can now open a Pull Request or merge it into 
+main
+ when you're ready for go-live.
+
+â Vercel
+
+If branch auto-deploy is enabled (it usually is by default):
+
+Youâll get a preview at:
+
+arduino
+
+Copy
+
+Edit
+
+https:
+
+//main-site-symbi.vercel.app
+
+You can track deployment at:
+
+ð 
+https://vercel.com/s8ken/symbi
+
+â Now You Can:
+
+Build out your full site on 
+main-site
+
+Edit content live via Sanity Studio
+
+Merge into 
+main
+ when it's launch-ready
+
+ð¡ Optionally, add team members, preview URLs, and protected staging
+
+ð Want Me to Help With Anything Next?
+
+Wire up more CMS content blocks?
+
+Add site navigation or routing?
+
+Add your GPT model into Studio for AI-assisted content editing?
+
+Help clean up or optimize for go-live?
+
+Letâs roll! ð¥
+
+You said:
+
+I just had to change the logo file 
+
+ChatGPT said:
+
+â Perfect â thatâs exactly the kind of quick tweak thatâs super smooth now that youâre running with a clean setup and version control.
+
+ð¡ Quick Tips After Updating Your Logo File:
+
+â If You Just Replaced It Locally:
+
+Make sure itâs staged and committed:
+
+bash
+
+Copy
+
+Edit
+
+git add public/symbi-logo.jpg
+git commit -m 
+
+"Updated logo"
+
+git push origin main-site
+
+ð§  
+Assumes your logo is stored in 
+public/
+ and referenced like 
+/symbi-logo.jpg
+ in your code.
+
+â Vercel Will Auto-Deploy
+
+The moment you push:
+
+Vercel will redeploy your 
+main-site
+ branch
+
+Preview will auto-update at:
+
+arduino
+
+Copy
+
+Edit
+
+https:
+
+//main-site-symbi.vercel.app
+
+You donât need to do anything else â just refresh ð
+
+Want Me to Help You...
+
+Swap out the logo everywhere?
+
+Make it CMS-editable in Sanity?
+
+Add a favicon and metadata?
+
+Youâre flying â just tell me where you wanna go next â¨ð¥
+
+You said:
+
+Make it CMS-editable in Sanity?
+
+ChatGPT said:
+
+ð¥ Letâs Make Your Logo CMS-Editable via Sanity Studio
+
+This means: you (or anyone non-technical) can change the logo image right inside your Studio â no code edits, no Git commits.
+
+â Step 1: Add a 
+siteSettings
+ Schema
+
+Create the file:
+
+bash
+
+Copy
+
+Edit
+
+nano schemas/siteSettings.ts
+
+Paste this schema:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'siteSettings'
+
+,
+
+title
+
+: 
+
+'Site Settings'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'logo'
+
+,
+
+title
+
+: 
+
+'Logo Image'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'tagline'
+
+,
+
+title
+
+: 
+
+'Tagline'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+  ],
+})
+
+â Step 2: Register It in 
+sanity.config.ts
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+Update the 
+schema.types
+ array to include both 
+page
+ and 
+siteSettings
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+schema
+
+: {
+
+types
+
+: [page, siteSettings],
+},
+
+â Step 3: Create Your Logo in Studio
+
+Go to 
+
+http://localhost:3000/studio
+
+Click â "New" â Choose 
+Site Settings
+
+Upload your logo
+
+(Optional) Add a tagline
+
+Click 
+Publish
+ â
+
+â Step 4: Update 
+layout.tsx
+ to Use CMS Logo
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+Add this to the top:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { client } 
+
+from
+
+'@/lib/sanity'
+
+async
+
+function
+
+getLogoUrl
+
+(
+
+) {
+
+const
+
+ data = 
+
+await
+
+ client.
+
+fetch
+
+(
+`*[_type == "siteSettings"][0]{
+    logo{asset->{url}}
+  }`
+)
+
+return
+
+ data?.
+
+logo
+
+?.
+
+asset
+
+?.
+
+url
+
+}
+
+Then inside your 
+RootLayout
+, modify where your logo is rendered:
+
+tsx
+
+Copy
+
+Edit
+
+const
+
+ logoUrl = 
+
+await
+
+getLogoUrl
+
+(
+
+)
+
+{logoUrl && (
+
+<
+Image
+
+src
+
+=
+
+{logoUrl}
+
+alt
+
+=
+
+"Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+  />
+)}
+
+â Boom â your logo now loads live from Sanity ð
+
+â Want Me to Help Make the Tagline Editable Too?
+
+Or make 
+navigation
+, 
+footer
+, or 
+hero sect

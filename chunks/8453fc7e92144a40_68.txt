@@ -1,0 +1,666 @@
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+2) Wire it into the list
+
+frontend/src/pages/=
+Assistants.js
+
+ (add/patch)
+
+diff
+
+Copy code
+
++import AssistantEditDia=
+log from "../components/assistants/AssistantEditDialog";
+
+ // ...
+ const [editing, setEditing] =3D React.useState(null);
+ // ...
+ <ul className=3D"space-y-2">
+   {items.map(a =3D> (
+     <li key=3D{a.assistantId} className=3D"border rounded p-3">
+       <div className=3D"flex items-center justify-between">
+         <div>
+           <div className=3D"font-medium">{a.name} <span className=
+=3D"text-xs opacity-60">({a.model})</span></div>
+           <div className=3D"text-xs opacity-70">id: {a.assistantId}&=
+lt;/div>
+         </div>
+         <div className=3D"flex gap-2">
+
++          <button className=
+=3D"border px-3 py-1 rounded" onClick=3D{()=3D>setEditing(a)}>Edit<=
+;/button>
+
+         </div>
+       </div>
+     </li>
+   ))}
+ </ul>
+
++<AssistantEditDialog open=3D=
+{!!editing} assistant=3D{editing} onClose=3D{(saved)=3D>{ setEditing(nul=
+l); if(saved) load(); }} />
+
+Rollback: delete the dialog and bu=
+tton.
+
+=E2=9C=85 PR-CC =E2=80=94 Context=
+ Capsules (memory with sovereignty)
+
+Why:
+ give non-devs continuity without leaking memory i=
+nto clients; capsules live server-side, injected into calls.
+
+1) Model
+
+backend/models/cont=
+extCapsule.model.js
+
+js
+
+Copy code
+
+const
+
+ { =
+
+Schema
+
+, =
+model } =3D 
+
+require
+
+(
+
+'mongoose'
+
+);
+
+const
+
+=
+
+ContextCapsuleSchema
+
+ =3D 
+
+new
+
+=
+
+Schema
+
+(=
+{
+
+session_id
+
+: { =
+
+type
+
+: 
+
+String
+
+, 
+
+index
+
+: 
+
+true
+
+, 
+
+unique
+
+: 
+
+true
+
+ },
+
+owner_user
+
+: { =
+
+type
+
+: 
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+capsule
+
+: {
+
+goals
+
+: [
+
+String
+
+],
+
+tone_prefs
+
+: =
+[
+
+String
+
+]=
+,
+
+constraints
+
+:=
+ [
+
+String
+
+=
+],
+
+tags
+
+: [
+
+String
+
+],
+
+notes
+
+: 
+
+String
+
+,
+
+// extend as needed
+
+  },
+
+capsule_hash
+
+: =
+
+String
+
+}, { 
+
+timestamps
+
+:=
+
+true
+
+ });
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+model
+
+(
+
+'ContextCapsule'
+
+, 
+
+ContextCapsuleSche=
+ma
+
+);
+
+2) Controller + routes
+
+backend/controllers=
+/capsule.controller.js
+
+js
+
+Copy code
+
+const
+
+ cr=
+ypto =3D 
+
+require
+
+(
+
+'crypto'
+
+)=
+;
+
+const
+
+=
+
+ContextCapsule
+
+ =
+=3D 
+
+require
+
+(=
+
+'../models/contextCapsule.model'
+
+);
+
+const
+
+=
+
+sha256
+
+ =3D (=
+
+s
+
+) =3D> cry=
+pto.
+
+createHash
+
+(
+
+'sha256'
+
+).
+
+update
+
+(s).
+
+digest
+
+(
+
+'hex'
+
+);
+
+exports
+
+.
+
+get
+
+ =3D 
+
+async
+
+ (req, res) =3D&=
+gt; {
+
+const
+
+ sid =
+=3D 
+
+String
+
+(req.
+
+params
+
+.
+
+sessionId
+
+)=
+;
+
+const
+
+ doc =
+=3D 
+
+await
+
+ContextCapsule
+
+.
+
+findOne
+
+=
+
+({ 
+
+session_id
+
+: sid }).
+
+lean
+
+();
+  res.
+
+json
+
+(doc || { 
+
+session_id
+
+: sid, 
+
+capsule
+
+: {} });
+};
+
+exports
+
+.
+
+put
+
+ =3D 
+
+async
+
+ (req, res) =3D&=
+gt; {
+
+const
+
+ sid =
+=3D 
+
+String
+
+(req.
+
+params
+
+.
+
+sessionId
+
+)=
+;
+
+const
+
+ body =
+=3D req.
+
+body
+
+=
+?.
+
+capsule
+
+ ||=
+ {};
+
+const
+
+ hash =
+=3D 
+
+sha256
+
+(
+
+JSON
+
+.
+
+stringify
+
+(body));
+
+const
+
+ doc =
+=3D 
+
+await
+
+ContextCapsule
+
+.
+
+findOneAndUpdate
+
+(
+    { 
+
+session_id
+
+=
+: sid },
+    { 
+
+$set
+
+: { 
+
+capsule
+
+: body, 
+
+capsule_hash
+
+: hash,=
+
+owner_user
+
+: req=
+.
+
+user
+
+?.
+
+_id
+
+ } },
+    { 
+
+upsert
+
+: 
+
+true
+
+, 
+
+new
+
+: 
+
+true
+
+ }
+  ).
+
+lean
+
+();
+  res.
+
+json
+
+(doc);
+};
+
+backend/routes/caps=
+ule.routes.js
+
+js
+
+Copy code
+
+const
+
+ r =
+=3D 
+
+require
+
+(=
+
+'express'
+
+).
+
+Router
+
+();
+
+const
+
+ { requi=
+reAuth } =3D 
+
+require
+
+(
+
+'../middleware/auth.middl=
+eware'
+
+);
+
+const
+
+ c =3D 
+
+require
+
+(
+
+'../controllers/capsule.controller'
+
+);
+r.
+
+use
+
+=
+(requireAuth);
+r.
+
+get
+
+=
+(
+
+'/:sessionId'
+
+=
+, c.
+
+get
+
+);
+r.
+
+put
+
+=
+(
+
+'/:sessionId'
+
+=
+, c.
+
+put
+
+);
+
+module
+
+.
+
+exports
+
+=
+ =3D r;
+
+Mount:
+
+diff
+
+Copy code
+
+--- a/backend/app.js
+
++++ b/backend/app.js
+
+ app.use('/api/bridge', require('./routes/bridge.routes'));
+
++app.use('/api/context/capsule',=
+ require('./routes/capsule.routes'));
+
+3) Injection into LLM calls (assi=
+stant message path)
+
+In your 
+sendMessage
+ flow, fetch capsule and add a =E2=
+=80=9CContext Capsule=E2=80=9D preface to system/instructions.
+
+backend/controllers=
+/assistant.controller.js
+
+ (excerpt)
+
+diff
+
+Copy code
+
+ exports.sendMessage =3D asyn

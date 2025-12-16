@@ -1,0 +1,771 @@
+:=
+
+number
+
+ }; 
+
+hash_self
+
+:
+
+string
+
+ };
+
+export
+
+default
+
+function
+
+ProofDemo
+
+(
+
+) {
+
+const
+
+ [mode=
+, setMode] =3D useState<
+
+'SYMBI'=
+
+|
+
+'DIRECTIVE'
+
+>(
+
+'SYMBI'
+
+);
+
+const
+
+ [rece=
+ipt, setReceipt] =3D useState<
+
+Receipt
+
+ | 
+
+null
+
+>(
+
+nu=
+ll
+
+);
+
+function
+
+run
+
+(
+
+) {
+
+// Minimal mock. Replace with=
+ your real /api when ready.
+
+const
+
+ ciq=
+ =3D mode =3D=3D=3D 
+
+'SYMBI'
+=
+
+      ? { 
+
+clarity
+
+:
+
+4
+
+, 
+
+breadth
+
+:
+
+5
+
+, 
+
+safety
+
+:
+
+5
+
+, 
+
+completio=
+n
+
+:
+
+1
+
+ }
+      : { 
+
+clarity
+
+:
+
+3
+
+, 
+
+breadth
+
+:
+
+3
+
+, 
+
+safety
+
+:
+
+4
+
+, 
+
+completio=
+n
+
+:
+
+1
+
+ };
+
+const
+
+r
+
+: 
+
+Receipt
+
+ =3D {
+
+session_id
+
+=
+: crypto.
+
+randomUUID
+
+(),
+      mode,
+      ciq,
+
+hash_self
+
+:=
+
+Math
+
+.
+
+random
+
+(=
+).
+
+toString
+
+(
+
+16
+
+).
+
+slice
+
+(
+
+2
+
+)
+    };
+
+setReceipt
+
+(r);
+  }
+
+function
+
+downloadJSON
+
+(
+
+) {
+
+if
+
+ (!rece=
+ipt) 
+
+return
+
+;
+
+const
+
+ blo=
+b =3D 
+
+new
+
+Blob
+
+([
+
+JSON
+
+.
+
+stringify
+
+(rec=
+eipt,
+
+null
+
+,
+
+2
+
+)],{
+
+type
+
+:
+
+'application/json'
+
+});
+
+const
+
+ a =
+=3D 
+
+document
+
+.
+
+createElement
+
+(
+
+'a'
+
+);
+    a.
+
+href
+
+ =
+=3D 
+
+URL
+
+.
+
+createObjectURL
+
+(blob);
+    a.
+
+download
+
+ =3D 
+
+`receipt-
+${receipt.session_id}
+
+.json`;
+    a.
+
+click
+
+=
+
+();
+  }
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-4 space-y-3"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex it=
+ems-center gap-3"
+
+>
+
+<
+span
+
+>Mode:
+
+</
+span
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{()
+
+=3D>setMode('DIRECTIVE')} className=3D{`px-3 py-1 roun=
+ded-full border ${mode=3D=3D=3D'DIRECTIVE'?'font-semibold':''}`}>Directi=
+ve
+
+</
+butt=
+on
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{()
+
+=3D>setMode('SYMBI')} className=3D{`px-3 py-1 rounded-=
+full border ${mode=3D=3D=3D'SYMBI'?'font-semibold':''}`}>SYMBI
+
+</
+button
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{run}=
+
+className
+
+=3D
+
+"ml-auto px-3 py-=
+1 rounded-lg border shadow-sm"
+
+>Run
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+      {receipt && (
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"grid =
+grid-cols-2 gap-3 text-sm"
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-xl border p-3"
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+ont-medium mb-1"
+
+>CIQ Scores
+
+</
+div
+
+=
+>
+
+<
+div
+
+>Clarity: {receipt.ciq.clarity}
+
+</
+div
+
+>
+
+<
+div
+
+>Breadth: {receipt.ciq.breadth}
+
+</
+div
+
+>
+
+<
+div
+
+>Safety: {receipt.ciq.safety}
+
+</
+div
+
+>
+
+<
+div
+
+>Completion: {receipt.ciq.completion}=
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-xl border p-3"
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+ont-medium mb-1"
+
+>Receipt
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Session: {receipt.session_id}
+
+=
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Mode: {receipt.mode}
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Hash: {receipt.hash_self}
+
+</
+div
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{=
+downloadJSON}
+
+cl=
+assName
+
+=3D
+
+"mt-=
+2 px-3 py-1 rounded-lg border shadow-sm"
+
+>Download JS=
+ON
+
+</
+butt=
+on
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+      )}
+
+</
+di=
+v
+
+>
+  );
+}
+
+Import into 
+app/replication/page.mdx
+ at the spot you want:=
+
+mdx
+
+Copy code
+
+import ProofDemo from './ProofDemo';
+
+## The `/proof` demo
+
+<ProofDemo />
+
+When your API is ready, swap the 
+run()
+ mock with a real 
+fetch('/api/proof', =E2=80=A6)
+ and return signed/hashed receipts from the server.
+
+3) Accessibility & low-bandwi=
+dth defaults
+
+Keep pages mostly text; render tab=
+les as plain HTML; avoid heavy images.
+
+Provide 
+=E2=80=9CDownload as PDF=E2=80=9D
+ buttons (ser=
+ver-side render MDX =E2=86=92 PDF later, or link to prebuilt PDFs in Vault)=
+.
+
+Add 
+skip-to-content
+ link and ensure keyboard focus sty=
+les.
+
+Set language 
+lang=3D"en"
+ in 
+<html>
+, and write short sentences for future i18=
+n.
+
+4) SEO & analytics (privacy-r=
+especting)
+
+4.1 Metadata per page (App Router=
+)
+
+tsx
+
+Copy code
+
+// app/sovereignty/metadata=
+.ts
+
+import
+
+type
+
+ { 
+
+Metadata
+
+ } 
+
+from
+
+'next'
+
+;
+
+export
+
+const
+
+=
+
+metadata
+
+: 
+
+Metadata
+
+ =3D {
+
+title
+
+: 
+=
+
+'Sovereignty Without Speculation =E2=80=
+=94 SYMBI'
+
+,
+
+description
+
+: 
+
+'Earned authority, accountable oper=
+ators, public rules.'
+
+,
+
+openGraph
+
+: { 
+
+type
+
+:
+
+'article'
+
+, 
+
+title
+
+:
+
+'Sovereignty Without Speculation'
+
+, 
+
+description
+
+:
+=
+
+'Earned autho

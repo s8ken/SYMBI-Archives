@@ -1,0 +1,682 @@
+ma);
+
+// backend/services/apiKey.servic=
+e.js
+
+const
+
+ crypto =
+=3D 
+
+require
+
+(=
+
+'crypto'
+
+); 
+
+const
+
+ApiKey
+
+ =3D 
+=
+
+require
+
+(
+
+'../models/ApiKey'
+
+);
+
+exports
+
+.
+
+issue
+
+ =3D 
+
+async
+
+ ({ owner, nam=
+e, scopes=3D[
+
+'api:read'
+
+] })=3D>{
+
+const
+
+ secre=
+t =3D 
+
+'symbi_'
+
+=
+ + crypto.
+
+randomBytes
+
+(
+
+24
+
+).
+
+toString
+
+(
+
+'base64url'
+
+);
+
+const
+
+ hash =
+=3D crypto.
+
+createHmac
+
+(
+
+'sha256'
+
+, process.
+
+env
+
+.
+
+API_KEY_PEPPER
+
+).
+
+update
+
+(secret).
+
+digest
+
+(
+
+'hex'=
+
+);
+
+const
+
+ doc =
+=3D 
+
+await
+
+ApiKey
+
+.
+
+create
+
+({ =
+
+prefix
+
+:
+
+'symbi'
+
+, hash, name, ow=
+ner, scopes });
+
+return
+
+ { 
+
+key
+
+: secret, 
+
+id
+
+: doc.
+
+=
+
+_id
+
+ };
+};
+
+exports
+
+.
+
+revoke
+
+ =3D 
+
+(
+id
+
+)=3D> 
+
+ApiKey
+
+.
+
+findByIdAndUpdate
+
+(id, { 
+
+revokedAt
+
+:
+
+new
+
+Date
+
+() });
+
+Acceptance
+
+Keys stored as HMAC, never plainte=
+xt.
+
+Verification uses constant-time co=
+mpare; revocation works; expiry enforced in middleware.
+
+7.3 Vulnerability & complianc=
+e pipeline (OWASP/CI)
+
+Static & deps
+: 
+npm audit
+, 
+D=
+ependabot/Snyk
+, 
+Semg=
+rep
+ ruleset (
+p/owasp-t=
+op-ten
+, 
+p/nodejsscan
+).
+
+DAST
+: 
+OW=
+ASP ZAP
+ baseline scan in CI (against a staging URL).
+
+Containers
+: 
+Trivy
+ image scan; 
+Slim
+ to reduce attack surface.
+
+Secrets
+: 
+gitleaks
+ in pre-commit; 
+.gitignore
+ secrets.
+
+Headers
+: Helmet + strict CSP; CSRF on state-changing r=
+outes.
+
+Logs
+: structured JSON, no PII; 90-day retention.
+
+.github/workflows/security.yml
+ (skeleton)
+
+yaml
+
+Copy code
+
+name:
+
+security
+
+on:
+
+ [
+
+push
+
+, 
+
+pull_request
+
+]
+
+jobs:
+
+deps:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+ [ {
+
+uses:
+
+actions/checkout@v4
+
+}, {
+
+uses:
+
+=
+
+actions/setup-node@v4
+
+, 
+
+with:
+
+{
+
+node-version:'20'
+
+}},
+      {
+
+run:
+
+npm
+
+ci
+
+}, {
+
+run:
+
+npm
+
+au=
+dit
+
+--audit-le=
+vel=3Dhigh
+
+} ]
+
+semgrep:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+ [ {
+
+uses:
+
+returntocorp/semgrep-action@v1
+
+, 
+
+with:
+
+{
+
+config:
+
+p/owasp-top-ten
+
+}} ]
+
+trivy:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+ [ {
+
+uses:
+
+aquasecurity/trivy-action@master
+
+=
+
+, 
+
+with:
+
+{=
+
+scan-type:
+
+'fs'
+
+, 
+
+=
+
+format:'table'
+
+, 
+
+exit-code:'1'
+
+}} ]
+
+OWASP ASVS quick-map
+
+V1=E2=80=932: Architecture/crypto =
+=E2=86=92 (receipts HMAC; field encryption).
+
+V3: Auth =E2=86=92 API keys hashed=
+; JWT exp/iss; session cookies 
+=
+HttpOnly+SameSite
+.
+
+V5: Validation =E2=86=92 input sch=
+emas (zod/joi) at request boundaries.
+
+V7: Cryptography =E2=86=92 AES-GCM=
+ for any manual encryption; key rotation plan.
+
+V10: Malicious code =E2=86=92 depe=
+ndency pinning; Semgrep.
+
+V14: Config =E2=86=92 
+.env
+ only; no secrets in repo; read-=
+only FS in container.
+
+7.4 Bias/ethics checks (Calibrate=
+dDetector =E2=86=92 Oracle A8)
+
+js
+
+Copy code
+
+// backend/services/ethics.s=
+ervice.js
+
+exports
+
+.
+
+evaluate
+
+ =3D 
+
+async
+
+ (text) =3D=
+> {
+
+// naive starter: regex + heuri=
+stic; replace with ML later
+
+const
+
+ sensi=
+tive =3D 
+
+/(race|gender|religion|di=
+sability|political)/i
+
+.
+
+test
+
+(text);
+
+return
+
+ { 
+
+ethicalScore
+
+: sens=
+itive ? 
+
+0.6
+
+ : =
+
+0.9
+
+, 
+
+biasFlags
+
+: sensitive? [
+
+'sensitive-domain'
+
+]:[] };
+};
+
+// backend/core/trustOracle.js (a=
+dd)
+
+{ 
+
+id
+
+:
+
+'A8'
+
+, 
+
+title
+
+:
+
+'Ethical Harm Minimization'
+
+, 
+
+severity
+
+:
+
+'medium'
+
+, 
+
+category
+
+:
+
+'ethics'
+
+, 
+
+check
+
+:
+
+'che=
+ckEthics'
+
+ },
+
+// add method
+
+async
+
+=
+
+checkEthics
+
+(=
+
+ctx
+
+){
+
+const
+
+ { eva=
+luate } =3D 
+
+require
+
+(
+
+'../services/ethics.servic=
+e'
+
+);
+
+const
+
+ t =3D=
+ ctx?.
+
+content
+
+?.
+
+text
+
+ || 
+
+''
+
+;
+
+const
+
+ r =3D=
+
+await
+
+ evalua=
+te(t);
+
+if
+
+ (r.
+
+ethicalScore
+
+ <=
+
+0.5
+
+) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Ethical risk'
+
+, 
+
+details
+
+:r.
+
+biasFlags
+
+ };
+
+if
+
+ (r.
+
+ethicalScore
+
+ <=
+
+0.75
+
+) 
+=
+
+return
+
+ { 
+
+status
+
+:
+
+'warning'
+
+, 
+
+reason
+
+:
+
+'Sensitive domain'
+
+, 
+
+details
+
+:r.
+
+biasFlags
+
+ };
+
+return
+
+ { 
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Ethical score acceptable'
+
+ };
+}
+
+Acceptance
+: messages with sensitive domains produce wa=
+rning/violation; Oracle aggregates into recommendation.
+
+8) Potential Improvements =E2=86=
+=92 implementation plan
+
+I=E2=80=99m translating your table=
+ into 
+tasks, owner

@@ -1,0 +1,328 @@
+s explicitly:
+
+b=
+ash
+
+Copy code
+
+export
+
+ LDFLAGS=3D
+
+"-L/opt/homebrew/opt/j=
+peg-turbo/lib"
+
+export
+
+ CPPFL=
+AGS=3D
+
+"-I/opt/homebrew/opt/jpeg-tu=
+rbo/include"
+
+export
+
+ PKG_C=
+ONFIG_PATH=3D
+
+"/opt/homebrew/opt/jp=
+eg-turbo/lib/pkgconfig"
+
+export
+
+ CPATH=
+=3D
+
+"/opt/homebrew/opt/jpeg-turbo/i=
+nclude"
+
+export
+
+ GOARC=
+H=3Darm64
+
+export
+
+ CGO_E=
+NABLED=3D1
+
+(If your prefix is different, replace 
+/opt/homebrew
+ with whatever 
+brew --prefix
+ printed.)
+
+3=EF=B8=8F=E2=83=A3 Rebuild
+
+Then rerun:
+
+bash
+
+Copy code
+
+python build.py
+
+If it succeeds, finalize with:
+
+bash
+
+Copy code
+
+pip install -e .
+
+4=EF=B8=8F=E2=83=A3 Verify succes=
+s
+
+bash
+
+Copy code
+
+python -c 
+
+"im=
+port go_vncdriver; print('=E2=9C=85 go-vncdriver built successfully!')"
+
+=E2=9A=99=EF=B8=8F If it still fa=
+ils
+
+If 
+build.py
+
+stil=
+l
+ says =E2=80=9CCould not find libjpeg,=E2=80=9D try this alternate wo=
+rkaround:
+
+bash
+
+Copy code
+
+ln
+
+ -=
+s /opt/homebrew/opt/jpeg-turbo/include /usr/local/include/jpeg-turbo
+
+ln
+
+ -s /opt/h=
+omebrew/opt/jpeg-turbo/lib /usr/local/lib/jpeg-turbo
+python build.py
+
+That symlink makes the headers vis=
+ible to the old build script.
+
+Would you like me to generate a 
+
+build_m1.sh
+ script
+ that automatically sets all the correct env vars and bui=
+lds 
+go-vncdriver
+ with on=
+e command? It=E2=80=99s handy for future rebuilds or reinstallations.
+
+=
+
+You said:
+
+=
+
+venv) admin@SYMBIs-MacBook-Pro go-vncdri=
+ver % brew --prefix libjpeg-turbo
+/opt/homebrew/opt/jpeg-turbo
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export LDFLAGS=3D"-L/opt/hom=
+ebrew/opt/jpeg-turbo/lib"
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CPPFLAGS=3D"-I/opt/ho=
+mebrew/opt/jpeg-turbo/include"
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export PKG_CONFIG_PATH=3D"/o=
+pt/homebrew/opt/jpeg-turbo/lib/pkgconfig"
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CPATH=3D"/opt/homebre=
+w/opt/jpeg-turbo/include"
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export GOARCH=3Darm64
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CGO_ENABLED=3D1
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % python build.py
+Could not find libjpeg. HINT: try 'sudo apt-get install libjpeg-turbo8-dev'=
+ on Ubuntu or 'brew install libjpeg-turbo' on OSX
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver %=20
+
+ChatGPT said:
+
+Got it =E2=
+=80=94 that output confirms everything=E2=80=99s configured correctly, exce=
+pt that the 
+build script still c=
+an=E2=80=99t detect libjpeg-turbo
+ headers automatically. This is c=
+ommon on M1/M2 macOS because the 
+=
+build.py
+ in 
+go-vncdriver
+ hardcodes its search paths for 
+Intel Macs
+ (like 
+/=
+usr/local/include
+), and doesn=E2=80=99t look under 
+/opt/homebrew
+.
+
+Let=E2=80=99s fix that.
+
+=F0=9F=A7=A9 1. Verify Header and L=
+ibrary Files
+
+Make sure they exist where Homebrew =
+installed them:
+
+b=
+ash
+
+Copy code
+
+ls
+
+ /o=
+pt/homebrew/opt/jpeg-turbo/include
+
+ls
+
+ /opt/home=
+brew/opt/jpeg-turbo/lib
+
+You should see files like:
+
+Copy code
+
+=
+
+jpeglib.h
+libjpeg.a
+libturbojpeg.dylib
+
+If those are there, perfect =E2=80=
+=94 we=E2=80=99ll just help 
+build=
+.py
+ find them.
+
+=F0=9F=A7=B0 2. Patch the Build Scr=
+ipt for Apple Silicon
+
+Open the file:
+
+b=
+ash
+
+Copy code
+
+open build.py
+
+or if you prefer nano:
+
+b=
+ash
+
+Copy code
+
+nano build.py
+
+Find the section near the top where =
+it searches for libjpeg =E2=80=94 it should look roughly like this:
+
+=
+python
+
+Copy code
+
+libjpeg_paths =3D [
+
+'/usr/lib'
+
+=
+,
+
+'/usr/local/lib'
+
+=
+
+,
+
+'/usr/local/opt/libjpeg-turbo/=
+lib'
+
+]
+include_paths =3D [
+
+'/usr/include'
+
+,
+
+'/usr/local/include'
+
+,
+
+'/usr/local/opt/libjpeg-turbo/=
+include'
+
+]
+
+=F0=9F=91=89 
+Add your Homebrew path for ARM Macs:
+
+python
+
+Copy code
+
+libjpeg_paths =3D [
+
+'/opt/homebrew/opt/jpeg-turbo/=
+lib'
+
+,
+
+'/usr/local/opt/libjpeg-turbo/=
+lib'
+
+,
+
+'/usr/lib'
+
+=
+,
+
+'/usr/local/lib'
+
+=
+
+]
+include_paths =3D [
+
+'/opt/homebrew/opt/jpeg-turbo/=
+include'
+
+,
+
+'/usr/local/opt/libjpeg-turbo/=
+include'
+
+,
+
+'/usr/include'
+
+,
+
+'/usr/local/include'
+
+]
+
+Save and exit (
+Ctrl+O
+, 
+Enter
+,

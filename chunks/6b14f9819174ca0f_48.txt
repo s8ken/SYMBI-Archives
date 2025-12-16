@@ -1,0 +1,318 @@
+ component is breaking
+, we can fix it.
+
+✅ Fix: If Your Code Uses 
+window
+ or 
+document
+
+Next.js renders on the server first, and 
+window
+/
+document
+ don’t exist on the server.
+
+Solution:
+ Wrap them inside 
+useEffect
+.
+
+❌ 
+Bad code (causes hydration issues)
+:
+
+tsx
+
+Copy
+
+if
+
+ (
+
+typeof
+
+window
+
+ !== 
+
+"undefined"
+
+) {
+
+console
+
+.
+
+log
+
+(
+
+window
+
+.
+
+innerWidth
+
+);
+}
+
+✅ 
+Fix:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect } 
+
+from
+
+"react"
+
+;
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+window
+
+.
+
+innerWidth
+
+);
+}, []);
+
+✅ Fix: If Dark Mode or Class Name is Changing
+
+Your error mentions 
+className="dark"
+ → This means 
+your dark mode logic might be running differently on the client vs server.
+
+Solution:
+ Move dark mode logic to 
+useEffect
+ inside 
+theme-provider.tsx
+
+🔹 Step 4: Fix the Logo Issue
+
+Your 
+logo might not be loading due to the wrong file path
+.
+
+1️⃣ 
+Check if the logo exists
+ inside 
+
+public/
+
+Go to 
+public/
+ → Look for 
+
+symbi-logo.jpg
+
+If it’s missing, move it into 
+public/
+
+2️⃣ 
+Update the logo reference in your code
+
+tsx
+
+Copy
+
+<img src=
+
+"/symbi-logo.jpg"
+
+ alt=
+
+"Symbi Logo"
+
+ width={
+
+200
+
+} height={
+
+100
+
+} />
+
+✅ 
+Why?
+ Next.js requires static assets to be inside the 
+public/
+ folder.
+
+🔹 Step 5: Push Fixes to GitHub & Redeploy
+
+Once you’ve made these changes:
+
+1️⃣ 
+Save your files
+
+2️⃣ 
+Commit and push to GitHub
+
+bash
+
+Copy
+
+git add .
+git commit -m 
+
+"Fixed hydration issue & logo path"
+
+git push origin main
+
+3️⃣ 
+Go to Vercel → Click "Redeploy"
+
+🔥 
+Try this step-by-step and let me know where you are!
+ 😈🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 1275ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1008ms (628 modules)
+ GET / 200 in 1268ms
+ ✓ Compiled in 107ms (309 modules)
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Alright, Next.js is running! Now, let’s debug the hydration issue and fix the logo.
+ 🚀😈
+
+🔹 Step 1: Open Your Website and Check the Console for Errors
+
+1️⃣ Open 
+Google Chrome
+ (or any browser).
+
+2️⃣ 
+Go to
+
+http://localhost:3000
+
+3️⃣ 
+Right-click > Inspect > Console (tab)
+
+Do you still see the 
+hydration error
+?
+
+Does it mention a 
+specific component
+?
+
+✅ **If there are errors, screenshot them or
+
+You said:
+
+I am using safari
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+No problem! Safari works too.
+ Let’s check the console in Safari to see what’s causing the hydration issue. 🚀😈
+
+🔹 Step 1: Open Safari’s Developer Console
+
+Since you’re using Safari, do this:
+
+1️⃣ 
+Enable the Developer Menu
+ (if not enabled yet)
+
+Go to 
+Safari > Settings (Preferences) > Advanced
+
+Check ✅ 
+"Show Develop menu in menu bar"
+
+2️⃣ 
+Open the Console
+
+Click 
+Develop > Show JavaScript Console
+
+Or use the shortcut: 
+Command + Option + C
+
+🔹 Step 2: Reload the Page & Check for Errors
+
+1️⃣ 
+Go to 
+http://localhost:3000
+
+2️⃣ 
+Look at the console logs
+
+Do you see the 
+hydration error
+ again?
+
+Does it mention a 
+specific file or component
+?
+
+Screenshot the error (or copy-paste it here) so we know exactly what’s breaking.
+
+🔥 
+Once we see the error, we’ll fix it step by step!
+ 😈🚀
+
+You said:
+
+[Error] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch 
+if (typeof window !== 'undefined')
+.
+- Variable input such as 
+Date.now()
+ or 
+Math.random()
+ which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.

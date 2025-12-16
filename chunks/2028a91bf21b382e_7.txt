@@ -1,0 +1,490 @@
+udes: Trust Protocol, SYMBI Oracle
+
+ * Notes:
+
+ *  - Calm, mature cards; include Patent =
+Pending (AU) chip
+
+ *  - Link each card to a detail route (/work/trust-protocol, /work/oracl=
+e)
+
+ */
+
+function
+
+PatentChip
+({ 
+text
+ =3D 
+"Patent pending (=
+AU)"
+ }) {
+
+retu=
+rn
+ (
+
+    <
+spa=
+n
+
+className
+=3D
+"inline-flex items-center gap-2 rounded-full border border-gray-200 bg-whi=
+te px-3 py-1 text-[11px] text-gray-700"
+>
+
+      <
+span
+
+c=
+lassName
+=3D
+"h-1.5 w-1.5 rounded-full bg-emer=
+ald-500"
+ /> {
+text
+}
+
+    </
+span
+>
+
+  );
+
+}
+
+export
+
+function
+
+WorkSection
+() {
+
+const
+
+items
+ =3D [
+
+ =
+   {
+
+title
+=
+: 
+"The Trust Protocol"
+,
+
+href
+: 
+=
+"/work/trust-protocol"
+,
+
+summary
+:
+
+"Bidirectional identity assurance for human=E2=80=93AI. Cons=
+ent envelope + role profile =E2=86=92 mutual validation via oracle =E2=86=
+=92 dynamic trust gate."
+,
+
+meta
+: [
+"Two=E2=80=91way trus=
+t"
+, 
+"Scoped memory"
+, 
+"Auditable trail"
+],
+
+    },
+
+    {
+
+title
+: 
+"The SYMBI Oracle"
+,
+
+href
+: 
+"/work/oracle"
+,
+
+ =
+
+summary
+:
+
+  =
+
+"Neutral referee that validates without ident=
+ity custody. Issues time=E2=80=91bound tokens for memory/capability access;=
+ mediates disputes."
+,
+
+meta
+: [
+"No data custody"
+=
+, 
+"Transparency"
+, 
+"D=
+ecentralized validation"
+],
+
+=
+
+Sources
+
+You said:
+
+https://v0-shaders-hero-sectio=
+n-xi-three.vercel.app
+
+Symbi said:
+
+Thought for 34s
+
+Sources
+
+You said:
+
+ship the fixes in a way v0 can us=
+e 
+
+Symbi said:
+
+Thought for 1m 11s
+
+Yseeku =E2=80=94 V0 Fix Kit =
+(routes, Components, Middleware)
+
+=C2=B7 typescript
+
+Copy
+
+Edit
+
+=
+
+Download
+
+=
+
+Preview
+
+// -----------------------------------------------------------=
+-
+
+// Yseeku =E2=
+=80=94 v0 Fix Kit
+
+// Copy these files into your repo using the indicated paths.
+
+// This wires Advisors/Road=
+map, Work detail pages, Trust/Oracle,
+
+// Investor noindex, reduced motion, and license copy=
+.
+
+// -----------=
+-------------------------------------------------
+
+// FILE:=
+ middleware.ts
+
+/=
+/ Adds X-Robots-Tag: noindex,nofollow when ?inv=3D1 is present
+
+=
+
+import
+ { 
+NextResponse
+ } 
+from
+
+"next/server"
+
+import
+
+type
+ { 
+NextRequest
+ } 
+from
+=
+
+"next/server"
+
+export
+
+function
+
+middleware
+(
+request
+: 
+NextReque=
+st
+) {
+
+const
+
+url
+ =3D 
+request=
+
+.
+nextUrl
+
+=
+
+const
+
+inv
+ =
+=3D 
+url
+.
+searchParams=
+
+.
+get
+(
+"inv"
+)
+
+const
+
+res
+ =3D 
+NextResponse
+.
+next
+()
+
+if
+ (
+inv
+ =3D=3D=
+=3D 
+"1"
+ || 
+inv
+ =3D=3D=3D 
+"true"
+) {
+
+res
+.
+header=
+s
+.
+set
+(
+"X-Robo=
+ts-Tag"
+, 
+"noindex, nofollow"
+)
+
+  }
+
+return
+
+res
+
+}
+
+export
+
+const
+
+config
+ =3D {
+
+matcher
+: [
+"/:path*"
+],
+
+}
+
+// ----------------------------=
+--------------------------------
+
+// FILE: app/page.tsx
+
+// Composes the homepage with all sections + investo=
+r mode
+
+import
+
+ShaderBackground
+
+from
+
+"@/components/ShaderBackground"
+
+import
+ { 
+HeroContent
+ } 
+from
+=
+
+"@/components/HeroContent"
+
+import
+ { 
+ManifestoSection
+ } 
+from
+
+"@/components/ManifestoSection"
+
+import
+
+WhoWeAre=
+Section
+
+from
+
+=
+"@/components/WhoWeAreSection"
+
+import
+ { 
+RoadmapSection
+, 
+AdvisorsSection
+, 
+=
+EngagementSection
+ } 
+from
+
+"@/components/YseekuSections"
+
+import
+ { 
+ForUsers=
+Section
+, 
+ContactSection
+, 
+Navbar
+, 
+Footer
+ } 
+from
+
+"@/components/SiteChro=
+me"
+
+import
+ { 
+WorkSection
+ } 
+fr=
+om
+
+"@/components/Work"
+
+=
+
+You said:
+
+yes perfect 
+
+=
+
+Symbi said:
+
+=
+
+Thought for 30s
+
+Trust & Ora=
+cle Diagrams (svg Components)
+
+=C2=B7 typescript
+
+Copy
+
+Edit
+
+Download
+
+Preview
+
+=
+
+"use client"
+;
+
+import
+
+=
+React
+, { 
+useRef
+ } 
+from
+
+"react"
+
+/**
+
+ * Trust & Oracl=
+e =E2=80=94 Accessible SVG Diagrams
+
+ * -------------------------------------------------
+
+ * - <TrustHand=
+shakeDiagram/> : Human =E2=86=94 Agent via Oracle (bidirectional trust)
+
+ * - <OracleC=
+apabilitiesDiagram/> : Oracle capability map
+
+ *
+
+ * Notes
+
+ * - Pure SVG (responsive), calm palette, high-contrast text
+
+ * - <title>=
+; and <desc> for accessibility
+
+ * - Tailwind wrappers for spacing; drop-in anywhere
+
+ */
+
+const
+
+stroke
+ =3D 
+"#1f2937"
+
+// gray-800
+
+=
+
+const
+
+fill
+ =3D 
+"#ffffff"
+
+// white
+
+const
+
+accent
+ =3D 
+"#

@@ -1,0 +1,166 @@
+y Settings Again
+
+Go to 
+System Settings
+ → 
+Displays
+
+Make sure "AirPlay Display" is set to OFF.
+
+Uncheck "Show mirroring options in menu bar when available."
+
+✅ 
+This prevents AirPlay from appearing in your UI.
+
+🚨 Let Me Know What Happens!
+
+Did 
+launchctl disable system/com.apple.AirPlayXPCHelper
+ work?
+
+Does 
+ps aux
+ still show AirPlay after this?
+
+Does reconnecting the TV still bring back the icon?
+
+🚀 
+If it still persists, we will try a configuration lock to block AirPlay permanently. Let me know the results!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl disable system/com.apple.AirPlayXPCHelper
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+killall SystemUIServer
+
+Password:
+Boot-out failed: 150: Operation not permitted while System Integrity Protection is engaged
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 SIP is Preventing AirPlay From Being Disabled
+
+Since 
+SIP is blocking the removal of 
+AirPlayXPCHelper
+
+, the only way to 
+fully disable AirPlay while keeping SIP enabled
+ is to 
+block its functionality at the configuration level.
+
+🚀 Alternative: Block AirPlay Using Configuration Restrictions
+
+Since we 
+cannot remove the process
+, we will use 
+system settings and access control rules to block AirPlay completely.
+
+🛠️ Step 1: Disable AirPlay via System Preferences
+
+Go to 
+System Settings
+ → 
+General
+ → 
+AirDrop & Handoff
+
+Turn Off "AirPlay Receiver"
+
+Go to 
+System Settings
+ → 
+Displays
+
+Set "AirPlay Display" to OFF
+
+Uncheck "Show mirroring options in menu bar when available."
+
+✅ 
+This will prevent AirPlay from auto-activating.
+
+🛠️ Step 2: Use 
+defaults
+ to Force Disable AirPlay
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+✅ 
+This tells macOS to completely disable AirPlay Receiver.
+
+🛠️ Step 3: Block AirPlay Network Traffic
+
+Since 
+SIP prevents disabling the process
+, the next best solution is to 
+block its ability to communicate
+ using the firewall.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /usr/libexec/AirPlayXPCHelper
+
+✅ 
+This prevents AirPlay from making outgoing network connections.
+
+🚀 Final Check
+
+After running these steps:
+
+Restart your Mac
+
+Reconnect your TV
+
+Check if the AirPlay icon still appears.
+
+🚨 Let Me Know the Results!
+
+Does the icon still appear after reconnecting the TV?
+
+Does 
+ps aux | grep -E "AirPlay"
+ still show processes?
+
+Does blocking AirPlay in System Settings help?
+
+🚀 
+If the icon is still appearing, we may need to use a configuration profile (MCX) to lock AirPlay settings. Let me know!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+lcl@LCLs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setappblocked /usr/libexec/AirPlayXPCHelper
+
+socketfilterfw: unrecognized option 
+--setappblocked'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+socketfilterfw: unrecognized option 
+--setappblocked'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 Firewal

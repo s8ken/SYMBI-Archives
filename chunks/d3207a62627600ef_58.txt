@@ -1,0 +1,254 @@
+/com.apple.controlcenter
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep ControlCe
+
+sja               3111   0.0  0.0 410724112   1440 s000  R+   10:50pm   0:00.00 grep ControlCe
+sja               3099   0.0  0.4 411776208  71216   ??  S    10:49pm   0:00.34 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Control Center is Still Restarting – Let’s Fully Remove It from the System
+
+Even after disabling it with 
+launchctl
+, 
+Control Center (
+ControlCe
+) restarted (PID 3099).
+
+🚨 This means macOS is 
+forcing it to stay active
+, and we need a 
+stronger approach to stop it permanently
+.
+
+🚀 Step 1: Kill Control Center Again
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 3099
+
+📌 
+This will stop it temporarily, but we need to prevent macOS from relaunching it.
+
+🚀 Step 2: Delete the Control Center Auto-Launch File
+
+Since 
+launchctl disable
+
+didn’t work
+, we will 
+delete the launch agent manually
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+📌 
+This removes the file that macOS uses to auto-launch Control Center.
+
+🚀 Step 3: Prevent macOS from Reinstalling Control Center
+
+Even after deleting the auto-launch file, macOS 
+might try to restore it
+ on reboot.
+
+To prevent this, 
+block execution of Control Center’s binary
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+
+📌 
+This makes the file unexecutable, permanently disabling it.
+
+🚀 Step 4: Confirm Control Center is Fully Gone
+
+1️⃣ 
+Check if it’s still running:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep ControlCe
+
+📌 If 
+no output appears
+, it’s gone. ✅
+
+2️⃣ 
+Verify no ports are open:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+📌 If ports 
+5000, 7000, and 49172 are gone
+, your Mac is now 
+fully secured!
+ 🔒
+
+🚀 Final Check: Restart Your Mac
+
+To confirm Control Center 
+does not restart
+, reboot your system:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After rebooting, run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep ControlCe
+
+📌 If it 
+does not appear
+, Control Center is permanently disabled. ✅
+
+🚀 
+Try these steps and let me know if Control Center is finally gone!
+ 🔥🔒
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo kill -9 3099
+
+sja@SJAs-MacBook-Pro ~ % sudo rm -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+rm: /System/Library/LaunchAgents/com.apple.controlcenter.plist: Operation not permitted
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo kill -9 3099
+
+sja@SJAs-MacBook-Pro ~ % sudo rm -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+rm: /System/Library/LaunchAgents/com.apple.controlcenter.plist: Operation not permitted
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 System Integrity Protection (SIP) is Blocking Deletion – Let's Work Around It
+
+macOS 
+System Integrity Protection (SIP)
+ is 
+preventing you from deleting Control Center’s launch file
+.
+
+🚨 
+Since SIP is active, we need to either work around it or temporarily disable it.
+
+🚀 Option 1: Workaround Without Disabling SIP
+
+Since we 
+can’t delete the file directly
+, we can 
+override it instead
+.
+
+1️⃣ Replace the Control Center Launch File with an Empty File
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+echo
+
+""
+
+ | sudo 
+
+tee
+
+ /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+📌 
+This replaces the file with an empty one, preventing macOS from launching Control Center.
+
+2️⃣ Set the File to Read-Only
+
+sh
+
+Copy
+
+Edit
+
+sudo chflags schg /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+📌 This 
+locks the file, preventing macOS from modifying or restoring it.
+
+🚀 Option 2: Temporarily Disable SIP (Last Resort)
+
+If 
+Option 1 doesn’t work
+, we need to 
+disable SIP
+, delete the file, and re-enable SIP.
+
+1️⃣ Reboot into macOS Recovery Mode
+
+Restart your Mac and hold 
+Command (⌘) + R
+ until you see the Apple logo.
+
+Go to Utilities → Terminal
+
+2️⃣

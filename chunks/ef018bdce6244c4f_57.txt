@@ -1,0 +1,355 @@
+mputation: A Protocol and Proof Framework for Relational Intelligenc=
+e
+
+**Abstract**
+
+: =
+Introduce SYMBI, CIQ metric, /proof A/B (Directive=E2=86=94SYMBI), Trust Re=
+ceipts, =E2=89=A515% gains in enterprise workflows, prereg + replication ki=
+t.
+
+Sections: Introduction =E2=80=A2 Related Work =E2=80=A2 Protocol (Articles,=
+ Artifacts) =E2=80=A2 Metric (CIQ) =E2=80=A2 Methods (/proof A/B) =E2=80=A2=
+ Analysis Plan =E2=80=A2 Results =E2=80=A2 Discussion =E2=80=A2 Ethics =E2=
+=80=A2 Availability (repo + OSF)
+
+Figures: Protocol diagram =E2=80=A2 CIQ map =E2=80=A2 Waterfall of deltas =
+=20
+Tables: Outcomes, Safety violations =20
+Ethics: Data minimization; no PII exfil; rater instructions; bias.
+
+academic/replication-kit-README=
+.md
+
+markdown
+
+Copy code
+
+# Replication K=
+it
+
+Folders: /prompts =E2=80=A2 /protocol =E2=80=A2 /receipts =E2=80=A2 /metric=
+s =E2=80=A2 /analysis =E2=80=A2 /ethics
+
+## Quick start
+
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python run
+_ab.py --tasks data/tasks.csv --mod=
+e both --out out/
+
+**Receipt schema**
+
+: see `latex/arxiv/src/receipt_schema.json`
+
+academic/prereg-template.md
+
+markdown
+
+Copy code
+
+# OSF Preregist=
+ration Template
+
+Hypotheses =E2=80=A2 Design (within-subject A/B) =E2=80=A2 Sample size/powe=
+r (d=E2=89=880.35 =E2=86=92 n=E2=89=88100/cond) =E2=80=A2 Measures (CIQ sub=
+scales, completion, time, safety violations) =E2=80=A2 Analysis (paired tes=
+ts, Holm=E2=80=93Bonferroni, mixed models) =E2=80=A2 Ethics =E2=80=A2 Exclu=
+sions =E2=80=A2 Robustness.
+
+academic/cover-letter.md
+
+markdown
+
+Copy code
+
+Subject: Submission =E2=80=94 Relationship o=
+ver Computation: A Protocol and Proof Framework for Relational Intelligence
+We submit SYMBI, a protocol + metric + /proof method with preregistration a=
+nd a full replication kit, showing consistent gains over directive promptin=
+g in enterprise workflows.
+
+academic/bibtex-starters.bib
+
+bibtex
+
+Copy code
+
+@misc{symbi2025protocol,
+  title=3D{SYMBI: A Constitutional Protocol for Relational Intelligence},
+  author=3D{Stephen S. and SYMBI Core Protocol},
+  year=3D{2025},
+  howpublished=3D{preprint},
+  url=3D{https://symbi.world/whitepaper}
+}
+@article{bai2022constitutional,
+  title=3D{Constitutional AI: Harmlessness from AI Feedback},
+  author=3D{Bai, Y. and others},
+  journal=3D{arXiv:2212.08073},
+  year=3D{2022}
+}
+
+latex/arxiv/main.tex
+
+latex
+
+Copy code
+
+\documentclass
+=
+
+[11pt]{article}
+
+\usepackage
+
+[m=
+argin=3D1in]{geometry}
+
+\usepackage
+
+{t=
+imes,graphicx,booktabs,hyperref,url,amsmath,amssymb,natbib}
+
+\title
+
+{Relati=
+onship over Computation: A Protocol and Proof Framework for Relational Inte=
+lligence}
+
+\author
+
+{Steph=
+en S. 
+
+\\
+
+ SYMB=
+I Institute (proposed) 
+
+\\
+
+\texttt
+
+{contact@symbi.world}}
+
+\date
+
+{Septemb=
+er 25, 2025}
+
+\begin
+
+{docume=
+nt}
+
+\maketitle
+
+\begin
+
+{abstra=
+ct}We introduce SYMBI, a constitutional protocol that measurably improves h=
+uman--AI collaboration via a /proof A/B toggle, CIQ metric, and Trust Recei=
+pts.
+
+\end
+
+{abst=
+ract}
+
+\section
+
+{Intr=
+oduction}
+
+\section
+
+{Related Work}
+
+\section
+=
+
+{Protocol}
+
+\section
+
+{Metric: CIQ}
+
+\s=
+ection
+
+{Methods: /proof A/B}
+
+\section
+
+{Results}
+
+\section
+
+{Discussion}
+
+\section
+
+{Ethics}
+
+\section
+
+{Availability}
+
+\bibliographystyle
+
+{plainnat}
+
+\bibliography
+
+{ciq}
+
+\end
+
+{document=
+}
+
+latex/arxiv/ciq.bib
+
+bibtex
+
+Copy code
+
+@misc{symbi2025protocol,
+  title=3D{SYMBI: A Constitutional Protocol for Relational Intelligence},
+  author=3D{Stephen S. and SYMBI Core Protocol},
+  year=3D{2025},
+  howpublished=3D{preprint},
+  url=3D{https://symbi.world/whitepaper}
+}
+
+latex/arxiv/src/receipt_schema.=
+json
+
+json
+
+Copy code
+
+{
+
+"version"
+
+:
+
+"1.0"
+
+=
+,
+
+"session_id"
+
+:
+
+"..."
+
+,
+
+"mode"
+
+:
+
+"SYMBI|DIRECTIVE"
+
+,
+
+"inputs"
+
+:
+
+{
+
+"user"
+
+:
+=
+
+"..."
+
+,
+
+"context"
+
+:
+
+"=
+..."
+
+}
+
+,
+
+"constraints"
+
+:
+
+{
+
+"articles"
+
+:=
+
+[
+=
+
+1
+
+,
+
+2
+
+,
+
+3
+
+]
+
+,
+
+"safety"
+
+:
+
+[
+
+"nsf=
+w"
+
+,
+
+"pii"
+
+]
+
+}
+
+,
+
+"outcome"
+
+:
+
+{
+
+"text"
+
+:
+=
+
+"..."
+
+,
+
+"completion"
+
+:
+
+true
+
+,
+
+"time_sec"

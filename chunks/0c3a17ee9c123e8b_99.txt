@@ -1,0 +1,281 @@
+ lets save it first and see the integration works
+
+Vercel Deployment Expert GPT said:
+
+Perfect — great move. Let’s confirm everything is 
+saved and integrated properly
+ before diving into schema refinement. Here’s how to verify the full loop is working:
+
+✅ Sanity + Next.js Integration Checklist:
+
+1. 
+Sanity Studio
+:
+
+Go to 
+
+http://localhost:3001/studio
+
+.
+
+In the sidebar, you should see document types like 
+Page
+ or 
+Site Settings
+.
+
+Open a page (like your test one) and confirm you can edit 
+title
+ and 
+content
+.
+
+2. 
+Next.js Frontend
+:
+
+Visit 
+
+http://localhost:3001
+
+.
+
+Confirm the frontend is rendering the title/content from Sanity (e.g. “test page title”).
+
+Any changes you make in the Studio should reflect after a refresh (or with hot reload).
+
+3. 
+Code Structure
+ (confirm the important files are in place):
+
+✅ 
+lib/sanity.ts
+ (client setup)
+
+✅ 
+app/page.tsx
+ (data fetching + rendering logic)
+
+✅ 
+schemas/page.ts
+ (document schema)
+
+✅ 
+sanity.config.ts
+ (Sanity config file)
+
+🔄 Not Seeing Content Updates?
+
+If it’s not rendering the content yet:
+
+Double-check the page ID or query (e.g., 
+*[_type == "page"][0]
+).
+
+Ensure you're using 
+PortableText
+ correctly to render 
+content
+.
+
+Let me know if you'd like to connect specific fields to sections like "What", "Why", "Who".
+
+When you’re ready, I can help:
+
+Add custom sections to your schema.
+
+Map content from Sanity to specific areas in the homepage.
+
+Deploy the updated site to Vercel when it's all working.
+
+Let me know when you're ready to test with live content or build more!
+
+You said:
+
+npm run dev
+
+Vercel Deployment Expert GPT said:
+
+Great! Just make sure you’re in the correct project folder (looks like 
+symbi-main-site
+), then run:
+
+bash
+
+Copy
+
+npm run dev
+
+If everything is wired correctly, you should see something like:
+
+arduino
+
+Copy
+
+⚡  Local: http:
+
+//localhost:3000
+
+If it switches to port 
+3001
+, no problem — still works the same.
+
+✅ After it's running:
+
+Visit 
+
+http://localhost:3001
+
+ to view your main site.
+
+Visit 
+
+http://localhost:3001/studio
+
+ to access Sanity Studio.
+
+Let me know:
+
+If you get any errors during startup
+
+Or if you want to validate the CMS-driven content rendering after it loads
+
+I'll stay on standby to help you verify and improve it from there!
+
+You said:
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 1400ms
+ ○ Compiling / ...
+ ⚠ ./app/page.tsx
+Attempted import error: 'getPage' is not exported from '@/lib/sanity' (imported as 'getPage').
+
+Import trace for requested module:
+./app/page.tsx
+ ⨯ TypeError: (0 , _lib_sanity__WEBPACK_IMPORTED_MODULE_1__.getPage) is not a function
+    at getPage (app/page.tsx:8:28)
+   6 |
+   7 | export default async function Home() {
+>  8 |   const page = await getPage()
+     |                            ^
+   9 |
+  10 |   return (
+  11 |     <div className="flex flex-col min-h-screen"> {
+  digest: '1982751570'
+}
+ GET / 200 in 2426ms
+ ⚠ ./app/page.tsx
+Attempted import error: 'getPage' is not exported from '@/lib/sanity' (imported as 'getPage').
+
+Import trace for requested module:
+./app/page.tsx
+
+Vercel Deployment Expert GPT said:
+
+Perfect catch — the issue is just a missing export in your 
+lib/sanity.ts
+ file. Let’s fix it now.
+
+✅ Step 1: Open 
+lib/sanity.ts
+
+In this file, make sure you add the 
+getPage
+ function and export it properly. Here's what your complete 
+lib/sanity.ts
+ should look like:
+
+ts
+
+Copy
+
+import
+
+ { createClient, groq } 
+
+from
+
+"next-sanity"
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+"wryptr7v"
+
+, 
+
+// replace if needed
+
+dataset
+
+: 
+
+"production"
+
+,
+
+apiVersion
+
+: 
+
+"2023-01-01"
+
+,
+
+useCdn
+
+: 
+
+true
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+return
+
+ client.
+
+fetch
+
+(
+    groq
+`*[_type == "page"][0]{
+      title,
+      content
+    }`
+
+  

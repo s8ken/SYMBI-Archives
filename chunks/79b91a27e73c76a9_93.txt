@@ -1,0 +1,251 @@
+"Library not found in jar (libtsk_jni)"
+ and 
+"UnsatisfiedLinkError"
+ means 
+Autopsy still can’t find the 
+libtsk_jni.dylib
+ library.
+ Let’s get this fixed!
+
+🔥 Step 1: Verify the Correct Library Exists
+
+Run this command to 
+double-check
+ that 
+libtsk_jni.dylib
+ exists:
+
+sh
+
+Copy
+
+Edit
+
+find /opt/homebrew -name 
+
+"libtsk_jni.dylib"
+
+ 2>/dev/null
+
+If this file 
+is missing
+, reinstall Sleuthkit:
+
+sh
+
+Copy
+
+Edit
+
+brew reinstall sleuthkit
+
+🔥 Step 2: Manually Link the Library
+
+Let’s 
+force Java to use the correct JNI library
+ by setting the environment variable 
+inside the Autopsy startup script
+.
+
+1️⃣ Open the Autopsy startup script
+
+sh
+
+Copy
+
+Edit
+
+nano ~/Downloads/autopsy-4.21.0/bin/autopsy
+
+2️⃣ Find the section where Java is executed
+
+Look for a line that starts with something like:
+
+sh
+
+Copy
+
+Edit
+
+exec
+
+"
+$JAVA
+
+" ...
+
+3️⃣ Modify the 
+exec
+ command to include the correct library path
+
+Before the 
+exec "$JAVA" ...
+ line, add:
+
+sh
+
+Copy
+
+Edit
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % find /opt/homebrew -name "libtsk_jni.dylib" 2>/dev/null
+
+/opt/homebrew/lib/libtsk_jni.dylib
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Great! The 
+
+libtsk_jni.dylib
+
+ file 
+exists
+ in:
+
+/opt/homebrew/lib/libtsk_jni.dylib
+
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+
+Now, we need to 
+tell Autopsy where to find it.
+ Follow these steps:
+
+🔥 Step 1: Set the Library Path Temporarily
+
+Try launching Autopsy with the correct library path:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+./autopsy
+
+💡 
+If that works, we’ll make it permanent.
+ If not, go to Step 2.
+
+🔥 Step 2: Manually Edit the Autopsy Startup Script
+
+1️⃣ Open the Autopsy startup script in a text editor:
+
+sh
+
+Copy
+
+Edit
+
+nano ~/Downloads/autopsy-4.21.0/bin/autopsy
+
+2️⃣ Scroll down and 
+find the line
+ that looks like this:
+
+sh
+
+Copy
+
+Edit
+
+exec
+
+"
+$JAVA
+
+" ...
+
+(This is where Java is being executed to run Autopsy.)
+
+3️⃣ 
+Add this line
+ right 
+before
+ the 
+exec "$JAVA"
+ line:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+4️⃣ 
+Save & exit
+:
+
+Press 
+CTRL + X
+
+Press 
+Y
+ to confirm changes
+
+Press 
+Enter
+
+🔥 Step 3: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+If it still fails, let me know 
+what error you get next! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0xa) at pc=0x000000000bad4007, pid=8287, tid=259
+#
+# JRE version: OpenJDK Runtime Environment Homebrew (23.0.2) (build 23.0.2)
+# Java VM: OpenJDK 64-Bit Server VM Homebrew (23.0.2, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# C  0x000000000bad4007
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid8287.log
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/Homebrew/homebrew-core/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+./../platform/lib/nbexec: line 434:  8287 Abort trap: 6           "/opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home/bin/java" -Djdk.home="/opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home" -classpath "/Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/or

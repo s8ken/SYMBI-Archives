@@ -1,0 +1,221 @@
+y
+
+Some devs sign commits with GPG for added security. Tools like 
+git commit -S
+ or GitHub verification rely on GPG keys.
+
+You used a framework/tool that signs packages (e.g., npm, pnpm, homebrew)
+
+â ï¸ Possible
+
+Some dev tools or CLI frameworks (like 
+pnpm
+, 
+brew
+, 
+cargo
+, etc.) will optionally use GPG to verify packages.
+
+You used encrypted credentials / secret management (e.g., 
+sops
+, 
+pass
+)
+
+â Likely
+
+GPG is a core part of secret management tools.
+
+You installed something like 
+Keybase
+, 
+Homebrew
+, or a developer-focused toolchain
+
+â ï¸ Possible
+
+Some of these will install GPG or suggest you do so.
+
+You manually installed GPG Suite from 
+gpgtools.org
+
+â Yes
+
+That would install the full suite including 
+fixGpgHome
+.
+
+ð§  How You Can Tell if It Was SYMBI-Related
+
+Run this to check when the 
+fixGpgHome
+ binary was created:
+
+bash
+
+Copy
+
+stat
+
+ /usr/local/MacGPG2/libexec/fixGpgHome
+
+Look for the 
+Birth:
+ or 
+Created:
+ timestamp. If it lines up with when you were actively building or setting up the SYMBI site â thatâs your clue.
+
+Also, check your Git config:
+
+bash
+
+Copy
+
+git config --global user.signingkey
+
+If thatâs set, and your commits are signed, GPG may have been installed during that process.
+
+ð Verdict
+
+If your SYMBI site build used standard tools like Next.js, React, Vercel, or Netlify without any cryptographic tooling â 
+you probably didnât need GPG Suite
+.
+
+But if you signed commits, encrypted secrets, or used security-focused toolingâ¦ itâs very plausible it got pulled in either by you or one of your tools.
+
+Want me to help scan for signs of commit signing or encryption tooling in your SYMBI site repo? Or help clean out GPG if itâs no longer needed? Just say the word.
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % pkgutil --pkgs | grep -i gpgtools
+
+org.gpgtools.gpgkeychain.pkg
+org.gpgtools.checkprivatekey.pkg
+org.gpgtools.pinentry.pkg
+org.gpgtools.libmacgpg.xpc.pkg
+org.gpgtools.gpgpreferences.pkg
+org.gpgtools.pkg.version
+org.gpgtools.macgpg2.1.pkg
+org.gpgtools.pkg.preinstall
+org.gpgtools.key
+org.gpgtools.updater.pkg
+org.gpgtools.gpgservices.pkg
+org.gpgtools.libmacgpgB.pkg
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Thanks for running that, Stephen â the output confirms it loud and clear:
+
+â 
+GPG Suite is fully installed on your system.
+
+Hereâs what that list tells us:
+
+ð Breakdown of the Installed GPGTools Packages
+
+Each 
+org.gpgtools.*
+ entry represents a component of the 
+full GPG Suite
+, specifically:
+
+Package
+
+Purpose
+
+macgpg2.1.pkg
+
+The core GnuPG 2 engine for macOS (MacGPG2)
+
+gpgkeychain.pkg
+
+GPG Keychain app (GUI for managing keys)
+
+gpgpreferences.pkg
+
+GPG Suite preferences pane in System Settings
+
+gpgservices.pkg
+
+Right-click context menu services (e.g., encrypt/decrypt a file from Finder)
+
+libmacgpg.pkg
+, 
+libmacgpgB.pkg
+, 
+libmacgpg.xpc.pkg
+
+Libraries that allow integration with macOS and apps
+
+checkprivatekey.pkg
+, 
+pinentry.pkg
+
+Used for secure key storage and passphrase prompts
+
+updater.pkg
+
+GPG Suiteâs self-updating component
+
+pkg.preinstall
+, 
+pkg.version
+, 
+key
+
+Metadata used by the installer
+
+And because 
+
+macgpg2.1.pkg
+
+ is present, that means the 
+fixGpgHome
+ binary you saw in 
+KnockKnock
+ is part of a normal background check process initiated by this suite.
+
+ð§­ Next Steps: What Do You Want to Do?
+
+Youâve got two clean options depending on whether you want to 
+keep GPG tools
+ around:
+
+ð Option 1: 
+Keep It
+
+If you're doing any of the following:
+
+Signing Git commits
+
+Encrypting/decrypting files or emails
+
+Working with secrets (like 
+pass
+ or 
+sops
+)
+
+Using tools that rely on GPG
+
+Then it's 
+safe
+ and 
+recommended to leave it installed
+. Itâs a trusted, signed toolset from GPGTools.
+
+ð§¹ Option 2: 
+Uninstall GPG Suite
+
+If youâre not using any of the above and want to remove the background task + launch agents:
+
+â Use the official uninstaller:
+
+bash
+
+Copy
+
+sudo /Library/Application\ Support/GPGTools/Uninstaller.app/Contents/MacOS/Uninstall
+
+That will clean u

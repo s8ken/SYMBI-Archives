@@ -1,0 +1,244 @@
+eploy to Vercel
+
+Once your app 
+runs fine locally
+, push the latest changes:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed npm install issue"
+
+git push origin main
+
+Then 
+force a fresh Vercel deployment
+:
+
+bash
+
+Copy
+
+Edit
+
+vercel --prod --force
+
+ð¹ The 
+--force
+ flag 
+prevents Vercel from using old cached files
+.
+
+ð Final Check
+
+1ï¸â£ 
+
+npm install
+ works locally
+
+2ï¸â£ 
+
+npm run dev
+ runs successfully
+
+3ï¸â£ 
+Vercel Deployment (
+vercel --prod --force
+) works without errors
+
+ð¥ 
+Try these steps and let me know if you hit any issues!
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npm install
+
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: react-day-picker@8.10.1
+npm error Found: react@19.0.0
+npm error node_modules/react
+npm error   react@"^19" from the root project
+npm error   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm error   node_modules/@floating-ui/react-dom
+npm error     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm error     node_modules/@radix-ui/react-popper
+npm error       @radix-ui/react-popper@"1.2.2" from @radix-ui/react-hover-card@1.1.6
+npm error       node_modules/@radix-ui/react-hover-card
+npm error         @radix-ui/react-hover-card@"^1.1.4" from the root project
+npm error       4 more (@radix-ui/react-menu, @radix-ui/react-popover, ...)
+npm error   70 more (@radix-ui/react-accordion, ...)
+npm error
+npm error Could not resolve dependency:
+npm error peer react@"^16.8.0 || ^17.0.0 || ^18.0.0" from react-day-picker@8.10.1
+npm error node_modules/react-day-picker
+npm error   react-day-picker@"8.10.1" from the root project
+npm error
+npm error Conflicting peer dependency: react@18.3.1
+npm error node_modules/react
+npm error   peer react@"^16.8.0 || ^17.0.0 || ^18.0.0" from react-day-picker@8.10.1
+npm error   node_modules/react-day-picker
+npm error     react-day-picker@"8.10.1" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sja/.npm/_logs/2025-03-20T15_13_07_634Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sja/.npm/_logs/2025-03-20T15_13_07_634Z-debug-0.log
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð¨ Issue: React Version Conflict (React 19 vs React 18)
+
+Your project is using 
+React 19
+, but 
+
+react-day-picker@8.10.1
+ only supports React 16, 17, or 18
+.
+
+â 
+Fix: Downgrade React to a Compatible Version (
+18.3.1
+)
+
+ð  Step 1: Install React 18 Instead of React 19
+
+Run the following command to 
+force downgrade React to 18.3.1
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install react@18.3.1 react-dom@18.3.1 --legacy-peer-deps
+
+or if using 
+Yarn
+:
+
+bash
+
+Copy
+
+Edit
+
+yarn add react@18.3.1 react-dom@18.3.1
+
+â This will 
+replace React 19 with React 18
+, which is compatible with all dependencies.
+
+ð  Step 2: Verify the Installed React Version
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm list react
+
+You should see:
+
+css
+
+Copy
+
+Edit
+
+react
+
+@18
+
+.3.1
+
+If 
+React 19 is still there
+, try installing React 18 again.
+
+ð  Step 3: Fully Reset Dependencies (If Needed)
+
+If the issue persists, 
+remove and reinstall everything
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+
+â This ensures a 
+fresh install with no dependency conflicts
+.
+
+ð Step 4: Run Locally
+
+Now, test your project again:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+If 
+it works locally (
+localhost:3000
+)
+, youâre good to go.
+
+If 
+it fails
+, send me the error message.
+
+ð Step 5: Commit & Deploy to Vercel
+
+Once everything is working, commit and deploy:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed React version conflict"
+
+git push origin main
+vercel --prod --force
+
+ð¹ The 
+--force
+ flag 
+prevents Vercel from using cached files
+.

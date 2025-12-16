@@ -1,0 +1,239 @@
+nknown streaming platforms
+
+🔍 
+Look for:
+
+live.twitch.tv
+
+rtmp.youtube.com
+
+youstream.com
+
+Any unknown domains
+
+2️⃣ Find Which App Created These Connections
+
+Since 
+Cloudflare hides the real domain
+, we need to check 
+which process opened these connections.
+
+Run:
+
+sh
+
+Copy
+
+sudo lsof -i -n | grep ESTABLISHED
+
+This will show 
+which apps
+ were using those IPs.
+
+Look for:
+
+Chrome/Safari (Twitch in browser?)
+
+OBS (if still running when deleted?)
+
+Any unknown process sending data
+
+3️⃣ Check Twitch Account for Unauthorized Streams
+
+If these connections were 
+Twitch-related
+, you can confirm by checking:
+
+1️⃣ 
+Go to
+
+https://www.twitch.tv/
+
+2️⃣ 
+Click your profile → Creator Dashboard → Content → Video Producer
+
+3️⃣ 
+Look for past streams.
+
+If you see 
+streams you didn’t start
+, that’s a red flag.
+
+🔹 
+Reset your Twitch stream key
+ just in case:
+
+Go to Settings → Stream → Reset Key
+
+If someone had access, this prevents them from streaming again.
+
+🚨 Summary
+
+✅ 
+Run 
+log show --predicate 'eventMessage contains "DNS"' --last 7d
+ to see what websites were contacted.
+
+✅ 
+Use 
+lsof -i -n | grep ESTABLISHED
+ to see which app made the connection.
+
+✅ 
+Check Twitch for any unauthorized past broadcasts.
+
+✅ 
+Reset your Twitch stream key to prevent future misuse.
+
+If the DNS logs show 
+unknown streaming platforms
+, we’ll investigate further. Let me know what you find! 🚨
+
+You said:
+
+yes so I want to look at anything the did live-streaming for the past 21 days
+
+ChatGPT said:
+
+To find 
+any livestreaming activity over the past 21 days
+, we need to check system logs, network traffic, and browser history. Since logs can be deleted, we’ll look at multiple sources to 
+catch any hidden livestreams.
+
+🚨 1️⃣ Find Evidence of Past Livestreams (RTMP, WebRTC, HLS)
+
+Since 
+RTMP and WebRTC logs came up empty for 7 days
+, let’s 
+expand to 21 days
+ and include 
+HLS (HTTP Live Streaming), which many modern services use.
+
+A. Scan for Streaming Protocols in System Logs
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "rtmp" OR eventMessage contains "webrtc" OR eventMessage contains "hls"'
+
+ --last 21d
+
+If 
+Twitch, YouTube Live, Facebook Live, YouStream, or unknown servers
+ were used, this will show the logs.
+
+Look for 
+stream URLs or unknown IP addresses.
+
+If nothing appears, logs may have been 
+cleared
+ or 
+overwritten
+—in that case, we’ll move to network and browser data.
+
+🌐 2️⃣ Find Out Where Data Was Sent (Network Forensics)
+
+If a 
+hidden app
+ was livestreaming, 
+network logs might still show where.
+
+A. Check Network Traffic for Large Outbound Transfers
+
+sh
+
+Copy
+
+sudo nettop -m tcp -p -P | grep -E 
+
+"upload|send"
+
+If something sent 
+a large amount of data
+ over the past 
+21 days
+, it may have been livestreaming.
+
+Look for 
+apps/processes
+ that aren’t expected (not Chrome, Safari, etc.).
+
+B. Find Past Network Connections to Streaming Servers
+
+Run:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+If you see 
+connections to streaming servers
+, that means a 
+livestreaming session was running recently.
+
+Look for 
+unknown IPs
+ → We can then trace these back to streaming services.
+
+🖥 3️⃣ Find Out Which App Was Livestreaming
+
+Since OBS was deleted, another app 
+may have been recording or streaming in the background.
+
+A. List Apps That Had Screen Recording Permissions
+
+Go to 
+System Settings → Privacy & Security → Screen Recording
+
+Look for 
+any unknown apps
+ that still have permission.
+
+B. Check If Any Apps Are Running Livestreaming Services
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"stream\|obs\|ffmpeg\|screencapture"
+
+If a 
+hidden process
+ is still livestreaming, this will show it.
+
+C. Scan for Hidden Background Streaming Services
+
+sh
+
+Copy
+
+launchctl list | grep -i 
+
+"stream\|obs\|ffmpeg"
+
+If any 
+background services
+ are running related to streaming, this will show them.
+
+📖 4️⃣ Check Your Browser for Streaming Activity
+
+Since some 
+livestreaming can happen through websites (YouTube, Twitch, YouStream, etc.),
+ check browser history.
+
+A. Search Br

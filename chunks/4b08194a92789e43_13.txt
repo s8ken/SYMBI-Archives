@@ -1,0 +1,125 @@
+duleInterop .
+- Build prerequisites: install new modules to avoid runtime import errors
+  - Run: npm install express-mongo-sanitize compression express-validator
+  - Skip rate-limit-redis unless you choose to downgrade express-rate-limit=
+ to v6 (not necessary here).
+- Quick sanity checks after install:
+  - Start server and hit:
+    - GET /health (should return healthy response)
+    - POST /api/trust/declarations with valid Content-Type and small payloa=
+d (should pass, large payload triggers 413)
+    - POST /api/auth/login multiple times (should trigger auth limiter at 5=
+ attempts per 15m)
+    - Requests with suspicious strings (e.g., <script> or ../ ) shoul=
+d return 400
+Notes and Recommendations
+
+- The Sonate requestLogger was not wired in to avoid duplicate logs because=
+ Symphony already uses api/middleware/requestLogger.ts . If you prefer Sona=
+te=E2=80=99s structured request/response log style, we can replace the curr=
+ent logger usage with Sonate=E2=80=99s and unify fields.
+- The global API limiter remains Redis-backed and unchanged; Sonate=E2=80=
+=99s custom apiRateLimit exists in the added module, but we continue to pre=
+fer the existing apiLimiter for consistency and store support.
+- If you plan to use Sonate=E2=80=99s validator schemas (e.g., trust declar=
+ation DTO validation), wire validationSchemas.trustDeclaration and handleVa=
+lidationErrors into the specific route handlers under api/routes/trust.ts .
+Next Steps
+
+- Run dependency install for new middleware: npm install express-mongo-sani=
+tize compression express-validator
+- Start the API and verify:
+  - Content-Type enforcement for non-GET/DELETE requests
+  - Suspicious input detection returns 400 with structured error
+  - Targeted rate limits work as expected on /api/auth and /api/trust/decla=
+rations
+- If you want distributed rate limiting from Sonate instead of the current =
+Redis store, we can adapt Sonate=E2=80=99s limiter definitions to use rate-=
+limit-redis with express-rate-limit@^6 across the project (requires depende=
+ncy alignment).
+If you want me to add route-level DTO validation from Sonate (e.g., trust d=
+eclaration schemas) or unify logging formats across the stack, I can do tha=
+t in a follow-up pass.
+
+3/9 done
+
+Create phase-2-merge branch for integration
+
+Integrate Sonate security middleware
+
+Create PHASE2_INTEGRATION_LOG.md
+
+Create PHASE2_SUMMARY_REPORT.md
+
+Merge Synergy UI components
+
+Add Socket.IO real-time communication
+
+Integrate Resonate analytics framework
+
+Write comprehensive tests for integrated components
+
+Generate coverage report
+
+Now let me create the comprehensive PHASE2_SUMMARY_REPORT.md:
+
+PHASE2_SUMMARY_REPORT.md
+PHASE2_SUMMARY_REPORT.md
+
++ 230 - 0
+
+Open Diff
+
+Now let me start the actual integration work. Let me begin by copying the s=
+ecurity middleware from YCQ-Sonate:
+
+..\YCQ-Sonate\backend\middleware\security.middleware.js
+
+Let me check the correct path for the YCQ-Sonate files:
+
+Generation interrupted
+
+Generation interrupted
+
+Let me check what directories are available in the parent folder:
+
+Generation interrupted
+
+Let me check the current working directory structure:
+
+SYMBI-SYMPHONY
+
+I can see that the security middleware from Sonate has already been integra=
+ted (I can see security.middleware.js in the middleware folder). Let me che=
+ck what's currently in the server.ts to see the current state of integratio=
+n:
+
+api\server.ts
+
+Excellent! I can see that the security middleware integration has already b=
+een completed. Let me continue with the next integration steps. Let me star=
+t by integrating the Socket.IO real-time communication from symbi-synergy:
+
+4/9 done
+
+Create phase-2-merge branch for integration
+
+Integrate Sonate security middleware
+
+Create PHASE2_INTEGRATION_LOG.md
+
+Create PHASE2_SUMMARY_REPORT.md
+
+Merge Synergy UI components
+
+Add Socket.IO real-time communication
+
+Integrate Resonate analytics framework
+
+Write comprehensive tests for integrated components
+
+Generate coverage report
+
+Compact
+
+I'll create a de

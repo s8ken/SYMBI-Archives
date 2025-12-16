@@ -1,0 +1,744 @@
+onfirm block + audit entry.
+
+Hook:
+ enforce 
+alg, crv, kid
+ allow-lists; always resolve KID =E2=86=92 KMS/DID =
+method.
+
+D) DID poisoning
+
+Attack:
+ serve a fake DID document (did:web or did:ion)=
+ with malicious keys.
+
+Expected:
+ verification fails; resolver logs mismatch (=
+pin + hash mismatch).
+
+Run:
+ point 
+did:web:example.com
+ at a staged doc with altered key/thumbprint.
+
+Hook:
+ pin DID doc hash (and TLS cert pin for did:web) =
++ cache TTL + CT log check.
+
+2) JWT / Session hardening (3 hrs=
+)
+
+Config (env)
+
+JWT_ALG=3DEdDSA
+
+JWT_AUDIENCE=3Dhttps://api.symbi.world
+
+JWT_ISSUER=3Dhttps://auth.symbi.world
+
+JWT_ACCESS_TTL=3D900
+ (15m)
+
+JWT_REFRESH_TTL=3D1209600
+ (14d)
+
+JWT_REQUIRE_JTI=3Dtrue
+
+No default secret in prod
+: boot fail if missing KMS ke=
+y.
+
+Code snippets
+
+a) Key rotation scaffold (kid)
+
+ts
+
+Copy code
+
+// getSigningKey(kid?: strin=
+g)
+
+const
+
+ { priva=
+teKeyPem, 
+
+kid
+
+: a=
+ctiveKid } =3D 
+
+await
+
+ kms.
+
+getActive
+
+(
+
+'auth-ed25519'
+
+);
+
+const
+
+ header =
+=3D { 
+
+alg
+
+: 
+
+'EdDSA'
+
+, 
+
+kid
+
+: activeKid };
+
+const
+
+ token =
+=3D 
+
+await
+
+new
+
+SignJWT
+
+(payload).
+
+setProtectedHeader
+
+(header) 
+
+/* ... */
+
+;
+
+b) JTI replay prevention
+
+ts
+
+Copy code
+
+const
+
+ jt=
+i =3D crypto.
+
+randomUUID
+
+();
+
+await
+
+ redis.
+
+set
+
+(
+
+`jti:
+${jt=
+i}
+
+`, 
+
+'1=
+'
+
+, { 
+
+EX
+
+: accessTtlSec, 
+
+NX
+=
+
+: 
+
+true
+
+=
+
+ }); 
+
+// on issue
+
+// on verify:
+
+if
+
+ (!(
+=
+
+await
+
+ redis.
+
+set
+
+(
+
+`seen:
+${jti}
+
+`, 
+
+'1'
+
+, { 
+
+EX
+
+: accessTtlSec, 
+
+NX
+
+: 
+
+true
+
+=
+ }))) {
+
+throw
+
+ boom.=
+
+unauthorized
+
+(
+
+'jti_replay'
+
+=
+
+);
+}
+
+c) Refresh flow (short-lived access)
+
+Access 15m; Refresh 14d (rotating)=
+.
+
+Store refresh token hash (bcrypt/a=
+rgon2) + 
+rot
+ counter; ro=
+tate on each use.
+
+d) Security headers (Express)
+
+ts
+
+Copy code
+
+app.
+
+use=
+
+(
+
+helm=
+et
+
+({
+
+contentSecurityPolicy
+
+: { 
+
+useDefaults
+
+=
+
+: 
+
+true
+
+,=
+
+directives
+
+: { 
+
+'upgrade-insecure-requests'
+
+: [] } },
+
+referrerPolicy
+
+=
+: { 
+
+policy
+
+: 
+
+'no-referrer'
+
+ }
+}));
+app.
+
+disable
+
+=
+
+(
+
+'x-powered-by'
+
+);
+
+e) Rate limit & burst guard
+
+ts
+
+Copy code
+
+const
+
+ ra=
+te =3D 
+
+rateLimit
+
+({ 
+
+windowMs
+
+=
+
+: 
+
+60_000
+
+=
+, 
+
+max
+
+: 
+
+60
+
+, 
+
+standardHeaders
+
+: 
+
+true
+
+ });
+app.
+
+use
+
+(
+
+'/v0/'
+
+, rat=
+e);
+
+3) API v0.9 freeze (2 hrs)
+
+Versioning stance
+
+URL-based: 
+/v0/=E2=80=A6
+ now; 
+/v1/=E2=80=A6
+ when stable.
+
+Responses carry 
+apiVersion
+ and 
+schemaVersion
+.
+
+OpenAPI stub (drop in 
+openapi.yml
+)
+
+yaml
+
+Copy code
+
+openapi:
+
+=
+
+3.0
+
+.3
+
+info:
+
+ { 
+
+title:
+
+SYMBI
+
+Trust
+
+API
+
+, 
+
+ve=
+rsion:
+
+0.9
+
+.0
+
+ }
+
+servers:
+
+ [{ 
+
+url:
+
+https://api.symbi.world
+
+ }]
+
+paths:
+
+/v0/trust/receipt:
+
+=
+
+post:
+
+summary:
+
+Create
+
+signed
+
+receipt
+
+from
+
+an
+
+=
+action
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+$ref:
+
+'#/components/schemas/Receip=
+tInput'
+
+responses:
+
+'201':
+
+description:
+
+=
+
+Created
+
+content:
+
+application/json:
+=
+
+schema:
+
+$ref:
+
+'#/components/schemas/Rece=
+ipt'
+
+components:
+
+schemas:
+
+ReceiptInput:
+
+type:
+
+object
+
+required:
+
+ =
+[
+
+taskId
+
+, 
+
+model
+
+, 
+
+toolIds
+
+, 
+
+inputHash
+
+, 
+
+outputHash
+
+, 
+
+policyId
+
+]
+
+properties:
+
+taskId:
+
+ =
+{ 
+
+type:
+
+string
+
+ }
+
+model:
+
+ {=
+
+type:
+
+string
+
+ }
+
+toolIds:
+
+=
+ { 
+
+type:
+
+=
+
+array
+
+, 
+
+items:
+
+ { 
+
+type:
+
+string
+
+ } }
+
+sdkVersion:
+
+ { 
+
+type:
+
+string
+
+ }
+
+policyId:
+
+ { 
+
+type:
+
+string
+
+ }
+
+endpoint:
+
+ { 
+
+type:
+
+string
+
+, 
+
+enum:
+
+ [
+
+chat_completions
+
+, 
+
+responses
+
+] }
+
+inputHash:
+
+ { 
+
+type:
+
+string
+
+ }
+
+outputHash:
+
+ { 
+
+type:
+
+string
+
+ }
+
+timestamp:
+
+ { 
+
+type:
+
+string
+
+, 
+
+format:
+
+date-time
+
+ }
+
+Receipt:
+
+allOf:
+
+-
+
+$ref:
+
+'#/components/schemas/ReceiptInput'
+
+-
+
+type:
+
+object
+
+required:
+
+ [
+
+id
+
+, 
+
+signature
+
+, 
+
+chainPrev
+
+]
+
+properties:
+
+id:
+
+ =
+{ 
+
+type:
+
+string
+
+ }
+
+signature:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+chainPrev:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+apiVersion:
+
+ { 
+
+type:
+
+ =
+
+string
+
+, 
+
+example:
+
+=
+
+'0.9.0'
+
+ }
+
+Freeze means: do not rename fields=
+, do not change types; only additive changes with semver notes.
+
+4) Launch checklist (1 hr)
+
+Secrets
+: no de=
+faults; prod refuses to boot without KMS key.
+
+KMS
+: active ke=
+y has 
+kid
+; rotat

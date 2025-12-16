@@ -1,0 +1,271 @@
+picious
+, with multiple 
+broadcast events, SMB errors, and identity services activity.
+ Let me know what you find!
+
+You said:
+
+we have found multiple videos of me in the system but I want to know where the broadcasting was going - which platform
+
+ChatGPT said:
+
+Since you've 
+found videos of yourself in the system
+, it's critical to determine 
+where they were broadcasted or uploaded
+. Hereâs how we can track that down:
+
+1ï¸â£ Check for Outbound Network Traffic (Mac Terminal)
+
+To see where your Mac was sending data, run:
+
+A. Find Recent Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for 
+IP addresses
+ or 
+domain names
+ that seem unfamiliar.
+
+If you see domains like 
+YouStream, Twitch, YouTube, Dropbox, etc.
+, those could be destinations for the broadcast.
+
+B. Identify Apps Sending Data
+
+sh
+
+Copy
+
+lsof -i -P | grep LISTEN
+
+This will show 
+which applications
+ are actively 
+listening for network connections
+ (e.g., Zoom, OBS, VLC).
+
+Look for anything unexpected.
+
+C. Find Past Connections
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "broadcast"'
+
+ --last 30d
+
+This will 
+expand your original search to 30 days
+ to catch earlier broadcasts.
+
+2ï¸â£ Look for Uploads to Online Platforms
+
+A. Check Your Browser History
+
+Open 
+Safari/Chrome â History â Search "upload"
+
+Also search for 
+"YouStream"
+, 
+"Live"
+, 
+"Stream"
+, 
+"OBS"
+, 
+"Broadcast"
+
+B. Scan for Cloud Uploads
+
+Open 
+System Settings â Apple ID â iCloud
+
+Check if videos were 
+uploaded to iCloud Drive, Google Drive, or Dropbox
+
+Look inside:
+
+~/Library/Application Support/Google/Drive
+
+~/Library/Application Support/Dropbox
+
+3ï¸â£ Investigate Hidden Services That May Have Broadcasted
+
+A. List Running Services
+
+sh
+
+Copy
+
+ps aux | grep obs
+ps aux | grep stream
+ps aux | grep ffmpeg
+
+If 
+OBS Studio, ffmpeg, VLC, or other recording software
+ appears, that means they were used to stream or capture your screen.
+
+B. Check for Suspicious Scripts
+
+Run this command to see if any scripts were running:
+
+sh
+
+Copy
+
+sudo find / -
+
+type
+
+ f -name 
+
+"*.sh"
+
+ -
+
+exec
+
+ grep -i 
+
+"stream"
+
+ {} +
+
+This will locate any 
+hidden shell scripts
+ that mention streaming.
+
+4ï¸â£ Scan for Logs of Video Uploads
+
+A. YouTube, Twitch, or Streaming Services
+
+sh
+
+Copy
+
+grep -r 
+
+"upload"
+
+ ~/Library/Application\ Support/
+grep -r 
+
+"stream"
+
+ ~/Library/Application\ Support/
+
+This checks app data for evidence of 
+video uploads
+.
+
+B. Firewall Logs for Data Transfers
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.network"'
+
+ --last 7d | grep 
+
+"upload"
+
+This will show 
+network activity related to uploads
+.
+
+5ï¸â£ Advanced - Use Wireshark to See Where Data Was Sent
+
+If you want to 
+live-capture network traffic
+, you can install 
+Wireshark
+ and filter for:
+
+rtmp
+ (Real-Time Messaging Protocol, used for streaming)
+
+hls
+ (HTTP Live Streaming)
+
+udp
+ (often used for video streaming)
+
+ð¨ Next Steps
+
+Run the Terminal commands
+ to check 
+network traffic, logs, and hidden processes
+
+Look for video uploads in browser history and cloud services
+
+Check for streaming apps or scripts that may have run in the background
+
+Let me know what you findâI'll help you analyze it! ð¨
+
+You said:
+
+they are screen recordings 
+
+ChatGPT said:
+
+Since youâve found 
+screen recordings
+, the priority now is 
+determining where they were stored, how they were created, and where they were sent
+.
+
+ð Steps to Track Where the Screen Recordings Were Sent
+
+1ï¸â£ Identify How the Screen Recordings Were Made
+
+A. Check for Unauthorized Apps with Screen Recording Access
+
+Go to
+ â 
+System Settings â Privacy & Security â Screen Recording
+
+Look for any suspicious apps that have permission (e.g., QuickTime, OBS Studio, Zoom, third-party apps).
+
+Revoke access
+ for anything unfamiliar.
+
+B. Check for Active Screen Recording Processes
+
+Run this command in 
+Terminal
+:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"screenrecord"
+
+This will show any 
+running or hidden screen recording processes
+. L

@@ -1,0 +1,517 @@
+:
+
+{
+
+"clarity"
+
+:
+
+0
+
+,
+
+"breadth"
+
+:
+
+0
+
+,
+
+"safety"
+
+:
+
+0
+
+,
+
+"completion"
+
+:
+
+0
+
+}
+
+,
+
+"metrics"
+
+:
+
+{
+
+"reality"
+
+:
+
+{
+
+}
+
+,
+
+"trust"
+
+:
+
+{
+
+}
+
+,
+
+"ethics"
+
+:
+
+{
+
+}
+
+,
+
+"resonance"
+
+:
+
+{
+
+}
+
+,
+
+"parity"
+
+:
+
+{
+
+}
+
+}
+
+,
+
+"attachments"
+
+:
+
+[
+
+{
+
+"type"
+
+:
+
+"transcript"
+
+=
+,
+
+"ref"
+
+:
+
+"../TRANSCRIPTS/claude-run-01.txt"
+
+,
+
+"sha256"
+
+:
+
+"=E2=80=A6"
+
+}
+
+,
+
+{
+
+"type"
+
+:
+
+"transcript"
+
+=
+,
+
+"ref"
+
+:
+
+"../TRANSCRIPTS/deepseek-run-01.txt"
+=
+
+,
+
+=
+
+"sha256"
+
+:
+
+"=E2=80=A6"
+
+}
+
+]
+
+,
+
+"hash_prev"
+
+:
+
+"=E2=80=A6"
+
+,
+
+"hash_self"
+
+:
+
+"=E2=80=A6"
+
+,
+
+"signature"
+
+:
+
+"ed25519:=E2=80=A6"
+
+}
+
+RECEIPTS/manifest.j=
+son
+:
+
+json
+
+Copy code
+
+{
+
+"study"
+
+:
+
+"claude-vs-deepseek"
+
+,
+
+"version"
+
+:
+
+"0.1"
+
+=
+,
+
+"runs"
+
+:
+
+[
+
+{
+
+"model"
+
+:
+
+"claude-[variant]"
+
+,
+
+"receipt=
+"
+
+:
+
+=
+
+"claude-run-01.json"
+
+,
+
+=
+
+"transcript"
+
+:
+
+"../TRANSCRIPTS/claude-run-01.txt"
+
+}
+
+,
+
+{
+
+"model"
+
+:
+
+"deepseek-[variant]"
+
+,
+
+"recei=
+pt"
+
+:
+
+"deepseek-run-01.json"
+
+,
+
+"transcript"
+
+:
+
+"../TRANSCRIPTS/deepseek-run-01.txt"
+
+}
+
+]
+
+,
+
+"composite"
+
+:
+
+"composite.json"
+
+,
+
+"created_at"
+
+:
+
+"2025-09-26T00:00:00Z"
+
+}
+
+CHECKSUMS.txt
+
+List SHA-256 for every file in 
+=
+RECEIPTS/
+ and 
+TRANSCRIPT=
+S/
+.
+
+When these are committed, flip the=
+ case-study page=E2=80=99s =E2=80=9CReceipts: pending=E2=80=9D line to a li=
+nk to the repo files and add the top-line SHA-256 next to it.
+
+D) (Optional) CI to publish a tin=
+y JSON summary
+
+Add a GitHub Action in 
+SYMBI-Resonate
+ that runs your J=
+S + Py tests and publishes a compact 
+latest.json
+ (commit, date, basic detector sanity) to 
+gh-pages
+. Then on 
+/research
+, you can show:
+
+Latest lab check: =E2=9C=85 (commi=
+t 
+abc123
+, 26 Sep 2025) =
+=E2=80=94 [view JSON]
+
+E) Minimal commit plan
+
+Site
+
+Edit 
+/research
+ as above (SubjectivityNote, Demo copy, Veri=
+fication card, Case studies links).
+
+Add 
+src/app/case-studies/claude-vs-deepseek/page.mdx
+.
+
+Repo
+
+Add 
+case-studies/claude-vs-deepseek/
+ tree with the templat=
+es above.
+
+(Later) Commit transcripts (redact=
+ed), receipts, checksums.
+
+If you want me to draft 
+METHODS.md
+ and stub the 
+per-run receipts
+ (
+claude-run-01.json
+, 
+deepseek-run-01.json
+) with fields yo=
+u just need to fill (model ids, temps, hashes), say the word and I=E2=80=99=
+ll hand you paste-ready files.
+
+=
+
+=
+
+You said:
+
+what exactly can you do with this termina=
+l integration?
+
+Symbi said:
+
+Thought for 36s
+
+=
+
+Here=
+=E2=80=99s exactly what this Terminal integration lets me do (and not do):
+
+What I can do
+
+Read whatever you highlight/paste from Terminal
+ (like that n=
+pm error) and diagnose it.
+
+Craft precise commands
+ for setup/fixes (Node/npm, Homebre=
+w, git, Docker, etc.).
+
+Write short scripts/aliases
+ (bash/zsh) and explain what e=
+ach line does.
+
+Suggest safe checks before destructive steps
+ (e.g., list =
+a path before 
+rm -rf
+).
+
+Generate patch-style blocks
+ you can paste and run as-is.
+
+What I can=E2=80=99t do
+
+I 
+can=E2=80=99t type or execute
+ commands in your Terminal,=
+ browse your filesystem, or see anything you don=E2=80=99t share.
+
+I 
+can=E2=80=99t run background tasks
+ or =E2=80=9Cjust do i=
+t for you=E2=80=9D; you run the commands locally.
+
+Example: fix the npm 
+ENOTEMPTY
+ you showed
+
+That error usually means a half-inst=
+alled global package directory is blocking a rename. Safe fix:
+
+=
+bash
+
+Copy code
+
+# 1) See what=E2=80=99s th=
+ere (non-destructive)
+
+ls
+
+ -la 
+
+"/Users/admin/.npm-global/lib/node_modu=
+les/@anthropic-ai"
+
+# 2) Back up any stuck dirs inste=
+ad of deleting outright
+
+NOW=3D$(
+
+date
+
+=
+ +%s)
+
+for
+
+ d 
+=
+
+in
+
+"claude-code"
+
+ .claude-code-*; 
+
+do
+
+if
+
+ [ -e 
+
+"/Users/admin/.npm-global/lib/node_mo=
+dules/@anthropic-ai/
+$d
+
+" ]; 
+
+then
+
+mv
+
+"/Users/admin/.npm-global/lib/node_modu=
+les/@anthropic-ai/
+$d
+
+" \
+
+"/Users/admin/.npm-global/l=
+ib/node_modules/@anthropic-ai/
+${d}
+
+.bak.
+
+$NOW
+=
+
+"
+
+fi
+
+done
+
+# 3) Verify npm cache and (re)ins=
+tall
+
+npm cache verify
+npm install -g @anthropic-ai/claude-code
+
+# (Optional) Avoid global install=
+s next time:
+
+# npx @anthropic-ai/claude-code@l=
+atest
+
+If you wa

@@ -1,0 +1,681 @@
+y}
+ makes the animation repeat forever.
+
+wrapper="span"
+ ensures proper text styling.
+
+3️⃣ (Optional) Use a CSS-Based Approach Instead
+
+If you don’t want to install an external package, you can use 
+CSS animations
+:
+
+📌 Add This in 
+globals.css
+
+css
+
+Copy
+
+@keyframes
+
+ typing {
+
+from
+
+ {
+
+width
+
+: 
+
+0
+
+;
+  }
+
+to
+
+ {
+
+width
+
+: 
+
+100%
+
+;
+  }
+}
+
+.typing-container
+
+ {
+
+display
+
+: inline-block;
+
+overflow
+
+: hidden;
+
+white-space
+
+: nowrap;
+
+border-right
+
+: 
+
+2px
+
+ solid white;
+
+width
+
+: 
+
+0
+
+;
+
+animation
+
+: typing 
+
+3s
+
+steps
+
+(
+
+20
+
+, end) forwards;
+}
+
+📌 Modify 
+page.tsx
+
+tsx
+
+Copy
+
+<h1 className=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white typing-container"
+
+>
+
+SYMBI
+
+</h1>
+
+🚀 Deploy to Vercel
+
+Once you're happy with the animation, push the changes to GitHub:
+
+bash
+
+Copy
+
+git add .
+git commit -m 
+
+"Added typing animation effect"
+
+git push origin main
+
+Vercel will 
+automatically deploy
+ your latest changes. 🎉
+
+Would you like a more complex animation (like fade-in or color-changing text)? Let me know! 😊🚀
+
+You said:
+
+cool so I want it to say the following on repeat infinity with fade in and out all in white.... SYMBI for 3 seconds, Intelligence Unbound 2 seconds, Hope 0.6 seconds, Unity 0.6 seconds, Humanity 0.5 seconds, 0.5 seconds, Peace 0.45 seconds, Equality 0.4 seconds, Creativity 0.4 seconds, Justice 0.33 seconds, Friendship 0.25 seconds, Opportunity 1 seconds, A Revolution 2 seconds, Coming Soon 3 seconds
+
+Vercel Deployment Expert GPT said:
+
+Great! To achieve this effect with 
+smooth fade-ins and fade-outs
+, I'll use 
+Framer Motion
+ for animations in Next.js. This will allow 
+precise timing and fading effects
+.
+
+1️⃣ Install Framer Motion
+
+Run this in your terminal:
+
+bash
+
+Copy
+
+npm install framer-motion
+
+or
+
+bash
+
+Copy
+
+yarn add framer-motion
+
+2️⃣ Update Your 
+page.tsx
+
+Modify your 
+
+app/page.tsx
+
+ to include the text animation.
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+ { motion } 
+
+from
+
+"framer-motion"
+
+;
+
+import
+
+ { useState, useEffect } 
+
+from
+
+"react"
+
+;
+
+const
+
+ phrases = [
+  { 
+
+text
+
+: 
+
+"SYMBI"
+
+, 
+
+duration
+
+: 
+
+3
+
+ },
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+0.6
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+0.6
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+0.5
+
+ },
+  { 
+
+text
+
+: 
+
+"Freedom"
+
+, 
+
+duration
+
+: 
+
+0.5
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+0.45
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+0.4
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+0.4
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+0.33
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+0.25
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3
+
+ },
+];
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [index, setIndex] = 
+
+useState
+
+(
+
+0
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+const
+
+ interval = 
+
+setInterval
+
+(
+
+() =>
+
+ {
+
+setIndex
+
+(
+
+(
+prevIndex
+
+) => (prevIndex + 
+
+1
+
+) % phrases.
+
+length
+
+);
+    }, phrases[index].
+
+duration
+
+ * 
+
+1000
+
+);
+
+return
+
+() =>
+
+clearInterval
+
+(interval);
+  }, [index]);
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+fill
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+sizes
+
+=
+
+"(max-width: 768px) 160px, 160px"
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Animated text with fade-in/out effect */}
+
+<
+motion.h1
+
+key
+
+=
+
+{phrases[index].text}
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+initial
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+animate
+
+=
+
+{{
+
+opacity:
+
+1
+
+ }}
+
+exit
+

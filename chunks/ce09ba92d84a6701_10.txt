@@ -1,0 +1,217 @@
+tes we might need so I can pivot comple=
+tely into YC app
+
+Symbi said:
+
+Thought for 6s
+
+Ycq Sonate =E2=80=94 =
+Demo Receipt Api (+ Final Pre-yc Checklist)
+
+Copy
+
+Edit
+
+=
+
+Download
+
+Below are drop=E2=80=
+=91in files to mint a signed 
+
+demo Trust Receipt
+=
+
+ via Next.js (App Router), along with a clean pre=E2=80=91YC=
+ cutover checklist.
+
+=
+
+1) Ed25519 key management
+
+Create a stable keypair=
+ in prod; for local/dev you can generate one on the fly if missing.
+
+.env.example
+
+# Base64url (no padding) encod=
+ed 32=E2=80=91byte Ed25519 private key seed (RFC8032). Prefer prod-managed =
+secret.
+
+RECEIPT_SIGNING_SEED=3D
+
+# Or: PEM=E2=80=91encoded Ed25519 private key (wins if set). E=
+xample: -----BEGIN PRIVATE KEY----- =E2=80=A6
+
+R=
+ECEIPT_SIGNING_PRIVATE_KEY_PEM=3D
+
+# Public key =
+(base64url) for the verifier page + .well-known endpoint
+
+RECEIPT_VERIFY_PUBKEY_B64U=3D
+
+2) Utilities
+
+Create 
+
+lib/receipt.ts
+
+ for hashing, canonicalization, and encoding.
+
+// lib/receipt.ts
+
+import { createHash, createPrivateKey, generateKeyPair=
+Sync, sign as nodeSign, KeyObject } from 'crypto';
+
+export function sha256Hex(bytes: Uint8=
+Array | Buffer): string {
+
+  return createHash('=
+sha256').update(bytes).digest('hex');
+
+}
+
+export function hex(bytes: Uint8Array | Buffer): strin=
+g {
+
+  return Buffer.from(bytes).toString('hex')=
+;
+
+}
+
+export function=
+ fromHex(h: string): Buffer {
+
+  return Buffer.f=
+rom(h.replace(/^0x/, ''), 'hex');
+
+}
+
+export function b64u(buf: Uint8Array | Buffer): string {
+
+  return Buffer.from(buf).toString('base64').rep=
+lace(/=3D+$/,'').replace(/\+/g,'-').replace(/\//g,'_');
+
+}
+
+export function fromB64u(s: string):=
+ Buffer {
+
+  const pad =3D s.length % 4 =3D=3D=
+=3D 0 ? '' : '=3D'.repeat(4 - (s.length % 4));
+
+=
+  return Buffer.from(s.replace(/-/g,'+').replace(/_/g,'/') + pad, 'base64')=
+;
+
+}
+
+// Deterministic, UTF=E2=80=918, no whitespace: canonical=
+ JSON string
+
+export function canonicalJSONStrin=
+gify(obj: any): string {
+
+  return JSON.stringif=
+y(obj, Object.keys(obj).sort());
+
+}
+
+export function deriveEntr=
+yHash(prev_hash: string, inputs_hash: string, outputs_hash: string): string=
+ {
+
+  const prev =3D fromHex(prev_hash);
+
+  const ih =3D fromHex(inputs_hash);
+
+  const oh =3D fromHex(outputs_hash);
+
+  const concat =3D Buffer.concat([prev, ih, oh]);
+
+  return sha256Hex(concat);
+
+}
+
+export function loadSign=
+ingKey(): { priv: KeyObject; pubB64u: string } {
+
+  // 1) PEM wins if provided
+
+  const pem =3D =
+process.env.RECEIPT_SIGNING_PRIVATE_KEY_PEM;
+
+Note: For a production seed =E2=86=92 key derivation, prefer sto=
+ring a PEM in your secret manager. The ephemeral path is fine for local dem=
+os but 
+
+do not
+
+ use it in prod.
+
+3) =
+API route =E2=80=94 mint a demo receipt
+
+Create 
+
+app/api/receipts/demo/route.ts
+
+// app/api/receipts=
+/demo/route.ts
+
+import { NextRequest } from 'nex=
+t/server';
+
+import { canonicalJSONStringify, sha=
+256Hex, deriveEntryHash, loadSigningKey, signEd25519, b64u } from '@/lib/re=
+ceipt';
+
+export=
+ async function POST(req: NextRequest) {
+
+  try =
+{
+
+    const { actor =3D 'demo@ycq', intent =3D =
+'verify-demo', inputs, outputs, prev_hash } =3D await req.json();
+
+    // 1) Build payload (what we sign). Keep fields stab=
+le + sorted.
+
+    const payloadObj =3D {
+
+      ts: new Date().toISOString(),
+
+      actor, intent,
+
+      inputs, ou=
+tputs,
+
+    } as const;
+
+    const payloadStr =3D canonicalJSONStringify(payloadObj);
+
+    // 2) Hash inputs/ou=
+tputs (hex)
+
+    const inputs_hash =3D sha256Hex=
+(Buffer.from(typeof inputs =3D=3D=3D 'string' ? inputs : JSON.stringify(inp=
+uts)));
+
+    const outputs_hash =3D sha256Hex(Bu=
+ffer.from(typeof outputs =3D=3D=3D 'string' ? outputs : JSON.stringify(outp=
+uts)));
+
+    //=
+ 3) prev_hash: use provided or zeroes for demo genesis
+
+    const prev =3D (typeof prev_hash =3D=3D=3D 'string' && =
+prev_hash.match(/^[0-9a-fA-F]+$/)) ? prev_hash.toLowerCase() : '0'.repeat(6=
+4);
+
+    // 4) =
+entry hash (hex)
+
+    const entry_hash =3D deriv=
+eEntryHash(prev, inputs_hash, output

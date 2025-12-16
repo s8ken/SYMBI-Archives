@@ -1,0 +1,185 @@
+o changes) [3.93s]
+[02:25:02.475] Detected Next.js version: 15.1.0
+[02:25:02.475] Running "bun run build"
+[02:25:02.481] $ next build
+[02:25:04.260]    â² Next.js 15.1.0
+[02:25:04.260]    - Experiments (use with caution):
+[02:25:04.260]      Â· webpackBuildWorker
+[02:25:04.261]      Â· parallelServerCompiles
+[02:25:04.261]      Â· parallelServerBuildTraces
+[02:25:04.261] 
+[02:25:04.333]    Creating an optimized production build ...
+[02:25:15.184]  â Compiled successfully
+[02:25:15.190]    Skipping validation of types
+[02:25:15.190]    Skipping linting
+[02:25:15.509]    Collecting page data ...
+[02:25:16.244]    Generating static pages (0/4) ...
+[02:25:16.731]    Generating static pages (1/4) 
+[02:25:16.731]    Generating static pages (2/4) 
+[02:25:16.828]    Generating static pages (3/4) 
+[02:25:16.905]  â Generating static pages (4/4)
+[02:25:16.918]    Finalizing page optimization ...
+[02:25:16.923]    Collecting build traces ...
+[02:25:20.746] 
+[02:25:20.759] Route (app)                              Size     First Load JS
+[02:25:20.759] â â /                                    5.53 kB         111 kB
+[02:25:20.759] â â /_not-found                          979 B           106 kB
+[02:25:20.759] + First Load JS shared by all            105 kB
+[02:25:20.759]   â chunks/4bd1b696-2e160c75fb566be7.js  52.9 kB
+[02:25:20.759]   â chunks/517-499981dd55b7302d.js       50.6 kB
+[02:25:20.759]   â other shared chunks (total)          1.88 kB
+[02:25:20.760] 
+[02:25:20.760] 
+[02:25:20.761] â  (Static)  prerendered as static content
+[02:25:20.761] 
+[02:25:20.904] Traced Next.js server files in: 114.282ms
+[02:25:21.150] Created all serverless functions in: 245.67ms
+[02:25:21.158] Collected static files (public/, static/, .next/static): 4.143ms
+[02:25:21.204] Build Completed in /vercel/output [23s]
+[02:25:21.344] Deploying outputs...
+[02:25:27.814] 
+[02:25:28.136] Deployment completed
+[02:25:48.733] Uploading build cache [161.29 MB]...
+[02:25:51.436] Build cache uploaded: 2.702s
+
+ChatGPT said:
+
+ð Key Findings from Your Deployment Logs
+
+â 
+Your project deployed successfully
+
+â 
+Build was completed without fatal errors
+
+â 
+Deployment was finalized and pushed to Vercel
+
+However, I noticed a 
+major difference between this deployment and previous ones
+:
+
+ð What's Different in This Deployment?
+
+1ï¸â£ 
+Your project used 
+bun
+ instead of 
+npm/yarn
+
+bun install
+ and 
+bun run build
+ were used instead of 
+npm install
+ or 
+yarn install
+.
+
+v0.dev likely used 
+bun
+ by default
+, while your manual deployments were using 
+npm
+.
+
+Bun is faster
+, but can introduce 
+package resolution differences
+.
+
+2ï¸â£ 
+React 19 Dependency Issues (Warnings, Not Fatal)
+
+perl
+
+Copy
+
+Edit
+
+warn
+
+: incorrect peer dependency 
+
+"react@19.0.0"
+
+warn
+
+: incorrect peer dependency 
+
+"react-dom@19.0.0"
+
+warn
+
+: incorrect peer dependency 
+
+"date-fns@4.1.0"
+
+These are 
+warnings, not errors
+, meaning they didnât break the build.
+
+However, 
+previous deployments may have failed because of stricter npm package resolution rules
+.
+
+3ï¸â£ 
+Next.js Version is Different
+
+v0.dev used 
+Next.js 15.1.0
+, while your manual deployments may have been on 
+Next.js 15.2.3
+.
+
+This slight version difference 
+could affect the build process
+.
+
+ð¥ Why Did v0.dev Work but Not the Manual Deployment?
+
+Possible Reasons
+
+1ï¸â£ 
+v0.dev Used 
+bun
+, Which Handled Dependencies Differently
+
+Your manual deployment used 
+npm
+ (which may have been stricter).
+
+bun
+ is more forgiving with peer dependencies.
+
+2ï¸â£ 
+Slightly Different Next.js Version
+
+Your local version might have required 
+different configurations
+.
+
+We need to 
+match your local and v0.dev's Next.js versions
+.
+
+3ï¸â£ 
+Different Build Settings in Vercel
+
+v0.dev 
+may have applied automatic Vercel settings
+.
+
+We need to 
+compare the project settings between v0.dev and manual deployments
+.
+
+ð  Fix: Match Your Local & Manual Deployment to v0.dev
+
+1ï¸â£ Switch to 
+bun
+ Locally (If You Want to Match v0.dev)
+
+bash
+
+Co

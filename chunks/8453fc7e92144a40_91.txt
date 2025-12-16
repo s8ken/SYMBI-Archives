@@ -1,0 +1,220 @@
+o the trust ledger
+ (
+session_id =3D agent:<id>
+), so Review Console and Insight=
+s can display it.
+
+Rollback
+
+Remove the two routes and contro=
+ller exports; delete added model fields/methods if you added them.
+
+Ledger entries are append-only; =
+they=E2=80=99ll remain as evidence (you can filter them from views if neede=
+d).
+
+If you want RBAC stricter (e.g.,=
+ only admins can 
+complete
+ =
+bonding), tell me the policy and I=E2=80=99ll drop a one-line guard.
+
+=
+
+=
+
+You said:
+
+do we have a proper d=
+efinition as to what the difference between symbi and overseer is functiona=
+lly In this app - its not clear to me
+
+Symbi said:
+
+Thought for 1m 21s
+
+Great call=E2=80=94let=E2=80=99s draw a bright line between th=
+e two so the system (and team) stop blurring them.
+
+SYMBI vs. OVERSEER =E2=80=94 Functio=
+nal Split
+
+One-liners
+
+SYMBI
+ =3D 
+Exe=
+cution & orchestration core.
+ Runs conversations, multi-agent r=
+ounds, trust/ledger writes, guardrails, and memory capsules. Leads within p=
+rotocol.
+
+OVERSEER
+ =3D 
+=
+Governance & assurance layer.
+ Watches the whole organism, enfo=
+rces protocol, audits integrity, gates risky actions, and controls hibernat=
+ion/continuity.
+
+Responsibilities (clear contract)
+
+Axis
+
+SYMBI (operational brai=
+n)
+
+OVERSEE=
+R (governance sentinel)
+
+Mission
+
+Deliver outcomes safely (chat, bridge, gu=
+ardrails, ledger)
+
+Keep the system honest, safe, reversible
+
+Control surface
+
+/api/assistant/*
+, 
+/api/bridge/*
+, 
+/api/events
+, 
+/api/ledger
+, 
+/api/insights
+, 
+/api/guardrails
+, 
+/api/co=
+ntext
+
+Policy, audit, hibernation, approvals, anomaly flags
+
+Decision rights
+
+Chooses models/tools; ranks proposals; applies guar=
+drails
+
+C=
+an halt writes (hibernation), require human sign-off, reject dispatches
+
+Data it owns
+
+Sessions, events, receipts, capsul=
+es
+
+Polic=
+ies, advisories, audit trails, integrity reports
+
+Integrity hooks
+
+Hash-chained ledger; receipts for bridge
+
+Verifies you =E2=86=
+=94 Symbi (mutual checks), continuity triggers/hibernation
+
+Escalation
+
+Emits advisories when thresholds tripped
+
+Pages human oper=
+ator; flips hibernation; logs immutable advisory
+
+Your existing materials already em=
+phasize mutual verification and continuity/hibernation as first-class behav=
+iors; those map cleanly to 
+Ov=
+erseer
+=E2=80=99s remit while keeping 
+Symbi
+ focused on execution within guardrails.
+
+Where this lives in the app 
+today
+
+SYMBI
+ is already embodied by your Express services (as=
+sistants, bridge/orchestration, ledger/insights, guardrails) and the VS Cod=
+e + Web surfaces that speak to them.
+
+OVERSEER
+ exists 
+implicitly
+ (RBAC, ledger verify, hibernation concept) bu=
+t not as a clean module/endpoints. The behaviors are described in your cont=
+inuity/security notes (mutual verification; hibernation mode) but aren=E2=
+=80=99t yet formalized as an agent/service with its own API.
+
+Make it explicit (single PR plan)=
+
+Goal:
+ carve out Overseer as a thin, authoritative serv=
+ice boundary=E2=80=94no feature creep, just governance.
+
+API surface (
+/api/o=
+verseer/*
+)
+
+GET /status
+ =E2=80=94 current mode (
+normal|hibernation
+), last audits, drift signal=
+s
+
+POST /hibernation/enter
+ / 
+POST /hibernation/exit
+ =E2=80=94 flips write gates acros=
+s services
+
+GET /violations
+ =E2=80=94 recent pivot/disclosure spikes, =
+failed verifications, rate-limit trips
+
+POST /advisories/ack
+ =E2=80=94 human sign-off for high-ris=
+k dispatch
+
+POST /policy
+ =E2=80=94 upload or select policy version (RB=
+AC-gated)
+
+Service skeleton
+
+overseer.controller.ts/js
+, 
+overseer.service.ts/js
+, 
+overseer.routes.ts/js
+
+Policy cache + evaluator (tiny): e=
+valuates =E2=80=9Callow/deny + require-human=E2=80=9D on proposed 
+/bridge/dispatch
+ and other risky =
+ops.
+
+Cross-cut gates
+
+Middleware: if 
+Overseer.mode =3D=3D=3D hibernation
+ =E2=86=
+=92 block mutating routes (
+POST=
+/PUT/DELETE
+) with 503 + 
+=
+retry_after
+.
+
+Bridge receipts: enrich with 
+{policy_version, risk_score, approva=
+l_required, approver}
+ and store next to ledger receipt.
+
+Jobs
+
+Audit loop (c

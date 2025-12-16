@@ -1,0 +1,258 @@
+t Screen Recording Permissions
+
+If you suspect unauthorized apps 
+previously had access
+, reset all permissions:
+
+🔹 
+Run this command in Terminal
+ to remove all app permissions for screen recording:
+
+sh
+
+Copy
+
+tccutil reset ScreenCapture
+
+This forces all apps to 
+ask for permission again
+.
+
+If hackers were using a hidden app, 
+they will lose access unless they request it again.
+
+3️⃣ Monitor for Future Screen Recording Attempts
+
+If someone tries to enable screen recording again, you’ll get a pop-up asking for permission. 
+If this happens unexpectedly, deny it immediately.
+
+🔎 Next Steps
+
+Let me know if you find suspicious apps in Screen Recording settings.
+
+If the problem persists, we’ll check for hidden processes running on your Mac. 🚀
+
+You said:
+
+yes ops has screen recording access
+
+ChatGPT said:
+
+🚨 OPS Has Screen Recording Access—This Could Be Malicious
+
+OPS is 
+not a standard macOS process
+ and could be a 
+monitoring tool, malware, or unauthorized software
+ that hackers installed to spy on your screen activity.
+
+🔴 
+Immediate Action: Revoke Its Access
+
+Go to
+
+System Settings > Privacy & Security > Screen Recording
+
+Click the toggle next to OPS to turn it OFF
+
+Click the "-" (minus) button
+ to 
+remove it completely
+
+🛑 Next Steps to Investigate & Remove OPS
+
+Since OPS has screen recording access, we need to 
+find out what it is and remove it completely
+.
+
+1️⃣ Find Where OPS is Installed
+
+Run this command in 
+Terminal
+:
+
+sh
+
+Copy
+
+mdfind 
+
+"OPS"
+
+This will search your entire Mac for any files related to "OPS."
+
+🔹 
+If you find it in 
+/Applications/
+, 
+/Library/
+, or 
+~/Library/
+, let me know the file path.
+
+🔹 If nothing shows up, it may be hidden.
+
+2️⃣ Check if OPS is Running in the Background
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep OPS
+
+If you see an entry 
+other than grep
+, OPS is currently running.
+
+Note the 
+PID number
+ next to it and use this command to 
+kill it
+:
+
+sh
+
+Copy
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+(Replace 
+[PID]
+ with the number shown in the process list.)
+
+3️⃣ Check If OPS Starts at Boot (Persistence Check)
+
+Run:
+
+sh
+
+Copy
+
+sudo 
+
+ls
+
+ -l /Library/LaunchAgents /Library/LaunchDaemons ~/Library/LaunchAgents
+
+If OPS appears in any of these locations, it means 
+it auto-starts with your Mac
+.
+
+To remove it:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+(Replace 
+[file_path]
+ with the actual OPS file found.)
+
+4️⃣ Check for Hidden Malware (Rootkits, Keyloggers)
+
+Since you suspect long-term monitoring, let's check for hidden malware:
+
+🔹 
+Run this to list all running processes:
+
+sh
+
+Copy
+
+ps aux
+
+Look for 
+anything unusual
+ or 
+unknown apps
+ running.
+
+🔹 
+Check active network connections (to see if OPS is sending data):
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+If OPS is communicating with an external server, this could indicate a 
+remote surveillance tool
+.
+
+5️⃣ Delete OPS Completely
+
+If you find OPS installed anywhere:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+Then, 
+empty the Trash
+ and restart your Mac.
+
+🚨 Summary: What to Do Right Now
+
+✅ 
+Turn off & remove OPS from Screen Recording (System Settings > Privacy & Security)
+
+✅ 
+Find OPS on your Mac (
+mdfind "OPS"
+) & delete it if found
+
+✅ 
+Check if OPS is running (
+ps aux | grep OPS
+), kill the process if active
+
+✅ 
+Look for OPS in LaunchAgents & LaunchDaemons to remove persistence
+
+✅ 
+Check for suspicious network activity (
+netstat -an | grep ESTABLISHED
+)
+
+💬 Let Me Know What You Find!
+
+If you find OPS in a 
+specific folder
+, tell me the path before deleting.
+
+If you see 
+suspicious network activity
+, we may need to 
+block connections
+.
+
+You're doing great—let’s get this hacker out for good! 🚀
+
+You said:
+
+2025-03-01 15:57:13.540 mdfind[1050:28185] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+/Library/WebServer/share/httpd/manual/mod/mod_http2.html.en
+/Library/WebServer/share/httpd/manual/index.html.da
+user@Mes-MacBook-Pro ~ % mdfind "OBS"
+2025-03-01 15:57:29.118 mdfind[1051:28313] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+/Applications/OBS.app
+/L

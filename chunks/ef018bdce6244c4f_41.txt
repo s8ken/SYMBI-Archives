@@ -1,0 +1,197 @@
+re a few high-impact tweaks (copy/pasteabl=
+e) that tighten security and correctness without changing your design:
+
+=
+diff
+
+Copy code
+
+--- a/src/core/trustOracle=
+.js
+
++++ b/src/core/trustOracle.js
+
+@@
+
++const crypto =3D require('crypt=
+o');
+
+ // ...
+
+ class TrustOracle {
+   constructor() {
+     this.articles =3D TRUST_ARTICLES;
+     this.checkFunctions =3D this.initializeCheckFunctions();
+   }
+
++  /**
+
++   * Helpers
+
++   */
+
++  normalizeArray(val) { return =
+Array.isArray(val) ? val : (val ? [val] : []); }
+
++  asDate(maybe) { return (maybe=
+ instanceof Date) ? maybe : (maybe ? new Date(maybe) : null); }
+
+   // ...
+@@
+   async checkConsent(context, article) {
+
+-    const { action, scopes, bon=
+d } =3D context;
+
++    const { scopes, bond } =3D =
+context;
+
+     if (!bond || !bond.scope) {
+       return {
+         status: 'violation',
+         reason: 'No consent envelope found',
+         details: 'Action requires valid consent'
+       };
+     }
+
+-    const requestedScopes =3D A=
+rray.isArray(scopes) ? scopes : [scopes];
+
++    const requestedScopes =3D t=
+his.normalizeArray(scopes);
+
+     const consentedPermissions =3D bond.scope.permissions || [];
+
+     const unauthorizedScopes =3D requestedScopes.filter(
+       scope =3D> !consentedPermissions.includes(scope)
+     );
+
+     if (unauthorizedScopes.length > 0) {
+       return {
+         status: 'violation',
+         reason: 'Scope exceeds consent',
+         details: `Unauthorized scopes: ${unauthorizedScopes.join(', ')}`
+       };
+     }
+
+     // Check consent expiry
+
+-    if (bond.scope.expiresAt &a=
+mp;& new Date() > bond.scope.expiresAt) {
+
++    const expiresAt =3D this.as=
+Date(bond.scope.expiresAt);
+
++    if (expiresAt && ne=
+w Date() > expiresAt) {
+
+       return {
+         status: 'violation',
+         reason: 'Consent expired',
+
+-        details: `Consent expir=
+ed at ${bond.scope.expiresAt}`
+
++        details: `Consent expir=
+ed at ${expiresAt.toISOString()}`
+
+       };
+     }
+
+     return {
+       status: 'pass',
+@@
+   async checkCapabilityTransparency(context, article) {
+     const { agent } =3D context;
+@@
+
+-    const thirtyDaysAgo =3D new=
+ Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+-    const hasRecentDeclaration =
+=3D agent.updatedAt > thirtyDaysAgo;
+
++    const thirtyDaysAgo =3D new=
+ Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
++    const updatedAt =3D (agent.=
+updatedAt instanceof Date) ? agent.updatedAt : new Date(agent.updatedAt || =
+0);
+
++    const hasRecentDeclaration =
+=3D updatedAt > thirtyDaysAgo;
+
+@@
+   async checkBoundaries(context, article) {
+
+-    const { action, scopes, bon=
+d } =3D context;
+
++    const { action, scopes, bon=
+d } =3D context;
+
++    const requested =3D this.no=
+rmalizeArray(scopes);
+
+@@
+
+-    const bondScopes =3D bond?.=
+scope?.permissions || [];
+
+-    if (scopes && !bond=
+Scopes.some(scope =3D> scopes.includes(scope))) {
+
++    const bondScopes =3D bond?.=
+scope?.permissions || [];
+
++    if (requested.length &&=
+amp; !bondScopes.some(scope =3D> requested.includes(scope))) {
+
+       return {
+         status: 'violation',
+         reason: 'Action outside permitted scope',
+         details: 'Requested action not in bond scope'
+       };
+     }
+@@
+   async checkSecureHandling(context, article) {
+
+-    const { action, data, bond =
+} =3D context;
+
++    const { action, data, bond =
+} =3D context;
+
++    const encrypted =3D
+
++      !!context.encrypted ||
+
++      context.reqProto =3D=3D=
+=3D 'https' ||
+
++      (context.headers &&am=
+p; context.headers['x-forwarded-proto'] =3D=3D=3D 'https');
+
+@@
+
+-    if (data && data.co=
+ntainsPII && !context.encrypted) {
+
++    if (data && data.co=
+ntainsPII && !encrypted) {
+
+       return {
+         status: 'violation',
+         reason: 'PII transmitted without encryption',
+         details: 'Sensitive data requires encrypted transmission'
+       };
+     }
+@@
+ async function buildTrustContext(req) {
+
+-  const context =3D {
+
++  const actionVerb =3D req.meth=
+od.toLowerCase();
+
++  // Prefer route path if ava

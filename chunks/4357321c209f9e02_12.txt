@@ -1,0 +1,234 @@
+’t show as you type, but it’s working).
+
+🛠 Step 3️⃣: Verify Removal
+
+After running the delete command, check again with:
+
+sh
+
+Copy
+
+ls
+
+ /Library/LaunchAgents /Library/LaunchDaemons | grep zoom
+
+Expected Result:
+ Nothing should appear.
+
+📌 
+Try this and let me know if the file is gone!
+ 🚀
+
+You said:
+
+done
+
+ChatGPT said:
+
+Great! 🎉 Now, Zoom’s auto-update services are fully disabled.
+
+🔍 Final Verification (Optional)
+
+If you want to double-check, you can restart your Mac one more time and run:
+
+sh
+
+Copy
+
+ls
+
+ /Library/LaunchAgents /Library/LaunchDaemons | grep zoom
+
+If nothing appears, you’re all set!
+
+Next Steps
+
+Would you like to continue checking other security areas, or do you feel good about your system now? 🚀
+
+You said:
+
+yep all good with the zoom stuff
+
+ChatGPT said:
+
+Awesome! ✅ Zoom updates are fully disabled.
+
+Would you like to continue checking other security aspects, or are you feeling good about your Mac’s overall security now? 🚀
+
+You said:
+
+yes lets say at a high level I was concerned about the system integrity and that I'm also getting warnings from say google about a lot of requests coming from my devices how would I go about getting some reporting for you to assess?
+
+ChatGPT said:
+
+Updated saved memory
+
+Great question! Since you’re seeing 
+Google warnings about unusual requests
+, along with general 
+system integrity concerns
+, we’ll take a structured approach.
+
+🔍 Step 1️⃣: Check System Integrity
+
+First, let’s confirm macOS hasn’t been tampered with. Run:
+
+sh
+
+Copy
+
+csrutil status
+
+✅ 
+Expected result:
+
+System Integrity Protection: enabled
+
+❌ If it’s disabled, that’s a potential red flag.
+
+🔍 Step 2️⃣: Check Network Activity for Suspicious Requests
+
+Since Google is flagging unusual activity, we should check:
+
+📡 Active Network Connections
+
+Run:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+This shows 
+active internet connections
+ from your Mac.
+
+If you see 
+lots of connections to unknown IPs
+, that could be suspicious.
+
+📡 DNS Requests (Check for Hidden Malware)
+
+Run:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.network"'
+
+ --info --last 10m
+
+This shows recent 
+network requests
+ from your Mac.
+
+If you see lots of 
+unknown sites or frequent outbound traffic
+, it might indicate an issue.
+
+🔍 Step 3️⃣: Check for Unknown Processes Making Requests
+
+Run:
+
+sh
+
+Copy
+
+lsof -i -n | grep ESTABLISHED
+
+This shows 
+which apps or processes
+ are making internet connections.
+
+Look for anything 
+you don’t recognize
+ (e.g., strange process names connecting to external servers).
+
+🔍 Step 4️⃣: Check for Compromised Google Account
+
+Go to
+
+Google’s Security Checkup
+
+Look for:
+
+Recent sign-ins from unknown locations
+
+Devices you don’t recognize
+
+Unusual third-party app access
+
+🛠 Next Step: Start With Step 1 (System Integrity)
+
+Let’s go step by step. Run:
+
+sh
+
+Copy
+
+csrutil status
+
+Tell me what it says, and we’ll move to the next step! 🚀
+
+You said:
+
+enabled
+
+ChatGPT said:
+
+✅ 
+Great! System Integrity Protection (SIP) is enabled
+, which means macOS is protecting core system files from unauthorized changes. That’s a good sign!
+
+🛠 Step 2️⃣: Check Active Network Connections
+
+Now, let’s check if your Mac has 
+any unusual network connections
+ that might explain the Google warnings.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+📌 
+What This Does:
+
+Lists all 
+currently active network connections
+.
+
+If you see 
+many connections to unknown IPs
+, it could be suspicious.
+
+✅ Expected Results:
+
+Some normal connections to Apple, Google, or other trusted services.
+
+Not too many unexpected or unknown IP addresses.
+
+❌ If You See Many Suspicious Connections:
+
+We can investigate further by checking which apps/processes are making those requests.
+
+📌 
+Run the command and let me know what shows up!
+ 🚀
+
+You said:
+
+user@Mes-MacBook-Pro ~ % netstat -an | grep ESTABLISHED
+
+tcp4       0      0  192.168.1.2.51764      3.233.158.26.443       ESTABLISHED
+tcp4       0      0  192.168.1.2.51762      17.57.145.38.5223      ESTABLISHED
+tcp4       0 

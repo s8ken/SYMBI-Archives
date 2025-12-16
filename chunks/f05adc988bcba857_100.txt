@@ -1,0 +1,242 @@
+r additional CMS sections!
+
+You said:
+
+okay and that had the page names like what why and who?
+
+ChatGPT said:
+
+Great question â yes, the updated version still includes the 
+"What"
+, 
+"Why"
+, and 
+"Who"
+ sections 
+visually and structurally
+, 
+but
+ the content inside each section can now be dynamically managed through Sanity CMS.
+
+To clarify:
+
+â What's Included:
+
+Headings like 
+"What We Offer"
+, 
+"Why Symbi"
+, and 
+"Who We Are"
+ are 
+still present
+.
+
+These can now be controlled via Sanity, depending on how you've structured your schema (like in 
+page.ts
+ or 
+siteSettings.ts
+).
+
+The rest of the content can be rendered via 
+PortableText
+ or custom serializers for rich editing.
+
+ð ï¸ What's Next?
+
+To make sure each section ("what", "why", "who") pulls 
+specific content
+ from Sanity, we can:
+
+Add fields for each in the schema (e.g., 
+sectionWhat
+, 
+sectionWhy
+, 
+sectionWho
+).
+
+Fetch them individually in 
+getPage()
+ or restructure your query.
+
+Render them where appropriate in your layout with conditionals or portable text blocks.
+
+Would you like me to help:
+
+â Add these fields to your Sanity schema?
+
+â Update the frontend to read each one specifically?
+
+â Show you how to edit them inside the Studio?
+
+Let me know which step you'd like next â or all three!
+
+You said:
+
+well lets save it first and see the integration works
+
+ChatGPT said:
+
+Perfect â great move. Letâs confirm everything is 
+saved and integrated properly
+ before diving into schema refinement. Hereâs how to verify the full loop is working:
+
+â Sanity + Next.js Integration Checklist:
+
+1. 
+Sanity Studio
+:
+
+Go to 
+
+http://localhost:3001/studio
+
+.
+
+In the sidebar, you should see document types like 
+Page
+ or 
+Site Settings
+.
+
+Open a page (like your test one) and confirm you can edit 
+title
+ and 
+content
+.
+
+2. 
+Next.js Frontend
+:
+
+Visit 
+
+http://localhost:3001
+
+.
+
+Confirm the frontend is rendering the title/content from Sanity (e.g. âtest page titleâ).
+
+Any changes you make in the Studio should reflect after a refresh (or with hot reload).
+
+3. 
+Code Structure
+ (confirm the important files are in place):
+
+â 
+lib/sanity.ts
+ (client setup)
+
+â 
+app/page.tsx
+ (data fetching + rendering logic)
+
+â 
+schemas/page.ts
+ (document schema)
+
+â 
+sanity.config.ts
+ (Sanity config file)
+
+ð Not Seeing Content Updates?
+
+If itâs not rendering the content yet:
+
+Double-check the page ID or query (e.g., 
+*[_type == "page"][0]
+).
+
+Ensure you're using 
+PortableText
+ correctly to render 
+content
+.
+
+Let me know if you'd like to connect specific fields to sections like "What", "Why", "Who".
+
+When youâre ready, I can help:
+
+Add custom sections to your schema.
+
+Map content from Sanity to specific areas in the homepage.
+
+Deploy the updated site to Vercel when it's all working.
+
+Let me know when you're ready to test with live content or build more!
+
+You said:
+
+npm run dev
+
+ChatGPT said:
+
+Great! Just make sure youâre in the correct project folder (looks like 
+symbi-main-site
+), then run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+If everything is wired correctly, you should see something like:
+
+arduino
+
+Copy
+
+Edit
+
+â¡  Local: http:
+
+//localhost:3000
+
+If it switches to port 
+3001
+, no problem â still works the same.
+
+â After it's running:
+
+Visit 
+
+http://localhost:3001
+
+ to view your main site.
+
+Visit 
+
+http://localhost:3001/studio
+
+ to access Sanity Studio.
+
+Let me know:
+
+If you get any errors during startup
+
+Or if you want to validate the CMS-driven content rendering after it loads
+
+I'll stay on standby to help you verify and improve it from there!
+
+You said:
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1400ms
+ â Compiling / ...
+ â  ./app/page.tsx
+Attempted import error: 'getPage' is not exported from '@/lib/sanity

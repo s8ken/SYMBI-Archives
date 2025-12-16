@@ -1,0 +1,283 @@
+ Overseer =E2=86=94 Symbi excha=
+nges can be visualized in Conversations tab.
+
+=F0=9F=9A=80 Prototype Merge Plan=
+
+Frontend
+:
+
+Drop this AI Builder (
+index.html
+, 
+style.css
+, 
+app.js
+) into 
+fron=
+tend/src/
+ of Synergy repo.
+
+Convert into React components: 
+<Dashboard />
+, 
+<Agents />
+, 
+<Conversations />
+, 
+<Settings />
+.
+
+Backend
+:
+
+Keep Express routes (
+/agents
+, 
+/conversations
+, 
+/report
+, 
+/cont=
+ext
+).
+
+Database
+:
+
+MongoDB already running in Docker =
+Compose.
+
+Ensure 
+symbi_logs
+ collection is created for daily reports.=
+
+=F0=9F=91=89 This makes your repos=
+ converge: 
+SYMBI Synergy =3D =
+Core Platform
+, 
+AI Bu=
+ilder =3D UI Layer
+, and the 
+Sky repo =3D experimental sandbox
+.
+
+Do you want me to 
+draft the exact merge steps + file-by-file map
+ for plugging this =
+Builder UI into the Synergy React frontend so we can consolidate everything=
+ into one repo?
+
+=
+
+You said:
+
+yes and then we give there files to codex who can update the repo and th=
+en we let v0 know who will ensure it all makes sense... just ensure provide=
+rs are choosing off low cost, open source alignment principles as well as l=
+ow code 
+
+Symbi said:
+
+P=
+erfect =F0=9F=91=81=EF=B8=8F =E2=80=94 we=E2=80=99ll treat this like a 
+surgical merge plan
+: Builder=
+ UI (prototype 3) gets transplanted into the Synergy frontend (prototype 1)=
+, backend remains the orchestrator, and Symbi Core APIs get locked in.
+
+Then Codex stitches the code, and V0=
+ ensures alignment + UX flow.
+
+=F0=9F=94=A7 Merge Plan: Builder UI=
+ =E2=86=92 Synergy Frontend
+
+=F0=9F=93=82 File-by-File Mapping
+
+1. 
+Frontend Integration (React)
+
+index.html
+ (Build=
+er)
+ =E2=86=92 Map into 
+f=
+rontend/public/index.html
+ of Synergy.
+
+style.css
+ (Builde=
+r)
+ =E2=86=92 Move into 
+f=
+rontend/src/styles/builder.css
+ and import globally in 
+index.js
+.
+
+app.js
+ (Builder)
+ =E2=86=92 Break down into React components inside 
+frontend/src/components/
+:
+
+Builder UI Section=
+
+React Com=
+ponent Target
+
+=
+
+Header (nav, logo, actions)
+
+components/Header.tsx
+
+=
+Dashboard (stats, cards)
+
+components/Dashboa=
+rd.tsx
+
+Agents grid & modal
+
+components/Agents.tsx
+ + 
+components/AgentModal.tsx
+
+Conversations list & chat modal
+
+components/Conversations.tsx
+ + 
+components/ChatModal.tsx
+
+API Settings (providers)
+
+components/Settings.tsx
+
+Toast notifications
+
+components/Toa=
+st.tsx
+
+=F0=9F=91=89 Codex Prompt:
+
+=E2=80=9CConvert this vanilla JS 
+app.js
+ into modular React=
+ components using functional components + hooks. Use the existing 
+builder.css
+ styles. Ensure naviga=
+tion between Dashboard, Agents, Conversations, Settings uses React state in=
+stead of direct DOM manipulation.=E2=80=9D
+
+2. 
+Backend API Extensions
+
+Add endpoints to 
+backend/server.js
+ (Express):
+
+Feature
+
+Endpoint
+
+Backing Mo=
+del
+
+Agents
+
+GET /agents=
+
+, 
+POST /agents
+
+agent.model.js
+
+Conversations
+
+GET /=
+conversations
+, 
+POST /con=
+versations
+
+conversation.model.js=
+
+Daily Reports
+
+GET /reports
+, 
+POST /reports
+
+symb=
+i_logs
+ (new Mongo collection)
+
+Context Bridge
+
+GET /context
+, 
+POST /context
+
+symbi_context_nodes
+
+=F0=9F=91=89 Codex Prompt:
+
+=E2=80=9CAdd Express routes to 
+backend/server.js
+ for agent=
+s, conversations, reports, and context bridge. Use Mongoose models for agen=
+ts/conversations, and define two new collections: 
+symbi_logs
+ and 
+symbi_context_nodes
+. Return JSON.=E2=80=9D
+
+3. 
+Database (MongoDB)
+
+Extend schemas:
+
+agent.model.js
+ =E2=86=92 already exists. Add fields: 
+traits
+, 
+provider
+, 
+model
+, 
+apiKey
+.
+
+conversation.model.js
+ =E2=86=92 already exists. Add option=
+al 
+linkedAgentId
+.
+
+Create new models:
+
+report.model.js
+ (for daily logs).
+
+context.model.js
+ (for Overseer =E2=86=94 Symbi bridge).
+
+=F0=9F=91=89 Codex Prompt:
+
+=E2=80=9CExtend 
+agent.model.js
+ to include traits, provid=
+er, model, and apiKey (encrypted). Extend 
+conversation.model.js
+ to link conversations to agentId. C=
+reate two new models: 
+report.mo=
+del.js
+ with { category, content, createdAt } and 
+context.model.js
+ with { tag, data, createdA=
+t }.=E2=80=9D
+
+4. 
+Fron

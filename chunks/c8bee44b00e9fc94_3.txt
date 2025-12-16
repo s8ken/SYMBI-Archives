@@ -1,0 +1,255 @@
+ copy =
+it into a public environment or share it accidentally
+
+=F0=9F=A7=AA 7. 
+Audit Usage
+
+Go to 
+OpenAI Usage Dashboard
+
+ to:
+
+See if any unknown traffic is usin=
+g your key
+
+Track spikes in usage (which might=
+ mean exposure)
+
+Set usage limits in the billing se=
+ction (e.g., $10/mo cap)
+
+=E2=9C=85 Bonus: Vercel + OpenAI =
+Best Practice
+
+If you=E2=80=99re deploying a GPT-=
+powered app via 
+Vercel
+, here=E2=80=99s the flow:
+
+Add 
+OPENAI_API_KEY
+ in Vercel =E2=86=92 Settings =E2=86=92 =
+Environment Variables
+
+Call it in your serverless functio=
+n (
+pages/api/chat.js
+)
+
+Never expose it in your 
+.tsx
+ or 
+.js
+ frontend files
+
+=F0=9F=A7=A9 Want a Template?
+
+I can generate a 
+starter project
+ (Node, Vercel, or V0)=
+ that securely routes OpenAI API calls via a backend. Just let me know your=
+ stack!
+
+Or =E2=80=94 if you=E2=80=99re staying low-code (e.g. V0.dev, Z=
+apier), I can guide you on how to wrap your key with a secure webhook proxy=
+.
+
+=
+
+=
+
+You said:
+
+how do I revoke
+
+=
+
+=
+
+ChatGPT said:
+
+To 
+revoke
+ (i.e., delete or disable) an 
+OpenAI API key
+, you just need to go into your API dashboard a=
+nd delete the key. Here's a simple step-by-step:
+
+=F0=9F=94=A5 How to Revoke an OpenA=
+I API Key
+
+Go to the API Keys page
+
+=E2=9E=A4 
+https://platform.openai.com/account/api-keys
+
+Find the key you want to revoke
+
+Keys are listed under 
+=E2=80=9CAPI Keys=E2=80=9D
+
+You=E2=80=99ll see their 
+name
+, 
+created date
+, and 
+owner
+ (your user or a service account)
+
+Click the trash icon =F0=9F=97=91
+ next to the key
+
+A confirmation will pop up
+
+Once confirmed, the key is permanent=
+ly 
+revoked
+ and 
+cannot be used anymore
+
+=F0=9F=A7=BC After Revoking
+
+If the key is used in 
+deployed apps
+, they=E2=80=99ll stop =
+working unless you replace it
+
+Rotate it: create a new key and upda=
+te your 
+env vars
+ or 
+app settings
+
+You can also set up 
+different keys for staging/production
+ =
+for better separation and revocation control
+
+=F0=9F=A7=A0 Bonus: What Happens A=
+fter Revocation?
+
+Action
+=
+
+Result
+
+Someone tries to use the key
+
+API request fails with 
+401 Unauthorized
+
+Your billing or usage
+
+Stops counting usage from the deleted key
+
+Your apps or integrations
+
+Will break until a new v=
+alid key is provided
+
+If you want help rotating the key in a V0, Vercel, or backend s=
+etup, I can guide you step-by-step.
+
+You said:
+
+I just gave Vercel a service key but I don't see completions and chat as=
+ options to enable
+
+=
+
+ChatGPT said:
+
+Go=
+t it =E2=80=94 you're giving 
+Verc=
+el
+ an 
+OpenAI service acc=
+ount key
+, likely to use GPT models like 
+gpt-4
+ or 
+gp=
+t-4o
+, but you're not seeing 
+"completions"
+ or 
+"=
+chat"
+ options to enable. Let=E2=80=99s clear up what=E2=80=99s goi=
+ng on and what you need to check.
+
+=F0=9F=A7=AD What You=E2=80=99re Li=
+kely Expecting
+
+When integrating OpenAI with Vercel =
+(especially using tools like V0.dev or your own custom app), you're probabl=
+y expecting to:
+
+Call 
+https://api.openai.com/v1/completions
+ or 
+/v1/chat/completions
+
+Use the key to power a chatbot, summ=
+arizer, or other AI flow
+
+Possibly configure permissions for w=
+hich models or endpoints are allowed
+
+=F0=9F=A4=96 Why You're Not Seeing =
+=E2=80=9CCompletions=E2=80=9D or =E2=80=9CChat=E2=80=9D as Options
+
+1. 
+No Toggle for Endpoints
+
+OpenAI 
+doesn=E2=80=99t
+ provide toggles or granular permiss=
+ion controls (yet) like:
+
+=E2=9C=85 Enable 
+chat
+
+=E2=9D=8C Disable 
+images
+
+There=E2=80=99s no user interface for this. Once a key is created, it 
+has full access
+ to all mode=
+l endpoints your account is allowed to use (based on your plan or org setti=
+ngs).
+
+=E2=9C=85 What to Do Instead
+
+=F0=9F=A7=AA Step-by-step: Test t=
+he Key Works
+
+Open a terminal or use Postman
+
+Try calling the API directly:
+
+bash
+
+Copy code
+
+curl https://api.openai.com/v1/chat/completions \
+  -H 
+
+"Authorization: Bearer YOUR_S=
+ERVICE_ACCOUNT_KEY"
+
+ \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+
+If it r

@@ -1,0 +1,254 @@
+f an Unknown IP Was Receiving the Stream
+
+Since no 
+mainstream platforms
+ were detected, letâs check 
+which IP addresses your Mac connected to.
+
+â Run This in Terminal to See Past Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+ð 
+What to Look For:
+
+Unknown IP addresses
+ that your Mac connected to.
+
+Any 
+non-Apple or non-Google servers
+ that could be a private streaming platform.
+
+ð© 
+Copy the results here, and Iâll help analyze them.
+ If we find a 
+suspicious IP address
+, we can trace it to see where your stream was sent. ð¨
+
+You said:
+
+video conferencing is absolutely relevant here 
+
+ChatGPT said:
+
+Understood! If 
+video conferencing services
+ were involved, itâs likely the stream was sent 
+through a meeting platform or a hidden WebRTC connection.
+
+Now, we need to figure out:
+
+1ï¸â£ 
+Which video conferencing app was used?
+
+2ï¸â£ 
+Was it a real call, or was video secretly sent in the background?
+
+3ï¸â£ 
+Where was the data sent?
+
+ð  Step 1: Find Out Which Video Conferencing App Was Used
+
+Since the logs show 
+video conferencing activity
+, letâs check 
+which app accessed the camera/mic.
+
+â Run This in Terminal to See Camera/Microphone Usage
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 90d
+
+ð 
+What to Look For:
+
+If you see 
+AVCaptureDevice
+ logs, they will show 
+which app activated your camera or mic
+.
+
+Look for 
+FaceTime, Zoom, Google Meet, Teams, or unknown services.
+
+ð¥ Step 2: Find If a WebRTC Call or Stream Was Running
+
+Since video conferencing often uses 
+WebRTC
+, we need to check if 
+your Mac was in an unknown call.
+
+â Run This to Search for WebRTC Calls
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "webrtc"'
+
+ --last 90d
+
+ð 
+What to Look For:
+
+If WebRTC logs appear, it means 
+your video/audio were streamed via a browser-based call.
+
+The logs may include 
+URLs or IP addresses
+ related to the call.
+
+ð Step 3: Find Out Where the Video Was Sent
+
+Now, letâs check 
+what external IPs your Mac sent data to.
+
+â Run This to See Active Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+ð 
+What to Look For:
+
+Any 
+unknown IP addresses
+ that arenât Apple, Google, or common services.
+
+If we find a 
+suspicious IP
+, we can trace where the video was sent.
+
+ð© Next Steps
+
+1ï¸â£ 
+Run the camera/microphone check (
+log show --predicate "AVCapture"
+).
+
+2ï¸â£ 
+Run the WebRTC scan (
+log show --predicate "webrtc"
+).
+
+3ï¸â£ 
+Run the network connection check (
+netstat -an | grep ESTABLISHED
+).
+
+ð¨ 
+If you find anything strange (unknown apps, WebRTC calls, or unknown IPs), copy the results here, and Iâll help analyze them.
+
+You said:
+
+I don't use FaceTime
+
+ChatGPT said:
+
+Since you 
+donât use FaceTime
+, but 
+video conferencing activity appeared in the logs
+, that means 
+some other app was accessing your camera/microphone.
+
+This could be:
+
+1ï¸â£ 
+A hidden WebRTC call
+ (browser-based video streaming).
+
+2ï¸â£ 
+A third-party video conferencing app (Zoom, Google Meet, Teams, etc.).
+
+3ï¸â£ 
+A compromised app or malware using your camera/microphone.
+
+ð  Step 1: Find Out Which App Used the Camera/Microphone
+
+Since FaceTime wasnât involved, letâs check 
+which app actually accessed your camera.
+
+â Run This in Terminal:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 90d
+
+ð 
+What to Look For:
+
+If 
+AVCaptureDevice
+ logs appear, they will show 
+which app activated your camera/mic
+.
+
+Look for 
+Zoom, Google Meet, Teams, or any unknown app.
+
+ð© 
+If you see anything unusual, copy the results here, and Iâll help analyze them.
+
+ð¥ Step 2: Find If a WebRTC Call or Stream Was Running
+
+Since 
+FaceTime wasnât used
+, we need to check if a 
+WebRTC-based call
+ (browser-based streaming) was active.
+
+â Run This to Search for WebRTC Calls
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "webrtc"'
+
+ --last 90d
+
+ð 
+What to Look For:
+
+If WebRTC log

@@ -1,0 +1,94 @@
+se: { type: String, required: true },
+    dataClasses: [{ type: String, enum: ['public','personal','sensitive','m=
+edical','financial'] }],
+    permissions: [{ type: String, enum: ['chat.read','chat.write','data.exp=
+ort','analytics.basic','analytics.detailed'] }],
+    duration: { type: Number, default: 30 }, // days
+    expiresAt: { type: Date, required: true }
+  },
+  scores: {
+    identityConfidence: { type: Number, min: 0, max: 1, default: 0 },
+    capabilityDisclosure: { type: Number, min: 0, max: 1, default: 0 },
+    compliance: { type: Number, min: 0, max: 1, default: 0 },
+    behavior: { type: Number, min: 0, max: 1, default: 0.5 },
+    humanFeedback: { type: Number, min: 0, max: 1, default: 0.5 }
+  },
+  trustScore: { type: Number, min: 0, max: 100, default: 50, index: true },
+  trustBand: { type: String, enum: ['Low','Guarded','Elevated','High'], def=
+ault: 'Guarded' },
+  decay: {
+    halfLifeDays: { type: Number, default: 14 },
+    lastUpdatedAt: { type: Date, default: Date.now },
+    decayRate: { type: Number, default: 0.05 }
+  },
+  consent_envelope: {
+    termsHash: { type: String, required: true },
+    signatures: [{
+      actor: { type: String, enum: ['human','agent'], required: true },
+      signature: { type: String, required: true },
+      timestamp: { type: Date, default: Date.now },
+      publicKey: String
+    }],
+    nonce: { type: String, required: true, unique: true },
+    createdAt: { type: Date, default: Date.now }
+  },
+  evidence: [{
+    type: { type: String, enum: ['identity','capability','consent','interac=
+tion','violation'], required: true },
+    ref: { type: String, required: true },
+    hash: { type: String, required: true },
+    description: String,
+    createdAt: { type: Date, default: Date.now },
+    verifiedAt: Date,
+    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  }],
+  violations: [{
+    type: { type: String, enum: ['scope_breach','consent_violation','policy=
+_breach','behavior_anomaly'], required: true },
+    severity: { type: String, enum: ['low','medium','high','critical'], req=
+uired: true },
+    description: String,
+    evidenceRef: String,
+    resolvedAt: Date,
+    resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    createdAt: { type: Date, default: Date.now }
+  }],
+  history: [{
+    at: { type: Date, default: Date.now },
+    action: { type: String, enum: ['created','activated','suspended','revok=
+ed','score_updated','evidence_added','consent_amended'], required: true },
+    by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    notes: String,
+    previousState: String,
+    newState: String,
+    metadata: mongoose.Schema.Types.Mixed
+  }]
+}, { timestamps: true });
+
+trustBondSchema.index({ human_user_id: 1, agent_id: 1 }, { unique: true });
+trustBondSchema.index({ state: 1, trustScore: -1 });
+trustBondSchema.index({ 'scope.expiresAt': 1 });
+
+trustBondSchema.methods.calculateTrustScore =3D function() {
+  const w =3D { identityConfidence: 0.2, capabilityDisclosure: 0.15, compli=
+ance: 0.25, behavior: 0.25, humanFeedback: 0.15 };
+  const base =3D Object.keys(w).reduce((sum, k) =3D> sum + (this.scores[=
+k] * w[k]), 0);
+  const days =3D (Date.now() - this.decay.lastUpdatedAt) / (1000*60*60*24);
+  const decayFactor =3D Math.exp(-Math.log(2) * days / this.decay.halfLifeD=
+ays);
+  const finalScore =3D Math.round(100 * base * decayFactor);
+  this.trustScore =3D Math.max(0, Math.min(100, finalScore));
+  this.trustBand =3D this.trustScore >=3D 80 ? 'High' : this.trustScore =
+>=3D 60 ? 'Elevated' : this.trustScore >=3D 40 ? 'Guarded' : 'Low';
+  this.decay.lastUpdatedAt =3D new Date();
+  return this.trustScore;
+};
+
+trustBondSchema.methods.isExpired =3D function() { return Date.now() > t=
+his.scope.expiresAt; };
+trustBondSchema.methods.canPerformAction =3D function(action) {
+  if (this.state !=3D=3D 'active' || this.isExpired()) return false;
+  if (this.trustBand =3D=3D=3D 'Low' && ['chat.write','data.export'=
+].includes(action)) return false;
+  return

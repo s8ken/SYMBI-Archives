@@ -1,0 +1,261 @@
+ble snapshot).
+
+Reboots into the modified system.
+
+2ï¸â£ Delete 
+rapportd
+ in Writable Mode
+
+Once your Mac reboots, 
+open Terminal again
+ and run:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd-user.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.rapportd.plist
+sudo 
+
+rm
+
+ -rf /usr/libexec/rapportd
+
+â 
+This deletes 
+rapportd
+ permanently.
+
+3ï¸â£ Reboot & Restore Normal Boot
+
+After deleting 
+rapportd
+, restart your Mac normally:
+
+sh
+
+Copy
+
+sudo reboot
+
+4ï¸â£ Re-enable SIP and SSV for Security
+
+Once 
+rapportd
+ is removed, restart into 
+macOS Recovery Mode
+ (
+Command + R
+) and turn security back on:
+
+sh
+
+Copy
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+â 
+Your Mac will now be fully secure without 
+rapportd
+.
+
+ð Try These Steps and Let Me Know If It Works!
+ ð
+
+If 
+mount -uw /
+
+still does not work
+, we will attempt a 
+full snapshot override method.
+
+You said:
+
+before we do that can we just double check if we are being monitored currently in anyway?
+
+ChatGPT said:
+
+ð Step-by-Step Check for Active Monitoring or Remote Access
+
+Before modifying the system further, letâs confirm whether 
+any active monitoring, remote access, or unauthorized network activity
+ is happening.
+
+ð Step 1: Check for Active Remote Connections
+
+Run this command to see if 
+anyone is actively connected to your system
+:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+â 
+If no results appear
+, there are no 
+active remote connections
+.
+
+â 
+If results show up
+, they will list 
+IP addresses
+âsend me the output so we can analyze them.
+
+ð Step 2: Check for Listening Services
+
+This will show 
+if any unexpected services are waiting for connections
+:
+
+sh
+
+Copy
+
+netstat -an | grep LISTEN
+
+â 
+Expected services
+: 
+localhost
+ addresses, 
+port 49153 (which we are disabling), or common system services
+.
+
+â 
+Unexpected services
+: If you see 
+ports like 22 (SSH), 5900 (VNC), 3283 (Remote Desktop), 445 (SMB)
+, we need to investigate further.
+
+ð Step 3: Check for Suspicious Processes
+
+This command lists running processes and their network activity:
+
+sh
+
+Copy
+
+sudo lsof -i -P -n | grep LISTEN
+
+â 
+Expected output:
+ System processes like 
+rapportd
+, 
+mdnsd
+, 
+launchd
+.
+
+â 
+If you see unexpected apps like 
+AnyDesk
+, 
+TeamViewer
+, or unknown services, we need to investigate.
+
+ð Step 4: Check for Hidden Remote Control Software
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'screensharing|teamviewer|anydesk|logmein|vnc|ssh'
+
+â 
+If nothing appears, remote access tools are NOT running.
+
+â 
+If results show any of these services
+, we will need to force-remove them.
+
+ð Step 5: Check for Rootkits or Hidden System-Level Monitoring
+
+Rootkits hide from normal system commands, but we can check for 
+kernel modifications
+:
+
+sh
+
+Copy
+
+sudo kextstat | grep -v com.apple
+
+â 
+If no results appear, there are no third-party kernel extensions (good sign).
+
+â 
+If you see unknown or suspicious kernel extensions
+, we need to remove them.
+
+ð Try These Steps and Let Me Know the Results!
+ ð
+
+This will confirm if 
+your Mac is currently being monitored, remotely accessed, or compromised.
+
+You said:
+
+stop - I need you to do one step at a time because you prevent me from replying 
+
+ChatGPT said:
+
+Updated saved memory
+
+Got it! Let's go one step at a time.
+
+Step 1: Check for Active Remote Connections
+
+Please run this command in 
+Terminal
+ and let me know the output:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+â 
+If no results appear
+, there are no active remote connections.
+
+â 
+If results appear
+, it means 
+a remote device is connected
+âsend me the output so we can analyze it.
+
+I'll wait for your response before moving to the next step. ð
+
+You said:
+
+Last login: Fri Mar  7 00:25:09 on ttys000
+lcl@LCLs-MacBook-Pro ~ % netstat -an | grep ESTABLISHED
+
+tcp4       0      0  172.20.10.9.55743      17.248.219.65.443      ESTABLISHED
+tcp4       0      0  172.20.10.9.55741      151.101.129.91.443     ESTABLISHED
+tcp4      

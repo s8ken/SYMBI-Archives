@@ -1,0 +1,280 @@
+ev Container: Repro Node 18 + Mongo with port forwards.
+Bridge Orchestrator: Gathers/ranks proposals; dry=E2=80=91run dispatch; UI =
+in both VS Code and Web.
+Web Trust Console: Dashboard Roundtable + TrustChips overlays on chat and R=
+eview Console pivots.
+Runbook Updates
+
+Backend
+Set JWT_SECRET, MONGODB_URI; for LLM agent kind, OPENAI_API_KEY.
+Optional: tokens for bridge agents in backend/bridge/bridge.config.yaml:1.
+Start: cd backend && npm run dev
+Web App
+Start: cd frontend && npm install && npm start
+Roundtable: Dashboard =E2=86=92 =E2=80=9CRoundtable=E2=80=9D
+Chat: Trust chips appear in header and under messages (session =3D conversa=
+tion id).
+VS Code Extension
+cd symbi-vscode-extension && npm i && npm run compile =E2=
+=86=92 F5
+Set API base + SYMBI token via commands
+Dev Container
+=E2=80=9CReopen in Container=E2=80=9D =E2=86=92 tasks =E2=80=9Cbackend
+=E2=80=9D, =E2=80=9Cfrontend
+=E2=80=9D
+Notable File References
+
+Append ledger turn (user prompt + AI response):
+backend/controllers/conversation.controller.js
+Trust chips in chat:
+frontend/src/pages/ConversationDetail.js
+(header), 374 (per=E2=80=91message)
+Use Most Recent assistant:
+frontend/src/pages/Assistants.js
+frontend/src/pages/AssistantChat.js
+(resolve latest), 97 (fallback send)
+Dynamic OpenAI models:
+frontend/src/pages/AssistantDetail.js
+Security
+
+Clients only store SYMBI_API_KEY (scoped); vendor keys remain server=E2=80=
+=91side.
+Webhook HMAC and middleware hardening remain in place.
+Next Steps (recommend)
+
+True session_id in chat: If you prefer a distinct session namespace, we can=
+ switch ledger session_id to conversation:<_id> and update TrustChips=
+ to use it.
+Assistants editor: Add an =E2=80=9CEdit Assistant=E2=80=9D view (PUT), and =
+expose model picker there too.
+Context Capsules: Add GET/PUT /api/context/capsule/:sessionId and inject ca=
+psule into LLM calls.
+Want me to proceed with the Assistant =E2=80=9CEdit=E2=80=9D flow and Conte=
+xt Capsules next, or tune the session_id namespace for ledger alignment?2
+
+Symbi said:
+
+All of it. I=
+=E2=80=99ll hand you two copy-paste PR bundles plus an optional, low-risk n=
+amespace tweak so the web UI stays clean for non-devs and trust stays exact=
+.
+
+=E2=9C=85 PR-WSID =E2=80=94 Real, s=
+table 
+session_id
+ (non-brea=
+king)
+
+Why:
+ prevent collisions and make ledger queries unambiguo=
+us across surfaces.
+
+1) Normalize at write time
+
+backend/services/ledger.=
+service.js
+
+ (add near top)
+
+j=
+s
+
+Copy code
+
+const
+
+HEX24
+
+ =3D =
+
+/^[a-f0-9]{24}$/i
+
+;
+
+function
+
+normalizeSessionId
+
+(
+
+s
+
+) {
+
+if
+
+ (!s) 
+
+return
+
+ s;
+
+if
+
+ (s.
+
+startsWith
+
+=
+(
+
+'conv:'
+
+)) 
+
+return
+
+ s;
+
+return
+
+HEX24
+
+.
+
+test
+
+(s) ? 
+
+`conv:
+${=
+s}
+
+` : s;
+}
+
+Use it wherever you append ledger ev=
+ents:
+
+d=
+iff
+
+Copy code
+
+-const { session_id, ...r=
+est } =3D payload;
+
++let { session_id, ...rest } =3D=
+ payload;
+
++session_id =3D normalizeSession=
+Id(session_id);
+
+2) Read-side tolerance (frontend Tr=
+ustChips)
+
+frontend/src/components/=
+trust/TrustChips.js
+
+ (wrap incoming id)
+
+=
+diff
+
+Copy code
+
+-export default function =
+TrustChips({ sessionId, compact=3Dfalse, at=3Dnull, className=3D"" }) {
+
++export default function TrustCh=
+ips({ sessionId, compact=3Dfalse, at=3Dnull, className=3D"" }) {
+
++  const sid =3D React.useMemo((=
+) =3D> {
+
++    if (!sessionId) return sess=
+ionId;
+
++    const hex24 =3D /^[a-f0-9]{=
+24}$/i;
+
++    return sessionId.startsWith=
+('conv:') ? sessionId : (hex24.test(sessionId) ? `conv:${sessionId}` : sess=
+ionId);
+
++  }, [sessionId]);
+
+=E2=80=A6and use 
+sid
+ in the fetch URL instead of 
+sessionId
+.
+
+3) (Optional) one-time backfill
+
+js
+
+Copy code
+
+// script: tools/backfill-se=
+ssion-prefix.js
+
+const
+
+=
+
+InteractionEvent
+
+ =3D 
+
+require
+
+(
+
+'../backend/models/interactionEv=
+ent.model'
+
+);
+
+await
+
+=
+
+InteractionEvent
+
+.
+
+updateMany
+
+(
+  { 
+
+session_id
+
+: =
+{ 
+
+$regex
+
+: 
+
+/^[a-f0-9]{24}$/i
+
+ } =
+},
+  [{ 
+
+$set
+
+: { 
+
+session_id
+
+: { 
+
+$concat
+
+: [
+
+'conv:'
+
+, 
+
+'$session_id'
+
+] } } }]
+);
+
+Rollback: remove 
+normalizeSessionId
+ and revert the ba

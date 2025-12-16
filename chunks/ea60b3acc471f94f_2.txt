@@ -1,0 +1,175 @@
+ rules
+
+Web server firewall / Nginx 
+allow/deny
+ rules
+
+Cloudflare or other proxy security s=
+ettings
+
+Mailflow settings only affect email =
+delivery =E2=80=94 things like who can send/receive at 
+symbi.world
+.
+
+=E2=9C=85 
+So answer:
+
+The GoDaddy Mailflow setup won=E2=80=99t cause that error. It=E2=80=99s not=
+ tied to web allow-listing. Your issue is almost certainly on the 
+hosting/deployment side
+ (Verc=
+el, Netlify, Fleek, or server config).
+
+Do you want me to pull your 
+current DNS records for symbi.world
+ and map which servi=
+ces are active (GoDaddy, Vercel, etc.)? That would clarify if some parts ar=
+e still pointing at GoDaddy infra and causing friction.
+
+=
+
+You said:
+
+yes
+
+Symbi said:
+
+I wasn=E2=80=99t able to find full DNS record details for 
+symbi.world
+ in public looku=
+ps just now. But I can outline what to check, what to look for, and how to =
+interpret what you=E2=80=99ll likely find =E2=80=94 so you can spot where t=
+he misconfiguration or =E2=80=9Callow list=E2=80=9D issue might be coming f=
+rom.
+
+What to Check in symbi.world=E2=80=
+=99s DNS Setup
+
+When you run tools like 
+dig
+, 
+nslookup
+, or use =E2=80=9CDNS lookup / propagation checkers=
+,=E2=80=9D you want to pull up these types of records:
+
+Record Type
+
+What to look for=
+
+Why it ma=
+tters for your issue
+
+NS
+ (Nameservers)
+
+Which nameservers are authoritative for your domain (
+symbi.world
+)
+
+Tells you where the control=
+ over DNS is. If still using GoDaddy NS, maybe some records are stale.
+=
+
+A / AAAA
+ (Address Records)
+
+What IP address 
+symbi.world
+ or 
+w=
+ww.symbi.world
+ points to
+
+If they=E2=80=99re pointing to GoDaddy / a server yo=
+u no longer control, requests might be going there and hitting allow-list r=
+estrictions.
+
+CNAME
+
+If 
+www
+ or some subdomain is an alias for another host/domain
+
+Could mask or r=
+edirect traffic in unexpected ways. E.g., 
+www.symbi.world
+ might be CNAME =E2=86=92 GoDaddy or some =
+staging host.
+
+TXT / SPF / DKIM / DMARC
+
+Email verification record=
+s, ownership verification
+
+Less relevant to webpage =E2=80=9Callow list=E2=80=9D blo=
+cking, but useful for email / security.
+
+MX
+
+Where your email is h=
+andled
+
+Y=
+ou've already identified Mailflow + Direct MX routing; ensures email works.=
+ But doesn=E2=80=99t correlate with hosting =E2=80=9Callow list.=E2=80=9D
+
+Firewall or Proxy Records
+ (not strictly DNS, but connect=
+ed)
+
+If y=
+ou=E2=80=99re using Cloudflare, or Vercel with domain protection, check whe=
+ther rules enforce IP allow-lists, password rules, etc.
+
+These can cause =E2=80=9Cn=
+ot on allow list=E2=80=9D errors if visitor or request origin isn't whiteli=
+sted.
+
+Likely Scenarios Given What You=
+=E2=80=99ve Told Me
+
+Putting together your =E2=80=9Cnot=
+ on allow list=E2=80=9D message + Mailflow via GoDaddy + using Vercel / pos=
+sible other hosting, here=E2=80=99s what seems probable:
+
+DNS still points to GoDaddy / old environment
+ for eith=
+er all or part of the domain (A record or CNAME).
+
+=E2=86=92 When someone browses, they hit infrastructure at GoDaddy that has=
+ an allow-list restriction.
+
+Hosting (e.g. Vercel or other) has preview/protected mode
+ enabled which requires domains / collaborators to be listed. If your cu=
+stom domain hasn=E2=80=99t been fully added/verified, it may reject traffic=
+.
+
+SSL / HTTPS / domain verification
+ mismatch=E2=80=94if =
+the domain is not properly set up in both DNS + hosting provider, requests =
+might be being routed, but the host rejects them because it doesn=E2=80=99t=
+ recognize the domain as =E2=80=9Callowed.=E2=80=9D
+
+Residual 
+DNS caching / propagation
+ delays. If you rece=
+ntly changed nameservers or A records, some clients might still see old poi=
+nting =E2=86=92 old host with restrictions.
+
+What I Suggest You Do
+
+Here is a concrete checklist to ru=
+n through, to pin down the issue:
+
+Run a DNS lookup
+ for 
+symbi.world
+:
+
+Check NS records =E2=80=94 are the=
+y GoDaddy=E2=80=99s or have you shifted them (e.g. to Vercel or your own DN=
+S provider)?
+
+Check A/CNAME for both 
+symb

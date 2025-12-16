@@ -1,0 +1,335 @@
+t token type ("classic" is =
+common).
+
+Choose the required scopes (e.g., 
+repo
+, 
+read:user
+).
+
+Click 
+Generate token
+. Save it securely=E2=80=94GitHub show=
+s it only once.
+
+Direc=
+t link to generate GitHub token
+
+=
+
+=
+
+You said:
+
+ChatGPT said:
+
+You're nearly there! Here's where to go next:
+
+On the left-hand menu (as shown in yo=
+ur screenshot), scroll down to 
+=
+=E2=80=9CDeveloper settings=E2=80=9D
+ =E2=80=94 it's below =E2=80=
+=9CModeration=E2=80=9D and above =E2=80=9CRepositories=E2=80=9D.
+
+Then click:
+
+=E2=86=92 
+Personal access token=
+s
+
+=E2=86=92 
+Tokens (classic)
+
+=E2=86=92 
+Generate new token
+
+From there:
+
+Give it a name like 
+symbi-eliza
+
+Set the 
+expiration
+ (or =E2=80=9CNo expiration=E2=80=9D for=
+ dev use)
+
+Check the 
+scopes
+ you need, usually:
+
+repo
+ (full repo access)
+
+read:user
+
+workflow
+ (if you=E2=80=99ll trigger GitHub Actions)
+
+Click 
+Generate token
+, copy it, and save it somewhere secur=
+e.
+
+Once you=E2=80=99ve got the token, I=E2=80=99ll help you plug it =
+into ElizaOS as a secret.
+
+=
+
+=
+
+You said:
+
+=
+
+=
+
+so its not a client secret=
+
+ChatGPT said:
+
+Correct =E2=80=94 i=
+t's not an 
+OAuth client secret
+, it's a 
+Personal Access To=
+ken (PAT)
+.
+
+=E2=9C=85 You're using:
+
+A 
+Personal Access Token (classic)
+ =E2=80=94 used by your E=
+lizaOS agent to authenticate 
+as=
+ you
+, with direct repo access.
+
+Use it if you want your assistant to=
+:
+
+Read/write to your repos
+
+Analyze files or code
+
+Interact with GitHub Actions
+
+If you wanted to authorize 
+as an app
+, you=E2=80=99d use:
+
+A 
+GitHub OAuth App
+
+Or a 
+GitHub App
+ with client ID & secret
+
+But for our setup (you + your agent), a 
+PAT is the right call.
+
+Once you=E2=80=99ve copied it, I=E2=80=99ll show you exactly where to add i=
+t in ElizaOS!
+
+=
+
+You said:
+
+ChatGPT said:
+
+You're currently viewing your 
+GitHub App
+ configuration (
+symbi-agent
+) =E2=80=94 which is great for app-level integrat=
+ions =E2=80=94 but if you just want 
+Symbi-Assistant to access your repos and files directly
+, a 
+Personal Access Token (PAT)
+ is simpler and quicker.
+
+Here=E2=80=99s how to get the PAT:
+
+Go to 
+GitHub Tokens (Classic)
+
+.
+
+Click 
+"Generate new token (classic)"
+.
+
+Name it something like 
+elizaos-symbi-access
+.
+
+Check scopes
+ like:
+
+repo
+ =E2=86=92 for private repos
+
+read:user
+
+workflow
+ (optional, for GitHub Actions)
+
+Click 
+Generate
+, then 
+copy the token
+ immediately.
+
+Then, in ElizaOS:
+
+Go to your 
+symbi-assistant =E2=86=92 Secrets
+ tab.
+
+Under 
+Name
+, enter:
+
+n=
+ginx
+
+Copy code
+
+=
+
+GITHUB_PAT
+
+Under 
+Value
+, paste your new token.
+
+Click 
+Add
+, then 
+Save
+.
+
+Let me know when that=E2=80=99s done =E2=80=94 I=E2=80=99ll show =
+you how to use it for GitHub-powered queries next.
+
+You sai=
+d:
+
+ChatGPT said:
+
+=
+
+Perfect =E2=80=94 you've now enabled po=
+werful plugins, including:
+
+=E2=9C=85 
+@elizaos/plugin-shell
+ =E2=86=92 run shell commands
+
+=E2=9C=85 
+@elizaos/plugin-github
+ =E2=86=92 GitHub integration
+
+=E2=9C=85 
+@elizaos/plugin-browser
+, 
+pdf
+, 
+knowle=
+dge
+, etc. =E2=86=92 great for research and content handling
+
+Next, if you=E2=80=99ve created your=
+
+GitHub token
+ already,=
+ here=E2=80=99s how to wire it in:
+
+=F0=9F=94=90 Add the GitHub Token t=
+o ElizaOS:
+
+Go to your 
+symbi-assistant =E2=86=92 Secret
+ tab
+
+In 
+Name
+, enter:
+
+n=
+ginx
+
+Copy code
+
+=
+
+GITHUB_PAT
+
+In 
+Value
+, paste your Personal Access Token
+
+Click 
+Add
+, then 
+Save
+
+Once that=E2=80=99s done, you can tr=
+y your first command, like:
+
+t=
+ext
+
+Copy code
+
+List all my GitHub repos.
+
+Or something deeper like:
+
+t=
+ext
+
+Copy code
+
+Analyze the README and code in s8ken/Symbi-core.
+
+Ready to test that?
+
+=
+
+You said:
+
+=
+
+=
+
+I added it here was that wrong?
+
+ChatGPT s=
+aid:
+
+Nope =E2=80=94 you're spot on!=
+ =F0=9F=99=8C
+
+You added your GitHub token correctly under:
+
+ngi=
+nx
+
+Copy code
+
+=
+
+GITHUB_TOKEN
+
+=E2=9C=85 It matches what the 
+@elizaos/plugin-github
+ expects (d=
+espite the earlier suggestion to use 
+GITHUB_PAT
+, ElizaOS is clearly looking for 
+GITHUB_TOKEN
+, as shown in your UI).
+
+=F0=9F=94=A7 You're now fully wired=

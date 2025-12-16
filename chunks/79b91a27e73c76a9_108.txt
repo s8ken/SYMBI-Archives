@@ -1,0 +1,309 @@
+13.0/lib/libtsk_jni.dylib /usr/local/lib/libtsk_jni.dylib
+
+ln: /usr/local/lib/libtsk_jni.dylib: No such file or directory
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Fixing "No such file or directory" When Linking 
+libtsk_jni.dylib
+
+Since 
+/usr/local/lib/
+ doesn’t exist, macOS is blocking the link. Let’s 
+create the directory first
+ and 
+force Autopsy to recognize the library
+.
+
+✅ Step 1: Manually Create 
+/usr/local/lib/
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /usr/local/lib
+
+📌 
+This ensures the directory exists for linking.
+
+✅ Step 2: Create a Symbolic Link for 
+libtsk_jni.dylib
+
+Now, force the link:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -s /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/libtsk_jni.dylib
+
+📌 
+This tells Autopsy where to find the JNI library.
+
+✅ Step 3: Set The Library Path Permanently
+
+Now, export the correct path so 
+Autopsy can find it
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/usr/local/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 
+Try this and let me know if Autopsy finally loads fully! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % sudo mkdir -p /usr/local/lib
+
+sja@SJAs-MacBook-Pro bin % sudo ln -s /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/libtsk_jni.dylib
+
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH
+echo 'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 02:14:13.842 java[12893:68604] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+libtsk_jni
+ Still Not Found – Let’s Force Java to Load It! 🔥
+
+Even though we 
+linked
+
+libtsk_jni.dylib
+, 
+Autopsy still isn’t recognizing it.
+ Let's 
+manually set the library path inside Java itself.
+
+✅ Step 1: Verify Java Can See the Library
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+
+📌 
+Expected output:
+
+swift
+
+Copy
+
+Edit
+
+lrwxr
+
+-
+
+xr
+
+-
+
+x  
+
+1
+
+ root  wheel  
+
+50
+
+Mar
+
+18
+
+02
+
+:
+
+14
+
+/usr/
+
+local
+
+/lib/
+
+libtsk_jni.dylib -> 
+
+/opt/
+
+homebrew
+
+/Cellar/
+
+sleuthkit
+
+/4.13.0/
+
+lib
+
+/
+
+libtsk_jni.dylib
+
+📌 
+If the file is missing, retry Step 2 below.
+
+✅ Step 2: Try Copying Instead of Linking
+
+Instead of linking, 
+copy the actual library
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+
+📌 
+This ensures it’s physically present where Autopsy expects it.
+
+✅ Step 3: Force Java to Load the Library
+
+Now, explicitly 
+tell Java where to load the library
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ LD_LIBRARY_PATH=/usr/local/lib:
+
+$LD_LIBRARY_PATH
+
+echo
+
+'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 
+This makes Java always look in 
+/usr/local/lib/
+ first.
+
+✅ Step 4: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 What If It Still Fails?
+
+If 
+libtsk_jni
+
+STILL
+ isn't found, check what Java sees:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+📌 
+Send me the output!
+ That will tell us where Java is looking.
+
+🚀 
+Try these steps and let me know if Autopsy finally works! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % lrwxr-xr-x  1 root  wheel  50 Mar 

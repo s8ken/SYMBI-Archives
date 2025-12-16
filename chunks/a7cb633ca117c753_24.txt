@@ -1,0 +1,661 @@
+s will:
+
+â Create the folder: 
+app/api/replicate/
+
+â Create the file: 
+route.ts
+
+2ï¸â£ Create the AI Component
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p components
+
+touch
+
+ components/ReplicateAI.tsx
+
+This will:
+
+â Create the folder: 
+components/
+
+â Create the file: 
+ReplicateAI.tsx
+
+ð Method 2: Using VS Code (Graphical)
+
+If you're using 
+Visual Studio Code (VS Code)
+:
+
+1ï¸â£ 
+Open VS Code
+
+2ï¸â£ 
+Navigate to your project folder (
+symbi
+)
+
+3ï¸â£ 
+Right-click on the 
+app/api/
+ folder
+ â Click 
+"New Folder"
+ â Name it 
+replicate
+
+4ï¸â£ Inside 
+replicate
+, 
+right-click
+ â Click 
+"New File"
+ â Name it 
+route.ts
+
+5ï¸â£ 
+Repeat
+ for 
+components/ReplicateAI.tsx
+
+ð¥ 
+Now you have the files created!
+ Let me know when they're ready, and weâll add the code. ðð
+
+You said:
+
+okay I created both files 
+
+ChatGPT said:
+
+ð Step 8: Add Code to Your New Files
+
+Now that youâve 
+created 
+route.ts
+ and 
+ReplicateAI.tsx
+
+, let's add the necessary code.
+
+1ï¸â£ Add API Logic to 
+app/api/replicate/route.ts
+
+ð 
+Open 
+app/api/replicate/route.ts
+
+ and 
+paste this
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+import
+
+Replicate
+
+from
+
+"replicate"
+
+;
+
+const
+
+ replicate = 
+
+new
+
+Replicate
+
+({
+
+auth
+
+: process.
+
+env
+
+.
+
+REPLICATE_API_TOKEN
+
+, 
+
+// Store this in Vercel env variables
+
+});
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+try
+
+ {
+
+const
+
+ output = 
+
+await
+
+ replicate.
+
+run
+
+(
+
+"stability-ai/stable-diffusion"
+
+, {
+
+input
+
+: { prompt },
+    });
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+image
+
+: output });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: error.
+
+message
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+â 
+What this does:
+
+Receives a 
+text prompt
+ from the frontend.
+
+Calls 
+Replicateâs AI model
+ to generate an image.
+
+Returns the 
+AI-generated image URL
+.
+
+2ï¸â£ Add the AI Component to 
+components/ReplicateAI.tsx
+
+ð 
+Open 
+components/ReplicateAI.tsx
+
+ and 
+paste this
+:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+ReplicateAI
+
+(
+
+) {
+
+const
+
+ [prompt, setPrompt] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [image, setImage] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [loading, setLoading] = 
+
+useState
+
+(
+
+false
+
+);
+
+const
+
+generateImage
+
+ = 
+
+async
+
+ (
+
+) => {
+
+setLoading
+
+(
+
+true
+
+);
+
+setImage
+
+(
+
+""
+
+);
+
+const
+
+ res = 
+
+await
+
+fetch
+
+(
+
+"/api/replicate"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ prompt }),
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+    });
+
+const
+
+ data = 
+
+await
+
+ res.
+
+json
+
+();
+
+setImage
+
+(data.
+
+image
+
+);
+
+setLoading
+
+(
+
+false
+
+);
+  };
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center justify-center p-4"
+
+>
+
+<
+input
+
+type
+
+=
+
+"text"
+
+placeholder
+
+=
+
+"Enter a prompt..."
+
+value
+
+=
+
+{prompt}
+
+onChange
+
+=
+
+{(e)
+
+ => setPrompt(e.target.value)}
+        className="p-2 border rounded text-black w-80"
+      />
+
+<
+button
+
+onClick
+
+=
+
+{generateImage}
+
+className
+
+=
+
+"mt-2 p-2 bg-blue-600 text-white rounded"
+
+disabled
+
+=
+
+{loading}
+
+      >
+        {loading ? "Generating..." : "Generate AI Image"}
+
+</
+button
+
+>
+
+      {image && (
+
+<
+img
+
+src
+
+=
+
+{image}
+
+alt
+
+=
+
+"Generated AI"
+
+className
+
+=
+
+"mt-4 rounded shadow-lg w-80"
+
+ />
+      )}
+
+</
+div
+
+>
+  );
+}
+
+â 
+What this does:
+
+Users 
+enter a prompt
+.
+
+Sends the request to 
+Replicateâs AI model
+.
+
+Displays the 
+AI-generated image
+.
+
+3ï¸â£ Add the AI Component to Your Homepage
+
+ð 
+Open 
+app/page.tsx
+
+ and 
+import the AI component
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ReplicateAI
+
+from
+
+"@/components/ReplicateAI"
+
+;
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+>
+ 

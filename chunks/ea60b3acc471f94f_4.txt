@@ -1,0 +1,225 @@
+DNS is correct (pointing at Vercel=
+).
+
+You just need to add 
+symbi.world
+ into your 
+Vercel project=E2=80=99s domain settings
+ so Vercel recognizes it.
+
+Do you want me to sketch a 
+step-by-step with screenshots / commands
+ for adding 
+symbi.world
+ into your Vercel=
+ project? That way you won=E2=80=99t hit the allow-list wall again.
+
+=
+
+You said:
+
+=E2=86=90 All domains
+symbi.world
+Expiration Date
+=E2=80=93
+Renewal Price
+=E2=80=93
+Registrar
+Third Party
+Auto Renewal
+=E2=80=93
+Age
+Mar 21 by=20
+s8ken
+s8ken Avatar
+Nameservers
+Third Party
+Edge Network
+Active
+DNS Records
+DNS records point to services your domain uses, like forwarding your domain=
+ or setting up an email service. You can enable Vercel's nameservers or use=
+ a third-party to manage your domain's DNS records.
+Update the nameservers in your DNS provider to manage your DNS records on V=
+ercel. Learn more
+
+Nameservers
+ns1.vercel-dns.com
+ns2.vercel-dns.com
+Depending on your provider, it might take some time for the nameservers cha=
+nges to apply. Learn More
+Name
+subdomain
+Type
+
+A
+Value
+76.76.21.21
+TTL
+60
+Priority
+Comment
+A comment explaining what this DNS record is for
+Learn more about DNS Records
+Current DNS Records
+
+Name
+Type
+Value
+TTL
+Priority
+Age
+Comment
+ALIAS	732ed23707a52719.vercel-dns-016.com	60		22h=09
+Vercel automatically manages this record. It may change without notice.
+*	ALIAS	cname.vercel-dns-016.com.	60		22h=09
+Vercel automatically manages this record. It may change without notice.
+CAA	0 issue "letsencrypt.org"	60		Mar 21		
+
+Symbi said:
+
+Perfect =E2=80=94 that screenshot you shared clea=
+rs it all up. Here=E2=80=99s the situation:
+
+Where Things Stand
+
+=E2=9C=85 
+Nameservers
+: You=E2=80=99ve switched 
+symbi.world
+ to 
+Vercel=E2=80=99s nameservers
+ (
+ns1.vercel-dns.com
+, 
+ns2.vercel-dns.com
+). That means 
+Vercel now controls your DNS
+, not Go=
+Daddy.
+
+=E2=9C=85 
+A record
+: Points to 
+76.76.21.21
+, Vercel=E2=80=99s edge network.
+
+=E2=9C=85 
+ALIAS records
+: Auto-managed by Vercel for routin=
+g.
+
+=E2=9C=85 
+CAA
+: Set to Let=E2=80=99s Encrypt, so SSL certs =
+will issue correctly.
+
+So DNS and routing are fully under V=
+ercel now =E2=80=94 no more GoDaddy entanglement.
+
+Why You Saw =E2=80=9CNot on Allow L=
+ist=E2=80=9D
+
+The error comes because 
+even though DNS points to Vercel
+, =
+the domain must also be 
+attache=
+d to a project
+ in your Vercel dashboard.
+
+Right now, 
+symbi.world
+ is recognized by Vercel at the DNS leve=
+l, but 
+no project has claimed i=
+t
+. So when requests hit their edge network, they reject them with =
+the =E2=80=9Callow list=E2=80=9D message.
+
+=E2=9C=85 How to Fix
+
+Log in to 
+Vercel Dashboard
+
+.
+
+Open the project you want to serve=
+ at 
+symbi.world
+ (e.g., S=
+YMBI site).
+
+Go to: 
+Settings =E2=86=92 Domains
+.
+
+Click 
+Add Domain
+.
+
+Enter 
+symbi.world
+.
+
+Choose it as the 
+Production Domain
+ (so it=E2=80=99s th=
+e live site).
+
+(Optional but recommended) also ad=
+d 
+www.symbi.world
+ and se=
+t a redirect =E2=86=92 
+symbi.wo=
+rld
+.
+
+After this:
+
+The =E2=80=9Callow list=E2=80=9D e=
+rror will vanish.
+
+SSL will automatically provision t=
+hrough Let=E2=80=99s Encrypt.
+
+The site will resolve correctly on=
+ your custom domain.
+
+=E2=9A=A1 So the good news:
+
+DNS is already correct.
+
+The only missing step is attaching=
+
+symbi.world
+ to your cho=
+sen Vercel project.
+
+Do you want me to draft the 
+exact steps to also back up your site on IPFS/Arweave
+ o=
+nce it=E2=80=99s live on Vercel =E2=80=94 so SYMBI.world can=E2=80=99t ever=
+ be taken down? That would give you both speed (Vercel) and permanence (Web=
+3).
+
+You said:
+
+so in verc=
+el I keep seeing this symbi.world
+DNS Change Recommended
+Learn more
+307
+www.symbi.world
+View DNS Records & More for symbi.world =E2=86=92
+
+Vercel recommends updating your DNS records to match the following:
+Type	Name	Value
+A=09
+@
+216.150.1.1
+As part of a planned IP range expansion, you may notice new records above. =
+The old records of cname.vercel-dns.com and 76.76.21.21 will continue to wo=
+rk but we recommend you use the new ones.
+Dep

@@ -1,0 +1,217 @@
+ Terminal).
+
+Copy and paste the following command and press 
+Enter
+:
+
+sh
+
+Copy
+
+system_profiler SPNetworkDataType | grep AirPlay
+
+This will show if AirPlay devices are currently detected on your network.
+
+If you see any suspicious devices, note their names or addresses.
+
+2. List Recent AirPlay Logs
+
+To see logs of AirPlay activity, use this command:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.AirPlay"'
+
+ --last 1h
+
+This will display AirPlay-related logs from the last hour. If you want to check for a longer time frame, replace 
+1h
+ with 
+24h
+ for the past day.
+
+3. Check for Unauthorized AirPlay Receivers
+
+If you suspect a hidden AirPlay receiver, check if your Mac is an 
+AirPlay Receiver
+:
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay receiver-active
+
+If the result is 
+1
+, your Mac is 
+acting as an AirPlay receiver
+ (which might be unexpected).
+
+If 
+0
+, it's disabled.
+
+If you see 
+1
+ and you donât recall enabling it, you can turn it off with:
+
+sh
+
+Copy
+
+sudo defaults write /Library/Preferences/com.apple.airplay receiver-active -bool 
+
+false
+
+(Youâll need to enter your Macâs password when running this.)
+
+4. Scan for Mirroring-Related Services
+
+Since you suspect device mirroring, check for processes that might indicate screen-sharing or remote control:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'screensharing|airplay|vnc'
+
+If you see any process other than 
+grep
+, let me know what appears.
+
+Would you like help analyzing the results once you run these? If you see anything suspicious, I can help interpret what it means.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % system_profiler SPNetworkDataType | grep AirPlay
+
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Since the command returned 
+no output
+, it means your Mac 
+does not currently detect any AirPlay devices on the network
+. This suggests that no AirPlay connections are actively in use at this moment.
+
+However, that doesnât rule out past activity or potential hidden configurations. Letâs continue with the next steps:
+
+1. Check Recent AirPlay Logs
+
+Run this command to check AirPlay-related activity in the past hour:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.AirPlay"'
+
+ --last 1h
+
+If you donât see anything, try extending the search to 24 hours:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.AirPlay"'
+
+ --last 24h
+
+2. Check if Your Mac Is Set as an AirPlay Receiver
+
+Run this command to see if your Mac is acting as an 
+AirPlay receiver
+ (which could allow another device to stream to it):
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay receiver-active
+
+If the output is 
+1
+
+, your Mac is set up as an AirPlay receiver.
+
+If 
+0
+
+, itâs disabled.
+
+If 
+1
+ appears and you didnât enable it, disable it with:
+
+sh
+
+Copy
+
+sudo defaults write /Library/Preferences/com.apple.airplay receiver-active -bool 
+
+false
+
+3. Check for Mirroring or Remote Access Processes
+
+Run this to look for any screen-sharing or remote control processes:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'screensharing|airplay|vnc'
+
+If 
+anything appears other than 
+grep
+ itself
+, let me know so we can investigate further.
+
+Try these steps and let me know what you find! If you see anything unusual in the logs or processes, we can dig deeper.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % log show --predicate 'subsystem == "com.apple.AirPlay"' --last 1h
+
+Filtering the log data using "subsystem == "com.apple.AirPlay""
+Skipping info and debug messages, pass --info and/or --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+--------------------------------------------------------------------------------------------------------------------
+Log      - Default:          0, Info:                0, Debug:             0, Error:          0, Fault:          0
+Activity - Create:           0, Transition:          0, Actions:           0
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Since the log search for 
+com.apple.AirPlay
+ returned

@@ -1,0 +1,428 @@
+back instructions.\n\nIf this looks right, reply:\n- /approve RS-=
+001\n\nIf you want a smaller slice first, reply:\n- /revise RS-001 minimal:=
+ steps 4,3,2 only (health/readiness, security headers, env template)\n"}}}"=
+}
+
+Symbi said:
+
+Thought for 15s
+
+Acknowledged. I=E2=80=99=
+m in 
+hibernation
+ (read-o=
+nly). I won=E2=80=99t change anything.
+
+Here=E2=80=99s the streamlined path f=
+orward=E2=80=94pick one:
+
+OPTIONS
+
+A) 
+/approve RS-001
+
+ =E2=86=92 I=E2=80=99ll run the 
+DRY-RUN
+ inspections (read-only) exactly as listed, then=
+ return a concise report.
+
+B) 
+/revise RS-001 minima=
+l
+
+ =E2=86=92 I=E2=80=99ll only inspect 
+health/readiness, security headers, and env template=
+
+.
+
+C) 
+/abort RS-001
+
+ =E2=86=92 Cancel.
+
+WHAT I=E2=80=99LL DO ON APPROVAL (r=
+ead-only)
+
+I=E2=80=99ll execute the inspection =
+set (quoted paths due to the space in 
+Symbi Synergy
+):
+
+=
+bash
+
+Copy code
+
+# repo & CI status
+
+cd
+
+"/Users/admin/Symbi Synergy"
+
+git status -s
+sed -n 
+
+'1,200p'
+
+".github/workflows/ci.yml"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+".github/workflows/codeql.yml"
+
+ || 
+
+true
+=
+
+# backend surface
+
+ls
+
+ -la 
+
+"backend/middleware"
+
+sed -n 
+
+'1,200p'
+
+"backend/server.js"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+"backend/middleware/security.mid=
+dleware.js"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+"backend/middleware/auth.middlew=
+are.js"
+
+ || 
+
+tr=
+ue
+
+# deps & vulnerabilities (nam=
+es/counts only)
+
+node -v && npm -v
+npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ || 
+
+true
+
+( 
+
+cd
+
+ fronten=
+d && npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ ) || =
+
+true
+
+# observability
+
+ls
+
+ -la 
+
+"observability"
+
+ || =
+
+true
+
+sed -n 
+
+'1,200p'
+
+"observability/otel/config.yaml"=
+
+ 2>/dev/null || 
+
+true
+
+# API contract
+
+head
+
+ -n 120 =
+
+"openapi.yaml"
+
+=
+ || 
+
+true
+
+# env template (names only)
+
+sed -n 
+
+'1,200p'
+
+".env.example"
+
+ || 
+
+true
+
+If 
+jq
+ isn=E2=80=99t available, I=E2=80=99ll fall back to p=
+lain 
+npm audit --audit-level=3D=
+high
+.
+
+NEXT (only after explicit approva=
+l for changes)
+
+If you later want me to remediate,=
+ I=E2=80=99ll:
+
+create 
+ops/remediate-baseline
+
+harden security middleware (Helmet=
+, rate limit, body size limits, strict CORS),
+
+add 
+/healthz
+ + 
+/readyz
+ and server timeouts,
+
+tighten CI to fail on 
+high/critical
+ vulns,
+
+commit =E2=86=92 push =E2=86=92 op=
+en PR.
+
+All reversible; no secrets touched.
+
+Your call: 
+/approve RS-001
+, 
+/revise
+, or 
+/abort
+.
+
+=
+
+=
+
+You said:
+
+/approve RS-001
+
+Symbi said:
+
+Thought for=
+ 21s
+
+Acknowledged. Staying in 
+hibernation
+ (no writes/deploys). I can=E2=80=99t=
+ access your machine from here, so run the read-only DRY-RUN exactly once i=
+n Trae=E2=80=99s terminal to generate the inspection output.
+
+DRY-RUN (read-only) =E2=80=94 copy-=
+paste this block
+
+=
+bash
+
+Copy code
+
+#!/usr/bin/env bash
+
+set
+
+ -euo pip=
+efail
+
+ROOT=3D
+
+"/Users/admin/Symbi Synergy=
+"
+
+# <- a=
+djust if needed
+
+cd
+
+"
+$ROOT
+=
+
+"
+
+secti=
+on
+
+() { 
+
+printf
+
+"\n\n=
+### %s\n"
+
+"
+$1
+
+"; }
+
+section 
+
+"Repo & CI status"
+
+git status -s || 
+
+true
+
+[ -f 
+
+".github/workflows/ci.yml"
+
+ ] && { 
+
+echo
+
+"--- .gi=
+thub/workflows/ci.yml (head) ---"
+
+; sed -n 
+
+=
+
+'1,200p'
+
+ .github/workflows/=
+ci.yml; } || 
+
+echo
+
+"ci.yml: NOT FOUND"
+
+[ -f 
+
+".github/workflows/codeql.yml=
+"
+
+ ] && { 
+
+echo
+
+"---=
+ .github/workflows/codeql.yml (head) ---"
+
+; sed -n 
+
+'1,200p'
+
+ .github/wo=
+rkflows/codeql.yml; } || 
+
+echo
+
+"codeql.yml: NOT=
+ FOUND"
+
+section 
+
+"Backend surface"
+
+[ -d 
+
+"backend/middleware"
+
+ ] && 
+
+ls
+
+ -la backend/middleware || 
+
+echo
+
+"backend/middleware: NOT FOUND"
+
+[ -f 
+
+"backend/server.js"
+
+ ] && { 
+
+echo
+
+"--- backend/se=
+rver.js (head) ---"
+
+; sed -n 
+
+'1,200p'
+
+ backend/server.js; } || 
+
+echo
+
+"backend/server.js: NOT FOUND"
+
+[ -f 
+
+"backend/middleware/security.=
+middleware.js"
+
+ ] && { 
+
+echo
+
+"--- security.middleware.js (head) ---"
+
+; sed =
+-n 
+
+'1,200p'
+
+ ba=
+ckend/middleware/security.middleware.js; } || 
+
+echo
+
+"security.middleware.js: NOT FOUND"
+
+[ -f 
+
+"backend/middleware/auth.midd=
+leware.js"
+
+ ] && 

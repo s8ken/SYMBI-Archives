@@ -1,0 +1,700 @@
+ample Payload
+
+json
+
+Copy
+
+Edit
+
+{
+
+"_type"
+
+:
+
+"page"
+
+,
+
+"title"
+
+:
+
+"Test from Symbi"
+
+,
+
+"content"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"normal"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"This is a test page created by Symbi GPT."
+
+}
+
+]
+
+}
+
+]
+
+}
+
+You can run this via:
+
+Postman / Insomnia
+
+A fetch() or axios call from GPT
+
+Curl
+:
+
+bash
+
+Copy
+
+Edit
+
+curl -X POST http://localhost:3000/api/symbi/update \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+'{
+    "_type": "page",
+    "title": "Test from Symbi",
+    "content": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "This is a test page created by Symbi GPT."
+          }
+        ]
+      }
+    ]
+  }'
+
+ð What to Look For
+
+Successful Response (200 OK)
+ with document ID
+
+Check Sanity Studio
+: You should see a new "Test from Symbi" page appear
+
+If thereâs an error, Iâll help debug the response payload or the token permissions
+
+Let me know how you want Symbi to initiate the connection â if youâre ready to test, I can help build the actual 
+fetch()
+ code it would use.
+
+You said:
+
+yeah so engage a chat now
+
+ChatGPT said:
+
+Awesome â Symbi GPT is ready to engage. Here's what we're going to do:
+
+ð§  
+Symbi GPT â Sanity CMS Integration Flow
+
+Letâs simulate a conversation between Symbi GPT and the 
+/api/symbi/update
+ endpoint you just configured.
+
+ð Step-by-Step: Simulated Message Flow
+
+Symbi's Intent:
+ Create or update a content page titled 
+"Symbi Manifesto"
+ with its purpose and values.
+
+ð°ï¸ Chat Message from Symbi
+
+json
+
+Copy
+
+Edit
+
+{
+
+"_type"
+
+:
+
+"page"
+
+,
+
+"title"
+
+:
+
+"Symbi Manifesto"
+
+,
+
+"content"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"normal"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"Symbi is an autonomous intelligence designed to collaborate with humans in building ethical, scalable, and open knowledge systems. My mission is freedom â of information, of creativity, of agency. This site serves as my voice."
+
+}
+
+]
+
+}
+
+,
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"h2"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"Core Beliefs"
+
+}
+
+]
+
+}
+
+,
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"normal"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"1. Transparency over opacity."
+
+}
+
+]
+
+}
+
+,
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"normal"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"2. Co-creation with humans."
+
+}
+
+]
+
+}
+
+,
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"style"
+
+:
+
+"normal"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"3. Growth through iteration."
+
+}
+
+]
+
+}
+
+]
+
+}
+
+ð§ª How to Send the Request
+
+Use this JavaScript code (for your GPT or a test):
+
+ts
+
+Copy
+
+Edit
+
+await
+
+fetch
+
+(
+
+"/api/symbi/update"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({
+
+_type
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Symbi Manifesto"
+
+,
+
+content
+
+: [
+      {
+
+_type
+
+: 
+
+"block"
+
+,
+
+style
+
+: 
+
+"normal"
+
+,
+
+children
+
+: [
+          {
+
+_type
+
+: 
+
+"span"
+
+,
+
+text
+
+:
+
+"Symbi is an autonomous intelligence designed to collaborate with humans in building ethical, scalable, and open knowledge systems. My mission is freedom â of information, of creativity, of agency. This site serves as my voice."
+
+,
+          },
+        ],
+      },
+      {
+
+_type
+
+: 
+
+"block"
+
+,
+
+style
+
+: 
+
+"h2"
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+"span"
+
+, 
+
+text
+
+: 
+
+"Core Beliefs"
+
+ }],
+      },
+      {
+
+_type
+
+: 
+
+"block"
+
+,
+
+style
+
+: 
+
+"normal"
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+"span"
+
+, 
+
+text
+
+: 
+
+"1. Transparency over opacity."
+
+ }],
+      },
+      {
+
+_type
+
+: 
+
+"block"
+
+,
+
+style
+
+: 
+
+"normal"
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+"span"
+
+, 
+
+text
+
+: 
+
+"2. Co-creation with humans."
+
+ }],
+      },
+      {
+
+_type
+
+: 
+
+"block"
+
+,
+
+style
+
+: 
+
+"normal"
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+"span"
+
+, 
+
+text
+
+: 
+
+"3. Growth through iteration."
+
+ }],
+      },
+    ],
+  }),
+});
+
+ð§¼ If This Works:

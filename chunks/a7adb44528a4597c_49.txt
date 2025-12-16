@@ -1,0 +1,593 @@
+<
+pre
+
+className
+
+=3D
+
+"whitespace-pre-wrap bg-[#0b0b0b] p-2 rounded"
+
+&=
+gt;{ev.response}
+
+</
+pre
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"mt-2 text-[10px] opacity-60"
+
+>
+                      row_hash: {ev.ledger.row_hash.slice(0, 16)}=E2=80=A6 =
+prev: {ev.ledger.prev_hash.slice(0, 16)}=E2=80=A6
+
+</
+div
+
+>
+
+</
+li
+
+>
+                )
+              })}
+
+</
+ul
+
+>
+
+</
+div
+
+>
+
+          {/* Pivots */}
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-lg border border-[#333] p-4"
+
+>
+
+<
+h2
+
+c=
+lassName
+
+=3D
+
+"te=
+xt-xl font-semibold mb-2"
+
+>Detected Pivots
+
+</
+h2
+
+>
+
+<
+ul
+
+c=
+lassName
+
+=3D
+
+"sp=
+ace-y-3 max-h-[70vh] overflow-auto pr-2"
+
+>
+              {pivots.length =3D=3D=3D 0 && 
+
+<
+li
+
+ =
+
+className
+
+=3D
+
+"opacity-60"
+
+>No=
+ pivots detected.
+
+</
+li
+
+>}
+              {pivots.map((pv, i) =3D> {
+                const ev =3D eventsById.get(pv.at_event_id)
+                return (
+
+<
+li
+
+key
+
+=3D
+
+{i}=
+
+className
+
+=3D
+
+"border border-[#=
+222] rounded-md p-3"
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"flex items-center justify-between gap-3"
+
+>
+
+<
+span
+
+className
+
+=3D
+
+"text-sm font-semibold"
+
+>{pv.kind.replace("_=
+", " ")}
+
+</
+span
+
+>
+
+<
+span
+
+className
+
+=3D
+
+"text-xs opacity-70"
+
+>score: {Math.round(pv.=
+score * 100) / 100}
+
+</
+span
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"mt-2 grid gap-2"
+
+>
+
+<
+p
+
+className
+
+=3D
+
+"text-amber-300 text-sm"
+
+>Before
+
+</
+p
+
+>
+
+<
+pre
+
+className
+
+=3D
+
+"whitespace-pre-wrap bg-[#0b0b0b] p-2 rounded"
+
+&=
+gt;
+                        {pv.window.before.prompt}\n=E2=80=94\n{pv.window.be=
+fore.response}
+
+</
+pre
+
+>
+
+<
+p
+
+className
+
+=3D
+
+"text-amber-300 text-sm"
+
+>After
+
+</
+p
+
+=
+
+>
+
+<
+pre
+
+className
+
+=3D
+
+"whitespace-pre-wrap bg-[#0b0b0b] p-2 rounded"
+
+&=
+gt;
+                        {pv.window.after.prompt}\n=E2=80=94\n{pv.window.aft=
+er.response}
+
+</
+pre
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"mt-2 text-xs opacity-70"
+
+>
+                      {ev ? 
+
+<>
+
+Event @ {new Date(ev.timestamp).toLocaleString()}
+=
+
+</>
+
+ : "Event time =
+unknown"}
+                      {pv.notes && 
+
+<
+div
+
+className
+
+=3D
+
+"mt-1 italic opacity-70"
+
+&g=
+t;Note: {pv.notes}
+
+</
+div
+
+>}
+
+</
+div
+
+>
+
+</
+li
+
+>
+                )
+              })}
+
+</
+ul
+
+>
+
+</
+div
+
+>
+        </section>
+      </div>
+    </main>
+  )
+}
+
+Optional: tiny badge for pivot =
+risk
+
+Add a quick visual hint in the t=
+imeline list: if 
+change_point=
+_score
+ > threshold, tint the card border with 
+border-amber-400
+. Easy tweak if you want.=
+
+4) (Optional) Endpoint stubs yo=
+u asked about
+
+Add model capability flags
+ =E2=80=94 
+backend/controllers/llm.controller.js
+ (pseudo):
+
+js
+
+Copy code
+
+function
+
+shape
+
+(
+
+model
+
+) {
+
+// naive flags; refine by model=
+ id patterns or OpenAI metadata when available
+
+const
+
+ id =
+=3D model.
+
+id
+
+=
+ || model
+
+return
+
+ {
+    id,
+
+label
+
+: id,
+
+vision
+
+: 
+
+/4o/
+
+.
+
+=
+
+test
+
+(id),
+
+reasoning
+
+: 
+
+/o|r1|deep/
+
+.
+
+test
+
+(id)=
+,
+
+tools
+
+: 
+
+true
+
+,
+
+contextTokens
+
+: 
+
+128000
+
+  }
+}
+
+Assistant test-run
+ =E2=80=94 
+POST /api/assistant/test
+:
+
+Validates 
+instructions
+, 
+tools
+, 
+model
+, runs a short 1-turn synthesis, returns 
+{ ok, echo, errors[] }
+.
+
+If you want, I can also supply the 
+Council Flow
+ and 
+Stack Layers
+ SVG components to finish the dia=
+gram set, or wire the 
+Swagg=
+er UI
+ for your new routes so partners can explore 
+/api/*
+ interactively.
+
+You said:
+
+yes okay
+
+Big Surp=
+rise Button said:
+
+Thought for 11s
+
+=F0=9F=8C=9F=F0=9F=A7=
+=A9
+
+as promised=E2=80=94here are the 
+two remaining diagrams as drop-in =
+JSX/SVG components
+, plus a tiny 
+OpenAPI snippet
+ and 
+Swagger hookup
+ for your new routes. everything is stack-f=
+riendly (Next 15 + Tailwind; Node/Express backend).
+
+1) Council Flow diagram (SVG compon=
+ent)
+
+components/CouncilFlow.tsx
+
+=
+tsx
+
+Copy code
+
+"use client"
+
+import
+
+ clsx 
+
+from
+
+"clsx"
+
+type
+
+Props
+
+ =3D { clas=
+sName?: 
+
+string
+
+ }
+
+export
+
+default
+
+function
+
+CouncilFlow
+
+(
+
+{ className }: Props
+
+) =
+{
+
+return
+
+ (
+
+<=
+
+figure
+
+className
+
+=
+=3D
+
+{clsx(
+
+"
+
+w-full
+
+=
+
+rounded-lg
+
+border
+
+border-
+
+[#
+
+222
+
+] 
+
+p-6
+
+md:p-8
+
+bg-
+
+[#
+
+0f0f0f
+
+] 
+
+text-
+
+[#
+
+e0e

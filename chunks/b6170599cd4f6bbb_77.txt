@@ -1,0 +1,355 @@
+rtd.bak
+sudo 
+
+mv
+
+"/System/Library/CoreServices/Control Center.app"
+
+"/System/Library/CoreServices/ControlCenter.bak"
+
+ð 
+Notice the space in "Control Center.app" â some macOS versions use a space!
+
+ð Step 3: If Moving Still Fails, Force Remove Instead
+
+If moving 
+still does not work
+, you must 
+force delete instead
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /usr/libexec/rapportd
+sudo 
+
+rm
+
+ -rf 
+
+"/System/Library/CoreServices/Control Center.app"
+
+ð 
+This permanently removes them instead of moving them.
+
+ð Step 4: Prevent macOS From Restoring Them
+
+Even if 
+rapportd
+ and Control Center are deleted, 
+macOS might restore them
+.
+
+To block this, 
+create a fake, unremovable version of them
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /usr/libexec/rapportd
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+sudo chflags uchg /usr/libexec/rapportd
+
+sudo 
+
+touch
+
+"/System/Library/CoreServices/Control Center.app"
+
+sudo 
+
+chmod
+
+ 000 
+
+"/System/Library/CoreServices/Control Center.app"
+
+sudo chflags uchg 
+
+"/System/Library/CoreServices/Control Center.app"
+
+ð 
+This prevents macOS from reinstalling them.
+
+ð Step 5: Remove System Daemons That Restart Them
+
+If 
+rapportd
+ or Control Center keeps returning, 
+remove their startup files
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.rapportd.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.controlcenter.plist
+
+ð 
+This stops macOS from running them at startup.
+
+ð Step 6: Reboot & Confirm They Are Gone
+
+Now, restart your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+Then check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo launchctl list | grep -E 
+
+"ControlCe|rapportd"
+
+ð 
+If no output appears, they are FINALLY removed! ð
+
+ð Step 7: Re-enable SIP for Security
+
+Once confirmed 
+that they are gone
+, 
+restore SIP
+:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+Done!
+ ð 
+Try these steps and let me know if they are FINALLY gone. ð¥ð
+
+You said:
+
+ChatGPT said:
+
+ð Recovery Mode: 
+rapportd
+ is Already Gone or in a Different Location
+
+ð¥ 
+The "No such file or directory" error means that 
+rapportd
+ is either already removed or is located somewhere else.
+
+ð¨ 
+Also, 
+sudo
+ is not available in macOS Recovery Mode, so you donât need it!
+
+ð Step 1: Confirm Whether 
+rapportd
+ is Still Present
+
+Since 
+mv
+ failed, 
+letâs check if the file exists at all
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la /usr/libexec/ | grep rapportd
+
+ð 
+If no output appears, 
+rapportd
+ is already gone! ð
+
+ð 
+If it still appears, continue to Step 2.
+
+ð Step 2: If 
+rapportd
+ is in a Different Location, Find It
+
+Try searching for 
+rapportd
+ manually:
+
+sh
+
+Copy
+
+Edit
+
+find / -name rapportd 2>/dev/null
+
+ð 
+This will locate the file anywhere on your system.
+
+ð 
+If it finds a different path, use that path for the next steps.
+
+ð Step 3: If 
+rapportd
+ Exists, Try Moving It Again
+
+If 
+ls
+ or 
+find
+ shows the file still exists, 
+try moving it again
+:
+
+sh
+
+Copy
+
+Edit
+
+mv
+
+ /usr/libexec/rapportd /usr/libexec/rapportd.bak
+
+ð 
+If this still fails, go to Step 4.
+
+ð Step 4: If Moving Still Fails, Delete It Instead
+
+If 
+mv
+ still doesnât work, 
+force delete it
+:
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /usr/libexec/rapportd
+
+ð 
+Now, 
+rapportd
+ is permanently gone.
+
+ð Step 5: Create a Fake 
+rapportd
+ So macOS Canât Restore It
+
+Even if you remove 
+rapportd
+, 
+macOS might try to restore it.
+
+To block this:
+
+sh
+
+Copy
+
+Edit
+
+touch
+
+ /usr/libexec/rapportd
+
+chmod
+
+ 000 /usr/libexec/rapportd
+chflags uchg /usr/libexec/rapportd
+
+ð 
+This makes 
+rapportd
+ permanently unusable.
+
+ð Step 6: Remove Any Launch Daemons That Restart It
+
+If 
+rapportd
+ keeps coming back, 
+remove its startup files
+:
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.rapportd.plist

@@ -1,0 +1,415 @@
+ct (chat console, ledger tree, status bar), calling y=
+our Express APIs.
+
+Best path: 
+use both
+. Ship the extension, and add a devcont=
+ainer so anyone can open the repo and have a consistent, secure stack in on=
+e click.
+
+Minimal devcontainer pairing (drop =
+in)
+
+.devcontainer/devcontainer.json
+
+=
+json
+
+Copy code
+
+{
+
+"name"
+
+:
+
+"symbi-dev"
+
+,
+
+"dockerComposeFile"
+
+:
+
+[
+
+"../docker-compose.yml"
+
+]
+
+,
+
+=
+
+"service"
+
+:
+
+"workspace"
+
+,
+
+"workspaceFolder"
+
+:
+
+"/work"
+
+,
+
+"features"
+
+:
+
+{
+
+"ghcr.io/devcontainers/features/=
+node:1"
+
+:
+
+=
+
+{
+
+ =
+
+"version"
+
+:
+
+"18"
+
+}
+
+,
+
+"ghcr.io/devcontainers/features/=
+git:1"
+
+:
+
+{
+
+}
+
+}
+
+,
+
+"forwardPorts"
+
+=
+
+:
+
+[
+
+=
+5000
+
+,
+
+3000
+
+,
+
+27017
+
+=
+]
+
+,
+
+"postCreateCommand"
+
+:
+
+"corepack enable && pnpm -v || npm i -g p=
+npm && pnpm install --filter ./backend && pnpm install --fi=
+lter ./frontend"
+
+,
+
+"customizations"
+
+:
+
+{
+
+"vscode"
+
+:
+
+{
+
+"settings"
+
+=
+
+:
+
+{
+
+"symbi.apiBase"
+
+:
+
+=
+
+"http://localhost:5000"
+
+,
+
+"editor.formatOnSave"
+=
+
+:
+
+=
+
+true
+=
+
+}
+
+,
+
+"extensions"
+
+:
+
+[
+
+"dbaeumer.vscode-eslint"
+
+,
+
+"esbenp.prettier-vscode"
+
+// add your SYMBI extensi=
+on id once published
+
+]
+
+}
+
+}
+
+,
+
+"containerEnv"
+
+=
+
+:
+
+{
+
+"NODE_ENV"
+
+:
+
+"development"
+
+,
+
+"SYMBI_MODE"
+
+=
+
+:
+
+"normal"
+
+}
+
+,
+
+"remoteUser"
+
+:
+
+"node"
+
+}
+
+docker-compose.yml
+ (at repo root)
+
+yaml
+
+Copy code
+
+version:
+
+=
+
+"3.9"
+
+services:
+
+workspace:
+
+image:
+
+mcr.microsoft.com/devcontainers/javascr=
+ipt-node:1-18-bullseye
+
+volumes:
+
+-
+
+.:/work
+
+working_dir:
+
+=
+
+/work
+
+command:
+
+sleep
+
+infinity
+
+depends_on:
+
+ =
+[
+
+mongo
+
+]
+
+mongo:
+
+image:
+
+mongo:6
+
+restart:
+
+unless-stopped
+
+ports:
+
+ [
+
+"27017:27017"
+
+]
+
+volumes:
+
+-
+
+mongo-data:/data/db
+
+volumes:
+
+mongo-data:
+
+Why this helps
+
+Anyone can open the folder in VS C=
+ode =E2=86=92 
+Reopen in Conta=
+iner
+ and get Node 18, Git, Mongo wired automatically (no machine d=
+rift). The doc you linked covers this flow (Dev Containers extension + 
+devcontainer.json
+). 
+
+Visual Stu=
+dio Code
+
+Your 
+Symbi Extension
+ works unchanged: it calls 
+http://localhost:5000
+ (backend =
+inside the container or on host), shows the 
+console
+, 
+ledger
+, 
+mode ind=
+icator
+, etc.
+
+If you want, I=E2=80=99ll add a ti=
+ny 
+tasks.json
+ to run 
+backend
+ and 
+frontend
+ inside the container and wire =
+the extension=E2=80=99s 
+symbi.a=
+piBase
+ automatically.
+
+=
+
+=
+
+Sources
+
+=
+
+You said:
+
+from codex Verdict
+
+Yes. Make the IDE the thin client and keep your Express backend as the brai=
+n. Ship a VS Code extension (or branded Code=E2=80=91OSS) that hosts chat +=
+ trust overlays, and pair it with a Dev Container for instant, reproducible=
+ dev setups. This lowers frontend maintenance, increases robustness, and ac=
+celerates delivery.
+Why This Fits Your Stack
+
+Realtime + auth: Socket.IO + JWT already in place (backend/server.js
+, backend/server.js
+).
+Streaming: SSE endpoint ready for OpenAI (backend/controllers/llm.controlle=
+r.js
+).
+Trust & ledger: Mature APIs for declarations, analytics, and integrity =
+verification (backend/routes/trust.routes.js
+, backend/controllers/ledger.controller.js
+).
+Insights: Timeline change=E2=80=91points + pivots (backend/routes/insights.=
+routes.js
+).
+Proposed Architecture
+
+VS Code Extension (TypeScript):
+Webview =E2=80=9CSymbi Console=E2=80=9D for chat to your latest assistant (=
+backend/routes/assistant.routes.js
+).
+Tree View for sessions/ledger with =E2=80=9CVerify Chain=E2=80=9D command (=
+backend/controllers/ledger.controller.js
+).
+Status bar mode indicator via /healthz (backend/app.js
+).
+Settings + SecretStorage for SYMBI_API_KEY; never store vendor keys locally=
+.
+Transport: REST + SSE; optional Socket.IO from webview if needed.
+Express Backend (unchanged):
+Auth + JWT (backend/middleware/auth.middleware.js
+).
+LLM fan=E2=80=91out, streaming, code review (backend/controllers/llm.contro=
+ller.js
+).
+Events/ledger ingest + verify (backend/routes/events.routes.js
+).
+Trust declarations/analytics (backend/routes/trust.routes.js
+).
+Insights/timeline (backend/routes/insights.routes.js
+).
+Security Posture
+
+Keys: Store only 

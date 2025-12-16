@@ -1,0 +1,297 @@
+ Steps to Track Where the Screen Recordings Were Sent
+
+1️⃣ Identify How the Screen Recordings Were Made
+
+A. Check for Unauthorized Apps with Screen Recording Access
+
+Go to
+ → 
+System Settings → Privacy & Security → Screen Recording
+
+Look for any suspicious apps that have permission (e.g., QuickTime, OBS Studio, Zoom, third-party apps).
+
+Revoke access
+ for anything unfamiliar.
+
+B. Check for Active Screen Recording Processes
+
+Run this command in 
+Terminal
+:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"screenrecord"
+
+This will show any 
+running or hidden screen recording processes
+. Look for processes like:
+
+screencapture
+ (macOS built-in)
+
+QuickTime
+
+ffmpeg
+ (used for custom recordings)
+
+OBS
+ (live-streaming software)
+
+C. Check If macOS "screencapture" Command Was Used
+
+sh
+
+Copy
+
+grep -i 
+
+"screencapture"
+
+ ~/.zsh_history
+
+If attackers used the built-in screen capture tool, this will reveal it.
+
+2️⃣ Find Where the Recordings Were Stored
+
+A. Common Locations for Saved Recordings
+
+Check these folders manually or use Terminal:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Movies/
+
+ls
+
+ -lt ~/Desktop/
+
+ls
+
+ -lt ~/Documents/
+
+ls
+
+ -lt ~/Library/Application\ Support/
+
+ls
+
+ -lt /private/tmp/
+
+If attackers tried to 
+hide recordings
+, they might be in 
+/private/tmp/
+ or 
+~/Library/Application Support/
+.
+
+B. Check Recent File Modifications
+
+Run this to see files created in the past 7 days:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f -mtime -7 -
+
+ls
+
+ | grep -i 
+
+".mp4\|.mov\|.avi"
+
+If attackers saved 
+screen recordings
+, this will show 
+when and where
+.
+
+3️⃣ Detect Where the Screen Recordings Were Sent
+
+A. Check Browser History for Uploads
+
+Open 
+Safari/Chrome → History → Search "upload" or "video"
+
+Look for 
+YouStream, YouTube, Twitch, Dropbox, Google Drive, OneDrive, or other file-sharing services
+
+B. Check Terminal for Past Network Activity
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+This will show active 
+internet connections
+—look for suspicious 
+IP addresses or services
+.
+
+C. Scan macOS Logs for Upload Events
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "upload"'
+
+ --last 7d
+
+This will reveal if 
+files were uploaded recently
+.
+
+D. Look for Cloud Storage Uploads
+
+Check for 
+syncing activity
+ in:
+
+~/Library/Application Support/Dropbox
+
+~/Library/Application Support/Google/DriveFS/
+
+~/Library/Application Support/OneDrive/
+
+If there are logs or files with recent timestamps, they might have been 
+uploaded to the cloud
+.
+
+4️⃣ Advanced - Monitor Live Network Traffic
+
+If you suspect 
+live broadcasting
+, install 
+Wireshark
+ and filter for:
+
+rtmp
+ (used for streaming)
+
+hls
+ (HTTP Live Streaming)
+
+udp
+ (used for video streams)
+
+🚨 Next Steps
+
+Check Screen Recording Permissions & Running Processes
+
+Find Where the Recordings Were Stored
+
+Check Network Traffic & Upload History
+
+Let me know what you find, and we’ll track it further! 🚨
+
+You said:
+
+we already determined OBS Studio
+
+ChatGPT said:
+
+If 
+OBS Studio
+ was used for screen recording, the next steps are:
+
+🔍 Track OBS Studio Activity
+
+1️⃣ Check OBS Studio Logs for Past Streams or Recordings
+
+OBS keeps logs of every recording and stream.
+
+A. Locate OBS Log Files
+
+Run this in 
+Terminal
+ to find recent logs:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Library/Application\ Support/obs-studio/logs/
+
+This will show recent OBS log files.
+
+To read a log, open one with:
+
+sh
+
+Copy
+
+cat
+
+ ~/Library/Application\ Support/obs-studio/logs/obs-*.txt | less
+
+Look for 
+streaming URLs or file save locations.
+
+B. Check OBS Recording & Stream Settings
+
+Open 
+OBS Studio
+
+Go to 
+Settings → Output
+
+Check:
+
+Recording Path
+ (Where videos were saved)
+
+Streaming Service & Server
+ (If it was broadcasting live)
+
+Look for:
+
+YouStream, Twitch, YouTube, RTMP URLs, or unknown servers.
+
+C. Check OBS Profile & Scene Collection
+
+OBS Studio → Scene Collection → Import
+
+OBS Studio → Profile → Import
+
+Look for 
+suspicious profiles
+ that may have been set up for streaming.
+
+2️⃣ Find Where the Videos Were Stored
+
+If OBS was saving recordings, find them:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f -n

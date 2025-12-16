@@ -1,0 +1,205 @@
+Abort trap: 6           "/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home/bin/java" -Djdk.home="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home" -classpath "/Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-modules.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-lookup.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-ui.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util.jar" -Dnetbeans.dirs="/Users/sja/Downloads/autopsy-4.21.0/autopsy:/Users/sja/Downloads/autopsy-4.21.0/CoreTestLibs:/Users/sja/Downloads/autopsy-4.21.0/harness:/Users/sja/Downloads/autopsy-4.21.0/java:" -Dnetbeans.home="/Users/sja/Downloads/autopsy-4.21.0/platform" '-Xdock:name=autopsy' '-Xdock:icon=./../../autopsy.icns' '-Xms24m' '-Xmx4G' '-XX:+UseStringDeduplication' '-Dprism.order=sw' '--add-opens=java.base/java.lang=ALL-UNNAMED' '--add-opens=java.base/java.net=ALL-UNNAMED' '--add-opens=java.desktop/javax.swing=ALL-UNNAMED' '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED' '--add-exports=java.desktop/sun.awt=ALL-UNNAMED' '--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED' '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED' -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/Users/sja/Library/Application Support/autopsy/dev/var/log/heapdump.hprof" -Djava.security.manager=allow org.netbeans.Main --cachedir "/Users/sja/Library/Caches/autopsy/dev" --userdir "/Users/sja/Library/Application Support/autopsy/dev" "--branding" "autopsy" 0<&0
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ SIGBUS Crash in Autopsy â Fixing the Java/Native Code Issue on macOS (M1/M2)
+
+The 
+SIGBUS (0xa) crash
+ happens when 
+Autopsy tries to access memory incorrectly
+ on 
+Apple Silicon (arm64)
+. The main causes are:
+
+Incompatibility between OpenJDK and Autopsy (NetBeans-based).
+
+JavaFX errors (Autopsy requires JavaFX but it isnât bundled with OpenJDK).
+
+The Sleuth Kit (libtsk_jni) not being properly linked.
+
+â Step 1: Install JavaFX for Java 11
+
+Autopsy 
+needs JavaFX
+, but OpenJDK 
+does not include it
+ on macOS. Install it manually:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjfx
+
+ð 
+Next, set JavaFX for Java 11:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/homebrew/opt/openjfx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+echo
+
+'export PATH_TO_FX=/opt/homebrew/opt/openjfx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 2: Use a More Compatible JDK (Zulu JDK 11)
+
+Autopsy 
+seems to have issues with Homebrewâs OpenJDK
+. Letâs install a more compatible version:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu11
+
+ð 
+Now, set Zulu as the default JDK:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð 
+Verify that Zulu is active:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+Expected output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.X"
+
+ Zulu ...
+
+â Step 3: Ensure The Sleuth Kit Library is Linked
+
+Autopsy 
+also crashes if it canât find 
+libtsk_jni
+ properly
+. Letâs make sure itâs linked:
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p ~/Downloads/autopsy-4.21.0/lib
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib ~/Downloads/autopsy-4.21.0/lib/
+
+Then set the library path:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 4: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+ð What If It Still Fails?
+
+If 
+Autopsy still crashes
+, check th

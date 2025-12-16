@@ -1,0 +1,171 @@
+18 02:14 /usr/local/lib/libtsk_jni.dylib -> /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+
+zsh: permission denied: /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % sudo cp /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+
+cp: /usr/local/lib/libtsk_jni.dylib and /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib are identical (not copied).
+sja@SJAs-MacBook-Pro bin % export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 02:15:29.452 java[13023:69753] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+libtsk_jni
+ Still Not Loading – Let's Diagnose the Java Path 🔥
+
+We’ve 
+correctly linked
+
+libtsk_jni.dylib
+, but 
+Java still isn’t recognizing it
+. Let’s 
+confirm where Java is looking for libraries
+.
+
+✅ Step 1: Check Java's Library Path
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+📌 
+This will tell us where Java is looking for 
+libtsk_jni.dylib
+.
+
+🔹 If 
+/usr/local/lib
+ is 
+not
+ in the list, we need to manually add it.
+
+✅ Step 2: Force Java to Load 
+libtsk_jni
+
+Now, 
+manually set the library path
+ for Java:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 3: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 If It Still Fails, Send the Output of This Command
+
+If 
+libtsk_jni
+
+still isn't found
+, run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+java -XshowSettings:properties | grep java.library.path
+
+📌 
+Send me the output!
+ That will show if Java is looking in the wrong place.
+
+🚀 
+Try these steps and let me know what happens next! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % java -XshowSettings:properties | grep java.library.path
+
+Property settings:
+    file.encoding = UTF-8
+    file.separator = /
+    ftp.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    http.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    java.class.path = 
+    java.class.version = 61.0
+    java.home = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+    java.io.tmpdir = /var/folders/zt/jn1c6p4n2vxbb5j4dl4c85fm0000gn/T/
+    java.library.path = /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+
+        /Users/sja/Library/Java/Extensions
+        /Library/Java/Extensions
+        /Network/Library/Java/Extensions
+        /System/Library/Java/Extensions
+        /usr/lib/java
+        .
+    java.runtime.name = OpenJDK Runtime Environment
+    java.runtime.version = 17.0.14+7-LTS
+    java.specification.maintenance.version = 1
+    java.specification.name = Java Platform API Specification
+    java.specification.vendor = Oracle Corporation
+    java.specification.version = 17
+    java.vendor = Azul Systems, Inc.
+    java.vendor.url = http://www.azul.com/
+    java.vendor.url.bug = http://www.azul.com/support/
+    java.vendor.version = Zulu17.56+15-CA
+    java.version = 17.0.14
+    java.version.date = 2025-01-21
+    java.vm.compressedOopsMode = Zero based
+    java.vm.info = mixed mode, sharing
+    java.vm.name = OpenJDK 64-Bit Server VM
+    java.vm.specification.name = Java Virtual Machine Specification
+    java.vm.specification.vendor = Oracle Corporation
+    java.vm.specification.version = 17

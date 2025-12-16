@@ -1,0 +1,760 @@
+{
+
+.=
+..bind
+
+('
+
+goals
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Tone (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+tone_pre=
+fs
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Constraints (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+constrai=
+nts
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Tags (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+tags
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Notes
+
+</
+label
+
+>
+
+<
+t=
+extarea
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder p-2 w-full h-20"
+
+ {
+
+...bind
+
+('
+
+=
+notes
+
+')} />
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex ga=
+p-2 justify-end"
+
+>
+
+<
+button
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder px-3 py-1 rounded"
+
+disabled
+
+=3D
+
+{!dirty}
+
+on=
+Click
+
+=3D
+
+{save}=
+
+>Save
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+frontend/src/pages/ConversationDe=
+tail.js (patch =E2=80=93 add CapsulePanel)
+
+diff
+
+Copy code
+
+@@
+
+-import TrustChips from "../comp=
+onents/trust/TrustChips";
+
++import TrustChips from "../comp=
+onents/trust/TrustChips";
+
++import CapsulePanel from "../co=
+mponents/context/CapsulePanel";
+
+@@
+
+-  return (
+
+-    <div className=3D"p-3"&g=
+t;
+
++  return (
+
++    <div className=3D"p-3"&g=
+t;
+
+       <div className=3D"flex items-center justify-between mb-2">
+         <h2 className=3D"text-lg font-semibold">Conversation</h2&=
+gt;
+         <TrustChips sessionId=3D{conversation.session_id || conversatio=
+nId} compact />
+       </div>
+
+-      {/* existing messages/com=
+ponents */}
+
++      <div className=3D"grid=
+ grid-cols-1 md:grid-cols-3 gap-4">
+
++        <div className=3D"md=
+:col-span-2">
+
++          {/* existing messages=
+/components (left 2/3) */}
+
++          {/* your current mess=
+age list remains here */}
+
++        </div>
+
++        <div className=3D"md=
+:col-span-1">
+
++          <CapsulePanel sess=
+ionId=3D{conversation.session_id || conversationId} />
+
++        </div>
+
++      </div>
+
+     </div>
+   );
+
+5) Assistants =E2=80=9CEdit=E2=
+=80=9D UX
+
+frontend/src/components/assista=
+nts/AssistantEditDialog.js (new)
+
+js
+
+Copy code
+
+import
+
+ =
+* 
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+AssistantEditDialog
+
+(=
+
+{ open, onClose, assistant }
+
+) {
+
+const
+
+ [name=
+, setName] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+name=
+
+ || 
+
+""
+
+);
+
+const
+
+ [inst=
+ructions, setInstructions] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+instructions
+
+ || 
+
+""
+
+);
+
+const
+
+ [mode=
+l, setModel] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+mo=
+del
+
+ || 
+
+"gpt-4o=
+"
+
+);
+
+const
+
+ [tool=
+sText, setToolsText] =3D 
+
+Rea=
+ct
+
+.
+
+us=
+eState
+
+(
+
+J=
+SON
+
+.
+
+s=
+tringify
+
+(assistant?.
+
+tools
+
+ || [], 
+
+null
+
+, 
+
+=
+2
+
+));
+
+const
+
+ [mode=
+ls, setModels] =3D 
+
+React
+
+.
+
+useState=
+
+([]);
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+setName
+
+=
+
+(assistant?.
+
+name
+
+ || 
+
+""
+
+);
+
+setInstructions
+
+(assistant?.
+
+instru=
+ctions
+
+ || 
+
+""
+
+);
+
+setModel
+
+(assistant?.
+
+model
+
+ || 
+
+"gpt-4o"
+
+);
+
+setToolsText
+
+(
+
+JSON
+
+.
+
+stringify
+=
+
+(assistant?.
+
+tools
+
+ || [], 
+
+null
+
+, 
+
+2
+
+=
+
+));
+  }, [assistant]);
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+    (
+
+async
+
+ ()=
+ =3D> {
+
+try
+
+ {
+
+const
+
+=
+ r =3D 
+
+await
+
+ =
+
+fetch
+
+=
+(
+
+`
+${bas=
+e}
+
+/api/llm/models/openai`);
+
+const
+
+=
+ d =3D 
+
+await
+
+ =
+r.
+
+json
+
+();
+
+const
+
+=
+ list =3D 
+
+Array
+
+.
+
+isArray
+
+(d?.
+
+data
+
+=
+
+) ? d.
+
+data
+
+ : (d.
+
+models
+
+ || d || []);
+
+setModels
+
+(list.
+
+map
+
+(
+
+m
+
+ =3D> (
+
+typeof
+
+ m =3D=3D=3D 
+
+"string"
+
+ ? m : (m.
+
+id
+
+ || m.
+
+name
+
+))).
+
+filter
+
+(
+
+Boolean
+
+));
+      } 
+
+catch
+
+=
+ {}
+    })();
+  }, [base]);
+
+const
+
+save
+
+ =3D 
+
+async
+
+ (
+=
+
+) =3D> {
+
+try
+
+ {
+
+const
+
+ t=
+ools =3D 
+
+JSON
+
+.
+
+parse
+
+=
+
+(toolsText || 
+
+"[]"
+
+);
+
+const
+
+ r=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/api/assistant/
+
+${assistant.assistantId}
+
+`, {
+
+method
+
+: =
+
+"PUT"
+
+,
+
+headers
+
+:=
+ { 
+
+"Content-Type"
+
+:
+
+"application/json"
+

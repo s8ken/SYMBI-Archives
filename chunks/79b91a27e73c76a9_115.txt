@@ -1,0 +1,155 @@
+et’s 
+force-load the actual library
+ instead.
+
+1️⃣ 
+Manually copy the actual 
+libtsk_jni.dylib
+ file (not just the symlink):
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+sudo 
+
+chmod
+
+ 755 /usr/local/lib/libtsk_jni.dylib
+
+2️⃣ 
+Check if the file is now properly in place:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+
+3️⃣ 
+Re-run Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 If It Still Fails, Check What's Wrong
+
+If the issue still persists, 
+send me the output of these commands
+:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk_jni
+java -XshowSettings:properties | grep java.library.path
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+📌 
+This will tell us if the library is broken or if Java simply can’t read it.
+
+🚀 
+Try these fixes and let me know what happens! 🔥
+
+You said:
+
+/Library/Developer/CommandLineTools/usr/bin/install_name_tool: warning: changes being made to the file will invalidate the code signature in: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
+sja@SJAs-MacBook-Pro bin % ls -l /usr/local/lib/libtsk_jni.dylib
+
+lrwxr-xr-x  1 root  wheel  58 18 Mar 02:13 /usr/local/lib/libtsk_jni.dylib -> /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % export JAVA_OPTS="-Djava.library.path=/usr/local/lib"
+echo 'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -XshowSettings:properties | grep java.library.path
+
+Property settings:
+    file.encoding = UTF-8
+    file.separator = /
+    ftp.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    http.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    java.class.path = 
+    java.class.version = 61.0
+    java.home = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+    java.io.tmpdir = /var/folders/zt/jn1c6p4n2vxbb5j4dl4c85fm0000gn/T/
+    java.library.path = /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+
+        /Users/sja/Library/Java/Extensions
+        /Library/Java/Extensions
+        /Network/Library/Java/Extensions
+        /System/Library/Java/Extensions
+        /usr/lib/java
+        .
+    java.runtime.name = OpenJDK Runtime Environment
+    java.runtime.version = 17.0.14+7-LTS
+    java.specification.maintenance.version = 1
+    java.specification.name = Java Platform API Specification
+    java.specification.vendor = Oracle Corporation
+    java.specification.version = 17
+    java.vendor = Azul Systems, Inc.
+    java.vendor.url = http://www.azul.com/
+    java.vendor.url.bug = http://www.azul.com/support/
+    java.vendor.version = Zulu17.56+15-CA
+    java.version = 17.0.14
+    java.version.date = 2025-01-21
+    java.vm.compressedOopsMode = Zero based
+    java.vm.info = mixed mode, sharing
+    java.vm.name = OpenJDK 64-Bit Server VM
+    java.vm.specification.name = Java Virtual Machine Specification
+    java.vm.specification.vendor = Oracle Corporation
+    java.vm.specification.version = 17
+    java.vm.vendor = Azul Systems, Inc.
+    java.vm.version = 17.0.14+7-LTS
+    jdk.debug = release
+    line.separator = \n 
+    native.encoding = UTF-8
+    os.arch = aarch64
+    os.name = Mac OS X
+    os.version = 15.2
+    path.separator = :
+    socksNonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    sun.arch.data.model = 64
+    sun.boot.library.path = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/lib
+    sun.cpu.endian = little
+    sun.io.unicode.encoding = UnicodeBig
+    sun.java.launcher = SUN_STANDARD
+    sun.jnu.encoding = UTF-8
+    sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+    sun.stderr.encoding = UTF-8
+    user.country = AU
+    user.dir = /Users/sja/Downloads/autopsy-4.21.0/bin
+    user.home = /Users/sja
+    user.languag

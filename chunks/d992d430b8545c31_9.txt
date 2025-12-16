@@ -1,0 +1,192 @@
+m.apple  597 admin   43u  IPv4 0x47844c6b86496a5b      0t0  TCP localhost:51752->localhost:hbci (ESTABLISHED)
+com.apple  597 admin   45u  IPv4 0x28488ab90aebe6b0      0t0  TCP localhost:51796->localhost:hbci (ESTABLISHED)
+bun       6261 admin    8u  IPv4 0x625b64859e2d4d4c      0t0  TCP *:hbci (LISTEN)
+bun       6261 admin   36u  IPv4 0xb5fe3d34e931aa35      0t0  TCP localhost:hbci->localhost:51752 (ESTABLISHED)
+bun       6261 admin   37u  IPv4 0xdda7bb6305c8d0b7      0t0  TCP localhost:hbci->localhost:51796 (ESTABLISHED)
+SYMBIs-MacBook-Pro:~ admin$ 
+SYMBIs-MacBook-Pro:~ admin$ kill -9 <PID>
+-bash: syntax error near unexpected token 
+newline'
+
+SYMBIs-MacBook-Pro:~ admin$ 
+SYMBIs-MacBook-Pro:~ admin$ 
+
+ChatGPT said:
+
+You're really close — just a small tweak needed. Here's what to do:
+
+🔍 Step 1: Identify the PID
+
+From your 
+lsof -i :3000
+ output, this is the key line:
+
+ruby
+
+Copy
+
+Edit
+
+bun       
+
+6261
+
+ admin    ...   
+
+TCP
+
+ *
+
+:hbci
+
+ (
+
+LISTEN
+
+)
+
+That means 
+PID 
+6261
+
+ is running on port 3000 (Apple labels it 
+hbci
+, but it's still port 3000).
+
+✅ Step 2: Kill the Process
+
+Now run:
+
+bash
+
+Copy
+
+Edit
+
+kill
+
+ -9 6261
+
+🔁 Step 3: Restart Your Project
+
+Once that's killed, restart ElizaOS:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ symbi
+elizaos dev
+
+That should boot cleanly on port 3000 now.
+
+Let me know once you're back in — we’ll continue with GitHub testing!
+
+You said:
+
+[2025-07-23 21:48:46.981 +1000] ERROR: symbi-assistant (7820f300-d730-0fce-bf97-829548a35351) - Failed to register service browser: launch: Executable doesn't exist at /Users/admin/Library/Caches/ms-playwright/chromium_headless_shell-1155/chrome-mac/headless_shell
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just installed or updated. ║
+║ Please run the following command to download new browsers:              ║
+║                                                                         ║
+║     npx playwright install                                              ║
+║                                                                         ║
+║ <3 Playwright Team                                                      ║
+╚═════════════════════════════════════════════════════════════════════════╝
+    agentName: "symbi-assistant "
+    logLevel: "info"
+[2025-07-23 11:48:47] INFO: Ngrok service not available - webhooks will only work with public URLs
+
+ChatGPT said:
+
+That final error confirms: 
+Playwright is installed
+, but 
+the actual browser binary (Chromium)
+ still isn’t.
+
+Let’s do the cleanest and final fix to stop this once and for all:
+
+✅ Step-by-step fix
+
+Install Playwright and Chromium properly:
+
+bash
+
+Copy
+
+Edit
+
+npm install @playwright/test --save-dev
+npx playwright install chromium
+
+Verify the binary path is created:
+
+Check if this now exists:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ /Users/admin/Library/Caches/ms-playwright/
+
+You should see a 
+chromium-...
+ folder.
+
+🧼 OR Disable the Plugin
+
+If you 
+don’t need the browser plugin
+ (used for web browsing or scraping), disable it in your agent config:
+
+Go to 
+localhost:3000
+
+Select your 
+symbi-assistant
+
+Go to 
+Plugins
+
+Toggle off 
+@elizaos/plugin-browser
+
+Click 
+Save
+
+That will stop the Playwright-related startup errors entirely — and your agent will still work great with GitHub, shell, and OpenAI.
+
+Once you've picked a path (install or disable), let me know — then we test GitHub again!
+
+You said:
+
+For more details, please visit https://support.apple.com/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ npm install @playwright/test --save-dev
+npx playwright install chromium
+
+added 1 package, and audited 5 packages in 651ms
+
+found 0 vulnerabilities
+SYMBIs-MacBook-Pro:~ admin$ npx playwright install chromium
+SYMBIs-MacBook-Pro:~ admin$ ls /Users/admin/Library/Caches/ms-playwright/
+chromium_headless_shell-1181	firefox-1489
+chromium-1181			webkit-2191
+ffmpeg-1011
+SYMBIs-MacBook-Pro:~ admin$ 
+
+ChatGPT said:
+
+✅ Beautiful — that worked!
+
+You now have the correct Chromium binary installed:
+
+s

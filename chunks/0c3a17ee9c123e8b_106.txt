@@ -1,0 +1,368 @@
+k “Login”
+ in the top-right of Studio and try again
+
+🛠 Final Debug Tactic (Flush Cache)
+
+If all else fails, try flushing Sanity’s 
+.sanity
+ cache folder and reinstalling:
+
+bash
+
+Copy
+
+rm
+
+ -rf .sanity node_modules package-lock.json
+npm install --legacy-peer-deps
+npm run dev
+
+Let me know what the 
+npx sanity debug
+ output says about your dataset and whether you’re logged in. We’re close.
+
+You said:
+
+ja@SJAs-MacBook-Pro lib % npx sanity debug
+
+Not in project directory, assuming context of project at /Users/sja/Documents/symbi-main-site
+
+User:
+  ID: 'gy89IcrrA'
+  Name: 's8ken'
+  Email: 'aitken.stephen@pm.me'
+
+Authentication:
+  User type: 'normal'
+  Auth token: '<redacted>'
+
+  (run with --secrets to reveal token)
+
+Global config (/Users/sja/.config/sanity/config.json):
+  {
+    cliLastUpdateCheck: 1742513278348,
+    telemetryDisclosed: 1742513278365,
+    telemetryConsent: {
+      value: { type: 'telemetry', status: 'granted' },
+      updatedAt: 1742521893203
+    }
+  }
+
+Project config:
+  { error: 'Missing required "api.projectId" key' }
+
+Package versions:
+  @sanity/cli (global)  3.80.1 (up to date)
+  @sanity/image-url      1.1.0 (up to date)
+  @sanity/vision        3.80.1 (up to date)
+  sanity                3.80.1 (up to date)
+
+sja@SJAs-MacBook-Pro lib % 
+
+Vercel Deployment Expert GPT said:
+
+Great move checking with 
+npx sanity debug
+ — and this gives us the exact issue:
+
+🚨 Critical Issue:
+
+css
+
+Copy
+
+Project config:
+  { error: 
+
+'Missing required "api.projectId" key'
+
+ }
+
+That means Sanity has 
+no idea which project it's supposed to connect to
+ — so it can’t read/write anything.
+
+✅ Solution: Fix 
+sanity.config.ts
+
+Open your 
+sanity.config.ts
+ and 
+make sure the 
+projectId
+ and 
+dataset
+ are correctly set
+, like this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+"default"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+projectId
+
+: 
+
+"wryptr7v"
+
+, 
+
+// ✅ Replace with your actual Sanity project ID
+
+dataset
+
+: 
+
+"production"
+
+,
+
+basePath
+
+: 
+
+"/studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+If you’re not sure what your 
+project ID
+ is:
+
+Go to 
+Sanity Manage
+
+Click into the “symbi” project
+
+Copy the 
+Project ID
+ from the 
+API
+ tab
+
+💡 After You Fix That:
+
+Save 
+sanity.config.ts
+
+Restart your server:
+
+bash
+
+Copy
+
+npm run dev
+
+Go to 
+
+http://localhost:3000/studio
+
+Try editing and saving again
+
+Let me know if you want me to check your 
+sanity.config.ts
+ file again — or if you want to try a test update together.
+
+You said:
+
+I can't see it there
+
+Vercel Deployment Expert GPT said:
+
+No worries — let’s find that 
+
+sanity.config.ts
+
+ together and make sure the project ID is set correctly.
+
+🔍 
+Where to find 
+sanity.config.ts
+:
+
+Go to your project folder (looks like you're in 
+/Users/sja/Documents/symbi-main-site
+)
+
+Run this command in your terminal to locate the file:
+
+bash
+
+Copy
+
+find . -name 
+
+"sanity.config.ts"
+
+That’ll show you where the file lives.
+
+🛠️ Once you find it:
+
+Open it in your editor (VSCode, nano, etc.), and 
+double-check the top section
+ looks like this:
+
+ts
+
+Copy
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+"default"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+projectId
+
+: 
+
+"wryptr7v"
+
+, 
+
+// ✅ Must match your real Sanity project ID
+
+dataset
+
+: 
+
+"production"
+
+,
+  ...
+});
+
+If the 
+projectId
+ line is 
+missing or mistyped
+, that’s what’s causing the errors.
+
+Let me know what the 
+find
+ command gives you — or paste in your 
+sanity.config.ts
+ if you’re unsure. I’ll guide you through fixing it line by line.
+
+You said:
+
+sja@SJAs-MacBook-Pro lib % cd ~/Documents/symbi-main-site/lib
+sja@SJAs-MacBook-Pro lib % find . -name "sanity.config.ts"
+
+sja@SJAs-MacBook-Pro lib % 
+
+Vercel Deployment Expert GPT said:
+
+Perfect — that output confirms 
+
+sanity.config.ts
+ is not in the 
+/lib
+ folder`
+, which is expected.
+
+L

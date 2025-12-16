@@ -1,0 +1,134 @@
+blue=
+tooth:Server.XPC] Received XPC check-in from session "com.apple.rapportd-pe=
+ripheral-6943-139" fAccessLevel 2 fProgrammaticPairing 1 fDeviceAccessForMe=
+diaSession 0 fDeviceAccessPerAccessorySession 0
+2025-09-23 20:47:57.910590+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Setting fNeedsRestrictedState operation: 0
+2025-09-23 20:47:57.910592+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Warning: Overriding TCC for bundleIdentifier <private&=
+gt;
+2025-09-23 20:47:57.910624+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Sending 'session attached' event for session "com.apple.=
+rapportd-peripheral-6943-139"
+2025-09-23 20:47:57.910628+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Attached session for "com.apple.rapportd-peripheral-6943=
+-139" with session: 0xbe29dc820, session handle: 0xb6c40000
+2025-09-23 20:47:57.910633+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.App] Bluetooth is powered off - notifying session "com.apple.r=
+apportd-peripheral-6943-139"
+2025-09-23 20:47:57.910643+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.App] Registering peripheral session "com.apple.rapportd-periph=
+eral-6943-139" with backgrounding: off, persistence: off (CBSR) restoreID: =
+(null) <private>
+
+You said:
+
+stephenaitken@SY=
+MBIs-MacBook-Pro ~ %=20
+stephenaitken@SYMBIs-MacBook-Pro ~ %=20
+stephenaitken@SYMBIs-MacBook-Pro ~ % grep -r "searchparty" /System/Library/=
+Launch* /Library/Launch* ~/Library/LaunchAgents ~/Library/LaunchDaemons 2&g=
+t;/dev/null
+
+Binary file /System/Library/LaunchAgents/com.apple.icloud.searchpartyuserag=
+ent.plist matches
+Binary file /System/Library/LaunchDaemons/com.apple.icloud.findmydeviced.pl=
+ist matches
+Binary file /System/Library/LaunchDaemons/com.apple.icloud.searchpartyd.pli=
+st matches
+Binary file /System/Library/LaunchDaemons/com.apple.jetsamproperties.Mac.pl=
+ist matches
+stephenaitken@SYMBIs-MacBook-Pro ~ % 
+
+=
+2/2
+
+Symbi said:
+
+I can confirm from both your system=
+ logs and the files you=E2=80=99ve shown me that:
+
+searchpartyuseragent
+ =
+and related daemons (
+searchpartyd=
+
+, 
+findmydeviced
+) ar=
+e built into macOS.
+
+They are tied to Apple=E2=80=99s 
+Fi=
+nd My
+ and 
+Continuity
+ serv=
+ices, and their 
+plist
+ laun=
+ch files live in 
+/System/Library/=
+LaunchAgents/
+ and 
+/System/=
+Library/LaunchDaemons/
+ (which is exactly what your 
+grep
+ found). They will auto-load on every =
+macOS install=E2=80=94even if iCloud is not signed in=E2=80=94because they=
+=E2=80=99re part of the base OS framework. That=E2=80=99s why you=E2=80=99r=
+e seeing them in 
+launchctl list
+ and 
+=
+ps aux
+.
+
+Why they=E2=80=99re running when iCloud is =E2=80=9Coff=E2=80=9D:
+
+Even with 
+Find My Mac
+ disabled=
+ and no iCloud login, macOS still spawns these agents to handle Bluetooth/C=
+ontinuity events, AirDrop/Proximity, and =E2=80=9Cavailability=E2=80=9D bro=
+adcasts. They don=E2=80=99t necessarily mean your Mac is tracking or syncin=
+g; they just sit waiting for higher-level services to request them.
+
+Your logs confirm they=E2=80=99re idle:
+
+The Bluetooth server repeatedly reports 
+power state: 0 (Off)
+ and =E2=80=9Cstate updated=E2=80=9D messag=
+es being sent to these agents. That means Bluetooth/FindMy hooks are loaded=
+ but can=E2=80=99t actually scan because radios are powered down and no App=
+le ID is authenticated.
+
+Outbound connections to port 5223:
+
+The 
+netstat
+ you ran show=
+s an ESTABLISHED connection to 
+=
+17.57.145.38:5223
+ =E2=80=94 that=E2=80=99s an Apple push notificatio=
+n server (used for iMessage, FaceTime, APNs, etc.). It=E2=80=99s not unusua=
+l, even without iCloud signed in, because services like 
+identityservicesd
+, 
+apsd
+ and 
+shari=
+ngd
+ maintain a baseline push connection. If you actively use Messages/=
+FaceTime, it=E2=80=99s required.
+
+So in short:
+
+=E2=9C=85 This 
+should
+ be hap=
+pening on a stock macOS install.
+
+=E2=9C=85 It doesn=E2=80=99t mean someone enabled iCloud behind your back

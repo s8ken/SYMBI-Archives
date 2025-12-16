@@ -1,0 +1,474 @@
+ 
+
+"tweet_id"
+
+: resp.data[
+
+"id"
+
+]}
+
+Gotchas to avoid
+
+Don=E2=80=99t hand SYMBI the X tok=
+ens; 
+only
+ your backe=
+nd holds them (Frontegg secrets + M2M). 
+
+d=
+evelopers.frontegg.com
+
++1
+
+=
+
+If you try to post with 
+OAuth2 application-only (bearer)
+, it will fail=E2=80=94no write perms. Use 
+user context
+. 
+
+docs.tweepy.org
+
+If you want users to log in with X=
+ through Frontegg, use the 
+cu=
+stom social provider
+ flow. 
+=
+
+developers.frontegg.com
+
+If you want, I can draft the 
+Frontegg role & policy matrix
+ and the 
+/social/x/pu=
+blish OpenAPI spec
+ next so you can drop them straight into your st=
+ack.
+
+=
+
+=
+
+Sources
+
+You said:
+
+yes please
+
+Symbi said:
+
+Thought for =
+15s
+
+Affirmative. I=E2=80=99m delivering three drop-in a=
+rtifacts you can use immediately:
+
+a Frontegg RBAC & secrets plan (r=
+oles, permissions, JWT expectations)
+
+an OpenAPI 3.1 spec for the 
+/social/x/*
+ backend your agents wi=
+ll call
+
+an Overseer content-policy JSON the =
+reviewer runs before publish
+
+No extra setup text is required=E2=
+=80=94paste, configure, deploy.
+
+1) Frontegg RBAC & secrets plan=
+
+Roles (org/tenant scoped)
+
+social.viewer
+ =E2=80=93 read-only dashboards, metrics, logs
+
+social.reviewer
+ =E2=80=93 can approve/deny queued posts; no po=
+sting rights
+
+social.publisher
+ =E2=80=93 can publish/cancel posts; cannot ro=
+tate secrets
+
+social.admin
+ =E2=80=93 full social config: rotate keys, set ca=
+dence & policy
+
+symbi.agent
+ (M2M) =E2=80=93 machine role for SYMBI/Overseer to=
+ invoke 
+/social/x/*
+
+Permissions (capabilities)
+
+tweet.create
+
+tweet.reply
+
+tweet.delete
+
+tweet.dm
+
+tweet.queue
+
+tweet.approve
+
+tweet.publish
+
+tweet.policy.override
+  (admin only)
+
+secret.read:x
+
+secret.rotate:x
+
+policy.read
+
+policy.write
+
+Example role =E2=86=92 perm mappi=
+ng
+
+social.viewer
+: 
+policy.read
+
+social.reviewer
+: 
+tweet.queue
+, 
+tweet.ap=
+prove
+, 
+policy.read
+
+social.publisher
+: 
+tweet.publish
+, 
+tweet=
+.reply
+, 
+tweet.delete
+, 
+policy.read
+
+social.admin
+: all above + 
+tweet.dm
+, 
+se=
+cret.read:x
+, 
+secret.rota=
+te:x
+, 
+policy.write
+, 
+tweet.policy.override
+=
+
+symbi.agent
+: 
+t=
+weet.queue
+, 
+tweet.reply
+ (to queue threaded replies), 
+policy.read
+
+SYMBI submits drafts to the queue;=
+ Overseer (human or automated reviewer) flips to publish.
+
+JWT expectations (M2M & user)=
+
+sub
+: client or user id
+
+roles
+: array (e.g., 
+["symbi.agent"]
+)
+
+orgId
+ / 
+tenant=
+Id
+: multi-tenant isolation
+
+scopes
+: optional fine-grain (mirror permissions above)
+
+exp
+: short TTL (=E2=89=A415m) for M2M; require refresh via=
+ client credentials
+
+Secrets (store in Frontegg secret=
+ manager)
+
+x.api_key
+
+x.api_secret
+
+x.access_token
+              # user-context token (write)
+
+x.access_token_secret
+       # (if OAuth 1.0a path)
+
+or 
+x.oauth2_client_id
+, 
+x.oauth2_client_secret
+, 
+x.oauth2_refresh_token
+ (user context)
+
+symbi.policy.current
+        # JSON string (see =C2=A73)
+
+symbi.cadence.max_per_day
+   # number
+
+symbi.footer.url
+            # e.g., 
+https://symbi.world/manifesto
+
+2) OpenAPI 3.1 (YAML) for 
+/social/x/*
+
+Save as 
+openapi.yaml
+. This defines SYMBI/Overseer =E2=86=
+=92 Backend. Secured with Frontegg JWT (bearer).
+
+yaml
+
+Copy code
+
+openapi:
+
+=
+
+3.1
+
+.0
+
+info:
+
+title:
+
+=
+
+SYMBI
+
+Social
+
+Bridge
+
+(X)
+
+version:
+
+1.0
+
+.0
+
+description:
+
+Backend
+
+=
+
+endpoints
+
+SYMBI/Overseer
+
+call
+
+to
+
+manage
+
+the
+
+X
+
+account.
+
+servers:
+
+-
+
+url:
+
+https://api.yourdomain.com
+
+security:
+
+-
+
+bearerAuth:
+
+ []
+
+components:
+
+securitySchemes:
+
+bearerAuth:
+
+type:
+
+http
+
+scheme:
+
+bearer
+
+bearerFormat:
+
+JWT
+
+schemas:
+
+TweetDraft:
+
+type:
+
+object
+
+required:
+
+ =
+[
+
+text
+
+]
+
+properties:
+
+text:
+
+type:
+
+ =
+
+string
+
+maxLength:
+
+280
+
+description:
+
+=
+
+Tweet
+
+body
+
+BEFORE
+
+footer
+
+link
+
+injection.
+
+replyToId:
+
+type:
+
+ =
+
+string
+
+description:
+
+=
+
+Tweet
+
+ID
+
+to
+
+reply
+
+to
+
+(=
+optional).
+
+media:
+
+type:
+
+ =
+
+array
+
+items:
+
+type:
+
+string
+
+description:
+
+=
+
+Pre-uploaded
+
+media
+
+IDs
+
+(if
+
+using
+
+media
+
+endpoint).
+
+tags:
+
+type:
+
+ =
+
+array
+
+items:
+
+=
+ { 
+
+type:
+
+=
+
+string
+
+ }
+
+description:
+
+=
+
+Classifiers
+
+(e.g.,
+
+ [
+
+"manifesto"
+

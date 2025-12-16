@@ -1,0 +1,531 @@
+ion runb=
+ook written.
+
+DID resolvers
+:=
+ pinning+TTL set; negative cache.
+
+Revocation
+: St=
+atusList bitstring published; endpoint health checks.
+
+Receipts
+: incl=
+ude 
+apiVersion
+, 
+endpoint
+, 
+sdkVersion
+, 
+kid
+.
+
+Rate limits
+: p=
+er-principal & per-IP; anomaly quarantine path.
+
+CSP
+: default-s=
+rc 'self'; allow only needed CDNs.
+
+Observability
+:=
+ dashboards for p95 latency, 4xx/5xx, cost per model, replay blocks, downgr=
+ade blocks.
+
+Backups
+: Mongo=
+/Weaviate snapshots; KMS key escrow policy signed.
+
+Runbooks
+: pilo=
+t + incident playbooks linked in 
+/admin
+.
+
+5) Pilot scripts (polished)
+
+Enroll
+
+bash
+
+Copy code
+
+npm run pilot:enroll -- --partner 
+
+"Acme Corp"
+
+ --did did:web:acme.com=
+ --kms gcp:prod
+
+Issue VC
+
+bash
+
+Copy code
+
+npm run pilot:issue -- --agent-id 
+
+"agent-123"
+
+ --
+
+type
+
+ TrustScore --score 0.92
+
+Verify
+
+bash
+
+Copy code
+
+npm run pilot:verify -- --vc-id 
+
+"vc-456"
+
+ --policy strict
+
+Each script should print:
+
+=E2=9C=85/=E2=9D=8C, receipt 
+id
+ + 
+signature
+ (first 16 chars), 
+chainPrev
+ (first 16), and a verifier URL.
+
+6) Demo choreography (10=E2=80=93=
+12 min)
+
+Dashboard
+: show live trust events; filter by DID metho=
+d; open a receipt =E2=86=92 verify chain link.
+
+Issue & revoke
+: issue a TrustScore VC =E2=86=92 ve=
+rify; then revoke =E2=86=92 verify fails (StatusList flips).
+
+Anomaly
+: simulate burst =E2=86=92 see RL headers + ano=
+maly flag + quarantine.
+
+Security
+: show that prod won=E2=80=99t boot without KM=
+S; rotate key (
+kid
+ chang=
+e reflected in new receipts).
+
+7) Investor one-pager bullets (yo=
+u=E2=80=99re ready)
+
+=E2=80=9CSSL for AI=E2=80=9D
+: receipts, DID/VC, revoca=
+tion, KMS.
+
+Moat
+: crypto-verifiable audit + network effects (porta=
+ble trust scores).
+
+Compliance now
+: EU AI Act, SOC 2 hooks; revocation + s=
+tatus lists in place.
+
+Proof
+: 8k LOC, 120+ tests, 4 DID methods, dashboards, =
+pilots scripts.
+
+Pricing
+: TaaS, CaaS, enterprise license; attach real u=
+nit costs.
+
+What I can deliver right now
+
+A ready-to-drop 
+
+ope=
+napi.yml
+
+ (v0.9 freeze) with the receipt endpoints + example=
+s.
+
+A small 
+Red-Team harness
+ (
+npm run redteam
+) that executes the four attacks and =
+prints a pass/fail table.
+
+A 
+JWT/JTI middleware
+ module (Express) with Redis adapt=
+er + tests.
+
+A 
+Launch Checklist
+ markdown you can paste into your re=
+po=E2=80=99s 
+/docs/LAUNCH.md
+.
+
+Say the word and tell me which art=
+ifact you want first, and I=E2=80=99ll produce it here so you can paste it =
+in.
+
+=
+
+You said:
+
+okay I'll pass it straight over 
+
+=
+
+=
+
+ChatGPT said:
+
+Perfect. Here are the four drop-in =
+artifacts you can pass straight over.
+
+1) 
+openapi.yml
+ (API v0.9 freeze =E2=80=94 receipts)
+
+=
+yaml
+
+Copy code
+
+openapi:
+
+ =
+
+3.0
+
+.3
+
+info:
+
+ { 
+
+title:
+
+SYMBI
+
+Trust
+
+API
+
+, 
+
+ve=
+rsion:
+
+0.9
+
+.0
+
+ }
+
+servers:
+
+ [{ 
+
+url:
+
+https://api.symbi.world
+
+ }]
+
+paths:
+
+/v0/trust/receipt:
+
+=
+
+post:
+
+summary:
+
+Create
+
+a
+
+signed
+
+trust
+
+receipt
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+ { 
+
+$ref:
+
+'#/components/schemas/ReceiptInput'
+
+ }
+
+responses:
+
+'201':
+
+description:
+
+=
+
+Created
+
+content:
+
+application/json:
+=
+
+schema:
+
+ { 
+
+$ref:
+
+ =
+
+'#/components/schemas/Receipt'
+
+ }
+
+/v0/trust/receipt/{id}:
+
+get:
+
+summary:
+
+Fetch
+
+a
+
+receipt
+
+by
+
+id
+
+parameters:
+
+-
+
+in:
+
+path
+
+name:
+
+ =
+
+id
+
+required:
+
+true
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+'200':
+
+description:
+
+=
+
+OK
+
+content:
+
+application/json:
+=
+
+schema:
+
+ { 
+
+$ref:
+
+ =
+
+'#/components/schemas/Receipt'
+
+ }
+
+components:
+
+schemas:
+
+ReceiptInput:
+
+type:
+
+object
+
+required:
+
+ =
+[
+
+taskId
+
+, 
+
+model
+
+, 
+
+toolIds
+
+, 
+
+inputHash
+
+, 
+
+outputHash
+
+, 
+
+policyId
+
+, 
+
+endpoint
+
+, 
+
+timestamp
+
+]
+
+properties:
+
+taskId:
+
+ =
+{ 
+
+type:
+
+string
+
+ }
+
+model:
+
+ {=
+
+type:
+
+string
+
+ }
+
+toolIds:
+
+=
+ { 
+
+type:
+
+=
+
+array
+
+, 
+
+items:
+
+ { 
+
+type:
+
+string
+
+ } }
+
+sdkVersion:
+
+ { 
+
+type:
+
+string
+
+ }
+
+policyId:
+
+ { 
+
+type:
+
+string
+
+ }
+
+endpoint:
+
+ { 
+
+type:
+
+string
+
+, 
+
+enum:
+
+ [
+
+chat_completions
+
+, 
+
+responses
+
+] }
+
+inputHash:
+
+ { 
+
+type:
+
+string
+
+ }
+
+outputHash:
+
+ { 
+
+type:
+

@@ -1,0 +1,254 @@
+ires 
+constant network activity
+, we can check network logs.
+
+A. Find Recent Outbound Streaming Traffic
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for connections to:
+
+rtmp://live.twitch.tv/
+
+rtmp://a.rtmp.youtube.com/
+
+webrtc://some-streaming-server/
+
+unknown external IP addresses
+
+B. Check DNS Queries for Streaming Services
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 7d
+
+If you see 
+DNS requests for Twitch, YouTube Live, YouStream, etc.,
+ it confirms livestreaming was happening.
+
+📷 4️⃣ Check If Your Camera/Microphone Were Used
+
+Since many livestreams include 
+audio/video
+, check if the camera/microphone were accessed.
+
+A. Check for Webcam & Mic Usage
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 7d
+
+If results show 
+FaceTime Camera
+ or 
+Microphone Activation
+, it means audio/video were being captured.
+
+B. Look for Streaming-Related Permissions
+
+Go to:
+
+System Settings → Privacy & Security → Camera
+
+System Settings → Privacy & Security → Microphone
+
+System Settings → Privacy & Security → Screen Recording
+
+If 
+any unknown apps
+ have permission, revoke access.
+
+🚨 Next Steps
+
+1️⃣ 
+Run 
+log show
+ commands for RTMP & WebRTC activity.
+
+2️⃣ 
+Check 
+netstat
+ and DNS queries for outbound livestreams.
+
+3️⃣ 
+Look at past browser history for YouStream/Twitch activity.
+
+4️⃣ 
+Check if camera/mic were activated for live broadcasts.
+
+Let me know what you find—I’ll help analyze the results! 🚨
+
+You said:
+
+user@Mes-MacBook-Pro ~ % sudo log show --predicate 'eventMessage contains "rtmp"' --last 7d
+
+Password:
+Filtering the log data using "composedMessage CONTAINS "rtmp""
+Skipping info and debug messages, pass --info and/or --debug to include.
+
+ChatGPT said:
+
+Since your 
+RTMP log search returned nothing
+, that suggests:
+
+Livestreaming might have used a different protocol (like WebRTC instead of RTMP).
+
+The logs may have been cleared or overwritten before you ran the search.
+
+A VPN, proxy, or hidden process might have obscured the streaming activity.
+
+🚨 Next Steps: Alternative Ways to Detect Livestreaming
+
+Since RTMP logs didn’t show anything, let’s expand our search.
+
+1️⃣ Check for WebRTC-Based Livestreams
+
+Many web-based streaming platforms (YouTube Live, Twitch Studio, Facebook Live) use 
+WebRTC instead of RTMP
+.
+
+Run:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "webrtc"'
+
+ --last 7d
+
+If WebRTC was used, you might see connections to 
+streaming platforms
+.
+
+2️⃣ Scan for Active or Recent Network Connections
+
+Livestreams require 
+constant internet connections
+. Checking past network activity could reveal where data was sent.
+
+A. Find Recent Outbound Streaming Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for 
+connections to streaming servers
+ (Twitch, YouStream, YouTube, Facebook Live, unknown IPs).
+
+B. Check DNS Requests for Streaming Services
+
+If your Mac resolved DNS requests for streaming services, you’ll see them here:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 7d
+
+Look for domain names like:
+
+youtube.com
+
+twitch.tv
+
+youstream.com
+
+facebook.com/live
+
+Any unknown domains
+
+3️⃣ Check If Livestreaming Was Done Through a Browser
+
+If a web-based streaming platform was used, 
+browser history or cached data
+ might reveal it.
+
+A. Search for "Live" or "Stream" in Browser History
+
+For Chrome:
+
+sh
+
+Copy
+
+grep -i 
+
+"livestream\|stream"
+
+ ~/Library/Application\ Support/Google/Chrome/Default/History
+
+For Safari:
+
+sh
+
+Copy
+
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url FROM history_items WHERE url LIKE '%stream%';"
+
+Look for 
+YouStream, YouTube Live, Twitch, or Facebook Live URLs
+.
+
+B. Check WebRTC & Streaming Permissions in Browser
+
+Open 
+Chrome
+ → Go to 
+chrome://settings/content/camera
+
+Open 
+Safari
+ → Go to 
+Settings → Websites → Camera & Microphone
+
+If any 
+streaming platform
+ was granted camera/microphone permissions, it might confirm 
+livestreaming.
+
+4️⃣ Check for Video Capture or Audio Stre

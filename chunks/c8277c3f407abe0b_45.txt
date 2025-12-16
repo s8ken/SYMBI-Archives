@@ -1,0 +1,167 @@
+ GCam persists, it's OEM-bundled=E2=80=94disable via Settings > Apps >=
+; Disable.
+
+For =
+custom ROMs, start with bootloader unlock guides on XDA (search "Oppo A3x u=
+nlock bootloader"). If this ties to your SYMBI privacy needs, a Pixel + Gra=
+pheneOS is ideal long-term. What's your priority=E2=80=94reset first or ROM=
+ exploration?
+
+40 web p=
+ages
+
+=
+
+stephen@penguin:~$ > sudo apt update && sudo=
+ apt install android-tools-adb android-tools-fastboot
+
+WARN=
+ING: apt does not have a stable CLI interface. Use with caution in scripts.=
+
+E: C=
+ould not open lock file /var/lib/apt/lists/lock - open (13: Permission deni=
+ed)
+E: Unable to lock directory /var/lib/apt/lists/
+W: Problem unlinking the file /var/cache/apt/pkgcache.bin - RemoveCaches (1=
+3: Permission denied)
+W: Problem unlinking the file /var/cache/apt/srcpkgcache.bin - RemoveCaches=
+ (13: Permission denied)
+stephen@penguin:~$
+
+It looks like you're encounteri=
+ng permission issues while trying to run the 
+sudo apt update && sudo apt install android-t=
+ools-adb android-tools-fastboot
+ command on your Chromebook's Linux e=
+nvironment (likely via Crostini, given the 
+stephen@penguin
+ prompt). The errors indicate tha=
+t the APT package manager cannot access or modify the required directories =
+(
+/var/lib/apt/lists/
+ and 
+/var/cache/apt=
+/
+) due to insufficient permissions. This is a common issue when the =
+Linux container's filesystem permissions are misconfigured or when you're n=
+ot running the command with the correct privileges in the right context. Si=
+nce it=E2=80=99s 07:57 PM AEDT on Friday, October 10, 2025, let=E2=80=99s r=
+esolve this quickly so you can proceed with resetting your Oppo A3x.
+
+Why This Happened
+
+Permissi=
+on Denied
+: The 
+sudo
+ command elevates privileges, but if the Linux container's file=
+system is mounted read-only or owned by a different user (e.g., the rootfs =
+setup in Crostini), APT can't write to its cache or lock files.
+
+Crostini=
+ Specifics
+: ChromeOS's sandboxed Linux environment sometimes requi=
+res a restart or permission fix after initial setup, especially if the cont=
+ainer was recently created or updated.
+
+Lock Fil=
+e Issue
+: The 
+/=
+var/lib/apt/lists/lock
+ error suggests another process (e.g., a previ=
+ous APT session) might be holding the lock, or the directory permissions ar=
+e off.
+
+Steps to Fix and Install ADB/Fastboot
+
+Foll=
+ow these steps carefully on your Chromebook:
+
+Restart =
+the Linux Container
+:
+
+Exit the Terminal: Type 
+exit
+ or close the window.
+
+Open Settings > Advanced > Develop=
+ers > Linux > Click "Turn Off" (this stops the container).
+
+Wait 10 seconds, then "Turn On" to resta=
+rt it. This resets permissions and clears locks.
+
+Reopen Terminal and log back in (
+stephen@penguin:~$
+ shou=
+ld reappear).
+
+Run the =
+Command Again with Sudo
+:
+
+Type: 
+sudo apt update && sudo apt install android-tools=
+-adb android-tools-fastboot
+
+Enter your Chromebook password (set duri=
+ng Linux setup) when prompted.
+
+If it works, you=E2=80=99ll see package =
+lists updating, followed by ADB/Fastboot installation. Ignore the "WARNING:=
+ apt does not have a stable CLI interface" unless scripting=E2=80=94this is=
+ a standard Debian caution.
+
+Fix Perm=
+issions Manually (If Step 2 Fails)
+:
+
+If the error persists, the directories m=
+ight need ownership correction:
+
+sudo chown -R stephen:stephen /var/lib/apt
+
+sudo chown -R stephen:stephen /var/cache/apt
+
+Then retry the command.
+
+Note: Replace 
+stephen
+ with your actual username (check w=
+ith 
+whoami
+).
+
+Clear Lo=
+cks (Alternative)
+:
+
+If a lock file is the issue, remove it m=
+anually:
+
+sudo rm /var/lib/apt/lists/lock
+
+sudo rm /var/cache/apt/*.bin
+
+Retry the command. This deletes stale lo=
+cks=E2=80=94safe if no other APT process is running.
+
+Verify I=
+nstallation
+:
+
+After success, check: 
+adb --version
+ and 
+fastboot --version
+ should displa=
+y versions (e.g., 1.0.41 for ADB).
+
+If not found, ensure the PATH is updated=
+: 
+export PATH=3D$PATH:/=
+usr/bin
+ (temporary fix; add to 
+~/.bashrc
+ for permane

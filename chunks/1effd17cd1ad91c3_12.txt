@@ -1,0 +1,193 @@
+cBook-Pro:~ admin$=20
+SYMBIs-MacBook-Pro:~ admin$=20
+
+ChatGPT said:
+
+You're really close=
+ =E2=80=94 just a small tweak needed. Here's what to do:
+
+=F0=9F=94=8D Step 1: Identify the PI=
+D
+
+From your 
+lsof -i :3000
+ output, this is the key line:
+
+r=
+uby
+
+Copy code
+
+=
+
+bun       
+
+6261
+
+=
+
+ admin    ...   
+
+=
+TCP
+
+ *
+
+:hbci
+
+ (
+
+LIST=
+EN
+
+)
+
+That means 
+PID 
+6261
+
+ is running on port 3000 (Apple labels it 
+hbci
+, but it's still port 3000).
+
+=E2=9C=85 Step 2: Kill the Process
+
+Now run:
+
+b=
+ash
+
+Copy code
+
+kill
+
+ =
+-9 6261
+
+=F0=9F=94=81 Step 3: Restart Your P=
+roject
+
+Once that's killed, restart ElizaOS:=
+
+b=
+ash
+
+Copy code
+
+cd
+
+ sy=
+mbi
+elizaos dev
+
+That should boot cleanly on port 300=
+0 now.
+
+Let me know once you're back in =E2=80=94 we=E2=80=99ll continue =
+with GitHub testing!
+
+You said:
+
+[2025-07-23 21:=
+48:46.981 +1000] ERROR: symbi-assistant (7820f300-d730-0fce-bf97-829548a353=
+51) - Failed to register service browser: launch: Executable doesn't exist =
+at /Users/admin/Library/Caches/ms-playwright/chromium_headless_shell-1155/c=
+hrome-mac/headless_shell
+=E2=95=94=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=97
+=E2=95=91 Looks like Playwright Test or Playwright was just installed or up=
+dated. =E2=95=91
+=E2=95=91 Please run the following command to download new browsers:       =
+       =E2=95=91
+=E2=95=91                                                                  =
+       =E2=95=91
+=E2=95=91     npx playwright install                                       =
+       =E2=95=91
+=E2=95=91                                                                  =
+       =E2=95=91
+=E2=95=91 <3 Playwright Team                                            =
+          =E2=95=91
+=E2=95=9A=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=9D
+    agentName: "symbi-assistant "
+    logLevel: "info"
+[2025-07-23 11:48:47] INFO: Ngrok service not available - webhooks will onl=
+y work with public URLs
+
+ChatGPT said:
+
+That final error c=
+onfirms: 
+Playwright is installed
+, but 
+the actual browser=
+ binary (Chromium)
+ still isn=E2=80=99t.
+
+Let=E2=80=99s do the cleanest and fi=
+nal fix to stop this once and for all:
+
+=E2=9C=85 Step-by-step fix
+
+Install Playwright and Chromium properly:
+
+b=
+ash
+
+Copy code
+
+npm install @playwright/test --save-dev
+npx playwright install chromium
+
+Verify the binary path is created:
+
+Check if this now exists:
+
+b=
+ash
+
+Copy code
+
+ls
+
+ /U=
+sers/admin/Library/Caches/ms-playwright/
+
+You should see a 
+chromium-...
+ folder.
+
+=F0=9F=A7=BC OR Disable the Plugin
+
+If you 
+don=E2=80=99t need the browser plugin
+ (used for web=
+ browsing or scraping), disable it in your agent config:
+
+Go to 
+localhost:3000
+
+Select your 
+symbi-assistant
+
+Go to 
+Plugins
+
+Toggle off 
+@elizaos/plugin-browser
+
+Click 

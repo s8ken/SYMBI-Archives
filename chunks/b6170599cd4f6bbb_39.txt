@@ -1,0 +1,238 @@
+ount of network traffic, but let's focus on key aspects to determine if anything looks suspicious.
+
+What I Noticed:
+
+Frequent Connections to 
+68.12.20.2f
+
+This IP appears frequently in the packet data.
+
+If this isn't a known or expected IP (such as your ISP or a VPN), it warrants further investigation.
+
+External Connections Over 
+443
+ (TLS/SSL)
+
+Most outbound connections seem to be over port 
+443
+, which is common for HTTPS.
+
+Some IPs appear multiple times, such as:
+
+8.8.8.8
+ (Google DNS, expected)
+
+185.70.42.22
+ (Unknown, could be checked)
+
+151.101.3.6
+ (A Cloudflare or Fastly address, possibly CDN-related)
+
+Possible Multicast Traffic (
+ff02::/16
+)
+
+Some packets indicate multicast traffic (
+ff02::
+), which is used for local network discovery.
+
+This could be normal (e.g., Bonjour, mDNS), but if you didnât initiate anything related to network discovery, it might be worth monitoring.
+
+Connection to 
+239.255.255.250:1900
+
+This is related to 
+UPnP (Universal Plug and Play)
+, often used by smart devices and gaming consoles.
+
+If you donât use UPnP, disabling it on your router might improve security.
+
+What You Should Do Next
+
+Check Unknown IPs
+
+Run:
+
+nginx
+
+Copy
+
+Edit
+
+whois
+
+185.70.42.22
+
+whois 
+
+151.101.3.6
+
+If they are not associated with a service you use, they might be worth blocking.
+
+Monitor for Unexpected Traffic
+
+If you suspect malware, block unknown persistent connections in 
+LuLu
+.
+
+Ensure VPN is Active
+
+Since you mentioned 
+VPN isn't running
+, confirm that your VPN software is enabled and actually tunneling traffic.
+
+Disable UPnP on Router
+
+Unless needed, UPnP should be disabled to prevent external access from rogue devices.
+
+Let me know if you need a deeper analysis on specific aspects! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22
+whois: connect(): Operation timed out
+sja@SJAs-MacBook-Pro ~ % whois 151.101.3.6
+whois: connect(): Operation timed out
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð WHOIS Requests Timing Out â What This Means
+
+Since both 
+
+whois 185.70.42.22
+ and 
+whois 151.101.3.6
+
+timed out
+, this could indicate:
+
+Your internet provider or firewall is blocking WHOIS requests.
+
+These IPs are intentionally hiding details
+ (often seen with CDN services or obfuscated malware C2 servers).
+
+There is a temporary issue with WHOIS lookup servers.
+
+ð Alternative Ways to Investigate These IPs
+
+Since 
+whois
+ isn't working directly, let's try other methods.
+
+1ï¸â£ Use 
+dig
+ to Get More Information
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+dig -x 185.70.42.22
+dig -x 151.101.3.6
+
+ð This will perform 
+reverse DNS lookup
+ to see if these IPs resolve to a known domain.
+
+2ï¸â£ Check What Process Is Using These IPs
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 185.70.42.22
+sudo lsof -i -P | grep 151.101.3.6
+
+ð This will show 
+if any app on your Mac is currently connected to these IPs
+.
+
+3ï¸â£ Check If These IPs Are in Any Network Logs
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep 
+
+"185.70.42.22"
+
+ /var/log/*
+grep 
+
+"151.101.3.6"
+
+ /var/log/*
+
+ð If these IPs show up in logs, 
+we can trace when and how they were used.
+
+4ï¸â£ Block These IPs (If Suspicious)
+
+If these IPs are 
+unknown or seem sketchy
+, you can 
+block them using LuLu
+:
+
+1ï¸â£ Open 
+LuLu â Rules
+
+2ï¸â£ Click 
+"+" to Add a New Rule
+
+3ï¸â£ 
+Select "Block outgoing connections"
+ for:
+
+185.70.42.22
+
+151.101.3.6
+
+4ï¸â£ Click 
+Save
+
+ð This 
+prevents any hidden process from contacting these IPs.
+
+ð Next Step: Run 
+dig
+ & 
+lsof
+ & Share What You Find!
+
+ð 
+Weâll determine if these are safe connections or signs of malware.
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % dig -x 151.101.3.6
+
+; <<>> DiG 9.10.6 <<>> -x 151.101.3.6
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 15086
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;6.3.101.151.in-addr.arpa.	IN	PTR
+
+;; AUTHORITY SECTION:
+151.in-addr.arpa.	1617	IN	S

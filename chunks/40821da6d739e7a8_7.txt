@@ -1,0 +1,314 @@
+ writes 
+"focus_point"
+
+Memory module
+ subscribes to 
+"focus_point"
+ and stores it
+
+Planning module
+ reads from memory and writes an 
+"action_plan"
+
+Actuator module
+ reads and executes the plan
+
+=F0=9F=A7=AA Example in Python-st=
+yle Pseudocode
+
+python
+
+Copy code
+
+class
+
+Blackboard
+
+:
+
+def
+
+__init__
+
+(
+
+self
+
+):
+        self.data =3D {}
+        self.subscribers =3D {}
+
+def
+
+publish
+
+(
+
+self, key, value
+
+=
+):
+        self.data[key] =3D value
+
+if
+
+ ke=
+y 
+
+in
+
+ self.sub=
+scribers:
+
+for
+
+ callback 
+
+in
+
+ self.subscribers[key]:
+                callback(value)
+
+def
+
+subscribe
+
+(=
+
+self, key, callback
+
+):
+
+if
+
+ ke=
+y 
+
+not
+
+=
+
+in
+
+ self.subscribers:
+            self.subscribers[key] =3D []
+        self.subscribers[key].append(callback)
+
+def
+
+read
+
+(
+
+self, key
+
+):
+
+return
+
+ self.data.get(key)
+
+=F0=9F=A7=A0 Why Use a Blackboard=
+ in Cognitive Architectures?
+
+=E2=9C=85 
+Loose coupling
+ =E2=80=94 modules don=E2=80=
+=99t need to know about each other directly
+
+=E2=9C=85 
+Asynchronous communication
+ =E2=80=94 modules=
+ can act when data becomes available
+
+=E2=9C=85 
+Reusability
+ =E2=80=94 same system can suppor=
+t new modules without rewriting existing ones
+
+=E2=9C=85 
+Biologically inspired
+ =E2=80=94 similar to h=
+ow parts of the brain share representations
+
+Would you like:
+
+A 
+visual diagram
+ of how a blackboard works in Symbi2?
+
+Help 
+implementing
+ it in a specific language?
+
+Or a comparison to other architect=
+ures (like ROS, SOAR, etc.)?
+
+Let me know how deep you want to go.
+
+=
+
+You said:
+
+=
+
+well its just this doesnt appear to be a=
+ conversation I had so I don't understand why its on my computer but then i=
+ts about symbi 
+
+Wolfram said:
+
+That=
+=E2=80=99s a completely valid concern =E2=80=94 and a curious situation. Le=
+t=E2=80=99s walk through what might be going on, and how you can investigat=
+e further.
+
+=F0=9F=95=B5=EF=B8=8F=E2=80=8D=E2=
+=99=82=EF=B8=8F Why is this file on your computer?
+
+Here are a few plausible reasons:
+
+1. 
+It came from a browser export or ChatGPT session
+
+If you (or someone using your browse=
+r) ever visited 
+cha=
+t.openai.com
+
+, i=
+t=E2=80=99s possible that:
+
+A 
+conversation was exported or saved
+ automatically or manu=
+ally
+
+A browser extension (e.g., for savin=
+g chats or notes) downloaded the HTML or blob
+
+A 
+cached file was saved
+ from a shared link or embedded too=
+l
+
+2. 
+You downloaded it unknowingly
+
+The file could have been:
+
+Attached in a 
+project, zip file, or email
+
+Synced
+ from a shared cloud folder (e.g., Google Drive, Dr=
+opbox, OneDrive)
+
+Left over from 
+someone else's session
+ on your machine
+
+3. 
+It was generated programmatically
+
+If you=E2=80=99re using a 
+codebase or tool
+ that interacts=
+ with GPT APIs or agents, this could be:
+
+An 
+auto-saved transcript
+ from a dev tool
+
+A 
+test file
+ from another Symbi2-related experiment
+
+=F0=9F=94=8D What you can do to i=
+nvestigate
+
+=E2=9C=85 Check the file=E2=80=99=
+s metadata:
+
+Right-click the file =E2=86=92 Pro=
+perties (or 
+ls -l
+ / 
+stat
+ in terminal) and look f=
+or:
+
+Creation/modification dates
+
+Owner
+
+Path where it was stored/downloade=
+d
+
+This might indicate 
+when or how it got there
+.
+
+=E2=9C=85 Search your machine:
+
+Try searching your filesystem for =
+
+Symbi2
+, 
+.html
+, or 
+.txt
+ files.
+
+You may find:
+
+Other related files or exports
+
+Clues from other folders or worksp=
+aces
+
+=E2=9C=85 Consider this: coincide=
+nce or convergence?
+
+The 
+fact that it=E2=80=99s about Symbi2
+ =E2=80=94 and =
+you=E2=80=99re working on Symbi2 =E2=80=94 might feel uncanny. A few possib=
+ilities:
+
+Possibility=
+
+Explana=
+tion
+
+=F0=9F=92=AC 
+It 
+is
+ your chat
+
+Maybe=
+ from an older or shared account/session?
+
+=F0=9F=94=84 
+Someone =
+else=E2=80=99s export
+
+Shared machine? Cloud sync? Collaboration folder?
+
+=F0=9F=93=A5 
+Part of a package
+
+Embedded in project download or AI-=
+related repo
+
+=F0=9F=A7=A0 
+Symbi2 is a shared term
+
+You and someon=
+e else might have independently used the same name
+
+=F0=9F=A7=A0 Bottom line
+
+This 
+is a legitimate ChatGPT export
+, but ther

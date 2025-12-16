@@ -1,0 +1,297 @@
+present
+
+API Logging (address)
+
+=E2=9A=A0=EF=B8=8F Yes
+
+ask.symbi.io
+ collects wallet addresses
+
+Obfuscation
+
+=E2=9D=8C None
+
+Crypto Transaction Logic
+
+=E2=9D=8C No dire=
+ct send/receive calls
+
+=F0=9F=A7=AD Next Actions
+
+Investigate 
+ask.sym=
+bi.io
+
+Use WHOIS / DNS lookup to identify=
+ ownership
+
+Trace network requests via dev too=
+ls (browser)
+
+Check if wallet addresses appear in other files
+
+They may be embedded in HTML or us=
+ed by other scripts
+
+Monitor the response from 
+ask.symbi.io/api/ask
+
+Use proxy tools (e.g., BurpSuite o=
+r Fiddler) to inspect the returned payload
+
+Link to GitHub account or wallet
+
+If you=E2=80=99ve already traced a=
+ wallet or GitHub profile to this behavior, send that info and I=E2=80=99ll=
+ map it further.
+
+Would you like me to:
+
+Inspect more files?
+
+Generate a full security report of=
+ this 
+evmAsk.js
+ behavior=
+?
+
+Run mock POSTs to the API (if allo=
+wed) to see what it does with the wallet input?
+
+Just say the word.
+
+=
+
+=
+
+You sai=
+d:
+
+btc=
+.js
+
+JavaScript
+=
+
+Symbi said:
+
+Great =E2=80=94 you'v=
+e uploaded 
+btc.js
+. Let=E2=80=
+=99s analyze this file for:
+
+Embedded 
+Bitcoin addresses
+
+Any wallet address substitution tric=
+ks
+
+Clipboard/DOM tampering
+
+Suspicious external connections or b=
+ehavior
+
+=F0=9F=94=8D Analysis of 
+btc.js
+
+=E2=9C=85 
+Purpose
+
+This script appears focused on handl=
+ing 
+Bitcoin addresses
+,=
+ likely intended to:
+
+Display or manipulate BTC wallet dat=
+a in a web app
+
+Possibly fetch or submit data relate=
+d to those addresses
+
+=F0=9F=A7=A8 1. 
+Bitcoin Address Detection
+
+Yes =E2=80=94 this file 
+does contain a hardcoded Bitcoin address
+:
+
+j=
+s
+
+Copy code
+
+const
+
+ bt=
+cAddress =3D 
+
+"bc1q23xku...9v5lcsz"=
+
+;
+
+=F0=9F=9B=91 
+Red Flag
+: The presence of a hardcoded BTC add=
+ress=E2=80=94especially in a public-facing repo=E2=80=94is a common marker =
+of crypto scam scripts, especially if it's the only address and isn't user-=
+configurable.
+
+=F0=9F=A7=AA 2. 
+Behavioral Patterns
+
+=E2=9D=8C Clipboard Hijacking
+
+There is 
+no code
+ modifying the clipboard (
+navigator.clipboard
+, 
+oncopy
+, etc.).
+
+=E2=9D=8C Auto-Redirects
+
+No 
+window.location
+ or 
+setTimeout
+ redirect logic.
+
+=E2=9C=85 DOM Injection
+
+If paired with other frontend code=
+, this file might be injecting 
+=
+btcAddress
+ dynamically. Example:
+
+js
+
+Copy code
+
+document
+
+.
+
+getElementByI=
+d
+
+(
+
+'wallet'
+
+).
+
+innerText
+
+ =3D btcAddress;
+
+If the HTML has an element like 
+<span id=3D"wallet"></sp=
+an>
+, this script would insert the BTC address there.
+
+If used deceptively, this could mi=
+slead users into thinking it=E2=80=99s their address or donation link=E2=80=
+=94when in fact, it=E2=80=99s not.
+
+=F0=9F=8C=90 3. 
+Network Activity
+
+This file doesn=E2=80=99t include =
+fetch/XHR logic, so no outbound network behavior is embedded in this specif=
+ic script.
+
+=F0=9F=9A=A8 Summary of Risks
+
+Behavior
+
+Detected
+
+Risk
+=
+
+Hardcoded BTC Address
+
+=E2=9C=85 Yes
+
+=E2=9A=A0=EF=B8=8F Medium =E2=80=93 may be=
+ used for fraud
+
+Clipboard Injection
+
+=E2=9D=
+=8C No
+
+Redirects / Obfuscation
+
+=E2=9D=8C No
+
+DOM Manipulation
+
+=E2=9A=A0=EF=B8=8F Possible
+
+Depends how 
+btcAddress
+ is used
+
+API Logging
+
+=E2=9D=8C No
+
+=F0=9F=A7=AD Recommended Next Ste=
+ps
+
+Search where 
+btc.js=
+
+ is included
+
+If this is loaded in an HTML file with 
+script src=3D"btc.js"
+, check how 
+btcAddress
+ is used.
+
+Check GitHub commit history
+
+Who introduced the hardcoded wallet, and when?
+
+Run live inspection in browser dev tools
+
+See what element(s) 
+btc.js
+ manipulates at runtime.
+
+Verify ownership of the wallet
+
+You mentioned already identifying a wallet=E2=80=94match it against this on=
+e.
+
+If you send me the HTML or fronten=
+d JS that includes this file, I can check how it actually renders in the pa=
+ge and whether it=E2=80=99s being misused for impersonation or fraud.
+
+Would you like me to keep tracing this address through blockcha=
+in explorers or related commits?
+
+You sai=
+d:
+
+js
+
+JavaScript
+
+=
+
+=
+
+Sym=
+bi said:
+
+Thanks =E2=80=94 you've uplo=
+aded another file simply named 
+js
+. Let'

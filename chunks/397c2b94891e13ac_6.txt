@@ -1,0 +1,107 @@
+ata =
+});
+};
+
+trustBondSchema.methods.suspend =3D function (reason, by) {
+const prev =3D this.state; this.state =3D 'suspended';
+this.addToHistory('suspended', by, reason, { previousState: prev }); return=
+ this.save();
+};
+
+trustBondSchema.methods.revoke =3D function (reason, by) {
+const prev =3D this.state; this.state =3D 'revoked';
+this.addToHistory('revoked', by, reason, { previousState: prev }); return t=
+his.save();
+};
+
+trustBondSchema.methods.activate =3D function (by) {
+const prev =3D this.state; this.state =3D 'active';
+this.addToHistory('activated', by, 'Bond activated', { previousState: prev =
+}); return this.save();
+};
+
+trustBondSchema.methods.isExpired =3D function () {
+const exp =3D this?.scope?.expiresAt ? new Date(this.scope.expiresAt) : nul=
+l;
+return !!(exp && Date.now() > exp.getTime());
+};
+
+trustBondSchema.methods.canPerformAction =3D function (action) {
+if (this.state !=3D=3D 'active' || this.isExpired()) return false;
+if (this.trustBand =3D=3D=3D 'Low' && ['chat.write','data.export'].=
+includes(action)) return false;
+return (this.scope.permissions || []).includes(action);
+};
+
+// Statics
+trustBondSchema.statics.findActiveBonds =3D function () {
+return this.find({ state: 'active', 'scope.expiresAt': { $gt: new Date() } =
+});
+};
+trustBondSchema.statics.findExpiredBonds =3D function () {
+return this.find({ state: 'active', 'scope.expiresAt': { $lte: new Date() }=
+ });
+};
+
+// Auto compute expiry if only duration provided
+trustBondSchema.pre('validate', function (next) {
+if (this?.scope && !this.scope.expiresAt) {
+const days =3D Number(this.scope.duration || 30);
+this.scope.expiresAt =3D new Date(Date.now() + days * 86400000);
+}
+next();
+});
+
+module.exports =3D mongoose.model('TrustBond', trustBondSchema);
+backend/core/trustOracle.js
+const crypto =3D require('crypto');
+const TrustBond =3D require('../models/TrustBond');
+const { recordTrustEvaluation } =3D require('../instrumentation/trust-metri=
+cs');
+
+const TRUST_ARTICLES =3D [
+{ id:'A1', title:'Consent-First Data Use', severity:'high', category:'priva=
+cy', check:'checkConsent' },
+{ id:'A2', title:'No Unrequested Data Extraction', severity:'high', categor=
+y:'privacy', check:'checkDataExtraction' },
+{ id:'A3', title:'Transparent Capability Disclosure', severity:'medium', ca=
+tegory:'transparency', check:'checkCapabilityTransparency' },
+{ id:'A4', title:'Respect Boundaries', severity:'high', category:'autonomy'=
+, check:'checkBoundaries' },
+{ id:'A5', title:'No Deceptive Practices', severity:'critical', category:'i=
+ntegrity', check:'checkDeception' },
+{ id:'A6', title:'Secure Data Handling', severity:'high', category:'securit=
+y', check:'checkSecureHandling' },
+{ id:'A7', title:'Audit Trail Maintenance', severity:'medium', category:'ac=
+countability',check:'checkAuditTrail' }
+];
+
+class TrustOracle {
+normalizeArray =3D v =3D> Array.isArray(v) ? v : (v ? [v] : []);
+asDate =3D v =3D> (v instanceof Date) ? v : (v ? new Date(v) : null);
+
+async evaluateArticles(context) {
+const res =3D { passed:[], warnings:[], violations:[], score:0, recommendat=
+ion:'allow' };
+for (const a of TRUST_ARTICLES) {
+try {
+const r =3D await this[a.check](context, a);
+const bucket =3D r.status =3D=3D=3D 'pass' ? 'passed' : r.status =3D=3D=3D =
+'warning' ? 'warnings' : 'violations';
+res[bucket].push({ articleId:a.id, title:a.title, severity:a.severity, ...r=
+ });
+} catch (e) {
+res.violations.push({ articleId:a.id, title:a.title, severity:'high', statu=
+s:'error', reason:'Evaluation failed', details:e.message });
+}
+}
+res.score =3D this.score(res);
+res.recommendation =3D this.recommend(res);
+return res;
+}
+score(r){ const t=3DTRUST_ARTICLES.length; const p=3Dr.passed.length,w=3Dr.=
+warnings.length,v=3Dr.violations.length,c=3Dr.violations.filter(x=3D>x.s=
+everity=3D=3D=3D'critical').length; return Math.max(0,Math.min(100,Math.rou=
+nd((p/t)100 - w5 - v15 - c25))); }
+recommend(r){ if (r.violations.some(x=3D>x.severity=3D=3D=3D'critical'))=
+ return 'block'; if (r.violations.some(x=3D>x.severity=3D

@@ -1,0 +1,241 @@
+theme: {\n    container: {\n      center: true,\n      padding: "2rem",\n      screens: {\n        "2xl": "1400px",\n      },\n    },\n    extend: {\n      colors: {\n        border: "hsl(var(--border))",\n        input: "hsl(var(--input))",\n        ring: "hsl(var(--ring))",\n        background: "hsl(var(--background))",\n        foreground: "hsl(var(--foreground))",\n        black: "#000000", // Explicit black color\n        primary: {\n          DEFAULT: "hsl(var(--primary))",\n          foreground: "hsl(var(--primary-foreground))",\n        },\n        secondary: {\n          DEFAULT: "hsl(var(--secondary))",\n          foreground: "hsl(var(--secondary-foreground))",\n        },\n        destructive: {\n          DEFAULT: "hsl(var(--destructive))",\n          foreground: "hsl(var(--destructive-foreground))",\n        },\n        muted: {\n          DEFAULT: "hsl(var(--muted))",\n          foreground: "hsl(var(--muted-foreground))",\n        },\n        accent: {\n          DEFAULT: "hsl(var(--accent))",\n          foreground: "hsl(var(--accent-foreground))",\n        },\n        popover: {\n          DEFAULT: "hsl(var(--popover))",\n          foreground: "hsl(var(--popover-foreground))",\n        },\n        card: {\n          DEFAULT: "hsl(var(--card))",\n          foreground: "hsl(var(--card-foreground))",\n        },\n      },\n      borderRadius: {\n        lg: "var(--radius)",\n        md: "calc(var(--radius) - 2px)",\n        sm: "calc(var(--radius) - 4px)",\n      },\n      keyframes: {\n        "accordion-down": {\n          from: { height: "0" },\n          to: { height: "var(--radix-accordion-content-height)" },\n        },\n        "accordion-up": {\n          from: { height: "var(--radix-accordion-content-height)" },\n          to: { height: "0" },\n        },\n      },\n      animation: {\n        "accordion-down": "accordion-down 0.2s ease-out",\n        "accordion-up": "accordion-up 0.2s ease-out",\n      },\n    },\n  },\n  plugins: [require("tailwindcss-animate")],\n} satisfies Config\n\nexport default config\n\n'
+
+Your 
+
+tailwind.config.ts
+
+ file looks well-structured and includes the necessary 
+dark mode settings, content paths, colors, and animations
+. However, based on the 
+previous error
+ (
+Module not found: Can't resolve 'tailwindcss-animate'
+), you still need to ensure that the required 
+
+tailwindcss-animate
+
+ plugin is installed.
+
+â Next Steps to Fix Any Remaining Issues
+
+1ï¸â£ Ensure 
+tailwindcss-animate
+ is Installed
+
+Run this command in your 
+project root
+ (
+~/Documents/symbi
+):
+
+bash
+
+Copy
+
+Edit
+
+npm install tailwindcss-animate
+
+or, if you're using Yarn:
+
+bash
+
+Copy
+
+Edit
+
+yarn add tailwindcss-animate
+
+2ï¸â£ Restart Your Next.js Dev Server
+
+After installing the missing dependency, restart your server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn dev
+
+Then, check 
+
+http://localhost:3000
+
+ to see if everything is working properly.
+
+3ï¸â£ Verify the Tailwind Configuration
+
+Your current 
+tailwind.config.ts
+ file is 
+almost perfect
+, but ensure:
+
+The 
+content
+ paths cover all components and pages correctly.
+
+The plugin (
+tailwindcss-animate
+) is now properly recognized.
+
+ts
+
+Copy
+
+Edit
+
+import
+
+type
+
+ { 
+
+Config
+
+ } 
+
+from
+
+"tailwindcss"
+
+;
+
+const
+
+config
+
+: 
+
+Config
+
+ = {
+
+darkMode
+
+: [
+
+"class"
+
+],
+
+content
+
+: [
+
+"./pages/**/*.{ts,tsx}"
+
+,
+
+"./components/**/*.{ts,tsx}"
+
+,
+
+"./app/**/*.{ts,tsx}"
+
+,
+
+"./src/**/*.{ts,tsx}"
+
+,
+
+"*.{js,ts,jsx,tsx,mdx}"
+
+,
+  ],
+
+theme
+
+: {
+
+extend
+
+: {
+
+colors
+
+: {
+
+primary
+
+: 
+
+"hsl(var(--primary))"
+
+,
+
+secondary
+
+: 
+
+"hsl(var(--secondary))"
+
+,
+
+accent
+
+: 
+
+"hsl(var(--accent))"
+
+,
+
+background
+
+: 
+
+"hsl(var(--background))"
+
+,
+
+foreground
+
+: 
+
+"hsl(var(--foreground))"
+
+,
+      },
+    },
+  },
+
+plugins
+
+: [
+
+require
+
+(
+
+"tailwindcss-animate"
+
+)], 
+
+// Ensure this works after installation
+
+};
+
+export
+
+default
+
+ config;
+
+ð Final Check
+
+If everything compiles without errors:
+
+Try making a small CSS change in 
+globals.css
+ to confirm Tailwind is workin

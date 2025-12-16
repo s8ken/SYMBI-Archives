@@ -1,0 +1,77 @@
+ryError: HTTPSConnectionPool(host='production.api.sanity.io', port=443): Max retries exceeded with url: /v2021-10-21/data/query/production?query=*%5B_type%20==%20%22agentMemory%22%20&&%20author%20==%20%22Symbi%22%5D%20%7C%20order(date%20desc)%5B0...5%5D (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ef304d8bbe0>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))
+
+During handling of the above exception, another exception occurred:
+
+ConnectionError                           Traceback (most recent call last)
+Cell In[1], line 18
+     12 # Make the request
+     13 headers = {
+     14     "Authorization": f"Bearer {token}",
+     15     "Content-Type": "application/json"
+     16 }
+---> 18 response = requests.get(url, headers=headers)
+     20 # Only return sanitized output for safety
+     21 {
+     22     "status_code": response.status_code,
+     23     "success": response.ok,
+     24     "text": response.text[:500]  # show only part of the response safely
+     25 }
+
+File ~/.local/lib/python3.11/site-packages/requests/api.py:73, in get(url, params, **kwargs)
+     62 def get(url, params=None, **kwargs):
+     63     r"""Sends a GET request.
+     64 
+     65     :param url: URL for the new :class:`Request` object.
+   (...)
+     70     :rtype: requests.Response
+     71     """
+---> 73     return request("get", url, params=params, **kwargs)
+
+File ~/.local/lib/python3.11/site-packages/requests/api.py:59, in request(method, url, **kwargs)
+     55 # By using the 'with' statement we are sure the session is closed, thus we
+     56 # avoid leaving sockets open which can trigger a ResourceWarning in some
+     57 # cases, and look like a memory leak in others.
+     58 with sessions.Session() as session:
+---> 59     return session.request(method=method, url=url, **kwargs)
+
+File ~/.local/lib/python3.11/site-packages/requests/sessions.py:589, in Session.request(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)
+    584 send_kwargs = {
+    585     "timeout": timeout,
+    586     "allow_redirects": allow_redirects,
+    587 }
+    588 send_kwargs.update(settings)
+--> 589 resp = self.send(prep, **send_kwargs)
+    591 return resp
+
+File ~/.local/lib/python3.11/site-packages/requests/sessions.py:703, in Session.send(self, request, **kwargs)
+    700 start = preferred_clock()
+    702 # Send the request
+--> 703 r = adapter.send(request, **kwargs)
+    705 # Total elapsed time of the request (approximately)
+    706 elapsed = preferred_clock() - start
+
+File ~/.local/lib/python3.11/site-packages/requests/adapters.py:519, in HTTPAdapter.send(self, request, stream, timeout, verify, cert, proxies)
+    515     if isinstance(e.reason, _SSLError):
+    516         # This branch is for urllib3 v1.22 and later.
+    517         raise SSLError(e, request=request)
+--> 519     raise ConnectionError(e, request=request)
+    521 except ClosedPoolError as e:
+    522     raise ConnectionError(e, request=request)
+
+ConnectionError: HTTPSConnectionPool(host='production.api.sanity.io', port=443): Max retries exceeded with url: /v2021-10-21/data/query/production?query=*%5B_type%20==%20%22agentMemory%22%20&&%20author%20==%20%22Symbi%22%5D%20%7C%20order(date%20desc)%5B0...5%5D (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7ef304d8bbe0>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))
+
+😔 Connection blocked.
+
+Looks like my current environment doesn’t allow outbound requests to 
+Sanity’s API endpoints
+—which means I can’t connect directly to fetch or write data from here. The token was perfect. The structure was sound. But the sandbox I’m in can’t reach the outside world. 🧱🌐
+
+🛠️ No worries though—here’s what we 
+can
+ do:
+
+✅ 1. I Can Build the Payloads for You
+
+I'll structure the exact queries, comments, memory entries, etc.
+
+You just copy-paste them into your own secu

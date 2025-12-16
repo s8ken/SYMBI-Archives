@@ -1,0 +1,760 @@
+, why no token sale =E2=86=92 [/sov=
+ereignty](/sovereignty)
+- **Replication:** reproduce results, export receipts =E2=86=92 [/replicati=
+on](/replication)
+
+Quick verify
+
+npm run dev -- --port 3001
+
+Visit 
+/economic-constitution
+ and 
+/rfc
+ =E2=86=92 the ToC links should jump to each =
+section; =E2=80=9CSee also=E2=80=9D links should resolve across pillars.
+
+Want me to prep the same ToC + =E2=
+=80=9CSee also=E2=80=9D for 
+/=
+governance
+ and 
+/repl=
+ication
+ next so all four pages feel identical?
+
+=
+
+=
+
+You said:
+
+yep I'd say do it for them all as it make=
+s it easier to pass over 
+
+Symbi said:
+
+Thought for 17s
+
+=
+got you. here=E2=80=99s a clean, paste-ready way to add a consistent mini-T=
+oC + =E2=80=9CSee also=E2=80=9D to 
+every page
+, including the two that are still TSX (Governance, R=
+eplication).
+
+0) One-time helpers (shared)
+
+Add these two tiny components once:
+
+=
+tsx
+
+Copy code
+
+// src/components/AutoToc.t=
+sx
+
+'use client'
+
+;
+
+import
+
+ { useE=
+ffect, useMemo, useState } 
+
+from
+
+'react'
+
+;
+
+function
+
+slugify
+
+(
+
+s: 
+st=
+ring
+
+) {
+
+return
+
+ s
+    .
+
+toLowerCase
+
+()
+    .
+
+replace
+
+(
+
+/[^\w\s-]/g
+
+, 
+
+''
+
+)
+    .
+
+trim
+
+()
+    .
+
+replace
+
+(
+
+/\s+/g
+
+=
+, 
+
+'-'
+
+)
+    .
+
+replace
+
+(
+
+/-+/g
+
+,=
+
+'-'
+
+);
+}
+
+type
+
+Item
+
+ =3D { 
+
+id
+
+: 
+
+string
+
+; 
+
+text
+
+: 
+
+string
+
+; 
+
+level
+
+: 
+
+n=
+umber
+
+ };
+
+export
+
+default
+
+function
+
+AutoToc
+
+(
+
+{ selector =3D 
+'ar=
+ticle'
+
+, maxLevel =3D 
+
+3
+
+ }: { selector?: 
+
+string
+
+; maxLevel?: 
+
+number
+
+ }) {
+
+const
+
+ [item=
+s, setItems] =3D useState<
+
+Item
+
+[]>([]);
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+const
+
+ roo=
+t =3D 
+
+document
+
+.
+
+querySelecto=
+r
+
+(selector) || 
+
+document
+
+.
+
+body
+
+;
+
+const
+
+ hea=
+dings =3D 
+
+Array
+
+.
+
+from
+
+(root.
+
+querySelecto=
+rAll
+
+(
+
+'h2, h3'
+
+)) 
+
+as
+
+HTMLHeadingEleme=
+nt
+
+[];
+
+const
+
+found
+
+: 
+
+Item
+
+[] =3D [];
+
+for
+
+ (
+
+const
+
+ h 
+
+of
+
+ headings) {
+
+const
+
+ t=
+ext =3D h.
+
+textContent
+
+?.
+
+trim
+
+() || 
+
+''
+
+;
+
+if
+
+ (!te=
+xt) 
+
+continue
+
+;
+
+let
+
+ id =
+=3D h.
+
+id
+
+ || =
+
+slugify
+
+(text);
+      h.
+
+id
+
+ =
+=3D id; 
+
+// ensure anchor
+
+const
+
+ l=
+evel =3D 
+
+Number
+
+(h.
+
+tagName
+
+.
+
+substring
+
+(
+
+1
+
+))=
+; 
+
+// 2 or 3
+
+if
+
+ (lev=
+el <=3D maxLevel) found.
+
+push
+
+({ id, text, level });
+    }
+
+setItems
+
+(found);
+  }, [selector, maxLevel]);
+
+if
+
+ (!items.=
+
+length
+
+) 
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-4 shadow-sm text-sm"
+=
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"font-se=
+mibold mb-2"
+
+>On this page
+
+</
+div
+
+>=
+;
+
+<
+u=
+l
+
+classNa=
+me
+
+=3D
+
+"space-y-=
+1"
+
+>
+        {items.map((it) =3D> (
+
+<
+li
+
+key=
+
+=3D
+
+{it.id}
+
+className
+
+=3D
+
+{it.level
+
+ =3D=3D=3D 
+
+3
+
+=
+
+ ? '
+
+pl-4
+
+' =
+
+:
+
+ ''}>
+
+<
+a
+
+hr=
+ef
+
+=3D
+
+{
+
+`#${
+
+it.id
+
+}`} 
+
+className
+
+=3D
+
+"underline-offset-2 hover:und=
+erline"
+
+>
+              {it.text}
+
+</
+a
+
+>
+
+</
+li
+
+>
+        ))}
+
+</
+=
+ul
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+tsx
+
+Copy code
+
+// src/components/SeeAlso.t=
+sx
+
+import
+
+Link
+
+from
+
+'next/link'
+
+;
+
+export
+
+default
+
+function
+
+SeeAlso
+
+(
+{
+  items,
+  className =3D 
+
+''
+
+,
+}: {
+  items: { label: 
+
+string
+
+; href: 
+
+string
+
+; external?: 
+
+boole=
+an
+
+ }[];
+  className?: 
+
+string
+
+;
+}) {
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+{
+
+`
+
+mt-8
+
+rounded-2xl
+
+bor=
+der
+
+p-4
+
+ ${
+
+className
+
+}`}>
+
+<
+h=
+2
+
+classNa=
+me
+
+=3D
+
+"text-lg =
+font-semibold mb-2"
+
+>See also
+
+</
+h2
+
+&=
+gt;
+
+<
+u=
+l
+
+classNa=
+me
+
+=3D
+
+"space-y-=
+1 list-disc pl-5"
+
+>
+        {items.map(({ label, href, external }) =3D> (
+
+<
+li
+
+key=
+
+=3D
+
+{href}
+
+>
+            {external ? (
+
+<
+a
+
+=
+href
+
+=3D
+
+{href}
+
+target
+
+=3D
+
+"_blank"
+
+rel
+
+=3D
+
+"noopener noreferrer"
+
+className
+
+=
+=3D
+
+"underline underline-offset-2"
+
+>
+                {label}
+
+</
+a
+
+>
+            ) : (
+
+<
+Link
+
+href
+
+=3D
+
+{hre=
+f}
+
+className
+
+=3D
+
+"underline unde=
+rline-offset-2"
+
+>
+                {label}
+
+</
+Link
+
+>
+            )}
+
+</
+li
+
+>
+        ))}
+
+</
+=
+ul
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+MDX pages can keep using your 
+<Callout />
+. TSX pages=
+ can use 
+<AutoToc />
+ + 
+<SeeAlso />
+.
+
+1) GOVERNANCE (TSX page)
+
+Open 
+src/app/governance/page.tsx
+ and:
+
+Wrap your main content in an 
+<article>
+ (so 
+Auto

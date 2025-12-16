@@ -1,0 +1,285 @@
+ule: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 02:14:13.842 java[12893:68604] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ 
+libtsk_jni
+ Still Not Found â Letâs Force Java to Load It! ð¥
+
+Even though we 
+linked
+
+libtsk_jni.dylib
+, 
+Autopsy still isnât recognizing it.
+ Let's 
+manually set the library path inside Java itself.
+
+â Step 1: Verify Java Can See the Library
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+
+ð 
+Expected output:
+
+swift
+
+Copy
+
+Edit
+
+lrwxr
+
+-
+
+xr
+
+-
+
+x  
+
+1
+
+ root  wheel  
+
+50
+
+Mar
+
+18
+
+02
+
+:
+
+14
+
+/usr/
+
+local
+
+/lib/
+
+libtsk_jni.dylib -> 
+
+/opt/
+
+homebrew
+
+/Cellar/
+
+sleuthkit
+
+/4.13.0/
+
+lib
+
+/
+
+libtsk_jni.dylib
+
+ð 
+If the file is missing, retry Step 2 below.
+
+â Step 2: Try Copying Instead of Linking
+
+Instead of linking, 
+copy the actual library
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+
+ð 
+This ensures itâs physically present where Autopsy expects it.
+
+â Step 3: Force Java to Load the Library
+
+Now, explicitly 
+tell Java where to load the library
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ LD_LIBRARY_PATH=/usr/local/lib:
+
+$LD_LIBRARY_PATH
+
+echo
+
+'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð 
+This makes Java always look in 
+/usr/local/lib/
+ first.
+
+â Step 4: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+ð What If It Still Fails?
+
+If 
+libtsk_jni
+
+STILL
+ isn't found, check what Java sees:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+ð 
+Send me the output!
+ That will tell us where Java is looking.
+
+ð 
+Try these steps and let me know if Autopsy finally works! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % lrwxr-xr-x  1 root  wheel  50 Mar 18 02:14 /usr/local/lib/libtsk_jni.dylib -> /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+
+zsh: permission denied: /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % sudo cp /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+
+cp: /usr/local/lib/libtsk_jni.dylib and /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib are identical (not copied).
+sja@SJAs-MacBook-Pro bin % export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 02:15:29.452 java[13023:69753] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ 
+libtsk_jni
+ Still Not Loading â Let's Diagnose the Java Path ð¥
+
+Weâve 
+correctly linked
+
+libtsk_jni.dylib
+, but 
+Java still isnât recognizing it
+. Letâs 
+confirm where Java is looking for libraries
+.
+
+â Step 1: Check Java's Library Path
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+ð 
+This will tell us where Java is looking for 
+libtsk_jni.dylib
+.
+
+ð¹ If 
+/usr/local/lib
+ is 
+not
+ in the list, we need to manually add it.
+
+â Step 2: Force Java to Load 
+libtsk_jni
+
+Now, 
+manually set the library path
+ for Java:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 3: Run Autopsy Again
+
+sh
+

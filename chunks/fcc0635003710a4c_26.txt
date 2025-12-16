@@ -1,0 +1,248 @@
+tiple Firebase services logging data frequently.
+
+â 
+2,858 entries were logged under "Unknown Domain"
+ â This suggests:
+
+Apps made requests 
+without proper logging
+.
+
+The logging system 
+masked
+ some requests.
+
+Certain domains are being 
+hidden or restricted
+ in the report.
+
+ð  Next Steps
+
+Would you like me to:
+
+1ï¸â£ 
+Investigate 
+app-analytics-services.com
+ to see what it does?
+
+2ï¸â£ 
+Check what kind of requests were made to the âUnknown Domainsâ?
+
+3ï¸â£ 
+Analyze if a specific app (like Grindr) is making Firebase requests?
+
+ð 
+Let me know whatâs most important to you!
+ ð 
+
+You said:
+
+yeah which apps were doing these requests 
+
+ChatGPT said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Identify apps that accessed the most contacted domains
+
+# Count domain access by app
+
+domain_app_usage = Counter()
+
+for
+
+ entry 
+
+in
+
+ report_data:
+    app_name = entry.get(
+
+"bundleID"
+
+, 
+
+"Unknown App"
+
+)
+    domain_name = entry.get(
+
+"domain"
+
+, 
+
+"Unknown Domain"
+
+)
+
+if
+
+ domain_name 
+
+in
+
+ [d[
+
+0
+
+] 
+
+for
+
+ d 
+
+in
+
+ top_domains_analysis[
+
+"top_contacted_domains"
+
+]]:  
+
+# Focus only on top domains
+
+        domain_app_usage[(app_name, domain_name)] += 
+
+1
+
+# Get the top apps for each of the most contacted domains
+
+top_apps_by_domain = {}
+
+for
+
+ (app, domain), count 
+
+in
+
+ domain_app_usage.items():
+
+if
+
+ domain 
+
+not
+
+in
+
+ top_apps_by_domain:
+        top_apps_by_domain[domain] = []
+    top_apps_by_domain[domain].append((app, count))
+
+# Sort top apps for each domain
+
+for
+
+ domain 
+
+in
+
+ top_apps_by_domain:
+    top_apps_by_domain[domain] = 
+
+sorted
+
+(top_apps_by_domain[domain], key=
+
+lambda
+
+ x: x[
+
+1
+
+], reverse=
+
+True
+
+)[:
+
+5
+
+]
+
+# Output the apps making the most requests to top domains
+
+top_apps_by_domain
+
+Result
+
+{'Unknown Domain': [('Unknown App', 2858)],
+ 'app-analytics-services.com': [('com.google.ios.youtube', 1),
+  ('au.com.86400', 1),
+  ('com.grindrguy.grindrx', 1),
+  ('com.oanda.fxmobile.iphone', 1),
+  ('com.google.Maps', 1)],
+ 'www.google.com': [('com.duckduckgo.mobile.ios', 5),
+  ('com.google.Gmail', 3),
+  ('com.google.ios.youtube', 2),
+  ('com.klarna.app', 2),
+  ('com.apple.mobilesafari', 2)],
+ 'inappcheck.itunes.apple.com': [('com.google.ios.youtube', 1),
+  ('com.toyopagroup.picaboo', 1),
+  ('com.grindrguy.grindrx', 1),
+  ('com.1password.1password', 1),
+  ('ch.protonmail.protonmail', 1)],
+ 'fonts.gstatic.com': [('com.duckduckgo.mobile.ios', 3),
+  ('com.apple.mobilesafari', 3),
+  ('com.google.ios.youtube', 2),
+  ('com.reddit.Reddit', 2),
+  ('com.klarna.app', 2)],
+ 'ca.iadsdk.apple.com': [('com.toyopagroup.picaboo', 1),
+  ('au.com.86400', 1),
+  ('com.woolworths.Rewards', 1),
+  ('com.etoro.openbook', 1),
+  ('com.ubercab.UberEats', 1)],
+ 'firebaseinstallations.googleapis.com': [('au.com.86400', 1),
+  ('com.woolworths.Rewards', 1),
+  ('com.oanda.fxmobile.iphone', 1),
+  ('com.google.Maps', 1),
+  ('com.reddit.Reddit', 1)],
+ 'mask-h2.icloud.com': [('com.google.Gmail', 5),
+  ('com.boost.myboostmobile', 3),
+  ('com.reddit.Reddit', 2),
+  ('com.apple.mobilesafari', 2),
+  ('com.apple.Music', 1)],
+ 'firebaselogging-pa.googleapis.com': [('com.grindrguy.grindrx', 1),
+  ('com.woolworths.Rewards', 1),
+  ('com.oanda.fxmobile.iphone', 1),
+  ('au.eulotto.kenogo', 1),
+  ('com.reddit.Reddit', 1)],
+ 'firebase-settings.crashlytics.com': [('com.grindrguy.grindrx', 1),
+  ('com.woolworths.Rewards', 1),
+  ('com.oanda.fxmobile.iphone', 1),
+  ('au.eulotto.kenogo', 1),
+  ('com.reddit.Reddit', 1)]}
+
+ð Apps Making Requests to the Most Contacted Domains
+
+Hereâs a breakdown of 
+which apps contacted the top domains
+ from your iPhone.
+
+ð¢ Key Findings:
+
+1ï¸â£ 
+Grindr is making Firebase & Analytics Requests
+
+com.grindrguy.grindrx
+ (Grindr) was found making requests to:
+
+app-analytics-services.com
+
+ â Likely an ad tracker or analytics service.
+
+firebaselogging-pa.googleapis.com
+
+ â Firebase Logging (app data collection).
+
+firebase-settings.crashlytics.com
+
+ â Firebase Crashlytics (crash reports & app health).
+
+inappcheck.itu

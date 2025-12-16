@@ -1,0 +1,239 @@
+ [('oauth2.googleapis.com', 10),
+  ('accounts.google.com', 8),
+  ('oauthaccountmanager.googleapis.com', 6),
+  ('accounts.google.com.au', 2)]}
+
+🔍 Updated Analysis: Google Firebase & Login with Google Activity
+
+Given your concerns about 
+Google Firebase
+ and 
+"Login with Google" being compromised
+, I focused on those areas.
+
+🛠 Key Findings
+
+1️⃣ 
+Google Firebase was accessed frequently (212 times)
+
+Top Firebase domains contacted:
+
+firebase-settings.crashlytics.com
+ (29 times) → Crash reporting
+
+firebaselogging-pa.googleapis.com
+ (26 times) → App data logging
+
+firebaseinstallations.googleapis.com
+ (22 times) → Firebase device tracking
+
+firebaseremoteconfig.googleapis.com
+ (16 times) → App feature control
+
+oauth2.googleapis.com
+ (10 times) → 
+OAuth authentication (linked to Google Login)
+
+2️⃣ 
+Google Login Services were accessed 26 times
+
+Top Google Login domains contacted:
+
+oauth2.googleapis.com
+ (10 times) → Handles authentication tokens
+
+accounts.google.com
+ (8 times) → Google sign-ins
+
+oauthaccountmanager.googleapis.com
+ (6 times) → Google Account Manager
+
+accounts.google.com.au
+ (2 times) → Google login requests from an Australian domain
+
+🚨 Why This Matters
+
+Firebase is handling a lot of data activity on your device
+—this is expected for apps that use Google services, but 
+if an app is compromised, Firebase could be used to send or receive unauthorized data
+.
+
+Google OAuth (login) activity is present
+—this aligns with your concern about 
+"Login with Google" being compromised
+.
+
+Apps like Grindr and others using Google Login may be affected
+—we need to check which apps actually used these services.
+
+🛠 Next Steps: Identify Apps Using These Services
+
+Now, let’s check 
+which apps
+ accessed Firebase and Google Login.
+
+1️⃣ Extract Apps Accessing Firebase & Google Login
+
+I’ll now:
+
+Match Firebase requests to specific apps
+
+Find which apps triggered Google OAuth requests
+
+🚀 
+Running this analysis now!
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Identify apps that accessed Firebase and Google Login services
+
+# Count Firebase activity by app
+
+firebase_app_usage = Counter()
+
+for
+
+ entry 
+
+in
+
+ firebase_related:
+    app_name = entry.get(
+
+"app"
+
+, 
+
+"Unknown App"
+
+)
+    firebase_app_usage[app_name] += 
+
+1
+
+# Count Google login activity by app
+
+google_login_app_usage = Counter()
+
+for
+
+ entry 
+
+in
+
+ login_with_google_related:
+    app_name = entry.get(
+
+"app"
+
+, 
+
+"Unknown App"
+
+)
+    google_login_app_usage[app_name] += 
+
+1
+
+# Get top apps using Firebase and Google Login
+
+top_firebase_apps = firebase_app_usage.most_common(
+
+5
+
+)
+top_google_login_apps = google_login_app_usage.most_common(
+
+5
+
+)
+
+# Output app usage analysis
+
+app_usage_analysis = {
+
+"top_firebase_apps"
+
+: top_firebase_apps,
+
+"top_google_login_apps"
+
+: top_google_login_apps,
+}
+
+app_usage_analysis
+
+Result
+
+{'top_firebase_apps': [('Unknown App', 212)],
+ 'top_google_login_apps': [('Unknown App', 26)]}
+
+🔍 Issue: Apps Using Firebase & Google Login Are Not Identified
+
+Your 
+iPhone Privacy Report does not list specific app names
+—instead, all Firebase and Google Login requests are grouped under 
+"Unknown App"
+.
+
+🚨 Why This Matters
+
+We 
+know
+ Firebase and Google Login were accessed 
+frequently
+.
+
+But since no apps are named, we 
+can’t confirm if Grindr or others specifically made those requests
+.
+
+This suggests 
+either Apple’s privacy report failed to track app names, or something is hiding them
+.
+
+🛠 Next Steps: Manually Check App Connections on iPhone
+
+Since the Privacy Report didn’t log app names, we need to check manually:
+
+📱 
+On Your iPhone:
+
+Go to:
+ Settings → Privacy & Security → App Privacy Report.
+
+Scroll down to "App Network Activity"
+
+Look for apps frequently accessing:
+
+firebaseinstallations.googleapis.com
+
+oauth2.googleapis.com
+
+accounts.google.com
+
+📌 
+Check if Grindr or other apps appear in the list. Let me know what you find!
+ 🚀 
+
+You said:
+
+give me an example of one which you says doesn't identify the app 
+
+ChatGPT said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+#

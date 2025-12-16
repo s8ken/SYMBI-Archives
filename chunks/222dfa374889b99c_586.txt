@@ -1,0 +1,91 @@
+sing-transition::view-transition-old(s=
+R_mOW_fullscreen-popover-thread) { z-index: 0; transform-origin: center bot=
+tom; animation: sR_mOW_popover-thread-exit .3s var(--spring-fast)both; }
+
+@keyframes sR_mOW_popover-thread-enter {=20
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sR_mOW_popover-thread-exit {=20
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.98); }
+}
+
+@keyframes sPZ93q_add-top-shadow {=20
+  0% { box-shadow: rgba(0, 0, 0, 0) 0px 1px; }
+  0.1%, 100% { box-shadow: 0 1px 0 var(--border-sharp); }
+}
+
+@keyframes sPZ93q_add-bottom-shadow {=20
+  0%, 99.9% { box-shadow: 0 -1px 0 var(--border-sharp); }
+  100% { box-shadow: rgba(0, 0, 0, 0) 0px -1px; }
+}
+
+.sPZ93q_leadingBar { animation: auto linear 0s 1 normal both running sPZ93q=
+_add-top-shadow; box-shadow: rgba(0, 0, 0, 0) 0px 1px; }
+
+.sPZ93q_leadingBarScrollAnimation { animation-timeline: scroll(); }
+
+.sPZ93q_trailingBar { animation: auto linear 0s 1 normal both running sPZ93=
+q_add-bottom-shadow; box-shadow: rgba(0, 0, 0, 0) 0px -1px; }
+
+.sPZ93q_trailingBarScrollAnimation { animation-timeline: scroll(); }
+
+.sPZ93q_primary { background-color: var(--bar-background-color,var(--main-s=
+urface-primary)); }
+
+._56rfYG_screen { display: var(--screen-display,grid); grid-template: "_56r=
+fYG_leading" max-content "_56rfYG_content" 1fr "_56rfYG_trailing" max-conte=
+nt "_56rfYG_keyboard" / minmax(0px, 1fr); }
+
+@supports not (overflow:clip) {
+  ._56rfYG_screen { overflow: var(--screen-overflow,hidden auto); }
+}
+
+@supports (overflow:clip) {
+  ._56rfYG_screen { overflow: var(--screen-overflow,clip auto); }
+}
+
+._56rfYG_screen { scrollbar-gutter: var(--screen-scrollbar-gutter-override,=
+stable); padding-top: calc(var(--screen-anchor-top) + var(--screen-top-offs=
+et,0px)); width: 100%; }
+
+._56rfYG_screen [slot=3D"content"] { padding-inline: var(--screen-content-i=
+nline-padding,var(--screen-inline-padding)); position: var(--screen-content=
+-position,relative); grid-area: _56rfYG_content; }
+
+._56rfYG_screen [slot=3D"leading"] { min-width: var(--screen-leading-slot-m=
+in-width); overflow: var(--screen-leading-slot-overflow); top: var(--screen=
+-leading-slot-top,0); z-index: var(--screen-leading-slot-z-index,20); grid-=
+area: _56rfYG_leading; position: sticky; }
+
+._56rfYG_screen [slot=3D"trailing"] { bottom: var(--keyboard-safe-area-bott=
+om,0); padding-inline: var(--screen-trailing-inline-padding,var(--screen-in=
+line-padding)); z-index: var(--screen-leading-slot-z-index,20); grid-area: =
+_56rfYG_trailing; position: sticky; }
+
+._56rfYG_screen [slot=3D"keyboard"] { height: var(--keyboard-safe-area-bott=
+om,0px); background: rgb(252, 252, 252); grid-area: _56rfYG_keyboard; posit=
+ion: sticky; bottom: 0px; }
+
+._56rfYG_screen:where([screen-anchor=3D"vertical"], [screen-anchor=3D"top"]=
+) { --safe-area-top: calc(env(_56rfYG_titlebar-area-y,0px) + env(safe-area-=
+inset-top,0px)); --screen-anchor-top: var(--safe-area-top); }
+
+._56rfYG_screen:where([screen-anchor=3D"vertical"], [screen-anchor=3D"botto=
+m"]) { --safe-area-bottom: env(safe-area-inset-bottom,0px); --keyboard-safe=
+-area-bottom: max(var(--screen-keyboard-height),env(_56rfYG_keyboard-inset-=
+height,0px)); --screen-anchor-bottom: var(--safe-area-bottom); }
+
+.R6Vx5W_threadRoot { --thread-safe-area-height: calc(100lvh - var(--thread-=
+safe-area-inset-top) - var(--thread-safe-area-inset-bottom)); --thread-safe=
+-area-inset-top: calc(var(--header-height) + env(safe-area-inset-top,0px));=
+ --thread-safe-area-inset-bottom: calc(var(--thread-footer-height,150px) + =
+var(--screen-keyboard-height,0px) + env(safe-area-inset-bottom,0px)); }
+
+.R6Vx5W_threadGutter { --thread-end-gutter-active-height: calc(var(--thread=
+-safe-area-height) - var(--thread-stream-context-height) - 2*var(--thread-t=
+urn-vertical-padding)); --thread-stream-context-height: max(2.75rem + 2*var=
+(--thread-turn-vertical-padding),1/3*var(--thread-safe-area-height)); --thr=
+ead-turn-ver

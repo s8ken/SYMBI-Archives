@@ -1,0 +1,228 @@
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                               46848.
+Pages active:                            422666.
+Pages inactive:                          297809.
+Pages speculative:                       124506.
+Pages throttled:                              0.
+Pages wired down:                        104424.
+Pages purgeable:                          38439.
+"Translation faults":                   2187547.
+Pages copy-on-write:                     129782.
+Pages zero filled:                      1114638.
+Pages reactivated:                         1036.
+Pages purged:                              3872.
+File-backed pages:                       402639.
+Anonymous pages:                         442342.
+Pages stored in compressor:                   0.
+Pages occupied by compressor:                 0.
+Decompressions:                               0.
+Compressions:                                 0.
+Pageins:                                 286384.
+Pageouts:                                     0.
+Swapins:                                      0.
+Swapouts:                                     0.
+hw.memsize: 17179869184
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: Memory Is Not Critically Low, But Root File System Is Still Read-Only
+
+✅ 
+Your Mac has 16GB of RAM (
+hw.memsize: 17179869184
+), and memory usage looks normal.
+
+🚨 
+However, the root filesystem is still read-only, preventing AirPlayXPCHelper from being modified or removed.
+
+🔹 This confirms that 
+SSV (Sealed System Volume) is still enforced, blocking system file changes.
+
+🚨 Next Step: Ensure SSV Is Disabled & Root is Writable
+
+Even if 
+SIP is disabled
+, 
+SSV must also be disabled and the root volume remounted as writable.
+
+1️⃣ Boot into macOS Recovery Mode
+
+Shut down your Mac completely.
+
+Turn it back on and immediately hold 
+Command (⌘) + R
+
+ until you see the 
+macOS Utilities screen.
+
+2️⃣ Open Terminal in Recovery Mode
+
+Click 
+Utilities
+ in the top menu bar.
+
+Select 
+Terminal
+.
+
+3️⃣ Ensure SSV (Sealed System Volume) is Disabled
+
+Run the following command:
+
+sh
+
+Copy
+
+Edit
+
+csrutil authenticated-root 
+
+disable
+
+✅ This ensures that 
+macOS does not enforce the read-only system volume.
+
+4️⃣ Remount Root as Writable
+
+After disabling SSV, 
+remount the system volume as writable:
+
+sh
+
+Copy
+
+Edit
+
+mount -uw /
+
+✅ 
+If this works, your system is now writable.
+
+🚨 
+If it fails again with "Permission Denied," macOS is still enforcing SSV.
+
+5️⃣ Restart & Modify AirPlayXPCHelper
+
+Once the system is writable, restart your Mac normally.
+
+Then, try these commands again:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /usr/libexec/AirPlayXPCHelper
+sudo 
+
+rm
+
+ -rf /usr/libexec/AirPlayXPCHelper
+
+✅ 
+If successful, AirPlayXPCHelper will be permanently removed.
+
+6️⃣ Reboot & Verify AirPlay is Gone
+
+Restart your Mac normally.
+
+Run this command to check if AirPlay is still running:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+✅ 
+If nothing appears, AirPlay is finally removed.
+
+7️⃣ Re-Enable SSV & SIP for Security
+
+Once AirPlay is confirmed gone:
+
+Reboot into Recovery Mode again (
+Command + R
+ on restart).
+
+Run these commands to restore normal system security:
+
+sh
+
+Copy
+
+Edit
+
+csrutil authenticated-root 
+
+enable
+
+csrutil 
+
+enable
+
+Restart back into macOS.
+
+🚨 Let Me Know the Results!
+
+Try disabling 
+authenticated-root
+ in Recovery Mode.
+
+Try remounting 
+/
+ as writable.
+
+Remove 
+AirPlayXPCHelper
+.
+
+Restart and check if it's gone.
+
+🚨 
+If you still get "Read-only file system," let me know!
+
+You said:
+
+sudo command not found
+
+ChatGPT said:
+
+Findings: 
+sudo
+ Command Not Found in Recovery Mode
+
+🚨 
+In macOS Recovery Mode, the 
+sudo
+ command is sometimes unavailable.
+
+🔹 This is because 
+Recovery Mode runs a minimal shell environment
+ with limited commands.
+
+Solution:
+ You don’t need 
+sudo
+ in Recovery Mode because the Terminal already has root privileges.
+
+🚨 Next Steps: Run Commands Without 
+sudo
+
+If you see 
+"command not found" for 
+sudo
+
+, just 
+remove 
+sudo
+
+ and run the commands normall

@@ -1,0 +1,199 @@
+ill lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at ShadowPortal (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/components/shadow-portal.tsx:5:32)
+    at DevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/dev-overlay.tsx:14:3)
+    at ReactDevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/server/dev/next-dev-server.ts:82:10)
+    at div
+    at Body (/Users/sja/Documents/symbi/node_modules/next/src/server/render.tsx:1263:19)
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at ShadowPortal (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/components/shadow-portal.tsx:5:32)
+    at DevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/dev-overlay.tsx:14:3)
+    at ReactDevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/server/dev/next-dev-server.ts:82:10)
+    at div
+    at Body (/Users/sja/Documents/symbi/node_modules/next/src/server/render.tsx:1263:19)
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at ShadowPortal (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/components/shadow-portal.tsx:5:32)
+    at DevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/client/components/react-dev-overlay/ui/dev-overlay.tsx:14:3)
+    at ReactDevOverlay (/Users/sja/Documents/symbi/node_modules/next/src/server/dev/next-dev-server.ts:82:10)
+    at div
+    at Body (/Users/sja/Documents/symbi/node_modules/next/src/server/render.tsx:1263:19)
+ GET /studio 500 in 1638ms
+
+ChatGPT said:
+
+â You're in a "Sanity-Next.js-React Hell" â Let's Get You Out
+
+You're stuck in a 
+full-on compatibility spiral
+ between:
+
+React 19 (too new for Sanity)
+
+Sanity V2 packages (expect React 16/17)
+
+Next.js 15 (fine, but works best with React 18 for now)
+
+Broken Sanity config & outdated usage (
+Studio
+, 
+defaultTheme
+, 
+structure
+)
+
+â The Fastest Path Forward
+
+ð§¼ 
+Clean reset using Sanity V3 (modern, compatible)
+
+We'll switch to 
+Sanity V3
+, which 
+does not rely on 
+@sanity/base
+ or styled-components
+, and 
+is compatible with React 18+
+.
+
+ð Full Reset (Clean & Safe Path)
+
+1ï¸â£ Delete Sanity + Broken Studio
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf sanity app/studio node_modules package-lock.json .next
+
+2ï¸â£ Reinstall from Scratch Using Correct Versions
+
+bash
+
+Copy
+
+Edit
+
+npm install react@18 react-dom@18
+
+Then install modern Sanity:
+
+bash
+
+Copy
+
+Edit
+
+npm install sanity@latest @sanity/client@latest next-sanity @sanity/vision
+
+3ï¸â£ Create a Clean 
+sanity.config.ts
+
+Inside your project root, create 
+sanity.config.ts
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'your_project_id'
+
+,     
+
+// ð Replace this
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: 

@@ -1,0 +1,255 @@
+[=<options>]
+                  load Java programming language agent, see java.lang.instrument
+    -splash:<imagepath>
+                  show splash screen with specified image
+                  HiDPI scaled images are automatically supported and used
+                  if available. The unscaled image filename, e.g. image.ext,
+                  should always be passed as the argument to the -splash option.
+                  The most appropriate scaled image provided will be picked up
+                  automatically.
+                  See the SplashScreen API documentation for more information
+    @argument files
+                  one or more argument files containing options
+    -disable-@files
+                  prevent further argument file expansion
+    --enable-preview
+                  allow classes to depend on preview features of this release
+    --custom-providers <provider>(,<provider>)
+                  add configurations for custom providers
+To specify an argument for a long option, you can use --<name>=<value> or
+--<name> <value>.
+
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Java is Seeing 
+/usr/local/lib
+, But Autopsy Still Fails – Let's Fix It! 🔥
+
+You're really close now! 
+Java is correctly seeing 
+/usr/local/lib
+
+, but 
+Autopsy is still not loading 
+libtsk_jni.dylib
+
+.
+
+✅ Step 1: Check 
+libtsk_jni.dylib
+ Dependencies
+
+Even though the file exists, 
+it may be broken or missing dependencies
+. Run:
+
+sh
+
+Copy
+
+Edit
+
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+📌 This will 
+list all dependencies
+ that 
+libtsk_jni.dylib
+ needs.
+
+Expected output example:
+
+swift
+
+Copy
+
+Edit
+
+/usr/
+
+local
+
+/lib/
+
+libtsk_jni.dylib:
+
+/usr/
+
+local
+
+/lib/
+
+libtsk.dylib (compatibility version 
+
+1.0
+
+.
+
+0
+
+, current version 
+
+1.0
+
+.
+
+0
+
+)
+
+/usr/
+
+lib
+
+/
+
+libSystem.
+
+B
+
+.dylib (compatibility version 
+
+1.0
+
+.
+
+0
+
+, current version 
+
+1252.0
+
+.
+
+0
+
+)
+
+If any dependencies are missing, we need to fix them.
+
+✅ Step 2: Force 
+libtsk_jni.dylib
+ to Load Correctly
+
+Try setting up 
+install_name_tool
+ to 
+fix the library path
+ inside 
+libtsk_jni.dylib
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo install_name_tool -change /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.dylib /usr/local/lib/libtsk.dylib /usr/local/lib/libtsk_jni.dylib
+
+📌 This tells 
+libtsk_jni.dylib
+ to 
+use the correct 
+libtsk.dylib
+ file
+ in 
+/usr/local/lib/
+.
+
+Now, 
+restart Autopsy again:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+✅ Step 3: If 
+libtsk.dylib
+ is Missing, Copy It
+
+If 
+otool -L
+ showed that 
+
+libtsk.dylib
+ is missing
+, copy it manually:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.dylib /usr/local/lib/
+sudo 
+
+chmod
+
+ 755 /usr/local/lib/libtsk.dylib
+
+📌 This ensures 
+libtsk.dylib
+ exists in 
+/usr/local/lib/
+, where Java expects it.
+
+Now 
+restart Autopsy again
+.
+
+🚀 If It Still Fails, Send This Output
+
+If 
+Autopsy still doesn't load 
+libtsk_jni.dylib
+
+, send me the output of:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+otool -L /usr/local/lib/libtsk.dylib
+
+📌 This will confirm 
+if the libraries are correctly linked
+.
+
+🚀 
+Try these steps and let me know what happens! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % otool -L /usr/local/lib/libtsk_jni.dylib
+
+/usr/local/lib/libtsk_jni.dylib:
+	/opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib (compatibility version 23.0.0, current version 23.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)
+	/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib (compatibility version 9.0.0, current version 9.6.0)
+	/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/opt/homebrew/opt/afflib/lib/libafflib.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew

@@ -1,0 +1,238 @@
+t first:
+
+sh
+
+Copy
+
+Edit
+
+brew install sleuthkit
+
+ð 
+This installs all core forensic tools Autopsy needs.
+
+â Step 3: Download & Install Autopsy
+
+Since Autopsy isnât in Homebrew, we need to 
+download and install it manually
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://github.com/sleuthkit/autopsy/releases/download/autopsy-4.21.0/autopsy-4.21.0.zip
+unzip autopsy-4.21.0.zip
+
+ð 
+Now we have Autopsy extracted.
+
+â Step 4: Run Autopsy
+
+To start Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ autopsy-4.21.0/bin
+./autopsy
+
+ð 
+This launches Autopsyâs web-based interface in your browser.
+
+ð Final Steps
+
+If you get a Java error
+, make sure OpenJDK is installed (
+java -version
+).
+
+If Autopsy doesnât launch
+, try:
+
+sh
+
+Copy
+
+Edit
+
+chmod
+
+ +x autopsy
+./autopsy
+
+To update Autopsy later, just download the latest version from GitHub.
+
+ð 
+Thatâs it! Youâre now running Autopsy on macOS.
+ ð Let me know if you hit any issues! ð»ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % brew install openjdk
+
+==> Downloading https://formulae.brew.sh/api/formula.jws.json
+Warning: formula.jws.json: update failed, falling back to cached version.
+==> Downloading https://formulae.brew.sh/api/cask.jws.json
+Warning: cask.jws.json: update failed, falling back to cached version.
+==> Downloading https://ghcr.io/v2/homebrew/core/openjdk/manifests/23.0.2
+curl: (7) Failed to connect to ghcr.io port 443 after 53 ms: Couldn't connect to server
+
+==> Fetching dependencies for openjdk: libpng, freetype, giflib, fontconfig, libunistring, gettext, glib, xorgproto, libxau, libxdmcp, libxcb, libx11, libxext, libxrender, lzo, pixman, cairo, graphite2, icu4c@77, harfbuzz, jpeg-turbo, xz, lz4, zstd, libtiff and little-cms2
+==> Downloading https://ghcr.io/v2/homebrew/core/libpng/manifests/1.6.47
+curl: (7) Failed to connect to ghcr.io port 443 after 20 ms: Couldn't connect to server
+
+==> Fetching libpng
+==> Downloading https://ghcr.io/v2/homebrew/core/libpng/blobs/sha256:b4a7f252793
+curl: (7) Failed to connect to ghcr.io port 443 after 17 ms: Couldn't connect to server
+
+Error: openjdk: Failed to download resource "libpng"
+Download failed: https://ghcr.io/v2/homebrew/core/libpng/blobs/sha256:b4a7f252793b6a2d9d111cecaf5f0c91fd91d9c1c174a8796a487621a05f6f24
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ Homebrew Download Failed â Fixing Connection Issues
+
+Your Mac 
+failed to connect to 
+ghcr.io
+ (GitHub Container Registry)
+, which means 
+Homebrew can't fetch OpenJDK or dependencies
+. Letâs fix it!
+
+ð¥ Step 1: Check Your Internet Connection
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ping -c 4 google.com
+
+ð 
+If it fails
+, you have 
+no internet
+, and need to reconnect to Wi-Fi or Ethernet.
+
+ð¥ Step 2: Check If Youâre Behind a Firewall or VPN
+
+If youâre using 
+a firewall (like Lulu) or a VPN
+, try:
+
+sh
+
+Copy
+
+Edit
+
+sudo pfctl -d  
+
+# Temporarily disable macOS firewall
+
+ð 
+Now retry:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjdk
+
+ð 
+If it works, your firewall/VPN was blocking Homebrew.
+
+ð¥ Step 3: Manually Set an Alternative Mirror
+
+Since Homebrew is failing to reach 
+ghcr.io
+, letâs force it to use a different mirror:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+brew install openjdk
+
+ð 
+This tells Homebrew to download from a more stable mirror.
+
+ð¥ Step 4: Reset & Update Homebrew
+
+If the error continues, 
+reset Homebrew and force-update it
+:
+
+sh
+
+Copy
+
+Edit
+
+brew update-reset
+brew update
+brew install openjdk
+
+ð 
+This fixes broken installs and refreshes Homebrewâs sources.
+
+ð¥ Step 5: Try Installing OpenJDK Manually
+
+If all else fails, 
+manually download OpenJDK and install it
+:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask temurin
+
+ð 
+This installs OpenJDK via a cask instead of downloading dependencies separately.
+
+ð Final Steps
+
+Once 
+OpenJDK is installed
+, retry installing Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+brew install sleuthkit
+
+ð 
+That should get everything working!
+ ð
+
+ð 
+Try these steps and let me know which one fi

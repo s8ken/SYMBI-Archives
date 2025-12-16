@@ -1,0 +1,352 @@
+man. Set 
+
+Variables
+
+ after import:
+
+baseUrl
+
+ =3D 
+
+http://loca=
+lhost:5000
+
+jwt
+
+=
+ =3D 
+
+Bearer <your JWT>
+
+convId
+
+ =3D 
+
+<CONV_ID=
+>
+
+ (without 
+
+conv:
+
+; scripts will add it)
+
+webhookSecret
+
+ =3D your secret
+
+{
+
+"info"
+: {
+
+"name"
+: 
+"SYMBI UAT"
+,
+
+=
+
+"schema"
+: 
+"https=
+://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+,
+
+"version"
+: 
+"0.1-rc1"
+
+  },
+
+"item"
+: [
+
+    {
+
+"name"
+: 
+"Models: OpenAI"
+,
+
+"request"
+: {=
+
+"method"
+: 
+"GET"
+,
+
+      =
+
+"header"
+: [
+
+  =
+        { 
+"key"
+: 
+"Au=
+thorization"
+, 
+"value"
+: 
+"{{jwt}}"
+ }
+
+        ],
+
+"url"
+: { 
+"raw"
+: 
+"{{baseUrl}}/api/ll=
+m/models/openai"
+, 
+"host"
+: [
+"{{baseUrl}}"
+], 
+"path"
+:=
+ [
+"api"
+,
+"llm"
+=
+,
+"models"
+,
+"openai"
+] }
+
+      },
+
+ =
+
+"response"
+: []
+
+    },
+
+    {
+
+  =
+
+"name"
+: 
+"Assista=
+nt Thread: Create"
+,
+
+"request"
+: {
+
+"method"
+: 
+"POST"
+,
+
+"header"
+: [ =
+{ 
+"key"
+: 
+"Authorizat=
+ion"
+, 
+"value"
+: 
+"{{jwt}}"
+ } ],
+
+"url"
+: { 
+"raw"
+: 
+"{{baseUrl}}/api/assistant/thread/create"
+, 
+"host"
+: [
+"{{baseUrl}}"
+],=
+
+"path"
+: [
+"api"
+,
+"assistant"
+,
+"thre=
+ad"
+,
+"create"
+] }
+
+      },
+
+"=
+event"
+: [
+
+        { 
+"listen"
+: 
+"test"
+, 
+"script"
+: { 
+"exec"
+: [
+
+"var id =3D pm.=
+response.json().thread && pm.response.json().thread.id;"
+,
+
+"if (id) pm.col=
+lectionVariables.set('threadId', id);"
+,
+
+=
+
+"pm.test('thread id set', function(){ pm.=
+expect(!!id).to.eql(true); });"
+
+        =
+] } }
+
+      ]
+
+    }=
+,
+
+    {
+
+"name"
+: 
+"Assistant Messag=
+e: Latest"
+,
+
+"request"
+: {
+
+=
+
+=
+
+Notes
+
+Clients never store vendor keys
+
+; only 
+
+SYMBI_API_KEY
+
+/JWT is held client=E2=80=91s=
+ide.
+
+Ledger is 
+
+append=E2=
+=80=91only
+
+; use 
+
+verify
+
+ for tamper evidence.
+
+If 
+
+session_id
+
+ was ever stored without 
+
+conv:
+
+ prefix, the server now normalizes it on write=
+; existing consumers can pass either form.
+
+End of Notebook
+
+Dropped a full 
+UAT notebook + Postman collection
+ i=
+nto the canvas. Import the JSON section into Postman, set variables, and yo=
+u=E2=80=99re good to demo.
+
+If you want me to also generate a ti=
+ny 
+metrics
+ middleware and =
+a =E2=80=9CBridge receipt=E2=80=9D writer next, say the word and I=E2=80=99=
+ll add both as drop-in files.
+
+=
+
+=
+
+You said:
+
+trae: ## SYMBI UAT No=
+tebook Implementation Complete =E2=9C=85
+I've successfully implemented your comprehensive UAT (User Acceptance Testi=
+ng) notebook for the SYMBI project v0.1-rc1. Here's what has been delivered=
+:
+
+### =F0=9F=93=8B UAT Documentation Created
+- 
+SYMBI_UAT_NOTEBOOK.md
+ : Complete UAT runbook with copy-paste=
+ commands
+- 
+SYMBI_Postman_Collection.json
+ : Postman Collection v2.1 for =
+API testing
+- 
+socket-check.mjs
+ : Socket.IO testing script
+### =F0=9F=A7=AA Testing Infrastructure
+- Smoke Test : Made 
+smoke.sh
+ executable and verified it runs
+- Health Checks : Both backend (port 5000) and frontend (port 3000) service=
+s are running successfully
+- API Endpoints : Core health endpoints ( /healthz , /readyz ) are operatio=
+nal
+### =F0=9F=94=A7 UAT Components Included
+Setup Instructions : Environment variables, server startup commands, and cl=
+ient configuration
+
+One-Command Baseline : chmod +x tools/smoke.sh && API_BASE=3D$API .=
+/tools/smoke.sh
+
+Advanced AI Integration Tests :
+
+- OpenAI models listing
+- Assistant thread creation and messaging
+- Bridge orchestration and dispatch
+- Socket.IO JWT handshake verification
+Enterprise Security Checks :
+
+- JWT authentication and RBAC
+- Security headers (Helmet/CORS/rate limiting)
+- Webhook HMAC validation
+- Ledger integrity verification
+Observability Infrastructure :
+
+- Health and readiness endpoints
+- Metrics endpoint (when configured)
+- Docker Compose observability stack (Grafana, Loki, Prometheus)
+Architecture UAT Steps :
+
+- VS Code extension testing
+- Context Capsules functionality
+- Trust Overlays verification
+### =F0=9F=93=8A Current System Status
+- =E2=9C=85 Backend service running on port 5000
+- =E2=9C=85 Frontend service running on port 3000
+- =E2=9C=85 Core health endpoints responding
+- =E2=9C=85 Security middleware active
+- =E2=9C=

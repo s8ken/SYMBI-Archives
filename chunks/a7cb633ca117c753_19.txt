@@ -1,0 +1,346 @@
+odules package-lock.json yarn.lock .next
+
+rm
+
+ -rf app components styles public
+
+rm
+
+ -rf next.config.mjs tailwind.config.ts tsconfig.json postcss.config.mjs
+
+â ï¸ 
+This will delete everything except the folder itself.
+
+Now you have an 
+empty project folder
+âno conflicts, no leftover junk.
+
+2ï¸â£ Confirm the Folder is Empty
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ -la
+
+You should only see:
+
+Copy
+
+Edit
+
+.
+..
+
+â 
+If the folder is empty, weâre good to move forward.
+
+ð¥ 
+Step 1 Complete!
+
+Now, let me know 
+when youâre ready for Step 2: Setting Up Next.js + Tailwind
+ ðð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % rm -rf .git node_modules package-lock.json yarn.lock .next
+rm -rf app components styles public
+rm -rf next.config.mjs tailwind.config.ts tsconfig.json postcss.config.mjs
+
+sja@SJAs-MacBook-Pro symbi-ai-website % ls -la
+
+total 40
+drwx------@  8 sja  staff   256 21 Mar 06:41 .
+drwx------+ 56 sja  staff  1792 21 Mar 06:37 ..
+-rw-r--r--   1 sja  staff  6148 21 Mar 05:55 .DS_Store
+-rw-r--r--   1 sja  staff  2916 21 Mar 05:55 .gitignore
+-rw-r--r--   1 sja  staff   443 21 Mar 05:55 components.json
+drwxr-xr-x   4 sja  staff   128 21 Mar 05:55 hooks
+drwxr-xr-x   3 sja  staff    96 21 Mar 05:55 lib
+-rw-r--r--   1 sja  staff  2187 21 Mar 05:55 package.json
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð Step 2: Set Up Next.js + Tailwind
+
+Your folder is now 
+clean
+ â. Let's get 
+Next.js + Tailwind running from scratch.
+
+1ï¸â£ Initialize a New Next.js Project
+
+Run this in your 
+symbi-ai-website
+ folder:
+
+bash
+
+Copy
+
+Edit
+
+npx create-next-app@latest . --ts --use-npm
+
+The 
+.
+ keeps everything in the 
+current folder
+ (no new subfolder).
+
+--ts
+ sets up 
+TypeScript
+ (standard for modern Next.js).
+
+--use-npm
+ ensures we use 
+npm
+, so no conflicts with Yarn.
+
+When prompted, choose:
+
+â Yes
+ for ESLint
+
+â No
+ for Tailwind (
+weâll install it manually next
+)
+
+â Yes
+ for 
+app/
+ directory
+
+â No
+ for 
+src/
+ directory
+
+â No
+ for experimental features
+
+2ï¸â£ Install TailwindCSS & Dependencies
+
+Now, add 
+TailwindCSS, PostCSS, and Autoprefixer
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+This 
+creates a 
+tailwind.config.ts
+
+ and a 
+postcss.config.js
+.
+
+3ï¸â£ Configure Tailwind for Next.js
+
+Open 
+
+tailwind.config.ts
+
+ and replace the contents with:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+type
+
+ { 
+
+Config
+
+ } 
+
+from
+
+"tailwindcss"
+
+;
+
+const
+
+config
+
+: 
+
+Config
+
+ = {
+
+content
+
+: [
+
+"./app/**/*.{ts,tsx}"
+
+, 
+
+"./components/**/*.{ts,tsx}"
+
+],
+
+theme
+
+: {
+
+extend
+
+: {},
+  },
+
+plugins
+
+: [],
+};
+
+export
+
+default
+
+ config;
+
+â 
+Why?
+
+Ensures Tailwind 
+works inside your 
+app/
+ directory
+
+Avoids styles being 
+purged incorrectly
+ in production
+
+4ï¸â£ Create a 
+globals.css
+ File
+
+ð 
+Create a new folder
+:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ styles
+
+ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npx create-next-app@latest . --ts --use-npm
+
+The directory symbi-ai-website contains files that could conflict:
+
+  components.json
+  hooks/
+  lib/
+  package.json
+
+Either try using a new directory name, or remove the files listed above.
+
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð Fixing the Directory Conflict Before Installing Next.js
+
+Since Next.js 
+won't install because of existing files
+, we need to 
+remove the conflicting files
+ first.
+
+1ï¸â£ Delete the Conflicting Files
+
+Run this inside your 
+symbi-ai-website
+ folder:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf components.json hooks lib package.json
+
+This removes:
+
+components.json
+
+ (not needed for Next.js)
+
+hooks/
+ & 
+lib/
+
+ (weâll add back what we need later)
+
+package.json
+
+ (Next.js will generate a new clean one)
+
+2ï¸â£ Run Next.js Install Again
+
+Now, run:
+
+bash
+
+Copy
+
+Edit
+
+npx create-next-app@latest . --ts --use-npm
+
+Choose these options when prompted:
+
+â 
+Yes
+ for ESLint
+
+â 
+No
+ for Tailwind (we install it separately)
+
+â 
+Yes
+ for 
+app/
+ directory
+
+â **
+
+ð Step 1: Create a Fresh Project Folder & Install Next.j

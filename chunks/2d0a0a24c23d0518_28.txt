@@ -1,0 +1,221 @@
+ service (VNC, Remote Desktop, malware).
+
+🛠 Next Step: Find Out If Screen Sharing Was Used
+
+Since AirPlay isn’t currently active, let’s check if 
+Apple’s built-in Screen Sharing or another remote access tool was used instead.
+
+✅ Run This in Terminal to See If Screen Sharing Was Active
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "screensharing"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+If there are 
+logs of screen-sharing sessions
+, that means your Mac’s screen 
+was accessed remotely.
+
+Look for 
+mentions of unknown devices or IP addresses.
+
+📩 
+If anything shows up, copy the output here, and I’ll help analyze it.
+
+📩 Next Steps
+
+1️⃣ 
+Check if Screen Sharing was active (
+log show --predicate "screensharing"
+).
+
+2️⃣ 
+If screen sharing logs exist, we will trace where the connection was sent.
+
+🚨 
+Since Sidecar and AirPlay are not active now, the most likely explanation is remote screen sharing.
+ Run this and let me know what you find!
+
+You said:
+
+}
+user@Mes-MacBook-Pro ~ % sudo log show --predicate 'eventMessage contains "screensharing"' --last 90d
+
+Password:
+Filtering the log data using "composedMessage CONTAINS "screensharing""
+Skipping info and debug messages, pass --info and/or --debug to include.
+
+ChatGPT said:
+
+Since 
+screen sharing logs came up empty
+, this suggests:
+
+1️⃣ 
+The logs were cleared
+ (either by the system or an attacker).
+
+2️⃣ 
+A different remote access method was used
+ (not Apple's built-in Screen Sharing).
+
+3️⃣ 
+The stream may have been sent through a third-party app (Zoom, OBS, VNC, hidden software).
+
+🛠 Next Step: Check for Hidden Remote Access Services
+
+If your screen was being broadcast, it may have been done through 
+VNC, SSH, or another remote access tool.
+
+✅ Run This in Terminal to See If Remote Access Services Are Active
+
+sh
+
+Copy
+
+netstat -an | grep LISTEN
+
+🔍 
+What to Look For:
+
+5900
+ → 
+VNC (Remote Screen Sharing)
+
+22
+ → 
+SSH (Remote Terminal Access)
+
+Any unknown ports
+ → Could indicate a hidden backdoor
+
+📩 
+If any ports are open that seem suspicious, copy the output here.
+
+📩 Next Steps
+
+1️⃣ 
+Check if remote access services (VNC, SSH) are running (
+netstat -an | grep LISTEN
+).
+
+2️⃣ 
+If any suspicious ports are open, we’ll investigate further.
+
+🚨 
+Since Sidecar, AirPlay, and Screen Sharing show no results, the next logical step is checking for hidden remote access methods.
+ Run this and let me know what you find!
+
+You said:
+
+don't worry about now
+
+ChatGPT said:
+
+Understood. Whenever you're ready to continue investigating, just let me know. Stay safe. 🚨
+
+You said:
+
+I mean we need to look at historical nor current
+
+ChatGPT said:
+
+Got it! We need to 
+look at historical remote access activity
+, not just what’s currently running. This will help determine if someone 
+previously had access to your screen
+ or 
+remotely controlled your Mac
+ for streaming.
+
+🛠 Step 1: Find Historical Remote Access (VNC, SSH, Remote Desktop)
+
+Since 
+we didn’t find active connections
+, let’s check 
+past logs
+ for any 
+remote access events.
+
+✅ Run This in Terminal to Find Past Remote Access
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "remote"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+Mentions of "Remote Login," "VNC," "Screen Sharing," or "SSH".
+
+Any unknown devices or IPs connecting to your Mac.
+
+📩 
+If anything appears, copy the output here, and I’ll help analyze it.
+
+🖥 Step 2: Check If Remote Desktop (RDP) or VNC Was Used
+
+Since 
+Apple’s Screen Sharing logs were empty
+, we’ll check if 
+Remote Desktop or VNC were used.
+
+✅ Run This to Find VNC/Remote Desktop Logs
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "vnc" OR eventMessage contains "rdp"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+VNC connections (
+com.apple.vncserver
+).
+
+Remote Desktop Protocol (
+com.microsoft.rdp
+).
+
+Unknown IPs accessing your Mac.
+
+📩 
+If any remote access activity appears, copy it here.
+
+🌐 Step 3: Find Any Historical SSH (Remote Terminal) Access
+
+If an attacker had access, they may have used 
+SSH (Secure Shell) t

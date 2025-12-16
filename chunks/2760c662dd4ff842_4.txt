@@ -1,0 +1,294 @@
+ll)
+
+✅ 
+Background process for Disk Drill’s recovery features.
+
+🔴 
+Potential risk if an attacker manipulated it to exfiltrate files.
+
+Terminal (
+com.apple.Terminal
+)
+
+✅ 
+Expected
+ since we just added Full Disk Access for Terminal.
+
+No concerns here.
+
+Next Steps: Remove Disk Drill if Unwanted
+
+If 
+you did not install Disk Drill
+, it could have been installed as part of an attack to 
+monitor, recover, or extract deleted data
+.
+
+How to Remove Disk Drill Completely
+
+Uninstall using Terminal (safer than dragging to Trash)
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Disk\ Drill.app
+sudo 
+
+rm
+
+ -rf ~/Library/Application\ Support/DiskDrill
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.DiskDrill.plist
+sudo 
+
+rm
+
+ -rf ~/Library/Caches/com.cleverfiles.DiskDrill
+sudo 
+
+rm
+
+ -rf ~/Library/Logs/DiskDrill.
+
+log
+
+Remove the Background Process (
+cfbackd
+)
+
+sh
+
+Copy
+
+sudo launchctl remove com.cleverfiles.cfbackd
+sudo 
+
+rm
+
+ -rf /Library/Application\ Support/CleverFiles
+
+Check for Other Traces
+
+sh
+
+Copy
+
+sudo find / -iname 
+
+"*diskdrill*"
+
+ 2>/dev/null
+
+Re-check TCC Permissions
+
+After removal, re-run:
+
+sh
+
+Copy
+
+sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 
+
+'SELECT * FROM access'
+
+The 
+com.cleverfiles
+ entries should be gone.
+
+📌 
+Let me know if you recognize Disk Drill or if you want to remove it!
+ If we need deeper checks, we can continue step by step.
+
+You said:
+
+ok great so what I want to be able to make sure of is that they cannot start remote management for any reason, there is no possibility of connecting to any network drives, airplay cannot be accessed without my permission
+
+ChatGPT said:
+
+Step 5: Locking Down Remote Access, Network Drives, and AirPlay
+
+Since 
+Remote Management is NOT enabled
+, we will now 
+harden your Mac
+ to ensure no one can 
+enable it, connect remotely, or access your devices without permission
+.
+
+🔒 1. Block Remote Management Permanently
+
+Even though it’s currently disabled, let’s 
+completely lock it down
+.
+
+Disable Remote Management & Remove Any Hidden Services
+
+Run these commands in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo systemsetup -setremotelogin off
+sudo launchctl 
+
+disable
+
+ system/com.apple.screensharing
+sudo launchctl 
+
+disable
+
+ system/com.apple.RemoteDesktop
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.RemoteManagement.plist
+sudo 
+
+rm
+
+ -rf /var/db/RemoteManagement
+
+✅ 
+What This Does:
+
+Disables Remote Login (SSH)
+
+Disables macOS Screen Sharing
+
+Disables Apple Remote Desktop
+
+Deletes remote management settings
+
+📌 
+Let me know once you’ve run this!
+
+🔒 2. Block Network Drive Access (SMB, AFP, and NFS)
+
+This prevents 
+unauthorized access to shared folders or network drives
+.
+
+Disable File Sharing & Network Services
+
+sh
+
+Copy
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.smbd
+sudo launchctl 
+
+disable
+
+ system/com.apple.AFPServer
+sudo launchctl 
+
+disable
+
+ system/com.apple.nfsd
+sudo launchctl 
+
+disable
+
+ system/com.apple.filesharingd
+sudo launchctl 
+
+disable
+
+ system/com.apple.NetworkBrowserAgent
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.AppleFileServer.plist
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.smb.server.plist
+
+✅ 
+What This Does:
+
+Disables SMB, AFP, and NFS (file-sharing protocols)
+
+Prevents macOS from automatically connecting to network drives
+
+Stops macOS from auto-browsing shared devices
+
+📌 
+Let me know once you've run this!
+
+🔒 3. Lock Down AirPlay & Prevent Unauthorized Access
+
+Check AirPlay Settings
+
+Manually check:
+
+Go to System Settings
+ → 
+General
+ → 
+AirDrop & Handoff
+.
+
+Turn off "Allow Handoff between this Mac and your iCloud devices"
+.
+
+Go to System Settings
+ → 
+Displays
+ → 
+AirPlay Receiver
+.
+
+Set 
+AirPlay to OFF
+ or 
+Allow only to "This Mac only"
+.
+
+Completely Disable AirPlay in Terminal
+
+Run:
+
+sh
+
+Copy
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+sudo launchctl 
+
+disable
+
+ system/com.apple.airplay
+sudo defaults write /Library/Preferences/com.apple.airplay allowAirPlay -bool 
+
+false
+
+✅ 
+What This Does:
+
+Prevents AirPlay from starting
+
+Stops attackers f

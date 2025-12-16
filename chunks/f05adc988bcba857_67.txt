@@ -1,0 +1,554 @@
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,  
+
+// â Make sure this is correctly formatted
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,  
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings],  
+
+// â Ensure 'siteSettings' is correctly imported
+
+  },
+})
+
+ð 
+Common Issues:
+
+Incorrectly formatted 
+projectId
+
+ (make sure it's a 
+string
+ without extra characters).
+
+Ensure 
+siteSettings.ts
+ exists
+ inside 
+schemas/
+.
+
+3ï¸â£ Delete & Reinstall Dependencies
+
+Try a clean install:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf node_modules package-lock.json
+npm cache clean --force
+npm install --legacy-peer-deps
+
+Then, start your server again:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+4ï¸â£ Check for Sanity Schema Issues
+
+Make sure your 
+schemas/siteSettings.ts
+ looks correct:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'siteSettings'
+
+,
+
+title
+
+: 
+
+'Site Settings'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'logo'
+
+,
+
+title
+
+: 
+
+'Logo'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'footerText'
+
+,
+
+title
+
+: 
+
+'Footer Text'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+  ],
+})
+
+ð 
+Common Fixes:
+
+Check for typos
+ in import paths.
+
+Ensure fields use 
+defineField({ ... })
+
+ correctly.
+
+ð If Issue Persists
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npx sanity debug
+
+This will print more debugging info about your 
+Sanity project
+.
+
+Once youâve tried these steps, let me know the output! ð
+
+You said:
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ â  Port 3000 is in use, trying 3001 instead.
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1141ms
+ â Compiling /_not-found ...
+ â Compiled /_not-found in 2.1s (594 modules)
+ GET /studio 404 in 1415ms
+ â Compiled in 84ms (296 modules)
+ GET /studio/structure 404 in 28ms
+ â Compiled / in 298ms (634 modules)
+ GET / 200 in 383ms
+^C
+
+ChatGPT said:
+
+It looks like your 
+Sanity Studio
+ isn't being served correctly, returning a 
+404
+ when trying to access 
+/studio
+.
+
+ð Fixing the 404 for Sanity Studio
+
+Try these steps:
+
+1ï¸â£ Double-Check 
+sanity.config.ts
+
+Make sure your 
+
+sanity.config.ts
+
+ is correctly set up:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,  
+
+// â Your correct Sanity project ID
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,  
+
+// â Ensure this matches your Studio route
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings],  
+
+// â Make sure siteSettings is imported
+
+  },
+})
+
+2ï¸â£ Ensure 
+app/studio/[[...index]]/page.tsx
+ Exists
+
+Your 
+Next.js App Router
+ needs to recognize 
+Sanity Studio
+ as a route.
+
+ð 
+Create a file
+: 
+app/studio/[[...index]]/page.tsx
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+'next-sanity/studio'
+
+import
+
+ config 
+
+from
+
+'../../../sanity.config'
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />
+}
+
+This will ensure 
+/studio
+ renders 
+Sanity Studio
+ inside your Next.js app.
+
+3ï¸â£ Restart the Server
+
+Now, 
+restart your Next.js server
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then visit:
+
+bash
+
+Copy
+
+Edit
+
+http://localhost:3001/studio
+
+4ï¸â£ If Still 404: Check 
+next.config.js
+
+If 
+/studio
+ is still returning 
+404
+, add this to 
+next.conf

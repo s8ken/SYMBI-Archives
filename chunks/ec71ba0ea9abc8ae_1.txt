@@ -1,0 +1,133 @@
+k System Privacy Settings
+
+Go to
+ ï£¿ 
+Apple menu
+ > 
+System Settings
+
+Navigate to 
+Privacy & Security
+ > 
+Camera
+
+Make sure 
+Photo Booth, FaceTime, Zoom, or any other apps you want to use
+ have access to the camera.
+
+If the camera toggle is 
+OFF
+, turn it 
+ON
+.
+
+2ï¸â£ Reset Camera Permissions (Terminal Method)
+
+Since you're troubleshooting deep security issues, let's reset camera permissions manually.
+
+Steps
+:
+
+Open Terminal
+ (Finder > Applications > Utilities > Terminal)
+
+Run this command to reset camera permissions:
+
+sh
+
+Copy
+
+tccutil reset Camera
+
+Restart your Mac, then try 
+Photo Booth
+ again.
+
+3ï¸â£ Check if macOS Detects Any Camera
+
+If 
+Photo Booth still doesnât see any cameras
+, letâs check if macOS recognizes them.
+
+Steps
+:
+
+Open Terminal
+ and run:
+
+sh
+
+Copy
+
+system_profiler SPCameraDataType
+
+This should list all connected cameras.
+
+If 
+nothing appears
+, macOS isnât detecting any cameras (which could indicate a deeper issue).
+
+If your 
+internal camera, USB camera, or iPhone
+ appears, they might just be blocked by an app setting.
+
+4ï¸â£ Restart Camera Services (Force Reset)
+
+Open Terminal
+
+Run this command to restart the camera system:
+
+sh
+
+Copy
+
+sudo killall VDCAssistant && sudo killall AppleCameraAssistant
+
+Reopen Photo Booth
+ and test again.
+
+5ï¸â£ Try a Safe Mode Boot
+
+If nothing works, letâs boot into 
+Safe Mode
+ to rule out third-party interference:
+
+Shut down your Mac
+ completely.
+
+Turn it on and immediately 
+press & hold the Shift key
+ until you see the login screen.
+
+Log in, open 
+Photo Booth
+, and check if the camera works.
+
+If it works in Safe Mode, a third-party app is blocking itâlet me know, and weâll track it down.
+
+Final Check: iPhone & USB Camera
+
+If macOS still doesnât detect your 
+iPhone Continuity Camera or USB camera
+, try:
+
+Replugging the USB camera
+ directly into the Mac (not a hub).
+
+On iPhone: 
+Toggle Airplane Mode ON and OFF
+, then reconnect.
+
+Open 
+QuickTime
+ > 
+New Movie Recording
+ and check if cameras appear.
+
+Next Steps
+
+Let me know what happens at each step, and Iâll guide you further! ð
+
+Tools
+
+ChatGPT can make mistakes. OpenAI doesn't use Intelligence Unbound Stephen 8ken ððµð workspace data to train its models.

@@ -1,0 +1,511 @@
+ No 404s in header/footer links.
+
+If you want me to 
+prioritize the first three conversions right =
+now
+ (sovereignty, economic-constitution, RFC) with the exact folde=
+r names you=E2=80=99ve got in 
+s=
+rc/app
+, tell me the existing route paths (or paste the tree), and I=
+=E2=80=99ll tailor file-by-file moves and the minimal diffs so you can past=
+e them straight in.
+
+=
+
+=
+
+You said:
+
+what can you see via =
+the integration i have open it says 'work with code tab'
+
+Symbi said:
+=
+
+Though=
+t for 18s
+
+=
+
+I can see your VS Code =E2=80=9CWork with c=
+ode=E2=80=9D view, and the open file is:
+
+/Users/admin/symbi-trust-protocol/src/core/trustOracle.js
+
+What=E2=80=99s visible to me right n=
+ow (and only this file):
+
+TRUST_ARTICLES
+ A1=E2=80=93A7 (consent, extraction, transp=
+arency, boundaries, deception, security, audit).
+
+TrustOracle class
+ with:
+
+initializeCheckFunctions()
+
+evaluateArticles(context)
+ =E2=86=92 builds 
+passed/warnings/violations
+, then 
+calculateComplianceScore()
+ and 
+getRecommendation()
+.
+
+Checks: 
+checkConsent
+, 
+checkDataExtraction
+, 
+che=
+ckCapabilityTransparency
+ (30-day freshness), 
+checkBoundaries
+, 
+checkDeception
+, 
+=
+checkSecureHandling
+, 
+check=
+AuditTrail
+.
+
+Helpers: 
+getArticle
+, 
+getAllArticles
+, 
+addArticl=
+e
+.
+
+Express wiring helpers
+:
+
+createTrustMiddleware(oracle)
+ =E2=86=92 attaches 
+req.trustContext
+, 
+req.trustEvaluation
+, sets 
+req.trustWarnings/restrictions
+, blocks on 
+block
+.
+
+buildTrustContext(req)
+ =E2=86=92 derives 
+action
+, scopes/data/encryption, audit log,=
+ looks up 
+TrustBond
+ and 
+Agent
+ via Mongoose.
+
+I 
+cannot
+ see other files or your Next.js site from thi=
+s integration pane unless you open them (e.g., your 
+gammatria-site
+ pages).
+
+Quick spot-checks you might want t=
+o apply (all inside this file):
+
+Scope check consistency
+
+In 
+checkBoundaries
+ you a=
+llow the action if 
+any
+ overlap exists:
+
+js
+
+Copy code
+
+if
+
+ (scop=
+es && !bondScopes.
+
+some
+
+(
+
+scope
+
+ =3D> scopes.
+
+includes
+
+(s=
+cope))) { ... }
+
+This can pass when a request inclu=
+des one allowed scope 
+and
+ one unauthorized scope.
+
+Use a strict subset check (like you already do in 
+checkConsent
+):
+
+js
+
+Copy code
+
+const
+
+ re=
+quested =3D 
+
+Array
+
+.
+
+isArray
+
+(scopes) ? scopes : [scopes].
+
+filter
+
+(
+
+Boolean
+
+);
+
+const
+
+ unautho=
+rized =3D requested.
+
+filte=
+r
+
+(
+
+s
+
+ =3D> !bondScopes.
+
+includes
+
+(s));
+
+if
+
+ (unauthori=
+zed.
+
+length
+
+) =
+{
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Action outside permitted scope'
+
+, 
+
+details
+
+:
+
+`Unauthorized: 
+$=
+{unauthorized.join(
+', '
+
+)}` };
+}
+
+Consent expiry comparison
+
+You compare 
+new Date() > bon=
+d.scope.expiresAt
+. If 
+ex=
+piresAt
+ might be a string, normalize:
+
+js
+
+Copy code
+
+const
+
+ ex=
+p =3D bond.
+
+scope
+
+.
+
+expiresAt
+
+ ? 
+
+new
+
+Date
+
+(bond.
+
+scope
+
+.
+
+expiresAt
+
+) : 
+=
+
+null
+
+;
+
+if
+
+ (exp &=
+& 
+
+Date
+
+.
+
+now
+
+() > exp.
+
+getTime
+
+()) { ... }
+
+Capability freshness
+
+Safer date check:
+
+js
+
+Copy code
+
+const
+
+ up=
+dated =3D agent?.
+
+updatedAt
+
+ ? 
+
+new
+
+Date
+
+(agent.
+
+updatedAt
+
+) : 
+
+null
+
+;
+
+const
+
+ stale =
+=3D !updated || updated < 
+
+new
+
+Date
+
+(
+
+Date
+=
+
+.
+
+now
+
+() - 
+
+30
+
+*
+
+24
+
+*
+
+60
+
+*
+
+60
+
+*
+
+1000
+
+);
+
+if
+
+ (stale) 
+
+return
+
+ { 
+
+status
+
+:
+
+'warning'
+
+, 
+
+reason
+
+:
+
+'Capabilities may be outdated'
+
+ };
+
+Action derivation robustness
+
+action: \
+${req.method.to=
+LowerCase()}.${req.path.split('/').pop()}`` can be brittle on trailing slas=
+hes. Consider:
+
+js
+
+Copy code
+
+const
+
+ ta=
+il =3D (req.
+
+route
+
+?.
+
+path
+
+ =
+|| req.
+
+path
+
+ =
+|| 
+
+''
+
+).
+=
+
+split
+
+(
+
+'?'
+
+)[
+
+0
+
+].
+
+split
+
+(
+
+'/'
+
+).
+
+filter
+
+(
+
+Boolean
+
+).
+
+pop
+
+() || 
+
+'unknown'
+
+;
+
+const
+
+ action =
+=3D 
+
+`
+${=
+(req.method||
+'get'
+
+).toLowerCase()}.
+
+${tail}
+
+`;
+
+Score math clarity
+
+calculateComplianceScore
+=
+ subtracts both 
+violationCount*=
+15
+
+and
+
+critical*25
+. If you intended e=
+xtra penalty for criticals, great; otherwise remove double-count.
+
+If you want me to review or update=
+ another file, open it in this view (or switch to your 
+gammatria-site
+ repo so I can see the page yo=
+u want to work on).
+
+=
+
+=

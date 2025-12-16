@@ -1,0 +1,262 @@
+ live stream links, copy them and check their status.
+
+3ï¸â£ Check YouTube Live & Google Account History
+
+Go to YouTube Live Dashboard
+:
+
+ð 
+https://www.youtube.com/live_dashboard
+
+Check for past live streams under 
+"Live Streams"
+
+Check Google Security Activity
+:
+
+ð 
+https://myaccount.google.com/security-checkup
+
+Look for 
+unauthorized sign-ins
+ or 
+newly connected apps.
+
+4ï¸â£ Look for Suspicious Network Connections
+
+Attackers may have streamed directly via 
+RTMP (Real-Time Messaging Protocol)
+ or another streaming protocol. Run:
+
+sh
+
+Copy
+
+netstat -an | grep -i 
+
+"rtmp\|twitch\|youtube"
+
+ð¨ 
+If this shows an active connection, the system might still be broadcasting!
+
+5ï¸â£ Check macOSâs Recent Network Connections
+
+sh
+
+Copy
+
+lsof -i -P | grep -i 
+
+"stream\|rtmp\|obs\|broadcast"
+
+This will list 
+any apps currently or recently making network connections
+ for streaming.
+
+ð¬ Let Me Know What You Find!
+
+If you 
+find URLs, log entries, or active connections
+, weâll dig deeper and determine exactly 
+where the video was sent.
+ ðð
+
+You said:
+
+I'd want to do last 30 days 
+
+ChatGPT said:
+
+Got it! Let's extend the search to the 
+last 30 days
+ to get a full picture of where the broadcasts may have been sent.
+
+1ï¸â£ Search macOS Logs for Streaming Activity (Last 30 Days)
+
+Run this command to look for any 
+broadcasting or streaming activity
+:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "broadcast"'
+
+ --last 30d
+
+If nothing appears, try expanding the search:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "stream"'
+
+ --last 30d
+
+ð¨ 
+If you see URLs, IP addresses, or app names, send me the results.
+
+2ï¸â£ Check for Streaming URLs in Browser History (Last 30 Days)
+
+Safari (Live Streaming Links)
+
+sh
+
+Copy
+
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url, datetime(visit_time/1000000-978307200, 'unixepoch') FROM history_visits JOIN history_items ON history_visits.history_item = history_items.id WHERE url LIKE '%youtube.com/live%' OR url LIKE '%twitch.tv%' OR url LIKE '%stream%' ORDER BY visit_time DESC LIMIT 50;"
+
+Google Chrome (Live Streaming Links)
+
+sh
+
+Copy
+
+sqlite3 ~/Library/Application\ Support/Google/Chrome/Default/History 
+
+"SELECT url, datetime(last_visit_time/1000000-11644473600, 'unixepoch') FROM urls WHERE url LIKE '%youtube.com/live%' OR url LIKE '%twitch.tv%' OR url LIKE '%stream%' ORDER BY last_visit_time DESC LIMIT 50;"
+
+ð¨ 
+If unfamiliar URLs appear, check if they are still active!
+
+3ï¸â£ Check YouTube Live & Google Account History
+
+1ï¸â£ 
+Go to YouTube Live Dashboard
+:
+
+ð 
+https://www.youtube.com/live_dashboard
+
+Look for 
+any past live streams
+ you donât recognize.
+
+Check 
+"Uploads"
+ (recorded live streams may have been saved).
+
+2ï¸â£ 
+Check Google Security Activity
+:
+
+ð 
+https://myaccount.google.com/security-checkup
+
+Look
+
+You said:
+
+can I have the transcript provided as a downloadable pdf file directly please
+
+ChatGPT said:
+
+I'll generate the full transcript of our conversation and provide it as a 
+downloadable PDF
+. Give me a moment while I prepare it. ð
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+from
+
+ fpdf 
+
+import
+
+ FPDF
+
+# Create a PDF document
+
+pdf = FPDF()
+pdf.set_auto_page_break(auto=
+
+True
+
+, margin=
+
+15
+
+)
+pdf.add_page()
+pdf.set_font(
+
+"Arial"
+
+, size=
+
+12
+
+)
+
+# Title
+
+pdf.set_font(
+
+"Arial"
+
+, style=
+
+'B'
+
+, size=
+
+16
+
+)
+pdf.cell(
+
+200
+
+, 
+
+10
+
+, 
+
+"Cybersecurity Investigation - Full Transcript"
+
+, ln=
+
+True
+
+, align=
+
+"C"
+
+)
+pdf.ln(
+
+10
+
+)
+
+# Add transcript content
+
+transcript_text = 
+"""
+This document contains the full transcript of our cybersecurity investigation, including logs, 
+system checks, and security recommendations. It captures the entire debugging and forensic analysis process.
+
+Key topics covered:
+- Unauthorized Screen Sharing & Potential Live Broadcasting
+- Investigating Streaming Platforms & Logs (YouStream, OBS, ReplayKit)
+- Checking Browser & System History for Live Stream Evidence
+- Identifying Hidden Network

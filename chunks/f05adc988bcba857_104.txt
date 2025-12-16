@@ -1,0 +1,329 @@
+be shown on site
+
+Edited in Studio
+
+Static Content
+
+Hardcoded text and images
+
+In 
+app/page.tsx
+
+â What You Want to Do
+
+Replace hardcoded content (like âMeet Symbi, your intelligent AI assistantâ) with content from 
+Sanity CMS
+, so you can change it visually in the editor instead of in code.
+
+ðª Whatâs Next (The Low-Code Part)
+
+Iâll take care of the wiring for you. Hereâs how itâll work:
+
+Iâll update your page code
+ so it loads the data from Sanity.
+
+You edit everything in the CMS
+ â no more code changes just to update the text or headings.
+
+â Let's Do It!
+
+If you're ready, Iâll:
+
+Update your 
+lib/sanity.ts
+ with the right query.
+
+Refactor 
+app/page.tsx
+ to pull in content from Sanity.
+
+Make sure it still matches the design you have now.
+
+Just say:
+
+"Yes, letâs wire it to Sanity!"
+
+â¦and Iâll give you exactly the files to paste with full instructions. ðð«
+
+You said:
+
+ok I was just trying now to update the test page and I keep getting an error
+
+ChatGPT said:
+
+Got it â you're trying to update your test page in Sanity Studio, and it's throwing an error. Letâs fix this up.
+
+To help you quickly, can you tell me:
+
+â 
+What exactly were you editing?
+ (e.g., title, content block, etc.)
+
+â 
+What error message are you seeing?
+ (copy-paste it or screenshot if easier)
+
+ð¾ Did you hit "Publish" or just save the draft?
+
+Also, if you added any custom fields or changed your schema (
+schemas/page.ts
+), let me know â sometimes a mismatch there causes Studio errors.
+
+Once I see the error, Iâll guide you step-by-step to squash it! ð ï¸
+
+You said:
+
+just changing the title of the test page
+
+2/2
+
+ChatGPT said:
+
+Perfect â thanks! If you're only changing the title and you're getting an error when you try to save or publish, then the issue is very likely 
+either a schema mismatch or a Studio sync issue.
+
+Letâs go step-by-step to troubleshoot this:
+
+â 1. Confirm the schema has 
+title
+ defined
+
+In 
+schemas/page.ts
+, make sure the field for 
+title
+ is defined like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'page'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+title
+
+: 
+
+'Page'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'title'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+
+title
+
+: 
+
+'Title'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'content'
+
+,
+
+type
+
+: 
+
+'array'
+
+,
+
+title
+
+: 
+
+'Content'
+
+,
+
+of
+
+: [{ 
+
+type
+
+: 
+
+'block'
+
+ }],
+    }),
+  ],
+})
+
+â 2. Restart your local server
+
+After making sure the schema is correct:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Let it compile fully, and then try editing the title again in Studio (
+http://localhost:3000/studio
+).
+
+â 3. Still getting an error?
+
+If yes, 
+copy the exact error message youâre seeing
+, and Iâll jump in with the precise fix.
+
+ð¡ 
+Bonus Tip
+: If you've changed the schema but Studio hasn't picked it up, try clearing the 
+.next
+ cache:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .next
+npm run dev
+
+Let me know what the error says if it's still popping up!
+
+You said:
+
+not even saving it yet Error: Request error while attempting to reach is https://wryptr7v.api.sanity.io/v2025-02-19/data/actions/production?tag=sanity.studio.document.commit
+
+ChatGPT said:
+
+Ah, that error message means your Sanity Studio 
+cannot connect to the Sanity API
+ â which typically happens when:
+
+ð« 
+CORS is not configured properly
+
+Sanity blocks requests unless the origin (your localhost or domain) is explicitly allowed.
+
+â 
+Fix in 2 steps
+
+1. Go to 
+
+Sanity Manage
+
+This is your project dashboard.
+
+2. Add your local dev URL to the 
+CORS Origins
+
+In the 
+API Settings
+ section:
+
+Click 
+"Add CORS Origin"
+
+Add:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+Check â 
+Allow credentials
+
+Save
+
+Once thatâs added, 
+restart your dev server
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Now your Studio at 
+http://localhost:3000/studio
+ should be able to 
+successfully connect to Sanity
+, and saving should work again.
+
+Let me know when thatâs done â I can walk you thro

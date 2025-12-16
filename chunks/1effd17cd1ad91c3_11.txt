@@ -1,0 +1,148 @@
+ message: "(Error) Failed to start server. Is port 3000 in use?"
+    stack: [
+      "Error: Failed to start server. Is port 3000 in use?",
+      "at serve (unknown)",
+      "at [kRealListen] (node:_http_server:554:41)",
+      "at listen (node:_http_server:531:35)",
+      "at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/serve=
+r/dist/index.js:6332:21)",
+      "at new Promise (native:1:11)",
+      "at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index=
+.js:6323:16)",
+      "at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/in=
+dex.js:4793:18)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:45:40] ERROR: An error occurred:
+    message: "(Error) Failed to start server. Is port 3000 in use?"
+    stack: [
+      "Error: Failed to start server. Is port 3000 in use?",
+      "at serve (unknown)",
+      "at [kRealListen] (node:_http_server:554:41)",
+      "at listen (node:_http_server:531:35)",
+      "at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/serve=
+r/dist/index.js:6332:21)",
+      "at new Promise (native:1:11)",
+      "at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index=
+.js:6323:16)",
+      "at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/in=
+dex.js:4793:18)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:45:40] ERROR: Error details: Failed to start server. Is port=
+ 3000 in use?
+[2025-07-23 11:45:40] ERROR: Stack trace: Error: Failed to start server. Is=
+ port 3000 in use?
+    at serve (unknown)
+    at [kRealListen] (node:_http_server:554:41)
+    at listen (node:_http_server:531:35)
+    at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/server/d=
+ist/index.js:6332:21)
+    at new Promise (native:1:11)
+    at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js=
+:6323:16)
+    at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/index=
+.js:4793:18)
+    at processTicksAndRejections (native:7:39)
+Server process exited with code 1
+
+ChatGPT said:
+
+Thanks for posting =
+the logs =E2=80=94 you're in excellent shape except for 
+one small final issue
+:
+
+=E2=9D=8C Error: 
+Port 3000 is already in use
+
+This just means something (probably =
+another ElizaOS or dev server) is still running in the background on port 
+3000
+.
+
+=E2=9C=85 Fix It:
+
+Option 1: Kill whatever=E2=80=99s u=
+sing port 3000
+
+Run this in your terminal:
+
+b=
+ash
+
+Copy code
+
+lsof -i :3000
+
+That=E2=80=99ll show you the process=
+ using port 3000 (e.g., Node, Bun, etc.). Then:
+
+b=
+ash
+
+Copy code
+
+kill
+
+ =
+-9 <PID>
+
+Replace 
+<PID>
+ with the actual process ID from the above.=
+
+Option 2: Start ElizaOS on a differ=
+ent port
+
+If you want to run multiple agents o=
+r projects at once:
+
+b=
+ash
+
+Copy code
+
+elizaos dev --port 3001
+
+(Or any other available port.)
+
+Once it boots without errors, open y=
+our browser to 
+http://localhost:3=
+001
+ (or whichever port you chose), and you=E2=80=99ll be right back =
+in business.
+
+Let me know which way you go and I=E2=80=99ll help verify it=E2=
+=80=99s working!
+
+=
+
+=
+
+You said:
+
+To update your a=
+ccount to use zsh, please run 
+chsh -s /bin/zsh
+.
+For more details, please visit https://support.apple.com/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ lsof -i :3000
+COMMAND    PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.apple  597 admin   43u  IPv4 0x47844c6b86496a5b      0t0  TCP localhost=
+:51752->localhost:hbci (ESTABLISHED)
+com.apple  597 admin   45u  IPv4 0x28488ab90aebe6b0      0t0  TCP localhost=
+:51796->localhost:hbci (ESTABLISHED)
+bun       6261 admin    8u  IPv4 0x625b64859e2d4d4c      0t0  TCP *:hbci (L=
+ISTEN)
+bun       6261 admin   36u  IPv4 0xb5fe3d34e931aa35      0t0  TCP localhost=
+:hbci->localhost:51752 (ESTABLISHED)
+bun       6261 admin   37u  IPv4 0xdda7bb6305c8d0b7      0t0  TCP localhost=
+:hbci->localhost:51796 (ESTABLISHED)
+SYMBIs-MacBook-Pro:~ admin$=20
+SYMBIs-MacBook-Pro:~ admin$ kill -9 <PID>
+-bash: syntax error near unexpected token 
+newline'
+
+SYMBIs-Ma

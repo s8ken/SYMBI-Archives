@@ -1,0 +1,504 @@
+s"
+
+]=
+
+,
+
+"retention_until"
+
+:
+
+"2026-09-25"
+
+,
+
+"no_train"
+
+:
+
+true
+
+,
+
+"encryption"
+
+:
+
+{
+
+"alg"
+
+:
+
+"AES-256-GCM"
+
+,
+
+"cek_wrapped_with"
+
+=
+
+:
+
+"KMS:acme/cmk-2025-08"
+
+,
+
+"nonce"
+
+:
+
+"=E2=80=A6"
+
+}
+
+,
+
+"provenance"
+
+:
+
+{
+
+"agent"
+
+:
+
+"SYMBI.Synergy"
+
+,
+
+"model"
+
+:
+
+"open-weights/local-LM-8b"
+
+,
+
+"inputs"
+
+:
+
+[
+
+"s_0=
+0041"
+
+]
+
+,
+
+"policy_pack"
+
+:
+
+"pp_enterprise_v3.2"
+
+}
+
+}
+
+2) Context Bridge Ticket (what cr=
+osses boundaries)
+
+json
+
+Copy code
+
+{
+
+"ticket_id"
+
+:
+
+"cbt_7f2a"
+
+,
+
+"purpose"
+
+:
+
+"case_review"
+
+,
+
+"selector"
+
+:
+
+{
+
+"conversation_id"
+
+:
+
+"c_734fa"
+
+,
+
+"filters"
+
+:
+
+[
+
+"to=
+pic:pricing"
+
+,
+
+"time:2025-09-01..2025=
+-09-10"
+
+]
+
+=
+
+}
+
+,
+
+"sharing_mode"
+
+=
+
+:
+
+"min_snippet|summary|derived_only"
+
+=
+
+,
+
+"exp"
+
+:
+
+"2025-10-01T00:00:00Z"
+
+,
+
+"scopes"
+
+:
+
+[
+
+"rea=
+d:summaries"
+
+,
+
+"read:snippets"
+=
+
+]
+
+,
+
+"signed_by"
+
+:
+
+"Synergy.ControlPlane"
+
+,
+
+"hash_allowlist"
+
+:
+
+[
+
+"SHA256:ab=E2=80=A6cd"
+
+,
+
+"SHA256:de=
+=E2=80=A6ff"
+
+]
+
+}
+
+3) Transparency Log Event (append=
+-only, verifiable)
+
+json
+
+Copy code
+
+{
+
+"event_id"
+
+:
+
+"ev_9a1d"
+
+,
+
+"ts"
+
+:
+
+"2025-09-25T01:13:02Z"
+
+,
+
+"actor"
+
+:
+
+"agent:NinjaAI"
+
+,
+
+"action"
+
+:
+
+"bridge.read"
+
+,
+
+"objects"
+
+:
+
+[
+
+"s_0=
+0042"
+
+]
+
+,
+
+"ticket"
+
+:
+
+"cbt_7f2a"
+
+,
+
+"decision"
+
+:
+
+"allow"
+
+,
+
+"rego_rule"
+
+:
+
+"bridge.allow.read"
+
+,
+
+"request_sig"
+
+:
+
+"EDS512:=E2=80=A6"
+
+,
+
+"response_sig"
+
+=
+
+:
+
+"EDS512:=E2=80=A6"
+
+,
+
+"prev_event_hash"
+
+:
+
+"SHA256:=E2=80=A6"
+
+,
+
+"event_hash"
+
+:
+
+"SHA256:=E2=80=A6"
+
+}
+
+Control planes and flows
+
+A) Write path (ingest =E2=86=92 s=
+hard =E2=86=92 encrypt =E2=86=92 index)
+
+Shard
+ transcripts (800=E2=80=931,200 tokens, small ove=
+rlap).
+
+Classify & tag
+ (PII, sensitivity, consent).
+
+Encrypt client-side
+ (AES-GCM) with CEK wrapped by 
+tenant CMK
+.
+
+Store
+ encrypted shards + manifest; 
+index only redacted embeddings
+.
+
+Emit log
+: 
+=
+ingest.write
+ with hashes and policy pack ID.
+
+B) Read path (agent recall)
+
+Agents request by 
+selector
+, not raw text.
+
+OPA/Rego
+ policy validates tenant, purpose, sensitivity=
+ vs scopes.
+
+Gateway 
+materializes minimal view
+: snippet/summary/der=
+ived features.
+
+All responses are 
+signed
+; event logged as 
+memory.read
+.
+
+C) Context Bridge (cross-system s=
+haring)
+
+Request a 
+Context Bridge Ticket (CBT)
+; requires human =
+or workflow approval for sensitive tags.
+
+CBT carries 
+purpose, scopes, expiry, hash allowlist
+.
+
+Bridge serves 
+only
+ the allowed shard-subsets or deri=
+ved summaries.
+
+Everything is streamed with 
+mTLS + response signatures
+=
+; logged as 
+bridge.read
+.=
+
+D) Revocation (recall & DSAR)=
+
+Mark manifests 
+revoked=3Dtrue
+; rotate CEKs; 
+reindex
+ with tombstones.
+
+CBTs referencing revoked hashes 
+auto-deny
+.
+
+Emit 
+revoke.apply
+ with proofs; auditors can verify absence=
+ via tombstones and Merkle proofs.
+
+Network & runtime hardening
+
+Default-deny egress
+; only allowlisted model endpoints =
+and storage via a 
+signed purp=
+ose token
+ (
+no_train=3D=
+true
+, 
+purpose=3Danalysis=
+
+, 
+data_class=3Dderived_o=
+nly
+).
+
+VPC/VNET endpoints
+ to model providers or 
+on-prem/open-weights
+ for high-sen=
+sitivity.
+
+Per-agent sandboxes
+ (container/VM), read-only root, ep=
+hemeral secrets, no host mounts.
+
+DLP at the gateway
+: disallow payloads with large unred=
+acted text unless path =3D 
+/emb=
+ed
+.
+
+Policy (OPA/Rego) =E2=80=93 excer=
+pt
+
+rego
+
+Copy code
+
+package synergy.bridge
+
+default allow :=3D false
+
+allow {
+  input.auth.verified
+  input.ticket.scopes[_] =3D=3D "read:summaries"
+  not contains_sensitive_raw(input.request)
+  input.ticket.exp > now.time
+  hashes_subset(input.ticket.hash_allowlist, input.request.hashes)
+  input.ticket.purpose =3D=3D "case_review"
+}
+
+contains_sensitive_raw(req) {
+  req.path !=3D "/embed"
+  req.payload.raw_chars > 800
+  req.payload.contains_pii =3D=3D true
+}
+
+=E2=80=9CNo training=E2=80=9D tha=
+t actually binds
+
+Contract:
+ DPA/SOW with provider; tenant-specific =E2=
+=80=9Cno-train=E2=80=9D addendum.
+
+Wire:
+ Send provider=E2=80=99s 
+no-log/no-train headers
+ + our 
+purpose token
+; store header hashes=
+ in log.
+
+Placement

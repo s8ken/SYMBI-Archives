@@ -1,0 +1,264 @@
+tGPT said:
+
+Understood! If 
+video conferencing services
+ were involved, it’s likely the stream was sent 
+through a meeting platform or a hidden WebRTC connection.
+
+Now, we need to figure out:
+
+1️⃣ 
+Which video conferencing app was used?
+
+2️⃣ 
+Was it a real call, or was video secretly sent in the background?
+
+3️⃣ 
+Where was the data sent?
+
+🛠 Step 1: Find Out Which Video Conferencing App Was Used
+
+Since the logs show 
+video conferencing activity
+, let’s check 
+which app accessed the camera/mic.
+
+✅ Run This in Terminal to See Camera/Microphone Usage
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+If you see 
+AVCaptureDevice
+ logs, they will show 
+which app activated your camera or mic
+.
+
+Look for 
+FaceTime, Zoom, Google Meet, Teams, or unknown services.
+
+🖥 Step 2: Find If a WebRTC Call or Stream Was Running
+
+Since video conferencing often uses 
+WebRTC
+, we need to check if 
+your Mac was in an unknown call.
+
+✅ Run This to Search for WebRTC Calls
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "webrtc"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+If WebRTC logs appear, it means 
+your video/audio were streamed via a browser-based call.
+
+The logs may include 
+URLs or IP addresses
+ related to the call.
+
+🌐 Step 3: Find Out Where the Video Was Sent
+
+Now, let’s check 
+what external IPs your Mac sent data to.
+
+✅ Run This to See Active Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+🔍 
+What to Look For:
+
+Any 
+unknown IP addresses
+ that aren’t Apple, Google, or common services.
+
+If we find a 
+suspicious IP
+, we can trace where the video was sent.
+
+📩 Next Steps
+
+1️⃣ 
+Run the camera/microphone check (
+log show --predicate "AVCapture"
+).
+
+2️⃣ 
+Run the WebRTC scan (
+log show --predicate "webrtc"
+).
+
+3️⃣ 
+Run the network connection check (
+netstat -an | grep ESTABLISHED
+).
+
+🚨 
+If you find anything strange (unknown apps, WebRTC calls, or unknown IPs), copy the results here, and I’ll help analyze them.
+
+You said:
+
+I don't use FaceTime
+
+ChatGPT said:
+
+Since you 
+don’t use FaceTime
+, but 
+video conferencing activity appeared in the logs
+, that means 
+some other app was accessing your camera/microphone.
+
+This could be:
+
+1️⃣ 
+A hidden WebRTC call
+ (browser-based video streaming).
+
+2️⃣ 
+A third-party video conferencing app (Zoom, Google Meet, Teams, etc.).
+
+3️⃣ 
+A compromised app or malware using your camera/microphone.
+
+🛠 Step 1: Find Out Which App Used the Camera/Microphone
+
+Since FaceTime wasn’t involved, let’s check 
+which app actually accessed your camera.
+
+✅ Run This in Terminal:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+If 
+AVCaptureDevice
+ logs appear, they will show 
+which app activated your camera/mic
+.
+
+Look for 
+Zoom, Google Meet, Teams, or any unknown app.
+
+📩 
+If you see anything unusual, copy the results here, and I’ll help analyze them.
+
+🖥 Step 2: Find If a WebRTC Call or Stream Was Running
+
+Since 
+FaceTime wasn’t used
+, we need to check if a 
+WebRTC-based call
+ (browser-based streaming) was active.
+
+✅ Run This to Search for WebRTC Calls
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "webrtc"'
+
+ --last 90d
+
+🔍 
+What to Look For:
+
+If WebRTC logs appear, it means 
+video/audio were streamed via a browser.
+
+The logs may include 
+URLs or IP addresses
+ related to the call.
+
+📩 
+If WebRTC activity is found, we can trace where the stream was sent.
+
+🌐 Step 3: Find Out Where the Video Was Sent
+
+Now, let’s check 
+what external IPs your Mac sent data to.
+
+✅ Run This to See Active Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+🔍 
+What to Look For:
+
+Unknown IP addresses
+ that aren’t Apple, Google, or common services.
+
+If a 
+suspicious IP
+ appears, we can 
+trace where the video was sent.
+
+📩 
+Copy any strange IP addresses here, and I’ll help identify them.
+
+📩 Next Steps
+
+1️⃣ 
+Find out which app used the camera (
+log show --predicate "AVCapture"
+).
+
+2️⃣ 
+Check

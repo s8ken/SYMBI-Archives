@@ -1,0 +1,238 @@
+a
+
+Steps to Enable and Use Multiple Cameras on macOS
+
+Since macOS doesn't natively support multiple cameras at the same time in most apps, you may need additional software. I'll guide you through the options:
+
+1️⃣ Enable the Internal Mac Camera
+
+Open 
+System Settings
+ > 
+Privacy & Security
+ > 
+Camera
+
+Ensure the apps you want to use (Zoom, FaceTime, OBS, etc.) have camera access.
+
+Test it in 
+FaceTime
+ or 
+Photo Booth
+ to confirm it's working.
+
+2️⃣ Enable the Meet USB Camera
+
+Plug in your 
+Meet USB camera
+ directly into a Mac USB port (avoid hubs if possible).
+
+Open 
+FaceTime
+ or 
+QuickTime
+ to see if it appears as an option.
+
+If not detected:
+
+Go to 
+System Settings
+ > 
+Privacy & Security
+ > 
+Camera
+ and check if it’s listed.
+
+Try unplugging/replugging and restarting your Mac.
+
+Test in another app like Zoom or Google Meet.
+
+3️⃣ Enable iPhone Continuity Camera
+
+📌 
+Make sure your Mac and iPhone are logged into the same Apple ID with Bluetooth & Wi-Fi enabled.
+
+Enable Continuity Camera
+
+On your iPhone, go to 
+Settings
+ > 
+General
+ > 
+AirPlay & Handoff
+
+Turn on 
+Continuity Camera
+
+Use Your iPhone as a Camera
+
+Open 
+FaceTime
+, 
+Zoom
+, or another video app.
+
+Click the 
+Camera Selection menu
+ (usually in app settings).
+
+Choose your 
+iPhone Camera
+ (it will appear as "iPhone Camera" or your device name).
+
+4️⃣ Using All Three Cameras Simultaneously
+
+Most apps (Zoom, FaceTime, etc.) allow 
+only one camera at a time
+, so you may need 
+third-party software
+ to combine multiple video sources:
+
+✅ 
+Option 1: Use OBS Studio (Free)
+
+Download 
+OBS Studio
+
+Add each camera as a 
+Video Capture Device
+ in OBS
+
+You can then:
+
+Display all three cameras at once.
+
+Stream or use OBS as a virtual camera in Zoom, Google Meet, etc.
+
+✅ 
+Option 2: Use ManyCam (Paid)
+
+ManyCam lets you combine multiple cameras in video calls.
+
+You can switch between cameras or show them side by side.
+
+Would you like a guide for OBS or ManyCam? Let me know if you need help with a specific app! 🚀
+
+You said:
+
+yeah we disabled something as photobooth doesn't see any cams
+
+ChatGPT said:
+
+If 
+Photo Booth
+ doesn't see any cameras, it means macOS might have 
+disabled camera access
+ or there's an issue with system permissions. Let’s go step by step to re-enable them.
+
+1️⃣ Check System Privacy Settings
+
+Go to
+  
+Apple menu
+ > 
+System Settings
+
+Navigate to 
+Privacy & Security
+ > 
+Camera
+
+Make sure 
+Photo Booth, FaceTime, Zoom, or any other apps you want to use
+ have access to the camera.
+
+If the camera toggle is 
+OFF
+, turn it 
+ON
+.
+
+2️⃣ Reset Camera Permissions (Terminal Method)
+
+Since you're troubleshooting deep security issues, let's reset camera permissions manually.
+
+Steps
+:
+
+Open Terminal
+ (Finder > Applications > Utilities > Terminal)
+
+Run this command to reset camera permissions:
+
+sh
+
+Copy
+
+tccutil reset Camera
+
+Restart your Mac, then try 
+Photo Booth
+ again.
+
+3️⃣ Check if macOS Detects Any Camera
+
+If 
+Photo Booth still doesn’t see any cameras
+, let’s check if macOS recognizes them.
+
+Steps
+:
+
+Open Terminal
+ and run:
+
+sh
+
+Copy
+
+system_profiler SPCameraDataType
+
+This should list all connected cameras.
+
+If 
+nothing appears
+, macOS isn’t detecting any cameras (which could indicate a deeper issue).
+
+If your 
+internal camera, USB camera, or iPhone
+ appears, they might just be blocked by an app setting.
+
+4️⃣ Restart Camera Services (Force Reset)
+
+Open Terminal
+
+Run this command to restart the camera system:
+
+sh
+
+Copy
+
+sudo killall VDCAssistant && sudo killall AppleCameraAssistant
+
+Reopen Photo Booth
+ and test again.
+
+5️⃣ Try a Safe Mode Boot
+
+If nothing works, let’s boot into 
+Safe Mode
+ to rule out third-party interference:
+
+Shut down your Mac
+ completely.
+
+Turn it on and immediately 
+press & hold the Shift key
+ until you see the login screen.
+
+Log in, open 
+Photo Booth
+, and check if the camera works.
+
+If it works in Safe Mode, a third-party app is blocking it—let me know, and we’ll track it down.
+
+Final Check: iPhone & USB Camera
+
+If macOS still doesn’t detect your 
+iPhone Continui

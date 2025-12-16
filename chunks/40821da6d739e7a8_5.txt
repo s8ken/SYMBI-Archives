@@ -1,0 +1,390 @@
+id
+: Unique identifier
+
+description
+: Natural language or symbolic form
+
+preconditions
+: Logical predicates
+
+subgoals
+: Hierarchical decomposition
+
+status
+: e.g., "active", "satisfied", "failed"
+
+priority
+: Weight for arbitration
+
+Example in JSON:
+
+json
+
+Copy code
+
+{
+
+"id"
+
+:
+
+"goal_001"
+
+,=
+
+"description"
+
+:
+
+"Prepare lunch"
+
+,
+
+"preconditions"
+
+:
+
+[
+
+"ingredients_available"
+
+,
+
+"kitchen_f=
+ree"
+
+]
+
+,
+
+"subgoals"
+
+:
+
+[
+
+"mak=
+e_sandwich"
+
+,
+
+"pour_drink"
+
+]
+
+,
+
+"status"
+
+:
+
+"active"
+
+,
+
+"priority"
+
+:
+
+0.9
+
+}
+
+Such a structure enables symbolic =
+reasoning, tracking, and prioritization.
+
+User:
+
+Add learning module to revise goals or plans.
+
+Assistant:
+
+Here=E2=80=99s how a 
+learning=
+ module
+ could hook into the system:
+
+python
+
+Copy code
+
+# Learning module ob=
+serves outcomes
+
+def
+
+on_action_result
+
+(
+
+result
+
+):
+    update_model(result)
+
+if
+
+ result=
+ =3D=3D 
+
+"failure"
+
+:
+        revise_plan()
+        bb.publish(
+
+"working_plan"
+
+, new_plan)
+
+bb.subscribe(
+
+"action_result"
+
+, on_action_result)
+
+It can also:
+
+Update heuristics
+
+Modify procedural memory
+
+Influence goal generation or selec=
+tion
+
+Learning becomes a feedback loop b=
+etween action, perception, and memory.
+
+User:
+
+Add communication between agents via blackboard.
+
+Assistant:
+
+To allow multiple agents to communicate via a shared blackboard:
+
+python
+
+Copy code
+
+# Agent A publishes =
+a message
+
+bb.publish(
+
+"agent_message"
+
+, {
+
+"sender"
+
+: =
+
+"AgentA"
+
+,
+
+"recipient"
+
+: 
+
+"AgentB"
+
+,
+
+"content"
+
+:=
+
+"Request backup"
+
+})
+
+# Agent B subscribes
+
+def
+
+on_agent_message
+
+(
+
+msg
+
+):
+
+if
+
+ msg[
+
+"recipient"
+
+] =3D=
+=3D 
+
+"AgentB"
+
+:
+        respond(msg[
+
+"content"
+
+])
+
+bb.subscribe(
+
+"agent_message"
+
+, on_agent_message)
+
+This enables message-passing, coor=
+dination, or dialogue within a shared or distributed cognitive system.
+
+=E2=9C=85 
+That=E2=80=99s the complete transcript
+ conta=
+ined in your exported conversation!
+
+Next up: summary.
+
+=F0=9F=A7=A0 Summary of the 
+Symbi2
+ Chat Transcript
+
+=F0=9F=8E=AF 
+Overall Goal:
+
+You=E2=80=99re building 
+Symbi2
+, a 
+cognitive architecture for embodied AI agents
+ =
+=E2=80=94 focusing on modular design, flexible internal communication, and =
+biologically/plausibly inspired cognition.
+
+=F0=9F=A7=A9 
+Core System Components Discussed:
+
+Component
+
+Description
+
+Perception
+
+Receives inpu=
+t from sensors (e.g., vision, audio)
+
+Multimodal Integration
+
+Combines dif=
+ferent sensory modalities into unified representations
+
+Attention System=
+
+=
+Filters or prioritizes perceptual and cognitive data
+
+Internal Blackboar=
+d
+
+Central publish-subscribe mechanism for inter-module communication
+
+W=
+orking Memory
+
+Short-term data store used by all reasoning modules
+
+=
+
+Long-Term Memory
+
+Episodic, semantic, and procedural stores
+
+Rea=
+soning
+
+Derives inferences or plans based on memory and input
+
+Act=
+ion Selection
+
+Decides on what the agent should do next
+
+Actuators=
+
+Executes actions in the environment
+
+Learning Module
+
+Observes o=
+utcomes and adapts goals, procedures, or heuristics
+
+Communication=
+ Module
+
+Sends/receives messages across agents via shared blackboard
+
+=F0=9F=94=84 
+Blackboard Architecture Highlights:
+
+Implements 
+decoupled module communication
+
+Modules 
+subscribe to keys
+ (e.g. 
+"visual_input"
+, 
+"goal"
+)
+
+Uses 
+callbacks
+ for real-time data reactivity
+
+Ideal for:
+
+Asynchronous data flow
+
+Learning feedback loops
+
+Goal arbitration and dynamic plan =
+revision
+
+=F0=9F=92=A1 
+Key Design Patterns:
+
+Goal Representation:
+
+Structured JSON-like schema with 
+description
+, 
+status
+, 
+subgoals
+, etc.
+
+Action Plans in Working Memory:
+
+Treated as modifiable objects visi=
+ble across planning and execution modules
+
+Learning Feedback Loop:
+
+Learner observes results =E2=86=92=
+ updates plans or goals =E2=86=92 republishes revised objects
+
+Inter-Agent Messaging:
+
+Simple message protocol using shar=
+ed blackboard fields
+
+=F0=9F=A7=A0 Cognitive Features M=
+odeled:
+
+Hierarchical planning
+
+Event-driven memory and reasoning
+
+Feedback-driven learning
+
+Decentralized 

@@ -1,0 +1,281 @@
+â You mentioned Firebase earlier, which could have been used for authentication or broadcasting control.
+
+ð How to Investigate If You Were Broadcast
+
+1ï¸â£ Check If YouStream (or Similar Apps) Is Installed
+
+Run this command to look for 
+YouStream or suspicious apps
+:
+
+sh
+
+Copy
+
+mdfind 
+
+"YouStream"
+
+or
+
+sh
+
+Copy
+
+ls
+
+ /Applications
+
+ð¨ 
+If YouStream appears
+, it was 
+at some point installed
+ on your Mac.
+
+2ï¸â£ Look for Unusual Broadcast Activity in YouTube
+
+Go to
+: 
+YouTube Studio Live Control Room
+
+Check for unauthorized live streams
+ under:
+
+"Live Streams"
+ (Active or Ended)
+
+"Uploads"
+ (If recordings were saved)
+
+Review linked apps
+ at:
+
+Google Account
+ â Security â "Third-party apps with access"
+
+3ï¸â£ Check Your System Logs for Streaming Activity
+
+Run this to search logs for 
+streaming-related processes
+:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem contains "broadcast"'
+
+ --last 24h
+
+If you see 
+any results
+, it could indicate broadcasting activity.
+
+4ï¸â£ Check for Active Video Streaming Processes
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"obs\|stream\|camera"
+
+ð¨ 
+If you see suspicious results
+, the system may have been broadcasting.
+
+5ï¸â£ Look for Hidden User Accounts
+
+Attackers sometimes create 
+hidden macOS accounts
+ for persistence. Check for unexpected users:
+
+sh
+
+Copy
+
+dscl . list /Users
+
+ð¨ If any unknown accounts appear, your system may have been compromised.
+
+ð How to Block Unauthorized Streaming
+
+1ï¸â£ 
+Delete Suspicious Apps:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/YouStream.app
+
+2ï¸â£ 
+Revoke Google Permissions:
+
+Go to 
+Google Security
+ â "Third-party access" â 
+Remove unknown apps
+
+3ï¸â£ 
+Check for Malicious Startup Items:
+
+sh
+
+Copy
+
+ls
+
+ ~/Library/LaunchAgents
+
+ls
+
+ /Library/LaunchDaemons
+
+4ï¸â£ 
+Disable Camera & Mic via System Preferences:
+
+System Settings
+ â Privacy & Security â 
+Microphone & Camera
+
+Deny access to all apps
+ except trusted ones.
+
+ð¬ Let Me Know What You Find!
+
+If you 
+see anything suspicious
+, let me know 
+what commands reveal
+, and weâll dig deeper. ð
+
+You said:
+
+user@Mes-MacBook-Pro ~ % mdfind "YouStream"
+
+2025-03-01 18:24:50.277 mdfind[1400:75793] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Good newsâ
+mdfind didnât return any results
+, meaning YouStream 
+is not currently installed
+ on your Mac. However, that doesnât 
+100% confirm
+ that you were never streamed. The attacker 
+could have deleted evidence
+ or used another method.
+
+ð Next Steps: More Checks
+
+Since YouStream doesnât appear installed, letâs check for 
+other possible traces of unauthorized broadcasting:
+
+1ï¸â£ Check for Other Streaming Software
+
+Run:
+
+sh
+
+Copy
+
+mdfind 
+
+"OBS"
+
+mdfind 
+
+"broadcast"
+
+mdfind 
+
+"screen share"
+
+These will check if any 
+screen recording or streaming software
+ exists.
+
+2ï¸â£ Check for Unauthorized YouTube Live Streams
+
+Go to:
+
+ð 
+
+YouTube Live Dashboard
+
+Look for 
+any past live streams
+ you didnât start.
+
+3ï¸â£ Search macOS Logs for Streaming Activity
+
+Run:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem contains "broadcast"'
+
+ --last 24h
+
+log
+
+ show --predicate 
+
+'eventMessage contains "stream"'
+
+ --last 24h
+
+ð¨ 
+If you see anything related to video/audio streaming, let me know!
+
+4ï¸â£ Look for Hidden Video-Related Startup Items
+
+sh
+
+Copy
+
+ls
+
+ ~/Library/LaunchAgents
+
+ls
+
+ /Library/LaunchDaemons
+
+ð¨ 
+If you see anything unknown or suspicious here, weâll investigate further.
+
+ð¬ Let Me Know What You Find!
+
+If 
+anything suspicious shows up
+, weâll take action to 
+remove it and prevent future broadcasts.
+ ð
+
+You said:
+
+2025-03-01 18:25:14.900 mdfind[1402:76001] [UserQueryParser] Loading keywords and predicates for locale "en_AU"
+/Applications/thor10/changes.log
+/Library/SystemExtensions/FA1EB7A0-8C85-4041-A19F-C28AF36B7501/com.obsproject.obs-studio.mac-camera-extension.systemextension
+/Library/Ruby/Gems/2.6.0/gems/test-unit-3.2.9/test/util/test_obs

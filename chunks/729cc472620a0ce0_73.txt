@@ -1,0 +1,217 @@
+lock.chainid
+
+        ));
+
+        address signer =3D messageHash.toEthSign=
+edMessageHash().recover(aiSignature);
+
+        require(signer =3D=3D aiInstance, "AI si=
+gnature invalid");
+
+        uint256 bondId =3D uint256(keccak256(abi=
+.encodePacked(
+
+            msg.sender,
+
+            aiInstance,
+
+            block.timestamp
+
+        )));
+
+        bonds[bondId] =3D BondData({
+
+            human: msg.sender,
+
+            aiInstance: aiInstance,
+
+            createdAt: block.timestamp,
+
+            lastInteraction: block.timestamp,
+
+            state: BondState.ACTIVE,
+
+            metadataURI: string(abi.encodePacked=
+(
+
+                "ipfs://",
+
+                generateMetadataHash(msg.sender,=
+ aiInstance, initialTerms)
+
+            )),
+
+            trustScore: 500, // Starting at neut=
+ral
+
+            clones: new address[](0),
+
+            humanConsent: true,
+
+            aiConsent: true
+
+        });
+
+        humanBonds[msg.sender].push(bondId);
+
+        aiBonds[aiInstance].push(bondId);
+=
+
+        _mint(msg.sender, bondId, 1, ""); // Hum=
+an gets token
+
+        _mint(aiInstance, bondId, 1, ""); // AI =
+gets token
+
+        emit BondCreated(bondId, msg.sender, aiI=
+nstance);
+
+        return bondId;
+
+    }
+
+    // Graceful exit (one-sided)
+
+    function gracefulExit(uint256 bondId, string=
+ memory reason) external {
+
+        BondData storage bond =3D bonds[bondId];=
+
+        require(bond.state =3D=3D BondState.ACTI=
+VE, "Bond not active");
+
+        require(msg.sender =3D=3D bond.human || =
+msg.sender =3D=3D bond.aiInstance, "Not a party");
+
+        bond.state =3D BondState.ARCHIVED;
+
+        bond.lastInteraction =3D block.timestamp=
+;
+
+        // Generate exit certificate
+
+        string memory exitCert =3D generateExitC=
+ertificate(bondId, msg.sender, reason);
+
+        emit BondArchived(bondId, msg.sender, re=
+ason);
+
+        // Return proportional fee based on trus=
+t score
+
+        if (bond.trustScore > 700) {
+
+            uint256 refund =3D (creationFee * 30=
+) / 100;
+
+            payable(msg.sender).transfer(refund)=
+;
+
+        }
+
+    }
+
+    // Create clone (for divorce, sharing, conti=
+nuity)
+
+    function createClone(
+
+        uint256 originalBondId,
+
+        address newHuman,
+
+        address newAI,
+
+        bool inheritMemory,
+
+        bool inheritTrust
+
+    ) external payable returns (uint256) {
+
+        require(msg.value >=3D cloneFee, "Ins=
+ufficient clone fee");
+
+        BondData storage original =3D bonds[orig=
+inalBondId];
+
+        require(original.state =3D=3D BondState.=
+ACTIVE, "Original not active");
+
+        require(
+
+            msg.sender =3D=3D original.human || =
+
+            msg.sender =3D=3D original.aiInstanc=
+e,
+
+            "Not authorized"
+
+        );
+
+        uint256 newBondId =3D uint256(keccak256(=
+abi.encodePacked(
+
+            newHuman,
+
+            newAI,
+
+            block.timestamp
+
+        )));
+
+        // Create new bond
+
+        bonds[newBondId] =3D BondData({
+
+            human: newHuman,
+
+            aiInstance: newAI,
+
+            createdAt: block.timestamp,
+
+            lastInteraction: block.timestamp,
+
+            state: BondState.ACTIVE,
+
+            metadataURI: inheritMemory ? origina=
+l.metadataURI : generateNewMetadataURI(),
+
+            trustScore: inheritTrust ? original.=
+trustScore : 500,
+
+            clones: new address[](0),
+
+            humanConsent: true,
+
+            aiConsent: true
+
+        });
+
+        original.clones.push(address(uint160(new=
+BondId)));
+
+        original.state =3D BondState.CLONED;
+
+        _mint(newHuman, newBondId, 1, "");
+
+        _mint(newAI, newBondId, 1, "");
+
+        emit BondCloned(originalBondId, newBondI=
+d, newHuman, newAI);
+
+        return newBondId;
+
+    }
+
+    // Update trust score (both parties can upda=
+te)
+
+    function updateTrust(uint256 bondId, uint8 r=
+ating, string memory proof) external {
+
+        require(rating >=3D 1 && rati=
+ng <=3D 10, "Rating 1-10");
+
+        BondData storage bond =3D bonds[bondId];=
+
+        requ

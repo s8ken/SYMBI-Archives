@@ -1,0 +1,259 @@
+ust defaults:
+ Server-side key custody, layered =
+auth, rate-limits/injection hardening out-of-the-box. 
+
+README
+
+Where DRUID still leads (producti=
+zation)
+
+Enterprise connectors & templates
+: Out-of-the-box =
+integrations and =E2=80=9C500 skills=E2=80=9D-style library for quick wins.=
+
+Druid AI
+
+Non-technical creation flow
+: A polished =E2=80=9Cagent=
+ builder=E2=80=9D story for business users. 
+
+Druid AI
+=
+
++1
+
+Sources (DRUID)
+
+Conductor product page (orchestrat=
+ion, security, analytics, integrations). 
+
+Druid AI
+
+Conductor launch (Oct 15, 2024): o=
+n-the-fly agent builder, unifying cross-agent experience. 
+
+Dru=
+id AI
+
++1
+
+Banking solution (embedded complia=
+nce guardrails; encrypted, auditable, role-based interactions). 
+
+Druid AI
+
+Sources (SYMBI-SYNERGY repo)
+
+README: architecture, features, de=
+mo scope, security posture. 
+
+README
+
+README
+
+README
+
+ARCHITECTURE.md: system diagram, t=
+rust protocol flow (hash-chain + Ed25519), security posture, data/analytics=
+ stack. 
+
+ARCHITECTURE
+
+ARCHITECTURE
+
+ARCHITECT=
+URE
+
+ARCHITECTURE
+
+If you want, I can draft:
+
+a 
+capability-token spec
+ (JWT/JWS fields + verification=
+ middleware), and
+
+an 
+agent manifest schema
+ + sample UI wireframe
+
+=E2=80=A6so we lock in the trust a=
+dvantages and meet DRUID=E2=80=99s product expectations.
+
+Sources
+
+Sources
+
+You said:
+
+alright wh=
+at I think we need to achieve is having an agent dedicated to ycq, gammatri=
+a and symbi.world websites one for each while another works on the repo for=
+ the respective area, all hosted in the cloud so was looking at agent verse=
+
+ChatGPT said:
+
+Thought for 9s
+
+Love it. Here=E2=80=99s=
+ a crisp plan to stand up 
+four cl=
+oud-hosted agents
+=E2=80=94one each for 
+ycq
+, 
+gam=
+matria
+, 
+symbi.world
+, plus a 
+repo agent
+ for each site=E2=80=99s codebase=E2=80=94using AgentVerse (or ElizaOS i=
+f you prefer self-hosting). I=E2=80=99ll give you an architecture, a decisi=
+on matrix, and a concrete rollout plan.
+
+What you want
+
+Site agents
+ (3):
+
+ycq agent
+ =E2=86=92 crawls/answers from ycq site + RAG in=
+dex
+
+gammatria agent
+ =E2=86=92 crawls/answers from gammatria s=
+ite + RAG index
+
+symbi.world agent
+ =E2=86=92 same pattern
+
+Repo agents
+ (3): one per site repo, watches PRs/issues/co=
+mmits, summarizes changes, proposes patches
+
+Cloud-hosted
+ with your 
+trust layer
+ (signed receipts, hash-chain) and governance=
+
+Option A =E2=80=94 AgentVerse (mana=
+ged hosting)
+
+Why it=E2=80=99s a fit
+
+=E2=80=9CHosted Agents=E2=80=9D =3D =
+no infra to manage; each agent runs in the platform, 
+stateless per call
+ (you add storage for memo=
+ry/state). 
+
+Agentverse=
+ Documentation
+
++1
+
+Lets you 
+register domains
+ to point pretty URLs at agents=
+. 
+
+=
+
+Agen=
+tverse Documentation
+
+Marketplace & types (Hosted, L=
+ocal, Mailbox, Proxy) for different communication patterns. 
+
+AgentVerse
+
+Caveats
+
+Hosted agents reset global state; =
+use 
+Agent Storage
+ (K=
+V/DB) for memory/history. 
+
+Agentverse Documentation
+
+Import set is restricted (allowed =
+modules list). 
+
+Agentverse Documentation
+
+How we=E2=80=99d map your agents
+
+3 
+Hosted Agents
+ for sites + 3 
+Mailbox or Hosted
+ agents for repos (Mailbox =
+if you want queueing when offline). 
+=
+
+AgentVerse
+
+Use AgentVerse 
+storage
+ for: crawl cache, embeddings p=
+ointers, and short conversation context.
+
+Option B =E2=80=94 ElizaOS (self-=
+hosted, multi-agent)
+
+Why it=E2=80=99s a fit
+
+ElizaOS natively supports 
+multi-agent
+ orchestration an=
+d a modern management UI; model-agnostic; many connectors; great for 
+custom plugins
+ and MCP int=
+egration. 
+
+GitHub
+
++2
+
+ElizaOS Documentation
+
++2
+
+Easiest path to 
+bake in your trust receipts
+ (Ed25519) =
+at the middleware layer.
+
+Caveats
+
+You manage hosting (Fly.io, Render=
+, Railway, a tiny K8s, or VM).
+
+More ops work than AgentVerse.
+
+Decision matrix (quick)
+
+Criterion
+
+AgentVers=
+e Hosted
+
+ElizaOS Self-host
+
+Infra ops
+
+Minimal
+
+You manage (but flexible)
+
+State
+
+Stateless per call =E2=86=92 use Agent Storage
+
+Full contr=
+ol; persistent state easy
+
+Custom cod=
+e/p

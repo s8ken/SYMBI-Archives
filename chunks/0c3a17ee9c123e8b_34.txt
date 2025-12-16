@@ -1,0 +1,394 @@
+t to Next.js
+ so your website updates in real time. 🚀🔥
+
+You said:
+
+its installing so FYI: ✓ Login successful
+✓ Fetching existing projects
+
+? Project name: symbi
+? Organization name: symbi
+✓ Creating organization
+Your content will be stored in a dataset that can be public or private, depending on
+whether you want to query your content with or without authentication.
+The default dataset configuration has a public dataset named "production".
+? Use the default dataset configuration? Yes
+✓ Creating dataset
+? Would you like to add configuration files for a Sanity project in this Next.js folder? Yes
+⚠ ╭────────────────────────────────────────────────────────────╮
+⚠ │                                                            │
+⚠ │ It looks like you are using Next.js 15 and React 19        │
+⚠ │ Please read our compatibility guide.                       │
+⚠ │ https://www.sanity.io/help/react-19                        │
+⚠ │                                                            │
+⚠ ╰────────────────────────────────────────────────────────────╯
+? Do you want to use TypeScript? Yes
+? Would you like an embedded Sanity Studio? Yes
+? What route do you want to use for the Studio? /studio
+? Select project template to use Blog (schema)
+? Would you like to add the project ID and dataset to your .env.local file? Yes
+Added http://localhost:3000 to CORS origins
+Running 'npm install --legacy-peer-deps --save @sanity/vision@3 sanity@3 @sanity/image-url@1 styled-components@6 @sanity/icons'
+
+Vercel Deployment Expert GPT said:
+
+🚀 Sanity Studio is Installing with Blog Schema (Here's What to Do Next)
+
+You’re setting up 
+Sanity Studio inside your Next.js project
+ under 
+/studio
+. Since you 
+selected the Blog schema
+, here's how to proceed:
+
+🔹 What This Installation Means
+
+✅ 
+Your Sanity Studio (CMS) is now inside your Next.js project
+ (
+/studio
+).
+
+✅ 
+The Blog schema is pre-installed
+ (you can keep or remove it).
+
+✅ 
+Environment variables (
+.env.local
+) are configured automatically
+.
+
+✅ 
+Sanity CORS is configured
+, so Next.js can fetch content.
+
+✅ 
+Compatibility Warning for React 19
+ – We will fix this below.
+
+🔹 What to Do Next
+
+✅ 
+Option 1: Keep Blog + Add Pages (Recommended)
+
+Use 
+Blog Schema
+ for future articles.
+
+Create a 
+Page Schema
+ for editing static pages.
+
+🧹 
+Option 2: Remove Blog & Start Fresh
+
+Delete all schemas and 
+only add Pages
+ for full control.
+
+🔹 Step 1: Start Sanity Studio
+
+Now that it's installed, 
+start the CMS dashboard
+:
+
+bash
+
+Copy
+
+npm run dev
+
+Visit 
+
+http://localhost:3000/studio
+
+You should see 
+Sanity Studio's UI with Blog Schema
+.
+
+🔹 Step 2: (Optional) Add Page Schema
+
+If you want to 
+edit static pages (home, about, contact, etc.)
+, follow these steps:
+
+1️⃣ Create a "Page" Schema
+
+bash
+
+Copy
+
+mkdir
+
+ -p studio/schemas
+nano studio/schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save (
+Ctrl + X → Y → Enter
+).
+
+🔹 Step 3: Register the New Schema
+
+Now, 
+update the Sanity config file
+.
+
+bash
+
+Copy
+
+nano studio/sanity.config.ts
+
+Find this part:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ blog 
+
+from
+
+"./schemas/blog"
+
+;
+
+And modify it to include 
+pages
+:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ blog 
+
+from
+
+"./schemas/blog"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [blog, page], 
+
+// Blog + Pages
+
+  },
+});
+
+Save (
+Ctrl + X → Y → Enter
+).
+
+🔹 Step 4: Restart Sanity Studio
+
+Now, 
+restart Next.js
+ so th

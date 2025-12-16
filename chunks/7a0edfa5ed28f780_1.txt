@@ -1,0 +1,140 @@
+ation succeeded!\";
+                else                     echo \"pkg-oss tarball checksum verification failed!\";
+                    exit 1;
+                fi                 
+ && tar xzvf ${NGINX_VERSION}-${PKG_RELEASE}.tar.gz                 
+ && cd pkg-oss-${NGINX_VERSION}-${PKG_RELEASE}                 
+ && cd alpine                 
+ && make base                 
+ && apk index -o ${tempDir}/packages/alpine/${apkArch}/APKINDEX.tar.gz ${tempDir}/packages/alpine/${apkArch}/*.apk                 
+ && abuild-sign -k ${tempDir}/.abuild/abuild-key.rsa ${tempDir}/packages/alpine/${apkArch}/APKINDEX.tar.gz                 "             
+ && cp ${tempDir}/.abuild/abuild-key.rsa.pub /etc/apk/keys/             
+ && apk del --no-network .build-deps             
+ && apk add -X ${tempDir}/packages/alpine/ --no-cache $nginxPackages             ;
+;
+    esac     
+ && apk del --no-network .checksum-deps     
+ && if [ -n "$tempDir" ];
+then rm -rf "$tempDir";
+fi     
+ && if [ -f "/etc/apk/keys/abuild-key.rsa.pub" ];
+then rm -f /etc/apk/keys/abuild-key.rsa.pub;
+fi     
+ && if [ -f "/etc/apk/keys/nginx_signing.rsa.pub" ];
+then rm -f /etc/apk/keys/nginx_signing.rsa.pub;
+fi     
+ && apk add --no-cache --virtual .gettext gettext     
+ && mv /usr/bin/envsubst /tmp/         
+ && runDeps="$(         scanelf --needed --nobanner /tmp/envsubst             | awk '{ gsub(/,/, "\nso:", $2);
+print "so:" $2 }'             | sort -u             | xargs -r apk info --installed             | sort -u     )"     
+ && apk add --no-cache $runDeps     
+ && apk del --no-network .gettext     
+ && mv /tmp/envsubst /usr/local/bin/     
+ && apk add --no-cache tzdata     
+ && ln -sf /dev/stdout /var/log/nginx/access.log     
+ && ln -sf /dev/stderr /var/log/nginx/error.log     
+ && mkdir /docker-entrypoint.d
+COPY file:01e75c6dd0ce317d516928a17584d111cd082840c01e58be0afc851b33adb916 in /
+COPY file:caec368f5a54f70a844a13005eb2255bed778809b3672d516e719ce2f4bce123 in /docker-entrypoint.d
+COPY file:3b1b9915b7dd898a0e32f7eb9715a35c9feab914022efff68ba990bc1ec7d169 in /docker-entrypoint.d
+COPY file:57846632accc89753f45cbc00cb9e6223d991e1d31297eec3395a7ca58eed6a6 in /docker-entrypoint.d
+COPY file:9e3b2b63db9f8fc702e2dc2bdd0943be0d990c028cddcf1c159f5556a8ba3030 in /docker-entrypoint.d
+ENTRYPOINT ["/docker-entrypoint.sh"]
+EXPOSE 80
+STOPSIGNAL SIGQUIT
+CMD ["nginx" "-g" "daemon off;"]
+COPY /app/build /usr/share/nginx/html # buildkit
+
+Symbi said:
+
+What you’ve provided appears to be the core of a highly customized Dockerfile for building a secure and minimal NGINX-based container image using Alpine Linux. Let me break it down and offer a few insights:
+
+🔍 Summary Breakdown
+
+Base Layers & Setup
+
+ADD
+ directive introduces an external file, possibly a binary or config (
+ff3112...
+).
+
+Environment variables define 
+NGINX_VERSION
+ and 
+PKG_RELEASE
+.
+
+User & Group Setup
+
+Creates 
+nginx
+ system group/user with non-login shell for security.
+
+Architecture-Specific Logic
+
+Depending on architecture (
+x86_64
+, 
+aarch64
+, etc.), it either:
+
+Uses official NGINX binaries with signing key verification.
+
+Or compiles NGINX from source using Alpine's 
+pkg-oss
+.
+
+Security & Cleanup
+
+Uses checksum verification (SHA512) for integrity.
+
+Cleans up build-time dependencies, temp dirs, and keys.
+
+Removes unneeded tools once done (e.g., 
+gettext
+ after extracting 
+envsubst
+).
+
+Final Touches
+
+Sets up logging to STDOUT/STDERR.
+
+Prepares 
+/docker-entrypoint.d
+ for dynamic init scripts.
+
+Copies in various 
+file:
+ resources and entrypoints.
+
+Sets 
+CMD
+ to start NGINX in foreground with a proper 
+ENTRYPOINT
+.
+
+⚠️ Recommendations
+
+Base Image Clarity
+: Consider specifying the base image explicitly at the top if not already defined in your build system:
+
+Dockerfile
+
+Copy
+
+Edit
+
+FROM alpine:3.19
+
+Checksum Flexibility
+:
+
+Hardcoding the SHA512 of the public key or tarball is excellent for security, but consider passing it as an 
+ARG
+ for easier updates.
+
+Multi-stage Build
+:
+
+While this script handles cleanup well, a more co

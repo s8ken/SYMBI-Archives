@@ -1,0 +1,344 @@
+ame 
+
+"*.mp4"
+
+ -o -name 
+
+"*.mov"
+
+ -o -name 
+
+"*.mkv"
+
+ -o -name 
+
+"*.avi"
+
+This will list all video files in your system.
+
+If you suspect 
+hidden storage
+, check:
+
+sh
+
+Copy
+
+ls
+
+ -la ~/Library/Application\ Support/obs-studio/
+
+Look for any unusual folders where files might be stored.
+
+3️⃣ Check If OBS Was Live-Streaming
+
+If OBS streamed video to a platform, check logs:
+
+sh
+
+Copy
+
+cat
+
+ ~/Library/Application\ Support/obs-studio/logs/obs-*.txt | grep -i 
+
+"rtmp\|stream"
+
+If 
+RTMP URLs
+ appear, those are 
+stream destinations.
+
+To check recent OBS network traffic:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for 
+connections to streaming servers
+.
+
+4️⃣ Check If Files Were Uploaded
+
+If the recordings were uploaded, check:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "upload"'
+
+ --last 7d
+
+And scan cloud storage:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Library/Application\ Support/Google/DriveFS/
+
+ls
+
+ -lt ~/Library/Application\ Support/Dropbox/
+
+ls
+
+ -lt ~/Library/Application\ Support/OneDrive/
+
+🚨 Next Steps
+
+Check OBS logs for stream URLs
+
+Find where recordings were stored
+
+Check if files were uploaded or streamed
+
+Let me know what you find, and I’ll help analyze it! 🚨
+
+You said:
+
+we deleted it 
+
+ChatGPT said:
+
+Since you've already 
+deleted OBS Studio
+, we need to check if any traces remain and whether recordings were uploaded or streamed. Here's what to do next:
+
+1️⃣ Recover OBS Logs & Settings (If Not Fully Erased)
+
+Even if OBS was deleted, its logs and settings might still exist.
+
+A. Check for Leftover OBS Files
+
+Run this in 
+Terminal
+ to see if OBS data remains:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Library/Application\ Support/obs-studio/
+
+If the folder still exists, check for logs:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Library/Application\ Support/obs-studio/logs/
+
+To read the latest log file:
+
+sh
+
+Copy
+
+cat
+
+ ~/Library/Application\ Support/obs-studio/logs/obs-*.txt | less
+
+What to look for:
+
+Recording paths
+ (where OBS saved videos)
+
+Streaming URLs
+ (where OBS broadcasted)
+
+If no files exist, check if they were 
+deleted recently
+:
+
+sh
+
+Copy
+
+find ~/Library/Application\ Support/obs-studio/ -
+
+type
+
+ f -mtime -1
+
+This lists 
+files modified or deleted in the past day.
+
+2️⃣ Check for Deleted Video Files
+
+Even if OBS was removed, recordings might still exist elsewhere.
+
+A. Search for Video Files
+
+Run this in 
+Terminal
+ to locate 
+screen recordings
+:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f \( -name 
+
+"*.mp4"
+
+ -o -name 
+
+"*.mov"
+
+ -o -name 
+
+"*.mkv"
+
+ -o -name 
+
+"*.avi"
+
+ \) -
+
+ls
+
+Common hidden storage locations:
+
+~/Movies/
+
+~/Desktop/
+
+~/Documents/
+
+~/Library/Application Support/
+
+/private/tmp/
+
+If you suspect files were 
+deleted
+, try recovery with:
+
+sh
+
+Copy
+
+sudo mdfind 
+
+"kMDItemContentType == 'public.movie'"
+
+This searches 
+all video files
+, even hidden ones.
+
+3️⃣ Check If Files Were Uploaded or Streamed
+
+Since you suspect 
+broadcasting
+, check for network activity:
+
+A. Look for Past Uploads in Logs
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "upload"'
+
+ --last 7d
+
+If files were uploaded, you may see references to:
+
+Google Drive, Dropbox, iCloud, OneDrive
+
+Streaming platforms like YouStream, Twitch, YouTube
+
+B. Check Recent Network Connections
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+Look for 
+connections to streaming servers
+.
+
+To see if your Mac communicated with suspicious IPs:
+
+sh
+
+Copy
+
+sudo lsof -i -P | grep OBS
+
+Even if OBS is deleted, this might reveal lingering connections.
+
+4️⃣ Check Your Browser for Uploads
+
+If the attacker uploaded files, it could have been done 
+through a browser.
+
+A. Check Browser History for Uploads
+
+Open 
+Safari/Chrome → History
+
+Search for:
+
+"upload"
+
+"stream"
+
+"broadcast"
+
+"video"
+
+Look for 
+Dropbox, Google Drive, YouStream, YouTube, Twitch, etc.
+
+B. Scan Downloads & Cached Data
+
+To see what was accessed:
+
+sh
+
+Copy
+
+ls
+
+ -lt ~/Library/Caches/Google/Chrome/
+
+ls
+
+ -lt ~/Library/Caches/com.apple.Safari/
+
+🚨 Next Steps
+
+Check if OBS logs & settings still exist
+
+Search for hidden or deleted screen reco

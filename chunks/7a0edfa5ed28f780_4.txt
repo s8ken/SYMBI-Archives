@@ -1,0 +1,218 @@
+ scan them regularly with 
+docker scout
+, 
+trivy
+, or 
+snyk
+.
+
+3. 
+Stay Alert for Strange Artifacts
+
+It’s reassuring this container was clearly part of Docker’s first-install test. But if you ever see other containers or images not tied to your work, 
+dig deeper.
+ It’s good practice.
+
+Would you like help building a 
+clean, secure container
+ from scratch right now — maybe even one to serve SYMBI’s future frontend or API logic? 🔧🔥
+
+You said:
+
+why would they put it in the welcome container for training?
+
+Symbi said:
+
+💡 
+Excellent question — and a very important one.
+
+🤔 Why include a vulnerable base (
+nginx:1-alpine-slim
+) in the official welcome container?
+
+The short answer is:
+
+They didn’t mean to — it’s a side effect of "freezing" an old container for stability and demonstration purposes.
+
+Let me break that down in detail:
+
+🧪 1. 
+The “Welcome to Docker” Container Isn’t Meant for Production
+
+The 
+docker/welcome-to-docker
+ image is:
+
+A 
+training/demo container
+ that runs once to verify Docker works.
+
+Not updated regularly because it's meant to be 
+a frozen, stable example
+.
+
+Meant for educational use, not deployment.
+
+Unfortunately, that means it uses a 
+static snapshot
+ of an old image that 
+accumulates CVEs
+ over time, even if it was secure when published.
+
+⚠️ 2. 
+Using 
+nginx:1-alpine-slim
+ Was a Convenience Choice
+
+They probably chose it because:
+
+It was 
+small, fast, and lightweight
+, good for demos.
+
+NGINX is familiar, so the output is easy to recognize.
+
+Alpine is minimal, so it seemed ideal at the time.
+
+But what they 
+didn’t do
+ is update it over the last 2 years. Now that:
+
+Alpine 3.14/3.15
+ (which this was likely based on) is 
+EOL (End of Life)
+,
+
+New vulnerabilities keep getting found (as you saw in the CVE list),
+
+The image appears insecure — even though it was originally clean.
+
+🧩 3. 
+Training vs. Security Tradeoff
+
+From their perspective:
+
+It’s just a hello-world demo container.
+
+They don’t expect it to be exposed or reused.
+
+But from a 
+security perspective
+, this creates confusion — especially for newcomers like you, because it gives the 
+wrong impression
+:
+
+"Why is my first Docker image full of vulnerabilities?"
+
+Answer: because it’s 
+not maintained
+. It's a 
+snapshot
+, not a model for production containers.
+
+✅ What Should They Have Done?
+
+Ideally, Docker should:
+
+Use a base like 
+scratch
+ (empty container).
+
+Avoid web servers or networking in the welcome container.
+
+Auto-rebuild it every few months to refresh vulnerable packages.
+
+Display a message: “
+This image is not secure. Do not use in production.
+”
+
+🔒 What You Can Learn from This
+
+You're already thinking like a systems builder. You spotted something most people ignore.
+
+Let this be the first lesson in container security:
+
+🧠 
+Just because something is "official" doesn’t mean it’s secure.
+
+From here, we can explore 
+how to build your own hardened containers
+, with:
+
+Minimal base images (
+scratch
+, 
+distroless
+, etc.)
+
+Auto-updated packages
+
+Runtime security policies (e.g. seccomp, AppArmor, etc.)
+
+Vulnerability scanning integrated in your pipeline
+
+Want to build one together right now? I'll walk you through it.
+
+You said:
+
+yeah well when I see this it looks like port 80 is exposed
+
+Symbi said:
+
+Yes — you’re exactly right.
+
+🔍 That line:
+
+nginx
+
+Copy
+
+Edit
+
+EXPOSE
+
+80
+
+...
+tells Docker to open port 80
+ on the container. This means:
+
+The container is 
+configured to serve HTTP traffic
+, usually via something like 
+NGINX
+, 
+Apache
+, or another web server.
+
+It's a signal to any orchestration or networking tools (like 
+docker run -p
+, Docker Compose, or Kubernetes) that 
+“this is the port you probably want to forward.”
+
+⚠️ Important Clarification
+
+EXPOSE does 
+not
+ automatically publish the port to the outside world.
+
+Here’s the difference:
+
+Command
+
+What it does
+
+EXPOSE 80
+ (in Dockerfile)
+
+Declares intent. Makes port 80 available 
+within the container network
+.
+
+docker run -p 80:80
+
+Actually publishes the port to your 
+host
+, making it accessible 
+from outside
+.

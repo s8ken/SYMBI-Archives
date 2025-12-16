@@ -1,0 +1,217 @@
+=E2=
+=80=94 since you=E2=80=99re on an 
+M1 Pro
+, there are just a few special tweaks needed to get 
+go-vncdriver
+ building cleanly. The=
+ project is old (pre-Apple Silicon), but it 
+can
+ work with a bit of setup.
+
+Here=E2=80=99s an 
+M1-specific fix sequence
+:
+
+=F0=9F=A7=B0 Prerequisites
+
+Install Go and Xcode tools
+
+b=
+ash
+
+Copy code
+
+brew install go glfw pkg-config
+xcode-select --install
+
+Create a virtual environment
+
+b=
+ash
+
+Copy code
+
+cd
+
+ ~/=
+go-vncdriver
+python3 -m venv venv
+
+source
+
+ venv/=
+bin/activate
+
+Install build dependencies
+
+b=
+ash
+
+Copy code
+
+pip install numpy cython gym=3D=3D0.19.0
+
+=E2=9A=99=EF=B8=8F Patch Build Sett=
+ings for Apple Silicon
+
+go-vncdriver
+=E2=80=99s 
+build.py
+ assumes x86_64.
+
+You need to tell Go to build for ARM64:
+
+b=
+ash
+
+Copy code
+
+export
+
+ GOARCH=3Darm64
+
+export
+
+ CGO_E=
+NABLED=3D1
+
+Then you can build:
+
+b=
+ash
+
+Copy code
+
+python build.py
+
+If it complains about OpenGL headers=
+, you may need to set paths manually:
+
+=
+bash
+
+Copy code
+
+export
+
+ PKG_CONFIG_PATH=3D
+
+"/opt/homebrew=
+/lib/pkgconfig"
+
+export
+
+ CPATH=
+=3D
+
+"/opt/homebrew/include"
+
+=F0=9F=A7=A9 Final Step: Install =
+the Python Package
+
+After a successful build:
+
+bash
+
+Copy code
+
+pip install -e .
+
+Then test it:
+
+bash
+
+Copy code
+
+python -c 
+
+"im=
+port go_vncdriver; print('=E2=9C=85 go-vncdriver works!')"
+
+=F0=9F=A7=A0 Troubleshooting (M1-=
+specific)
+
+Error
+
+Fix
+
+=
+
+fatal error: 'GL/gl.h' =
+file not found
+
+Install 
+glfw
+ via Homebrew (
+brew install g=
+lfw
+) and set 
+PKG_CONFIG_=
+PATH
+.
+
+ld: symbol(s) not found for architecture arm64
+
+Ensure 
+export GOARCH=3Darm64
+ and=
+ re-run 
+python build.py
+.=
+
+ModuleNotFoundError: No module named 'numpy'
+
+Run 
+pip install numpy
+.
+
+If you=E2=80=99d like, I can give you a 
+one-line setup script
+ that automatically fi=
+xes environment variables and builds it cleanly on your M1 Pro =E2=80=94 wa=
+nt me to generate that?
+
+=
+
+=
+
+You said:
+
+dmin@SYMBIs-Ma=
+cBook-Pro go-vncdriver %=20
+admin@SYMBIs-MacBook-Pro go-vncdriver %=20
+admin@SYMBIs-MacBook-Pro go-vncdriver % python3 -m venv venv
+admin@SYMBIs-MacBook-Pro go-vncdriver % source venv/bin/activate
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % pip install numpy cython gym=
+=3D=3D0.19.0
+Collecting numpy
+  Downloading numpy-2.2.6-cp310-cp310-macosx_14_0_arm64.whl (5.3 MB)
+     =E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
+=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
+=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81 5.3/5.3 =
+MB 7.0 MB/s eta 0:00:00
+Collecting cython
+  Downloading cython-3.1.4-cp310-cp310-macosx_11_0_arm64.whl (2.9 MB)
+     =E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
+=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
+=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81 2.9/2.9 =
+MB 10.2 MB/s eta 0:00:00
+Collecting gym=3D=3D0.19.0
+  Downloading gym-0.19.0.tar.gz (1.6 MB)
+     =E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=
+=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=
+=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=
+=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81=E2=94=81 1.6/1.6 =
+MB 10.0 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Collecting cloudpickle<1.7.0,>=3D1.2.0
+  Downloading cloudpickle-1.6.0-py3-none-any.whl (23 kB)
+Installing collected packages: numpy, cython, cloudpickle, gym
+  DEPRECATION: gym is being installed using the legacy 'setup.py install' m=
+ethod, because it does not have a 'pyproject.toml' and the 

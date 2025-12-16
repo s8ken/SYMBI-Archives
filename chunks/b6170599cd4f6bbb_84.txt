@@ -1,0 +1,301 @@
+rapportd
+ is gone
+:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+launchctl list | grep rapportd
+sudo lsof -i -P | grep rapportd
+
+ð 
+If thereâs NO output, 
+rapportd
+ is FINALLY DEAD!
+ ð
+
+ð¥ Final Step: Re-enable SIP for Security
+
+Once you confirm 
+rapportd
+ is gone, 
+turn System Integrity Protection (SIP) back on
+:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+This stops macOS from modifying system files again.
+
+â 
+rapportd
+ Should Now Be Completely Neutralized! ð¥
+
+If 
+rapportd
+
+still comes back
+, let me know and weâll go 
+even deeper
+. ð ð
+
+You said:
+
+no no I'm not doing all that again lol not at least right now - its too many reboots and sip on and off and all that - so what happens if we try and utilise it with the Lulu rule on?
+
+ChatGPT said:
+
+ð 
+Fair enough! No more reboots for now!
+ Let's see what happens if we 
+let 
+rapportd
+ run
+ while Lulu 
+keeps it on a leash.
+ ðð
+
+ð¥ Testing 
+rapportd
+ with Lulu Blocking It
+
+Since Lulu is 
+actively blocking all outbound connections
+, 
+rapportd
+
+should be running but completely useless.
+ Letâs test:
+
+â Step 1: Check if 
+rapportd
+ is Trying to Connect
+
+Run this command to see if 
+rapportd
+ is 
+still attempting network activity
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+ð 
+Expected result:
+
+No established outbound connections.
+
+ð If you see 
+(LISTEN)
+, it means it's running but canât connect anywhere.
+
+â Step 2: Check Lulu's Network Events
+
+Open 
+Lulu
+.
+
+Go to 
+Network Events
+.
+
+Look for any 
+blocked attempts by 
+rapportd
+
+.
+
+ð 
+If 
+rapportd
+ is repeatedly trying and getting blocked, it means itâs completely useless.
+ ð
+
+â Step 3: Manually Trigger 
+rapportd
+
+Letâs see how it reacts if we 
+manually activate it
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl start com.apple.rapportd
+
+Then immediately check Lulu logs & active connections:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+ð If 
+Lulu blocks all traffic
+, 
+rapportd
+ is 
+neutered
+ but still 
+alive
+ in the system.
+
+ð¤ What Happens Next?
+
+If 
+rapportd
+
+stays quiet and does nothing
+ â 
+Lulu is doing its job.
+
+If it 
+keeps trying to connect but fails
+ â 
+Itâs running in the background but is 100% ineffective.
+
+If it 
+finds a way to connect
+ â Weâll need 
+extra layers of blocking.
+ ð¥
+
+ð 
+Give it a try & let me know what you find!
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % 
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep rapportd
+
+rapportd  1200            sja    8u  IPv4 0x13f657e9d71fdcaf      0t0    TCP *:49165 (LISTEN)
+rapportd  1200            sja    9u  IPv6 0x192e0634e8ac0af1      0t0    TCP *:49165 (LISTEN)
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¥ 
+Interesting! 
+rapportd
+ is still LISTENING, but itâs not making OUTBOUND connections.
+ ð
+
+This means 
+Lulu is doing its job
+, but 
+rapportd
+ is still 
+active
+ in the background. Letâs dig deeper.
+
+ð¡ï¸ Step 1: Check If Itâs Trying to Connect Out
+
+Since 
+rapportd
+ is in a 
+LISTEN
+ state, itâs waiting for something. Letâs check if itâs actually making outbound requests:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep ESTABLISHED | grep rapportd
+
+ð 
+Expected:
+
+No output
+ (because Lulu is blocking it).
+
+ð 
+If there is output
+, it found a way past Lulu, and we need to go harder. ð¥
+
+ð¡ï¸ Step 2: Watch Luluâs Logs for Activity
+
+Open 
+Lulu
+.
+
+Go to 
+Network Events
+.
+
+Look for 
+rapportd
+ entries 
+(they should be blocked)
+.
+
+If 
+Lulu shows 
+rapportd
+ trying and failing
+, 
+itâs still attempting to connect
+, but itâs failing.
+
+ð 
+If Lulu is catching & blocking it, itâs effectively useless.
+
+ð 
+If there are no logs, 
+rapportd
+ isnât even trying to connect anymore.
+ ð
+
+ð¡ï¸ Step 3: Force 
+rapportd
+ to Try & Connect
+
+Letâs provoke 
+rapportd
+ and see how it reacts:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl kickstart -k system/com.apple.rapportd
+
+Then immediately check:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+sudo netstat -an | grep rapportd
+
+ð 
+If it stays in LISTEN mode with no outb

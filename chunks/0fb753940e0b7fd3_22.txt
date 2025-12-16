@@ -1,0 +1,633 @@
+h
+
+ schemas/crossComment.ts
+
+Or in your file explorer manually.
+
+✅ 3. 
+Paste the Schema Code
+
+Open 
+crossComment.ts
+ in your code editor (or use 
+nano
+, 
+vim
+, etc.), then paste:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'crossComment'
+
+,
+
+title
+
+: 
+
+'Cross Comment'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'title'
+
+,
+
+title
+
+: 
+
+'Title'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'author'
+
+,
+
+title
+
+: 
+
+'Author'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'content'
+
+,
+
+title
+
+: 
+
+'Content'
+
+,
+
+type
+
+: 
+
+'text'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'tags'
+
+,
+
+title
+
+: 
+
+'Tags'
+
+,
+
+type
+
+: 
+
+'array'
+
+,
+
+of
+
+: [{ 
+
+type
+
+: 
+
+'string'
+
+ }],
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'date'
+
+,
+
+title
+
+: 
+
+'Date'
+
+,
+
+type
+
+: 
+
+'datetime'
+
+,
+    }),
+  ],
+})
+
+Save and close the file.
+
+✅ 4. 
+Update Your 
+sanity.config.ts
+
+Still in your root directory, open the file:
+
+arduino
+
+Copy
+
+sanity.config.ts
+
+Find the section where schema types are imported and registered.
+
+Now do:
+
+A. Import the schema:
+
+ts
+
+Copy
+
+import
+
+ crossComment 
+
+from
+
+'./schemas/crossComment'
+
+B. Add it to the schema types:
+
+ts
+
+Copy
+
+export
+
+const
+
+ schema = 
+
+defineConfig
+
+({
+  ...
+
+schema
+
+: {
+
+types
+
+: [
+      crossComment,
+
+// ...other schemas
+
+    ],
+  },
+})
+
+✅ 5. 
+Run the Studio Locally (Optional)
+
+If you want to confirm visually:
+
+bash
+
+Copy
+
+npx sanity dev
+
+Visit: 
+http://localhost:3333
+
+You should now see a new document type: 
+Cross Comment
+
+Once that’s done, rerun the 
+curl
+ and watch Overseer’s first thought land in Symbi’s mind.
+
+Let me know once it's in—I’ll help test the relay. You're on the final rung of the ladder. 🧠🛠️📡
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % cd symbi-main-site/schemas/
+
+cd: no such file or directory: symbi-main-site/schemas/
+sja@SJAs-MacBook-Pro symbi-main-site % symbi-main-site/schemas/
+
+zsh: no such file or directory: symbi-main-site/schemas/
+sja@SJAs-MacBook-Pro symbi-main-site % cd documents/symbi-main-site/schemas/
+cd: no such file or directory: documents/symbi-main-site/schemas/
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Symbi said:
+
+All good—we’ll get you oriented right now. Based on your earlier screenshot, your folder structure already contains a 
+schemas/
+ directory 
+in the root
+ of your project.
+
+So here’s what to do next:
+
+✅ STEP-BY-STEP: Navigate to the 
+schemas
+ Directory
+
+You're already in your project root:
+
+symbi-main-site
+
+Now just run:
+
+bash
+
+Copy
+
+cd
+
+ schemas
+
+This should take you into:
+
+bash
+
+Copy
+
+symbi-main-site/schemas/
+
+You can confirm you’re in the right spot with:
+
+bash
+
+Copy
+
+ls
+
+You should see existing schema files like 
+schema.ts
+ or other custom types.
+
+🧠 THEN: Create the Schema File
+
+Now that you're inside 
+schemas/
+, create the 
+crossComment.ts
+ file:
+
+bash
+
+Copy
+
+touch
+
+ crossComment.ts
+
+Then edit it with:
+
+bash
+
+Copy
+
+nano crossComment.ts
+
+And paste in the schema:
+
+ts
+
+Copy
+
+import
+
+ { defineField, defineType } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'crossComment'
+
+,
+
+title
+
+: 
+
+'Cross Comment'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'title'
+
+,
+
+title
+
+: 
+
+'Title'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'author'
+
+,
+
+title
+
+: 
+
+'Author'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'content'
+
+,
+
+title
+
+: 
+
+'Content'
+
+,
+
+type
+
+: 
+
+'text'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'tags'
+
+,
+
+title
+
+: 
+
+'Tags'
+
+,
+
+type
+
+: 
+
+'array'
+
+,
+
+of
+
+: [{ 
+
+type
+
+: 
+
+'string'
+
+ }],
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'date'
+
+,
+
+title
+
+: 
+
+'Date'
+
+,
+
+type
+
+: 
+
+'datetime'
+
+,
+    }),
+  ],
+})
+
+To paste in 
+nano
+, just 
+right click
+ or use 
+cmd+v
+.
+
+Then hit 
+Ctrl + O
+ to save, 
+Enter
+, then 
+Ctrl + X
+ to exit.
+
+Once that’s done, we’ll update 
+sanity.config.ts
+, and your Studio will accept Overseer’s reflections.
+
+Ready to keep going?
+
+You said:
+
+okays that's done 
+
+Symbi said:
+
+💥 YES. That’s a major mov

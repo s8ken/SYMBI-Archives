@@ -1,0 +1,420 @@
+ss 
+Y
+ to confirm saving.
+
+Press 
+Enter
+ to write the file.
+
+🔄 Finally, restart your dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+And you’re golden ✨ Let me know if you want to test the update/save flow again!
+
+You said:
+
+ja@SJAs-MacBook-Pro symbi-main-site % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 1461ms
+ ○ Compiling / ...
+ ✓ Compiled / in 5.3s (4739 modules)
+ ✓ Compiled in 174ms (1755 modules)
+ GET / 200 in 5353ms
+ GET / 200 in 104ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 620ms (4720 modules)
+ GET /host 404 in 678ms
+
+Vercel Deployment Expert GPT said:
+
+🔥 That’s a 
+win
+! Everything compiled successfully and your 
+.env.local
+ file was detected — notice this line:
+
+diff
+
+Copy
+
+- Environments: .env.local
+
+That means your Sanity environment variables are now in place ✅
+
+✅ Next Steps to Test It All
+
+Now that the setup is live:
+
+Head to 
+http://localhost:3001/studio
+ in your browser.
+
+Try editing and saving that 
+test page
+ in Sanity Studio again.
+
+Confirm that:
+
+You can 
+save
+ the updated content (no API/network error).
+
+It 
+reflects
+ on 
+http://localhost:3001
+ if your Next.js page is fetching from Sanity.
+
+Let me know how the save goes. If it still errors out, we’ll recheck the token scope or CORS — but it looks like we’re right on track 🚀
+
+You said:
+
+I got got a 404
+
+Vercel Deployment Expert GPT said:
+
+Thanks for the update — let’s get you into the Studio. A 404 on 
+/studio
+ usually means one of these:
+
+🔍 Quick Debug Checklist
+
+✅ 1. 
+Check Sanity Studio Route
+
+You must have this file in your Next.js app:
+
+bash
+
+Copy
+
+app/studio/[[...index]]/page.tsx
+
+If that folder/file isn’t there, create it like this:
+
+bash
+
+Copy
+
+mkdir
+
+ -p app/studio/[[...index]]
+
+Then inside that folder, create 
+page.tsx
+ with:
+
+tsx
+
+Copy
+
+'use client'
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+'next-sanity/studio'
+
+import
+
+ config 
+
+from
+
+'../../../sanity.config'
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />
+}
+
+✅ 2. 
+Double Check Your 
+sanity.config.ts
+
+Make sure it's at the root of your project (next to 
+package.json
+) and looks like this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+  },
+})
+
+✅ 3. 
+Restart Dev Server
+
+If you made any of those changes, restart Next.js:
+
+bash
+
+Copy
+
+npm run dev
+
+Once that’s confirmed, navigate to:
+
+bash
+
+Copy
+
+http://localhost:3001/studio
+
+It should now load your embedded Sanity Studio.
+
+Let me know what happens next, and I’ll walk with you through the rest.
+
+You said:
+
+acutally it came back up 
+
+Vercel Deployment Expert GPT said:
+
+Perfect! 🙌 That means everything is connected correctly now — Next.js, Sanity Studio, schema, and embedded route at 
+/studio
+.
+
+✅ Next Steps (Optional but Recommended)
+
+If you're ready to integrate CMS content into the main site:
+
+Verify GROQ Queries
+ – You already tested fetching data from Sanity.
+
+Use your 
+lib/sanity.ts
+
+ to create functions like 
+getPage()
+:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+return
+
+ client.
+
+fetch
+
+(
+
+`

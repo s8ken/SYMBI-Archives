@@ -1,0 +1,50 @@
+tries you see are 
+inactive placeholders
+ and 
+should not be able to start without explicit permission
+.
+
+ð ï¸ Final Check: Are They Still Running?
+
+Letâs verify that the services are truly 
+inactive
+. Run:
+
+sh
+
+Copy
+
+ps aux | grep -i remote
+ps aux | grep -i share
+
+ð 
+If you only see the "grep" process itself but no active services, then everything is successfully disabled.
+
+ð 
+Send me the output, and Iâll confirm for you! ð
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl bootout system/com.apple.RemoteDesktop.PrivilegeProxy
+
+Boot-out failed: 150: Operation not permitted while System Integrity Protection is engaged
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -i remote
+ps aux | grep -i share
+
+lcl                913   0.0  0.2 427148976  26112   ??  Ss   10:41pm   0:00.72 /System/Library/PrivateFrameworks/LocalAuthenticationUI.framework/Versions/A/XPCServices/LocalAuthenticationRemoteService.xpc/Contents/MacOS/LocalAuthenticationRemoteService
+_rmd               718   0.0  0.0 410735440   2512   ??  Ss   10:15pm   0:00.07 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedConfigurationFilesSubscriber.xpc/Contents/MacOS/ManagedConfigurationFilesSubscriber
+_rmd               717   0.0  0.0 410734752   3184   ??  Ss   10:15pm   0:00.07 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber
+_rmd               716   0.0  0.0 410735376   1152   ??  Ss   10:15pm   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SoftwareUpdateSubscriber.xpc/Contents/MacOS/SoftwareUpdateSubscriber
+_rmd               715   0.0  0.0 410734784     64   ??  Ss   10:15pm   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/DiskManagementSubscriber.xpc/Contents/MacOS/DiskManagementSubscriber
+_rmd               714   0.0  0.0 410734800     80   ??  Ss   10:15pm   0:00.09 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/PasscodeSettingsSubscriber.xpc/Contents/MacOS/PasscodeSettingsSubscriber
+_rmd               713   0.0  0.0 410734768     64   ??  Ss   10:15pm   0:00.10 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/LegacyProfilesSubscriber.xpc/Contents/MacOS/LegacyProfilesSubscriber
+_rmd               711   0.0  0.0 410735296     96   ??  Ss   10:15pm   0:00.10 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber
+_rmd               710   0.0  0.0 410734768     64   ??  Ss   10:15pm   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/InteractiveLegacyProfilesSubscriber.xpc/Contents/MacOS/InteractiveLegacyProfilesSubscriber
+_rmd               708   0.0  0.0 410734816    112   ??  Ss   10:15pm   0:00.09 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SecuritySubscriber.xpc/Contents/MacOS/SecuritySubscriber
+_rmd               706   0.0  0.0 426966880   4656   ??  Ss   10:15pm   0:00.12 /System/Library/PrivateFrameworks/RemoteManagement.framework/remotemanagementd
+lcl                503   0.0  0.0 426928176   3264   ??  S    10:13pm   0:00.02 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoteagent
+lcl               1747   0.0  0.0 410734352   1712 s000  S+   11:56pm   0:00.00 grep -i remote
+root                81   0.0  0.1 426971104  13008   ??  Ss   10:12pm   0:00.49 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+root                94   0.0  0.0 426965408   3184   ??  Ss+  10:12pm   0:00.04 /usr/libexec/remoted
+lcl               1691   0.0  0.3 427022096  49376   ??  Ss   11:52pm   0:00.14 /System/Library/PrivateFrameworks/LocalAuthenticationUI.framework/Versions/A/XPCServices/LocalAuthenticationRemoteService.xpc/Contents/MacOS/LocalAuthenticationRemoteService
+lcl               1598   0.0  0.3 427022064  49328   ??  Ss   11:45pm  

@@ -1,0 +1,621 @@
+ style=3D"c=
+olor:#c00">'+ev.data.error+'</pre>';
+    });
+  </script>
+  </body></html>`
+;
+}
+
+export
+
+function
+
+deactivate
+
+(
+
+) {}
+
+src/net.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+'vscode'
+
+;
+
+export
+
+function
+
+getApiBase
+
+(
+
+): 
+
+string
+
+ | 
+
+undefined
+
+ {
+
+return
+
+ vsco=
+de.
+
+workspace
+
+=
+.
+
+getConfiguration
+
+(
+
+'symbi'
+
+=
+
+).
+
+get
+
+&=
+lt;
+
+string
+
+>=
+;(
+
+'apiBase'
+
+) |=
+| process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+;
+}
+
+export
+
+async
+
+=
+
+function
+
+fetchJson
+
+(
+
+path: 
+string
+
+, ctx: vscode.ExtensionContext, init: 
+
+any
+
+ =3D {}) {
+
+const
+
+ base =
+=3D 
+
+getApiBase
+
+(); 
+
+if
+
+ (!base) 
+
+throw
+
+new
+
+Error
+
+(
+=
+
+'API base not configured'
+
+);
+
+const
+
+ secre=
+ts =3D ctx.
+
+secrets
+
+=
+
+;
+
+const
+
+ token=
+ =3D 
+
+await
+
+ se=
+crets.
+
+get
+
+(
+
+'SYMBI_API_KEY'
+
+=
+
+); 
+
+// store once via comman=
+d or settings UI
+
+const
+
+ heade=
+rs =3D { 
+
+'Content-Type'
+
+: 
+
+'application/json'
+
+, ...(init.
+
+header=
+s
+
+||{}) };
+
+if
+
+ (token) =
+(headers 
+
+as
+
+any
+
+).
+
+Authorization
+
+ =3D 
+
+`Bearer 
+$=
+{token}
+
+`;
+
+const
+
+ res =
+=3D 
+
+await
+
+fetch
+
+(ba=
+se + path, { ...init, headers });
+
+if
+
+ (!res.
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`
+${res.status}
+
+${res.statusText}
+=
+
+`);
+
+return
+
+ res.=
+
+json
+
+(=
+);
+}
+
+src/ledgerView.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+'vscode'
+
+;
+
+import
+
+ { fetc=
+hJson } 
+
+from
+
+ =
+
+'./net'
+
+;
+
+export
+
+class
+
+=
+
+SymbiLedgerProvider
+
+implements
+
+ vsc=
+ode.
+
+TreeDataProvider
+
+<vscode.
+
+TreeItem
+
+> {
+
+private
+
+ _on=
+DidChangeTreeData =3D 
+
+new
+
+ vscode.
+
+EventEmitter=
+
+<
+
+void
+
+>();
+
+readonly
+
+ on=
+DidChangeTreeData =3D 
+
+=
+this
+
+.
+
+_onDidC=
+hangeTreeData
+
+.
+
+event
+
+;
+
+constructor
+
+(
+
+private
+
+ ctx: vscode.ExtensionContext) {}
+
+refresh
+
+(
+
+){ 
+
+this
+
+.
+
+_onDidChangeTreeData
+
+.
+
+fire
+
+(); }
+
+async
+
+getChildren
+
+(): 
+
+Promise
+
+<vscode.
+
+TreeItem
+
+[]> {
+
+try
+
+ {
+
+const
+
+ r=
+es =3D 
+
+await
+
+ =
+
+fetchJson
+
+(
+
+'/api/sessions/recent?limit=
+=3D50'
+
+, 
+
+this
+
+.
+
+c=
+tx
+
+);
+
+return
+
+ =
+(res.
+
+items
+
+||=
+[]).
+
+map
+
+(
+
+(
+=
+sid: 
+string
+
+=
+) =3D> 
+
+new
+
+=
+ vscode.
+
+TreeItem
+
+(sid, vscode.
+
+TreeItemCol=
+lapsibleState
+
+.
+
+Collapsed
+
+));
+    } 
+
+catch
+
+ {
+
+return
+
+ =
+[
+
+new
+
+ vscode.
+
+TreeItem
+
+(=
+
+'No sessions or server offline'
+
+)];
+    }
+  }
+
+// Optional: expand to show eve=
+nts per session
+
+getTreeItem
+
+(
+
+element: vscode.TreeItem
+
+) { 
+
+return
+
+ element; }
+}
+
+Settings tip
+: expose a 
+symbi.apiBase
+ setting and a command to save 
+SYMBI_API_KEY
+ into 
+SecretStorage
+.
+
+Rollout (one sprint)
+
+Day 1=E2=80=932:
+ Scaffold extension, webview console, =
+status bar, SecretStorage, 
+/ass=
+istant/message
+ call.
+
+Day 3:
+ Ledger tree (recent sessions) + verify command.=
+
+Day 4:
+ Trust overlays (chips, minimal) and guardrails =
+badges in console.
+
+Day 5:
+ QA on VS Code + VSCodium; sanity check on Trae/=
+Cursor (fall back to webview if chat API missing).
+
+Day 6:
+ Package 
+.vsix
+ and internal docs; private distribution.
+
+Day 7:
+ Measure: round-trip latency, error rates, adopt=
+ion; plan A2.
+
+Acceptance criteria
+
+No provider keys in extension.
+
+Console =E2=86=92 backend =E2=86=
+=92 assistant (latest) works.
+
+Ledger view lists recent sessions;=
+ verify works.
+
+Status bar reflects mode.
+
+No new deps in your backend; exten=
+sion is =E2=89=A4 a few files, <1000 LOC.
+
+If you want, I can turn this into =
+a 
+minimal repo layout and bui=
+ld scripts
+ (ready to 
+v=
+sce package
+) or write the 
+settings UI
+ to store 
+SYMBI_API_KEY
+ safely.
+
+=
+
+=
+
+You said:
+
+is it similar to this?
+
+You said:
+
+https://code.visualstudio.com/docs/devcontainers/create-dev-conta=
+iner
+
+Symbi said:
+
+Thought for 28s
+
+=
+
+Short version: 
+related but different.
+
+That VS Code page is about 
+Dev Co=
+ntainers
+=E2=80=94packaging a 
+development environment
+ (tools, runtimes, services) in Docker via 
+devcontainer.json
+. Our plan=
+ is a 
+VS Code extension
+ (UI + commands) that talks to your existing backend. They=E2=80=99re 
+orthogonal and complementary
+:
+
+Dev Container
+ =3D 
+where
+ the project runs (Node 18, pnpm, Mongo, Redis, etc.). 
+
+Visual Stu=
+dio Code
+
+Symbi Extension
+ =3D 
+how
+ you intera

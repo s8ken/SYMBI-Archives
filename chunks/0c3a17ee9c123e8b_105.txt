@@ -1,0 +1,214 @@
+own:0:0\nHTTPAccessFallbackBoundary@unknown:0:0\nLoadingBoundary@unknown:0:0\nErrorBoundary@unknown:0:0\nComponent@\nScrollAndFocusHandler@unknown:0:0\nRenderFromTemplateContext@unknown:0:0\nOuterLayoutRouter@unknown:0:0\nInnerLayoutRouter@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nComponent@\nHTTPAccessFallbackBoundary@unknown:0:0\nLoadingBoundary@unknown:0:0\nErrorBoundary@unknown:0:0\nComponent@\nScrollAndFocusHandler@unknown:0:0\nRenderFromTemplateContext@unknown:0:0\nOuterLayoutRouter@unknown:0:0\nV@unknown:0:0\nJ@unknown:0:0\nThemeProvider@unknown:0:0\nbody@unknown:0:0\nhtml@unknown:0:0\nRootLayout@unknown:0:0\nClientSegmentRoot@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nComponent@\nHTTPAccessFallbackBoundary@unknown:0:0\nDevRootHTTPAccessFallbackBoundary@unknown:0:0\nPureComponent@\nHotReload@unknown:0:0\nRouter@unknown:0:0\nComponent@\nErrorBoundary@unknown:0:0\nAppRouter@unknown:0:0\nServerRoot@unknown:0:0\nRoot@unknown:0:0",
+    "line": 8,
+    "column": 3917,
+    "stack": "@"
+  },
+  "eventId": null
+}
+
+Vercel Deployment Expert GPT said:
+
+Thanks for sharing that detailed error. The key issue is here:
+
+Request error while attempting to reach https://wryptr7v.api.sanity.io/...
+
+This indicates a 
+network error
+, meaning your Studio can't reach Sanity’s API.
+
+✅ Most Likely Cause:
+
+Your local development server (e.g., 
+http://localhost:3000
+) is 
+not whitelisted in Sanity’s CORS settings
+.
+
+🔧 Fix: Add 
+localhost
+ to Sanity CORS origins
+
+Go to the 
+Sanity project settings
+
+In the 
+API
+ tab, scroll to 
+CORS Origins
+ and click “
+Add CORS Origin
+”
+
+Enter:
+
+arduino
+
+Copy
+
+http:
+
+//localhost:3000
+
+✅ Check 
+“Allow credentials”
+
+Save
+ the changes.
+
+🔁 Then:
+
+Restart your local dev server
+:
+
+bash
+
+Copy
+
+npm run dev
+
+Head to 
+http://localhost:3000/studio
+
+, try editing again.
+
+Let me know if you hit any blockers after this. Once the connection is stable, we’ll make sure your site pulls in Sanity content as intended.
+
+You said:
+
+yeah its for the 3000 and the 3001
+
+Vercel Deployment Expert GPT said:
+
+Perfect — you're spot on for whitelisting both ports.
+
+✅ Here's what your Sanity CORS origins list should include:
+
+arduino
+
+Copy
+
+http:
+
+//localhost:3000
+
+http:
+
+//localhost:3001
+
+And for each, make sure:
+
+✅ “Allow credentials” is 
+checked
+
+💾 You 
+save
+ after adding each one
+
+🔁 Once added:
+
+Restart your local server:
+
+bash
+
+Copy
+
+npm run dev
+
+Open your Sanity Studio at 
+
+http://localhost:3000/studio
+
+(or port 3001, depending on what’s in use)
+
+Try editing and saving a document again.
+
+If you’re still getting errors after that, we’ll dig into API keys or firewall blocks — but this fix usually clears it. Ready to test again?
+
+Thanks for confirming — since both 
+http://localhost:3000
+ and 
+http://localhost:3001
+ are already whitelisted in your CORS settings and the issue still persists, let’s run through a rapid-fire 🔍 
+diagnostic checklist
+ to pinpoint the cause.
+
+✅ Quick Sanity Save Debug Checklist:
+
+1. 
+Token Permissions (If Using an API Token)
+
+Are you using an API token (like in a 
+.env.local
+ or headers)? If so:
+
+Make sure the token has 
+write permissions
+
+Go to 
+Sanity Manage
+
+, click your project → 
+API
+ tab → scroll to "Tokens"
+
+If you're not using a token for local studio, skip this.
+
+2. 
+Check if You're Online
+
+Since this is a 
+networkError
+, confirm:
+
+🛜 You're connected to the internet
+
+🌐 You can access 
+https://wryptr7v.api.sanity.io/v2025-02-19/data/...
+ in your browser (try opening it — it should show a JSON message if working)
+
+3. 
+Sanity Project Dataset Permissions
+
+Run this in terminal:
+
+bash
+
+Copy
+
+npx sanity debug
+
+Then check:
+
+Is the 
+dataset
+ listed as 
+production
+?
+
+Is it set to 
+public
+ or 
+private
+?
+
+If it's private:
+
+You 
+must
+ be logged into Sanity Studio
+
+Or use an authenticated token
+
+4. 
+Sanity Studio Authentication
+
+From the error, it looks like a request using an 
+Authorization: Bearer
+ header failed. Are you:
+
+Editing the content 
+as a logged-in user in Studio
+?
+
+If not logged in, 
+clic

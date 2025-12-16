@@ -1,0 +1,259 @@
+.
+
+Look into your Docker daemon setti=
+ngs (was it exposed to the internet via a port like 2375?).
+
+Review your firewall and 
+netstat
+ output for unknown open p=
+orts.
+
+If you'd like, I can walk you thro=
+ugh analyzing the container 
+l=
+ine by line
+=E2=80=94just run 
+docker inspect <container_id>
+ and paste the output here=
+.
+
+Let=E2=80=99s figure out 
+exactly what it was doing
+.
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  C=
+REATED          STATUS                     PORTS     NAMES
+a38b8d151f7b   docker/welcome-to-docker:latest   "/docker-entrypoint.=E2=80=
+=A6"   11 minutes ago   Exited (0) 7 minutes ago             welcome-to-doc=
+ker
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Thanks for sharing that =E2=80=94 the container you're seeing:
+
+vb=
+net
+
+Copy code
+
+=
+
+IMAGE:
+
+ docker/welcome=
+-
+
+to
+
+-docker:la=
+test
+
+CONTAINER:
+
+ wel=
+come-
+
+to
+
+-docke=
+r
+
+STATUS:
+
+ Exited=
+ (
+
+0
+
+)
+
+=E2=9C=85 GOOD NEWS: This one=E2=80=
+=99s safe.
+
+This is just 
+Docker=E2=80=99s official welcome/test container
+. It's automatically created the 
+first time Docker is installed
+ to confirm everything is worki=
+ng. It usually:
+
+Runs a brief demo or prints a messag=
+e.
+
+Exits immediately (as it did here).
+
+Is totally harmless.
+
+It looks like it was created just 
+11 minutes ago
+, so it co=
+incides with your recent install =E2=80=94 not 2 years ago. That means: 
+no existing containers from before=
+
+ are present.
+
+=F0=9F=A7=A0 Why It Might Have Look=
+ed Suspicious
+
+The image tag might show 
+latest
+, but the image itself could=E2=
+=80=99ve been 
+last updated 2+ y=
+ears ago
+.
+
+Tools like 
+Docker Desktop
+ or security scanners might show 
+CVEs
+ or 
+vulnerabilities
+ in this image just becau=
+se it=E2=80=99s old.
+
+That doesn=E2=80=99t mean it was ex=
+ploited =E2=80=94 it just means 
+it uses an outdated base image
+, which isn't ideal for production=
+ but is harmless in this case.
+
+=F0=9F=A7=B9 You Can Safely Remov=
+e It (Optional)
+
+If you want to clean it up:
+
+bash
+
+Copy code
+
+docker 
+
+rm
+
+ welcome-to-docker
+docker rmi docker/welcome-to-docker:latest
+
+And you=E2=80=99re all set with a =
+clean slate. =F0=9F=A7=BC
+
+If you want to dive into using Docker securely and build your o=
+wn containers (like SYMBI or NGINX), I can guide you through a safe, harden=
+ed setup. Want to try that next?
+
+You said=
+:
+
+yeah so the files within th=
+e container itself were much older 
+
+=
+
+Symbi said:
+
+=
+
+Thanks for sharing the screenshot =E2=80=94 and you=E2=80=99=
+re absolutely right to be cautious.
+
+=F0=9F=94=8E What This Screenshot Te=
+lls Us
+
+You're viewing 
+Docker Scout=E2=80=99s vulnerability scan
+ o=
+n the 
+docker/welcome-to-docker:la=
+test
+ image, and here's the critical context:
+
+=F0=9F=A7=A0 Key Observations:
+
+Base Image
+: 
+ngi=
+nx:1-alpine-slim
+
+This is where 
+all the vulnerabilities are coming from
+.
+
+The 
+welcome-to-docker
+ image is 
+based on Alpine + NGINX
+, and that Alpine version is 
+old and unmaintained
+.
+
+Created: 2 years ago
+
+This means the image was built and p=
+ublished by Docker 
+2 years ago
+, not that it was running on your system all that time.
+
+Docker just 
+pulled it recently
+ as part of the installation=
+ test.
+
+Vulnerabilities: 16
+
+Including 
+critical ones
+ like:
+
+CVE-2024-5535
+ (9.1 severity)
+
+CVE-2025-26519
+ (8.1)
+
+These are often vulnerabilities in c=
+ore Alpine libraries (
+musl
+=
+, 
+busybox
+, etc.), 
+not something actively malicious
+.
+
+=E2=9C=85 
+Fixable
+: These CVEs 
+do have fixes available
+, meaning they are res=
+olved in newer base images.
+
+=E2=9A=96=EF=B8=8F Reality Check
+
+This image is 
+insecure
+ by today=E2=80=99s standards =
+but:
+
+It=E2=80=99s 
+not actively dangerous
+ unless you were ru=
+nning it as a public-facing service.
+
+It was 
+never meant to be used in production
+ =E2=80=94 =
+it's a "hello world" demo.
+
+The vulnerabilities reflect 
+known issues in an old Alpine base
+, not something maliciously crafted.
+
+=F0=9F=9B=A0=EF=B8=8F What You Ca=
+n Do
+
+1. 
+Clean It Up

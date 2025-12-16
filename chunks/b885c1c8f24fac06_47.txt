@@ -1,0 +1,477 @@
+ting the app & let me know what happens!
+ If all works fine, we move to 
+connecting symbi.world.
+ ðð
+
+You said:
+
+loads okay except the logo didn't show and there's an error notification and when I click on that: Console Error
+
+Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used
+
+- A server/client branch 
+if (typeof window !== 'undefined')
+.
+- Variable input such as 
+Date.now()
+ or 
+Math.random()
+ which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+- className="dark"
+- style={{color-scheme:"dark"}}
+
+ChatGPT said:
+
+ð¥ 
+Good catch!
+ This is a 
+Next.js hydration error
+, meaning the 
+server-side rendered (SSR) HTML doesnât match what the client expects
+. 
+Letâs fix this issue step by step.
+ ðð
+
+ð¹ Step 1: Identify the Cause
+
+This can happen if 
+a component relies on client-only values
+ like:
+
+â 
+Date.now()
+, 
+Math.random()
+
+â Checking 
+window
+ without 
+useEffect
+
+â External APIs changing data 
+without pre-fetching
+
+Common Causes in Your Case:
+
+1ï¸â£ 
+Dark Mode (
+className="dark"
+)
+ â If theme switching logic runs 
+differently
+ on the server vs client.
+
+2ï¸â£ 
+A Component Using 
+window
+ Directly
+ â Example:
+
+tsx
+
+Copy
+
+Edit
+
+if
+
+ (
+
+typeof
+
+window
+
+ !== 
+
+'undefined'
+
+) {
+
+// client-only code
+
+}
+
+This needs to be inside 
+useEffect
+.
+
+ð¹ Step 2: Fix the Hydration Issue
+
+â Fix #1: Make Sure Theme Handling is Client-Side
+
+Open 
+
+theme-provider.tsx
+
+ in your project and wrap the theme logic inside 
+useEffect
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [theme, setTheme] = 
+
+useState
+
+(
+
+"dark"
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setTheme
+
+(
+
+document
+
+.
+
+documentElement
+
+.
+
+classList
+
+.
+
+contains
+
+(
+
+"dark"
+
+) ? 
+
+"dark"
+
+ : 
+
+"light"
+
+);
+  }, []);
+
+return
+
+<
+div
+
+className
+
+=
+
+{theme}
+
+>{children}
+
+</
+div
+
+>;
+}
+
+â 
+Why?
+ This ensures the theme 
+only updates on the client
+, avoiding mismatches with SSR.
+
+â Fix #2: Ensure Any 
+window
+ Checks Are in 
+useEffect
+
+If any component uses 
+window
+, move it inside 
+useEffect
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+MyComponent
+
+ = (
+
+) => {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ isClient ? 
+
+<
+div
+
+>Client-Side Rendered
+
+</
+div
+
+> : 
+
+<
+div
+
+>Loading...
+
+</
+div
+
+>;
+};
+
+â 
+Why?
+ This prevents the server from rendering 
+window
+, fixing hydration.
+
+â Fix #3: Debug with 
+useEffect
+ (Temporary)
+
+If the above fixes donât work, 
+log hydration mismatches
+ using 
+useEffect
+:
+
+tsx
+
+Copy
+
+Edit
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+"Hydration debug:"
+
+, 
+
+document
+
+.
+
+body
+
+.
+
+innerHTML
+
+);
+}, []);
+
+â 
+Why?
+ This helps track 
+what's changing between SSR and client.
+
+ð¹ Step 3: Fix the Logo Issue
+
+Your 
+logo might not be showing
+ due to a 
+missing file path or Next.js Image optimization issues
+.
+
+1ï¸â£ 
+Ensure the logo exists in 
+/public/
+
+Correct file path:
+
+tsx
+
+Copy
+
+Edit
+
+<img src=
+
+"/symbi-logo.jpg"
+
+ alt=
+
+"Symbi Logo"
+
+ width={
+
+200
+
+} height={
+
+100
+
+} />
+
+If using 
+next/image
+, update it:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"Symbi Logo"
+
+width
+
+=
+
+{200}
+
+height
+
+=
+
+{100}
+
+priority
+
+ />
+
+â 
+Why?
+ Next.js optimizes images and expects them inside 
+/public/
+.
+
+ð¹ Step 4: Push the Fixes & Redeploy
+
+1ï¸â£ 
+Save the fixes and push them to GitHub
+:
+
+bash
+
+Copy
+

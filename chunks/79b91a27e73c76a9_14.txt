@@ -1,0 +1,203 @@
+there were no critical issues
+.
+
+Next Steps: Let's Hunt for Spyware & Remote Monitoring
+
+Since ClamAV found 
+no traditional viruses
+, let’s check for 
+hidden surveillance tools
+:
+
+1️⃣ Run a Security Audit with Lynis
+
+sh
+
+Copy
+
+Edit
+
+brew install lynis
+sudo lynis audit system
+
+👉 This will 
+scan your Mac for security weaknesses
+, 
+remote access services
+, and 
+misconfigured permissions
+.
+
+2️⃣ Detect Hidden Malware with KnockKnock
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask knockknock
+open /Applications/KnockKnock.app
+
+👉 This tool will 
+list all persistent startup malware
+ that 
+ClamAV might not detect
+.
+
+3️⃣ Monitor for Spyware Accessing Your Camera/Microphone
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask oversight
+open /Applications/OverSight.app
+
+👉 
+If spyware is secretly using your mic or camera, OverSight will catch it.
+
+4️⃣ Detect Hidden Outbound Traffic with LuLu
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask lulu
+open /Applications/LuLu.app
+
+👉 
+If any hidden malware is sending data over the internet, LuLu will warn you.
+
+Final Step: Let Me Know What You Want to Do Next!
+
+✅ If you want to 
+stop the ClamAV scan
+, press 
+
+CTRL + C
+
+.
+
+✅ If you want to 
+continue checking for spyware
+, start with 
+Lynis
+ and tell me what it finds! 🚀
+
+You said:
+
+    Why do I see this error?
+    -------------------------------
+    This is a protection mechanism to prevent the root user from executing user created files. The files may be altered, or including malicious pieces of script.
+
+    What can I do?
+    ---------------------
+    Option 1) Check if a trusted user created the files (e.g. due to using Git, Homebrew or similar).
+              If you trust these files, you can decide to continue this run by pressing ENTER.
+
+    Option 2) Change ownership of the related files (or full directory).
+
+       Commands (full directory):
+         # cd ..
+         # chown -R 0:0 lynis
+         # cd lynis
+         # ./lynis audit system
+
+[ Press ENTER to continue, or CTRL+C to cancel ]
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Ah, you've encountered 
+Lynis’ security check
+, which is preventing execution because some files 
+aren’t owned by the root user
+. This is a safeguard against 
+malicious script execution
+.
+
+What To Do Next?
+
+You have 
+two options
+:
+
+Option 1: Trust the Files & Continue
+
+If you trust these files (since they came from Homebrew), simply 
+press ENTER
+ and let the scan continue.
+
+Option 2: Fix Ownership (Recommended for Future Runs)
+
+If you don’t want to see this warning again, change the ownership of the Lynis directory so it belongs to 
+root
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chown
+
+ -R 0:0 /opt/homebrew/Cellar/lynis
+
+cd
+
+ /opt/homebrew/Cellar/lynis
+sudo ./lynis audit system
+
+Which Option Should You Choose?
+
+✅ 
+If you want a quick scan
+, just 
+press ENTER
+ and let it run.
+
+✅ 
+If you want to permanently fix this issue
+, use 
+Option 2
+.
+
+Let me know what you choose and what 
+Lynis finds
+! 🚀
+
+You said:
+
+[ Press ENTER to continue, or CTRL+C to cancel ]
+
+[ Lynis 3.1.4 ]
+
+################################################################################
+  Lynis comes with ABSOLUTELY NO WARRANTY. This is free software, and you are
+  welcome to redistribute it under the terms of the GNU General Public License.
+  See the LICENSE file for details about using this software.
+
+  2007-2024, CISOfy - https://cisofy.com/lynis/
+  Enterprise support available (compliance, plugins, interface and tools)
+################################################################################
+
+[+] Initializing program
+------------------------------------
+  - Detecting OS...                                           [ DONE ]
+  - Checking profiles...                                      [ DONE ]
+
+  ---------------------------------------------------
+  Program version:           3.1.4
+  Operating system:          macOS
+  Operating system name:     macOS
+  Operating system version:  15.2
+  Kernel version:            24.2.0
+  Hardware platform:         arm64
+  Hostname:                  SJAs-Ma

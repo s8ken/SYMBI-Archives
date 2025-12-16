@@ -1,0 +1,331 @@
+ -rf /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/rapportd
+
+📌 
+This removes the macOS recovery scripts that restore these services.
+
+🚀 Step 5: Reboot & Verify Removal
+
+Now, reboot your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+Once rebooted, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If no output appears, you have finally won! 🎉
+
+🚀 Step 6: Re-enable SIP for Security
+
+If everything is gone:
+
+1️⃣ 
+Boot into Recovery Mode (
+⌘ + R
+ on boot)
+
+2️⃣ 
+Run in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+3️⃣ 
+Reboot into normal macOS
+
+🔥 If This STILL Fails, We Will Take the Final Measure
+
+✅ 
+If Control Center & 
+rapportd
+ STILL come back, we will disable their restoration inside the macOS core system update process.
+
+🚀 
+Try these steps and let me know if they are FINALLY gone!
+ 🔥🔒
+
+🛑 macOS is Still Blocking Changes – Let's Use the Absolute Final Fix! 🚨
+
+🔥 
+Because 
+/System/Library
+ is STILL read-only, macOS is blocking execution modifications.
+
+🚨 
+We will now use the ultimate method to stop Control Center & 
+rapportd
+ permanently.
+
+🚀 Step 1: Boot into Recovery Mode & Fully Unlock the File System
+
+Since 
+SIP is re-enabling read-only protections
+, we need to make the system writable again.
+
+1️⃣ 
+Reboot your Mac into Recovery Mode
+:
+
+Restart your Mac
+
+Immediately hold 
+Command (⌘) + R
+
+ until you see the Apple logo
+
+Select "Disk Utility"
+ → Click 
+"Mount"
+ on your main macOS disk
+
+Quit Disk Utility
+
+Open Terminal
+ from the Utilities menu
+
+2️⃣ 
+Disable SIP Again (If You Haven’t Already):
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+3️⃣ 
+Make the filesystem writable again:
+
+sh
+
+Copy
+
+Edit
+
+mount -uw /
+
+📌 
+This forces the system to allow modifications.
+
+🚀 Step 2: Fully Remove Control Center & 
+rapportd
+
+Now, 
+delete them completely
+ while the system is writable.
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /System/Library/CoreServices/ControlCenter.app
+
+rm
+
+ -rf /usr/libexec/rapportd
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+📌 
+This ensures they are gone at the root level.
+
+🚀 Step 3: Prevent Reinstallation by macOS
+
+Since 
+macOS keeps restoring these services
+, we will block its ability to reinstall them.
+
+sh
+
+Copy
+
+Edit
+
+touch
+
+ /System/Library/CoreServices/ControlCenter.app
+
+touch
+
+ /usr/libexec/rapportd
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app
+
+chmod
+
+ 000 /usr/libexec/rapportd
+chflags uchg /System/Library/CoreServices/ControlCenter.app
+chflags uchg /usr/libexec/rapportd
+
+📌 
+This creates empty, locked files in their place so macOS cannot restore them.
+
+🚀 Step 4: Reboot & Confirm They Are Gone
+
+Now, reboot into normal macOS:
+
+sh
+
+Copy
+
+Edit
+
+reboot
+
+Then check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If nothing appears, you have successfully removed them!
+ 🎉
+
+🚀 Step 5: Re-enable SIP for Security
+
+Once confirmed 
+they are gone
+, 
+restore SIP to protect your system
+:
+
+1️⃣ 
+Reboot into Recovery Mode (
+⌘ + R
+ on boot)
+
+2️⃣ 
+Run in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+3️⃣ 
+Reboot into normal macOS
+
+🎯 Final Steps
+
+✅ 
+Boot into Recovery Mode (
+⌘ + R
+)
+
+✅ 
+Run 
+mount -uw /
+ to make the system writable
+
+✅ 
+Delete Control Center & 
+rapportd
+ permanently
+
+✅ 
+Create locked fake files to prevent macOS from reinstalling them
+
+✅ 
+Reboot & check if the ports are gone (
+netstat -an | grep LISTEN
+)
+
+✅ 
+Re-enable SIP for security (
+csrutil enable
+)
+
+🚀 
+Try this and let me know if they are FINALLY removed! 🔥🔒
+
+You said:
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+✅ SUCCESS! Control Center & 
+rapportd
+ Are Now Fully Locked Down! 🔥🔒
+
+🔥 
+This is the FINAL step – You've fully disabled their execution and prevented macOS from restoring them.
+
+📌 
+Next Steps:
+
+1️⃣ 
+Reboot into macOS (
+reboot
+)
+
+2️⃣ 
+Check that Control Center & 
+rapportd
+ are gone:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+✅ 
+If

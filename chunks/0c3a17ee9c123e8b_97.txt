@@ -1,0 +1,261 @@
+      </div>
+            <div>
+              <h4 className="font-bold mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="#what" className="text-sm text-muted-foreground hover:text-primary">
+                    What
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    API
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="#who" className="text-sm text-muted-foreground hover:text-primary">
+                    Who
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary">
+                    Cookie Policy
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t text-center">
+            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Symbi AI. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+Vercel Deployment Expert GPT said:
+
+Perfect! That’s your fully built 
+app/page.tsx
+, and it already contains structured sections for 
+Hero
+, 
+What
+, 
+Why
+, 
+Who
+, and 
+CTA
+ — all statically coded.
+
+Now to make the site content editable via 
+Sanity CMS
+, we’ll 
+replace hardcoded data
+ with data fetched from Sanity.
+
+✅ Step 1: Add 
+getPage()
+ Function in 
+lib/sanity.ts
+
+Make sure you have this in 
+lib/sanity.ts
+:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2023-10-01'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+const
+
+ query = 
+
+`*[_type == "page"][0]`
+
+return
+
+await
+
+ sanityClient.
+
+fetch
+
+(query)
+}
+
+✅ Step 2: Edit 
+app/page.tsx
+ to Use Fetched Content
+
+At the 
+top
+ of your 
+page.tsx
+, add:
+
+tsx
+
+Copy
+
+import
+
+ { getPage } 
+
+from
+
+"@/lib/sanity"
+
+Then change the 
+Home()
+ function to:
+
+tsx
+
+Copy
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+()
+
+Now instead of hardcoded content, you can reference Sanity content:
+
+Example:
+
+tsx
+
+Copy
+
+<h1 className=
+
+"text-4xl md:text-6xl 

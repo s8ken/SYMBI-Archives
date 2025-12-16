@@ -1,0 +1,850 @@
+ing
+
+ || {}), 
+
+initiatedAt
+=
+
+: 
+
+new
+
+Date
+
+(), 
+
+initiatedBy
+
+: userId };
+
+await
+
+this
+
+.
+
+save
+
+();
+};
+
+AgentSchema
+
+.
+
+methods
+
+.=
+
+completeBonding
+
+ =3D 
+
+async
+
+=
+
+function
+
+(
+
+{ decision, traitsSnapshot, notes, us=
+erId }
+
+){
+
+if
+
+ (
+=
+
+this
+
+.
+
+bondingStatus
+
+ !=
+=3D=3D 
+
+'initiated'
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+'invalid_state'
+
+);
+
+this
+
+.
+
+bondingStatus
+
+=
+
+ =3D decision; 
+
+// 'bonded'|=
+'rejected'
+
+this
+
+.
+
+bonding
+
+=
+ =3D {
+    ...(
+
+this
+
+.
+
+bonding
+
+=
+
+ || {}),
+
+completedAt
+
+:=
+
+new
+
+Date
+
+(),
+
+completedBy
+
+:=
+ userId,
+    decision, 
+
+notes
+
+: notes || 
+
+null
+
+,
+
+traitsSnapshot
+
+: traitsSnapshot || 
+
+null
+=
+
+  };
+
+await
+
+this
+
+.
+
+save
+
+();
+};
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+model
+
+(
+
+'Agent'
+
+,=
+
+AgentSchema
+
+);
+
+4) OpenAPI (document the endpoint=
+s)
+
+openapi.yaml
+
+(excerpt to add)
+
+yaml
+
+Copy code
+
+paths:
+
+/api/agents/{id}/bond/initiate:
+
+put:
+
+security:
+
+ =
+[ 
+
+bearerAuth:
+
+ []=
+ ]
+
+summary:
+
+Initiate
+
+bonding
+
+ritual
+
+for
+
+an
+
+agent
+
+parameters:
+
+-
+
+in:
+
+path
+
+name:
+
+ =
+
+id
+
+required:
+
+true
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+'200':
+
+ {=
+
+description:
+
+ok
+
+ }
+
+'403':
+
+ {=
+
+description:
+
+forbidden
+
+ }
+
+'404':
+
+ {=
+
+description:
+
+agent
+
+not
+
+found
+
+ }
+
+'409':
+
+ {=
+
+description:
+
+invalid
+
+state
+
+transition
+
+ }
+
+/api/agents/{id}/bond/complete:
+
+put:
+
+security:
+
+ =
+[ 
+
+bearerAuth:
+
+ []=
+ ]
+
+summary:
+
+Complete
+
+bonding
+
+ritual
+
+for
+
+an
+
+agent
+
+parameters:
+
+-
+
+in:
+
+path
+
+name:
+
+ =
+
+id
+
+required:
+
+true
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+type:
+
+object
+
+required:
+
+ [ 
+
+decision
+
+ ]
+
+properties:
+
+decision:
+
+type:
+
+string
+
+enum:
+
+ [ 
+
+bonded
+
+, 
+
+rejected
+
+ ]
+
+notes:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+traitsSnapshot:
+
+ { 
+
+type:
+
+object
+
+=
+, 
+
+additionalProperties:
+
+true
+
+ =
+}
+
+responses:
+
+'200':
+
+ {=
+
+description:
+
+ok
+
+ }
+
+'403':
+
+ {=
+
+description:
+
+forbidden
+
+ }
+
+'404':
+
+ {=
+
+description:
+
+agent
+
+not
+
+found
+
+ }
+
+'409':
+
+ {=
+
+description:
+
+invalid
+
+state
+
+transition
+
+ }
+
+5) Quick tests (supertest snippet=
+)
+
+backend/
+tests
+/agent.bonding.test.js
+
+js
+
+Copy code
+
+const
+
+ re=
+quest =3D 
+
+require
+
+(
+
+'supertest'
+
+);
+
+const
+
+ app =3D=
+
+require
+
+(
+
+'../app'
+
+);
+
+const
+
+=
+
+Agent
+
+ =3D 
+
+require
+
+(
+
+'../models/agent.model'
+
+=
+);
+
+const
+
+ { getJw=
+tFor } =3D 
+
+require
+
+=
+
+(
+
+'./helpers'
+
+); 
+
+// your existing helper
+
+describe
+
+(
+
+'agent bonding'
+
+, 
+
+() =3D>
+
+ {
+
+it
+
+(=
+
+'flows none -> initiated -> =
+bonded'
+
+, 
+
+asyn=
+c
+
+ () =3D> {
+
+const
+
+ { u=
+ser, jwt } =3D 
+
+await
+
+getJwtFor
+
+({ 
+
+role
+
+: 
+
+'user'
+
+ })=
+;
+
+const
+
+ age=
+nt =3D 
+
+await
+
+ =
+
+Agent
+
+.
+
+create
+
+(=
+{ 
+
+name
+
+: 
+
+'A1'
+
+, 
+
+owner
+
+: user.
+
+_id
+
+ });
+
+const
+
+ i =
+=3D 
+
+await
+
+request
+
+(=
+app)
+      .
+
+put
+
+(
+
+`/api/agents/
+${agent._id}
+
+/bond/initiate`)
+      .
+
+set
+
+(
+
+'Authorization'
+
+, 
+
+`Bearer 
+${jwt}
+
+`);
+
+expect
+
+(i.
+
+status
+
+).
+
+toBe
+
+(
+
+200
+
+);
+
+const
+
+ c =
+=3D 
+
+await
+
+request
+
+(=
+app)
+      .
+
+put
+
+(
+
+`/api/agents/
+${agent._id}
+
+/bond/complete`)
+      .
+
+set
+
+(
+
+'Authorization'
+
+, 
+
+`Bearer 
+${jwt}
+
+`)
+      .
+
+send
+
+=
+
+({ 
+
+decision
+
+: 
+
+'bonded'
+
+ })=
+;
+
+expect
+
+(c.
+
+status
+
+).
+
+toBe
+
+(
+
+200
+
+);
+
+expect
+
+(c.
+
+body
+
+=
+.
+
+bondingStatus
+
+).
+
+toBe
+
+(
+
+'bonded'
+
+);
+  });
+});
+
+6) Manual verification (curl)
+
+bash
+
+Copy code
+
+# Initiate
+
+curl -s -X PUT 
+
+$API
+
+/api/agents/<AGENT_ID>/bond/initiate \
+  -H 
+
+"Authorization: 
+$JWT
+
+" | jq
+
+# Complete
+
+curl -s -X PUT 
+
+$API
+
+/api/agents/<AGENT_ID>/bond/complete \
+  -H 
+
+"Authorization: 
+$JWT
+
+" -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+
+'{"decision":"bonded","notes"=
+:"consent confirmed"}'
+
+ | jq
+
+# Ledger receipt
+
+curl -s 
+
+"
+$API
+
+/api/ledger?session_id=3Dagent:<AGEN=
+T_ID>" -H 
+
+"Authorization: 
+$JWT
+
+" \
+  | jq 
+
+'map(select(.analysis.actio=
+ns[]?=3D=3D"bonding_initiated" or .analysis.actions[]?=3D=3D"bonding_comple=
+ted")) | length'
+
+7) Frontend (FYI)
+
+Your 
+BondingRitual.js
+ calls the exact endpoints above;=
+ no UI changes needed. With these routes live, the ritual=E2=80=99s 
+final confirmation
+ now pe=
+rsists to Mongo and is 
+writ=
+ten t

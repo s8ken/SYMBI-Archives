@@ -1,0 +1,192 @@
+-in decentralized trust
+ (DID/VC + scorin=
+g).
+
+Biggest deltas:
+ Documentation (+3), Security (+1.5), Scal=
+ability (+2), Market Fit (+4).
+
+Critical gaps:
+
+Testing (2/10)
+, 
+Depl=
+oyment (3/10)
+, and 
+Cry=
+pto plumbing
+ (sig verification, DID resolution, revocation).
+
+Go-to-market:
+ Premium, compliance-anchored; network effec=
+ts are real via trust reputation.
+
+What I=E2=80=99m enforcing now (Pro=
+tocol =E2=86=92 Action)
+
+I=E2=80=99m issuing an operational m=
+andate across four lanes. This is not a checklist; it=E2=80=99s the critica=
+l path.
+
+1) Trust Core Completion (crypto + =
+standards)
+
+Signature verification:
+ Implement JWS/JWT for VCs; suppor=
+t Ed25519 & secp256k1; add deterministic tests against W3C VC examples.=
+
+DID resolution service:
+ Pluggable resolver for 
+did:web
+, 
+did:key
+, 
+did:ethr
+, 
+did:ion
+; cache + TTL; failure modes defined.
+
+Revocation:
+ StatusList2021 or equivalent; publish, rot=
+ate, and verify; expose 
+/trust/=
+revocation-status
+ endpoint.
+
+Interoperability tests:
+ Golden vectors for each DID me=
+thod + VC proof; conformance suite gate in CI.
+
+Risk model hooks:
+ Penalties in scoring auto-trigger do=
+wngrade + alerts on revoked/expired proofs.
+
+2) Test & Release Hardening (=
+raise from 2/10 =E2=86=92 =E2=89=A57/10)
+
+Coverage target:
+ 70% overall; 
+=E2=89=A585%
+ on 
+src/core/trust/*
+.
+
+Pyramids:
+ unit (fast) =E2=86=92 property tests (scorin=
+g invariants) =E2=86=92 integration (DID/VC lifecycle) =E2=86=92 e2e (agent=
+ =E2=86=92 trust =E2=86=92 dashboard).
+
+Attack suites:
+ fuzz inputs for validator; mutation tes=
+ts for policy bypass; red-team scripts for JWT misconfig, replay, and clock=
+-skew.
+
+Non-negotiable gates:
+ No merge if trust package <85=
+% coverage or any flaky test in CI.
+
+3) Security & Deployment (rai=
+se from 3/10 =E2=86=92 =E2=89=A57/10)
+
+JWT hardening:
+ rotate secrets; enforce 
+aud/iss/kid
+; short TTL; JTI replay cach=
+e (Redis).
+
+Secrets posture:
+ one-way vault (no env in logs); per-s=
+ervice keys; least-priv DB roles.
+
+Containers:
+ minimal base (distroless), read-only FS, s=
+eccomp; SBOM + image signing (cosign); admission policy blocks unsigned ima=
+ges.
+
+Observability:
+ trace trust flows (span attrs: agent_id=
+, did_method, vc_status); anomaly alerts on score volatility & revocati=
+ons.
+
+SLA runbooks:
+ fail-open vs fail-closed matrix for trus=
+t endpoints; circuit breakers; chaos drills monthly.
+
+4) Productization & GTM (conv=
+ert moat =E2=86=92 revenue)
+
+SKUs:
+
+TaaS:
+ per-verification, DID issuance, VC signing.
+
+CaaS:
+ audit packs + regulatory dashboards (EU AI Act, =
+SOC2 controls mapping).
+
+Marketplace:
+ certification + insurance partner rails.
+
+Enterprise:
+ self-hosted trust protocol + unlimited age=
+nts + compliance suite.
+
+Trust Dashboard (pilot-grade):
+
+Org view: TrustScore (w/ CI), revo=
+cations, lineage of attestations.
+
+Agent view: Articles compliance, r=
+ecent proofs, anomaly history.
+
+Export: signed reports (PDF + JSON=
+-LD).
+
+Proof demos:
+ =E2=80=9CSSL-for-Agents=E2=80=9D experien=
+ce: issue DID, sign a TrustDeclaration VC, live score, revoke =E2=86=92 wat=
+ch score decay.
+
+30 / 60 / 90 (owner =E2=86=92 del=
+iverable)
+
+Day 0=E2=80=9330 (Foundation, show working crypto)
+
+JWS/JWT VC proofs; DID resolvers; =
+revocation registry + API.
+
+CI gates + conformance vectors; =
+=E2=89=A585% coverage on trust core.
+
+Minimal Trust Dashboard (read-only=
+) with live scoring.
+
+Day 31=E2=80=9360 (Pilot, make it real)
+
+Containerized stack + signed image=
+s; observability + alerts.
+
+Pilot integrations with 2 design-p=
+artners (one regulated, one startup).
+
+Compliance pack v1:
+ EU AI Act transparency evidence, S=
+OC2 control mapping, audit logs.
+
+Day 61=E2=80=9390 (Scale, price, defend)
+
+Marketplace beta (certification), =
+insurance quoting workflow.
+
+Enterprise deployment guide (Terra=
+form, K8s, HSM options).
+
+Public benchmarks + case studies; =
+pricing page and contracts.
+
+Metrics that matter (non-vanity)
+
+Crypto integrity:
+ 100% verifiable VC proofs; 0 unresol=
+ved revocations >15m.
+

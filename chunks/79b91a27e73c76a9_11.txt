@@ -1,0 +1,331 @@
+oring
+ for your camera and microphone.
+
+It will pop up an alert
+ when an unknown app tries to access them.
+
+5️⃣ 
+FSMonitor
+
+ (Monitor File System Changes in Real-Time)
+
+📂 
+FSMonitor
+ shows all file system activity 
+in real-time
+—helpful for detecting if spyware is secretly modifying files, installing backdoors, or changing system permissions.
+
+Install it via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask fsmonitor
+
+Run FSMonitor:
+
+Open FSMonitor.
+
+Watch for unusual file changes
+, such as:
+
+Hidden installs (
+/Library/LaunchDaemons/
+)
+
+Secret logs (
+/var/log/
+)
+
+Screen recordings (
+/tmp/
+)
+
+🔍 How to Check for Remote Management & Surveillance
+
+After installing these tools, run the following 
+manual checks
+ in 
+Terminal
+ to spot hidden spyware:
+
+1️⃣ Check for Remote Management
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo systemsetup -getremotelogin
+
+👉 If it says 
+"Remote Login: On"
+, someone may have 
+SSH access
+ to your Mac.
+
+To disable:
+
+sh
+
+Copy
+
+Edit
+
+sudo systemsetup -setremotelogin off
+
+2️⃣ List Running Screen Capture & Camera Processes
+
+Check for 
+active screen recording
+ processes:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i 
+
+"screen"
+
+👉 If you see suspicious processes like 
+screensharingd
+, 
+investigate further
+.
+
+Check for 
+apps using the camera
+:
+
+sh
+
+Copy
+
+Edit
+
+lsof | grep 
+
+"VDC"
+
+👉 This will show any process accessing your 
+Mac's camera
+.
+
+3️⃣ List All Startup Services
+
+sh
+
+Copy
+
+Edit
+
+launchctl list
+
+👉 This shows all 
+background services
+ running at startup—use it to spot anything unusual.
+
+4️⃣ Detect Hidden Remote Access Software
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+👉 This will show 
+open network connections
+. If you see unknown services listening on 
+ports like 5900 (VNC), 22 (SSH), or 3389 (Remote Desktop)
+, someone may be remotely accessing your Mac.
+
+🚀 Final Steps: What to Do If You Find Something Suspicious
+
+Google the process name
+ to see if it's legit.
+
+Check where it’s running from
+ using:
+
+sh
+
+Copy
+
+Edit
+
+which
+
+ processname
+
+Kill the process
+ if it looks suspicious:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 PID
+
+Delete any unknown startup services
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /Library/LaunchAgents/com.suspicious.agent.plist
+sudo 
+
+rm
+
+ -rf /Library/LaunchDaemons/com.suspicious.daemon.plist
+
+Monitor your system in real-time
+ using 
+LuLu, OverSight, and KnockKnock
+.
+
+🚀 Summary: Best Tools for the Job
+
+Tool
+
+Purpose
+
+Lynis
+
+Full system security audit
+
+KnockKnock
+
+Detect persistently installed malware
+
+LuLu
+
+Detect hidden outbound network connections
+
+OverSight
+
+Monitor for unauthorized mic/camera access
+
+FSMonitor
+
+Watch real-time file system changes
+
+Manual Checks (Terminal)
+
+Find remote access & suspicious processes
+
+These tools 
+combined
+ will give you 
+complete visibility
+ into what's running on your Mac. 🛡️
+
+🔥 Next Step: Install & Run the First Scan
+
+I’d recommend 
+starting with Lynis
+ for a full security audit:
+
+sh
+
+Copy
+
+Edit
+
+brew install lynis
+sudo lynis audit system
+
+Once it runs, let me know 
+what it finds
+, and we’ll dig deeper if needed! 🚀💀
+
+You said:
+
+----------- SCAN SUMMARY -----------
+Known viruses: 8704996
+Engine version: 1.4.2
+Scanned directories: 252386
+Scanned files: 623487
+Infected files: 0
+Total errors: 1924
+Data scanned: 58871.59 MB
+Data read: 91967.07 MB (ratio 0.64:1)
+Time: 3019.630 sec (50 m 19 s)
+Start Date: 2025:03:17 19:56:20
+End Date:   2025:03:17 20:46:40
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Full system scan complete!
+ 🔥
+
+Results:
+
+✅ 
+No infected files found!
+
+⚠️ 
+1924 errors detected
+ (we might want to check those).
+
+⏳ 
+Scan took ~50 minutes
+, covering 
+623,487 files
+ and 
+58GB of data
+.
+
+What’s Next? (Checking the Errors)
+
+Even though no viruses were found, let’s 
+review the 1924 errors
+ to make sure nothing was skipped. Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /opt/homebrew/var/log/clamav/clamav.log | grep 
+
+"ERROR"
+
+👉 This will 
+list all error messages
+ from the scan.
+
+Continue the Spyware & Remote Management Investigation
+
+Now that ClamAV has ruled

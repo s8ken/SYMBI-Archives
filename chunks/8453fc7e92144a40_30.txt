@@ -1,0 +1,284 @@
+I/CD, and front-end routes. No edits ye=
+t; gather, analyze, and present. Then await my /approve to write the markdo=
+wn file or open a PR.
+
+Output Contract (one message)
+
+### PROJECT ATLAS
+
+1) Repo Quick Facts
+   - Root path and current branch
+   - Recent commits (last 10)
+   - Language/LOC breakdown (cloc)
+   - Largest tracked files (top 30, excluding node_modules/.next/dist/build=
+)
+   - Untracked/unexplained files
+
+2) Architecture Map (Mermaid)
+   - FE =E2=87=84 BE =E2=87=84 DB =E2=87=84 external services (OpenAI/Anthr=
+opic, Vercel, Railway, Sanity, Redis/Queue 
+
+if
+
+ any)
+   - Data flows 
+
+for
+
+=
+
+: auth, conversations, trust/ledger, assistants
+
+3) Backend Inventory
+   - Server entrypoint(s), middleware chain (order), security middlewares (=
+Helmet, rate 
+
+limit
+
+=
+
+, CORS config, body limits)
+   - Health/readiness endpoints (/healthz, /readyz), timeouts
+   - Routes table (method, path, controller, auth required)
+   - Socket.IO channels: connection auth, events emitted/handled (names + 
+
+where
+
+)
+   - Models/Schemas (names, key fields); persistence engine(s)
+   - Services/Workers/Queues (
+
+if
+
+ any)
+   - Config flags and 
+
+env
+=
+
+ variables actually referenced by backend
+
+4) Frontend Inventory
+   - Router map (paths =E2=86=92 components/pages)
+   - Key screens/components (e.g., Dashboard, ConversationDetail, ReviewCon=
+sole)
+   - API client usage: base URL, auth headers, error handling
+   - Build output snapshot (size indicators 
+
+if
+
+ available, read-only)
+
+5) LLM & Assistants
+   - How models are selected; default model(s)
+   - All Assistant endpoints (create/list/latest/update/message) and how =
+=E2=80=9Cmost recent assistant=E2=80=9D fallback works
+   - OpenAI models endpoint behavior (dynamic list + static fallback)
+
+6) Trust / Ledger & Analysis
+   - Event/ledger schema fields
+   - Hash-chain and optional signatures
+   - Heuristic analysis features; change-point logic; guardrails/apply beha=
+vior
+
+7) CI/CD & Ops
+   - GitHub Actions workflows (what runs, when, required checks)
+   - Deploy targets (Vercel/Railway/other) + health checks
+   - Observability: logs/redaction, traces, metrics (
+
+if
+
+ any)
+
+8) Security Posture (snapshot)
+   - JWT alg/exp checks; role/RBAC mentions
+   - CORS origin handling (dev vs prod)
+   - Rate limits, content-type limits, secret exposure checks (e.g., 
+
+select
+
+:
+
+false
+
+ on API keys)
+
+9) Gaps, Risks, Unknowns
+   - Anything referenced but missing, TODO/FIXME hot spots
+   - Unused deps/files, circular deps, 
+
+type
+
+ or lint failures (summaries)
+
+10) Recommendations (prioritized, minimal blast)
+   - Top 5 immediate fixes
+   - Top 5 de-bloat deletions/merges
+   - Top 5 quality-of-life improvements
+
+Inspection Commands (read-only; run with quoted paths; 
+
+do
+
+ not modify files)
+- Repo & CI
+
+cd
+
+=
+
+"/Users/admin/Symbi Synergy"
+
+  git rev-parse --abbrev-ref HEAD || 
+
+true
+
+  git 
+
+log
+
+ --=
+oneline -n 10 || 
+
+true
+
+  git ls-files -z | xargs -0 
+
+du
+
+ -ah 2>/dev/null | egrep -v 
+
+'node_modules|\.next|dist|build'
+
+ | 
+
+sort
+
+ -hr | 
+
+head
+
+ -n 30 || 
+
+true
+
+  [ -f 
+
+".github/workflows/ci.yml"
+
+ ] && sed -n 
+
+'1,200p'
+
+ .github/workflows/ci.yml || 
+
+true
+
+  [ -f 
+
+".github/workflows/codeql.y=
+ml"
+
+ ] && sed -n 
+
+'1,200p'
+
+ .github/workflows/codeql.yml || 
+
+true
+
+- Tree & LOC
+
+if
+
+command
+
+ -v tree >=
+/dev/null 2>&1; 
+
+then
+
+ tree -a -L 3 -I 
+
+"no=
+de_modules|.next|dist|build|.git"
+
+; 
+
+else
+
+ find . -maxdepth 3 -not -pat=
+h 
+
+"./node_modules/*"
+
+=
+
+ -not -path 
+
+"./.next/*"
+
+ -not -path 
+
+"./dist=
+/*"
+
+ -not -path 
+
+"./build/*"
+
+ -not -path 
+
+"./.git/*"
+
+; 
+
+fi
+
+  npx -y cloc --md --exclude-dir=3Dnode_modules,.next,dist,build .
+
+- Backend surfacing
+
+ls
+
+ -la bac=
+kend || 
+
+true
+
+ls
+
+ -la bac=
+kend/middleware || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/server.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,200p'
+
+ backend/app.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,160p'
+
+ backend/middleware/security.middleware.js 2>/dev/null || 
+
+true
+
+  sed -n 
+
+'1,160p'
+
+ backend/middleware/auth.middleware.js 2>/dev/null ||

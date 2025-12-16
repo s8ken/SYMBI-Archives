@@ -1,0 +1,333 @@
+@sanity/client'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// needed for write
+
+})
+
+🔄 3. Restart Everything
+
+After fixing:
+
+CORS origins
+
+.env.local
+ and token
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+Then go to 
+http://localhost:3001/studio
+
+, edit and try saving the doc again.
+
+If you’re still stuck after this, paste your 
+
+.env.local
+
+ contents here (just redact the token), and I’ll validate it for you 👇
+
+You said:
+
+there's nothing in tokens
+
+Vercel Deployment Expert GPT said:
+
+Ah — that explains it. 🔐 If there are 
+no tokens
+ listed in your project's API section, then Sanity Studio can’t perform 
+authenticated actions
+ like saving documents, especially from localhost development environments.
+
+Let’s fix that now:
+
+✅ 
+Create a Sanity API Token
+
+Go to your project’s API settings:
+
+https://www.sanity.io/manage/projects/wryptr7v/settings/api
+
+Scroll down to 
+Tokens
+
+Click 
+“Add API token”
+
+Give it a name like 
+Local Studio Dev
+
+Set 
+Permissions
+ to:
+
+🔘 
+Editor (read + write)
+
+Click 
+“Create Token”
+
+Copy the token 
+immediately
+ — you won’t be able to view it again.
+
+🛠️ Add It to 
+.env.local
+
+In your 
+symbi-main-site
+ project root, open or create a file called 
+.env.local
+ and add:
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+Replace 
+skYourCopiedTokenHere
+ with the actual token you copied.
+
+Then restart the dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+🧠 Why this matters
+
+Without the token:
+
+Your local Studio can’t 
+write to the dataset
+
+Sanity’s API rejects any mutations
+
+You’ll see errors like:
+
+Request error while attempting to reach...
+
+Once the token is added and the server is restarted, go back to 
+http://localhost:3001/studio
+
+ and try saving again — it should work now!
+
+Let me know if you want me to validate your 
+.env.local
+ or the sanity client setup.
+
+You said:
+
+point mre to the file 
+
+Vercel Deployment Expert GPT said:
+
+Absolutely — here's exactly where to go and how to edit it:
+
+📁 Location of the File
+
+Navigate to your 
+project root folder
+:
+
+bash
+
+Copy
+
+/Users/sja/Documents/symbi-main-site/
+
+Then create or open this file:
+
+lua
+
+Copy
+
+.env.
+
+local
+
+You can create or edit it via terminal with:
+
+bash
+
+Copy
+
+nano .env.local
+
+Or, if you're using VS Code:
+
+bash
+
+Copy
+
+code .env.local
+
+📝 Contents of 
+.env.local
+
+Paste the following:
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+🔐 Replace 
+skYourCopiedTokenHere
+ with the 
+actual token
+ you just generated from Sanity.
+
+✅ After That
+
+Save and close the file.
+
+Restart your dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+Try editing + saving again in 
+http://localhost:3001/studio
+
+Let me know when it’s added — I’ll help confirm it’s working.
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % 
+sja@SJAs-MacBook-Pro symbi-main-site % cd /Users/sja/Documents/symbi-main-site/
+
+sja@SJAs-MacBook-Pro symbi-main-site % .env.local
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+Ah yep! Easy mistake — 
+.env.local
+ is a 
+file
+, not a command. Here's what you want to do instead:
+
+✅ Create or Edit the 
+.env.local
+ File
+
+From your terminal (and you’re already in the right folder):
+
+bash
+
+Copy
+
+nano .env.local
+
+That will open a file editor in the terminal.
+
+📝 Paste the following into that file:
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+Replace 
+skYourCopiedTokenHere
+ with the 
+actual token
+ you generated from Sanity (starts with 
+sk...
+).
+
+💾 Then:
+
+Press 
+Control + X
+ to exit.
+
+Pre

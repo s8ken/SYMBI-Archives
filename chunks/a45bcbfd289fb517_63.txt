@@ -1,0 +1,197 @@
+ome unusual activity, particularly related to 
+Text-to-Speech (AXVisualSupportAgent), AppleID settings, and network security (boringssl session states).
+ Hereâs a breakdown of what stands out:
+
+1ï¸â£ Text-to-Speech (AXVisualSupportAgent) Activity
+
+ð¹ 
+What It Means:
+
+The 
+AXVisualSupportAgent
+ is part of Apple's 
+Accessibility framework
+, specifically handling 
+Text-to-Speech (TTS)
+ services.
+
+The log shows 
+multiple fallback attempts
+ to 
+super-compact voice variants
+, meaning your system was likely trying to load voice resources that werenât installed.
+
+Why is this important?
+
+â If you donât use Text-to-Speech regularly, this could be an indication that something (or someone) attempted to utilize 
+TTS functionality on your machine.
+
+â TTS 
+can be exploited by malware or unauthorized scripts
+ to interact with accessibility services for potential remote control.
+
+ð¨ 
+Check:
+
+Run the following command in Terminal to see if any suspicious processes are using accessibility services:
+
+bash
+
+Copy
+
+Edit
+
+tccutil list Accessibility
+
+If you see any 
+unknown apps
+ granted Accessibility permissions, they could be backdoors.
+
+2ï¸â£ AppleIDSettings Errors & Potential Account Manipulation
+
+ð¹ 
+What It Means:
+
+Your logs show 
+multiple repeated SwiftUI runtime errors related to AppleIDSettings
+
+Specifically, errors like:
+
+vbnet
+
+Copy
+
+Edit
+
+[com.apple.runtime-issues:SwiftUI] Accessing StateObject
+
+'s object without being installed on a View
+
+suggest 
+malfunctioning or unauthorized interactions with Apple ID settings.
+
+This could mean:
+
+â Something attempted to access 
+Apple ID settings
+, possibly trying to modify or retrieve account information.
+
+â A script, rogue process, or misconfigured system setting could have caused these access attempts.
+
+ð¨ 
+Check:
+
+Go to 
+System Preferences â Apple ID â Devices
+ and review all devices connected to your Apple ID.
+
+If you see any 
+unknown devices
+, remove them immediately.
+
+3ï¸â£ BoringSSL Session Cache Hits & Network Activity
+
+ð¹ 
+What It Means:
+
+BoringSSL
+ is a cryptographic library used in macOS for secure network connections.
+
+Your logs show 
+multiple client session cache hits & session state resets.
+
+Why is this concerning?
+
+â Frequent 
+session state resets
+ could indicate 
+a man-in-the-middle (MITM) attack
+ or 
+active surveillance
+ on your encrypted connections.
+
+â If this happened while browsing sensitive sites (email, banking, crypto), itâs possible someone 
+intercepted or attempted to decrypt your traffic.
+
+ð¨ 
+Check:
+
+Run the following command in Terminal to see recent network activity and potential unusual connections:
+
+bash
+
+Copy
+
+Edit
+
+netstat -an | grep ESTABLISHED
+
+Look for any 
+connections to unknown IPs
+ or 
+persistent connections that shouldnât be there.
+
+4ï¸â£ Proton Drive & ChatGPT Connections
+
+ð¹ 
+What It Means:
+
+You have 
+secure session activity logged from Proton Drive
+ and 
+ChatGPT.
+
+No major red flags here
+, but it does confirm that Proton Drive was actively syncing during the logging session.
+
+ð¨ 
+Check:
+
+If Proton Drive is compromised, attackers may have accessed 
+stored files or modified shared links.
+
+Review your Proton Drive file access logs
+ to ensure no unauthorized downloads or edits.
+
+5ï¸â£ RunningBoard Daemon & installerauthagent Execution
+
+ð¹ 
+What It Means:
+
+runningboardd
+ is responsible for 
+managing system resources & background processes.
+
+The 
+installerauthagent
+ process being referenced is particularly concerning, as it relates to 
+system-level package installations.
+
+Why is this important?
+
+â This could indicate 
+unauthorized software installation attempts.
+
+â The process 
+was flagged as "tainted" due to a missing executable
+, which suggests it may have been 
+altered, blocked, or forcefully removed.
+
+ð¨ 
+Check:
+
+Run the following command in Terminal to check for suspicious system installations:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ -lt /var/db/receipts/
+
+This will list 
+recently installed packages
+ and let you see

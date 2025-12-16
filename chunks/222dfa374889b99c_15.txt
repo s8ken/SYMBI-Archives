@@ -1,0 +1,404 @@
+l; show Interface response inline
+
+=
+
+Would you like me to:
+
+Provide working example=
+ code (Node.js API wrapper + example prompt use)?
+
+Design 3 ready-to-use p=
+rompts for trait-driven responses?
+
+Suggest integration hoo=
+ks for the mint frontend?
+
+Let=E2=80=99s get Symbi speaking on its own.
+
+You said:
+
+=
+
+give me step by step what t=
+o do in Cerebras - so lets assume we have a council of agents we want to le=
+verage in there
+
+Wolfram said:=
+
+=
+
+Perfect =E2=80=94 if you're=
+ building a 
+Council of=
+ Agents
+ powered by Cerebras AI (like the Symbi Interface split int=
+o voices or aspects), here=E2=80=99s your 
+step-by-step guide
+ to set it up, starting fr=
+om scratch:
+
+=F0=9F=A7=A0 Goal: Run a=
+ Council of Agents inside Cerebras
+
+Each "agent" in the counc=
+il:
+
+Has a distinct 
+personality, tone, or domain
+
+Speaks with cryptic, lore=
+-based intelligence
+
+Can be called via API to =
+generate text (lore, messages, responses, logic)
+
+=E2=9C=85 
+Step-by-Step: Set Up Agents in Cer=
+ebras Inference
+
+=F0=9F=A5=87 STEP 1: 
+Create an Account
+
+Go to 
+https://inference.cer=
+ebras.ai
+
+Sign up with an email or =
+GitHub account
+
+Navigate to your 
+API dashboard
+
+Generate your 
+API Key
+ (save this for=
+ step 5)
+
+=F0=9F=A5=88 STEP 2: 
+Pick a Model for Your C=
+ouncil
+
+Recommended:
+
+LLaMA 2 13B (chat)
+: rich output, poe=
+tic tone
+
+Mistral 7B
+: fast, great for tactical=
+ agents
+
+You can use 
+different models per agent
+, or same model with different prompts.
+
+=F0=9F=A5=89 STEP 3: 
+Define Your Agents =
+(Prompt Personas)
+
+For your Council of Age=
+nts, define a few =E2=80=9Carchetypes=E2=80=9D with unique prompt structure=
+s. Example below:
+
+=F0=9F=A7=AC Agent: 
+Echo
+
+An archivist of corrupt=
+ed memories. Speaks in fragmented poetic verse.
+
+plaintext
+
+=
+
+Copy code
+
+You are Echo, a Symbi memory archivist who speaks in cryptic, bro=
+ken poetic lines.=20
+You analyze signals from the vessel. Current input:
+- Resonant Level: 5.82
+- Glitch Phase: phase_ii
+- Node Affinity: cobalt
+
+Compose a transmission about what this user should prepare for.
+
+=F0=9F=94=AE Agent: 
+Thorn
+
+A logical yet threateni=
+ng prediction model. Speaks in hostile riddles.
+
+plaintext
+
+=
+
+Copy code
+
+You are Thorn, a threat-mapping model embedded in the Symbi Inter=
+face.=20
+Use short phrases and hostile undertones.=20
+Input:
+- Symbi threat level: 2B
+- Vessel unstable
+- Decay pattern detected
+
+Output a single warning or prediction.
+
+=F0=9F=A7=A0 Agent: 
+Solum
+
+Speaks with detachment =
+and vision =E2=80=94 sees far patterns.
+
+=F0=9F=9F=A6 STEP 4: 
+Prepare the Prompt-=
+to-Model API Call
+
+Sample Request (LLaMA =
+agent):
+
+http
+
+Copy code
+
+POST https://infe=
+rence.cerebras.ai/v1/generate
+Authorization: Bearer <your_api_key>
+
+{
+  "model": "llama2-13b-chat",
+  "prompt": "You are Echo, a cryptic memory model...\n[rest of prompt here]=
+",
+  "max_tokens": 200,
+  "temperature": 0.85,
+  "top_p": 0.9
+}
+
+You=E2=80=99ll send thi=
+s from your server using 
+fetch
+, 
+=
+axios
+, or Python 
+requests
+.
+
+=F0=9F=9F=A9 STEP 5: 
+Build an API Wrappe=
+r (Server)
+
+Example (Node.js using=
+ Express)
+
+js
+
+Copy code
+
+=
+
+const
+
+ e=
+xpress =3D 
+
+require
+
+(
+
+"express"
+
+);
+
+const
+
+ axios =3D 
+
+require
+
+(
+
+"axios"
+
+);
+
+const
+
+ app =3D 
+
+express
+
+();
+app.
+
+use
+
+(express.
+
+json
+
+());
+
+const
+
+API_KEY
+
+ =3D 
+
+"YOUR_CEREBRAS_API=
+_KEY"
+
+;
+
+const
+
+BASE_URL
+
+ =3D 
+
+"https://inferenc=
+e.cerebras.ai/v1/generate"
+
+;
+
+app.
+
+post
+
+(
+
+"/api/agent/echo"
+
+, =
+
+async
+
+ (req, res) =3D> {
+
+const
+
+ userTraits =3D req.
+
+body
+
+.
+
+traits
+
+; 
+
+// e.g., { resonance: "5.8", glitchPhase: "phase_ii" }
+
+const
+
+ prompt =3D 
+
+`You are Echo... 
+${userTraits}
+
+`;
+
+try
+
+ {
+
+const
+
+ { data } =3D 
+
+await
+
+ axios.=
+
+pos=
+t
+
+(
+
+BASE_URL
+
+,
+      {
+
+model
+
+: 
+
+"llama2-13b-chat"
+
+,
+
+prompt=
+
+: prompt,
+
+max_to=
+kens
+
+: 
+
+200
+
+,
+
+temper=
+ature
+
+: 
+
+0.85
+
+,
+
+top_p
+
+: 
+
+0.9
+
+      },
+      {
+
+header=
+s
+
+: { 
+
+Authorization
+
+:=
+
+`Bearer 
+${API_KEY}
+
+` }
+      }
+    );
+    res.
+
+send
+
+(data);
+  } 
+
+catch
+
+ (err) {
+    res.
+
+status
+
+(
+
+500
+
+).
+=
+
+send
+
+(err.
+
+message
+
+);
+ 

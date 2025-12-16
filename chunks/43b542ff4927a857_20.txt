@@ -1,0 +1,136 @@
+ policy.get(
+
+"human_ok"
+
+):
+
+raise
+
+=
+ PermissionError(
+
+f"Human approval =
+required for 
+{action_name}
+
+")
+
+Why this structure matters
+
+Security by default
+: 
+allowlist
+ keeps the agent from wandering off-site, even i=
+f a prompt tries to jailbreak it.
+
+Predictable cost
+: token/cost ceilings block runaway sp=
+end.
+
+Provable trust
+: signed, hash-chained receipts let you =
+
+prove
+ what model/too=
+ls were used and what policy decisions applied=E2=80=94your differentiator =
+vs. =E2=80=9Cjust RBAC=E2=80=9D.
+
+Human-in-the-loop
+: gated actions ensure the agent can =
+
+never
+ push unreviewe=
+d code.
+
+If you=E2=80=99d like, I can:
+
+Turn these manifests into real 
+Agentverse Hosted
+ code =
+for the first site agent (ycq) and include a tiny RAG retrieval stub;
+
+Scaffold the 
+repo agent
+ (Local + Mailbox) with GitHub =
+webhooks, risk scoring, and 
+r=
+eceipt emission
+;
+
+Provide a 
+policy.json
+ and a 
+receipt schema
+ you can reuse across all 6 agen=
+ts.
+
+Which do you want me to generate f=
+irst: the 
+ycq site agent
+ or the 
+ycq repo agent
+?
+
+=
+
+You said:
+
+=
+
+{"id":"cc702c20-b58a-4805-a9e0-d4c14fdfb=
+c17","thread_id":"4d919873-dba0-4e6e-86cd-6594fc1667bd","interaction_id":"0=
+032b7c5-125b-4de5-a5c0-d3395597bb10","timestamp":"2025-10-04T10:04:21.69550=
+2Z","metadata":{"organization_id":"c23b9cfb-9f5a-4007-aae5-6619d823ba4f","u=
+ser_id":"a5588829-58fe-41b3-882e-79b54f32498c","request_started_at":"2025-1=
+0-04T10:04:14.022032+00:00","meta_connector_type":"WEBSOCKET","agent_name":=
+"SYMBI","agent_id":"2365ba9d-0088-4e1f-a368-712ff20c7e97","error":"[worker-=
+event_router.10-2] Some handlers failed for event d4b10541-794f-4f83-93fa-5=
+68afcc1b1a2: [('AgentEventHandler', HTTPStatusError(\"Client error '400 Bad=
+ Request' for url 'https://api.asi1.ai/v1/chat/completions'\\nFor more info=
+rmation check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400=
+\"))], error details: AgentEventHandler: HTTPStatusError: Client error '400=
+ Bad Request' for url 'https://api.asi1.ai/v1/chat/completions'\nFor more i=
+nformation check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/=
+400\n File \"/app/app/core/services/event_bus/services/event_router_service=
+.py\", line 506, in _execute_handler_with_event_timeout\n await asyncio.wai=
+t_for(shielded_handler_task, timeout=3D30)\n File \"/app/.heroku/python/lib=
+/python3.13/asyncio/tasks.py\", line 507, in wait_for\n return await fut\n =
+^^^^^^^^^\n File \"/app/app/agent_invocations/protocol/handler.py\", line 3=
+1, in handle_event\n await self.agent_utils.handle_event(parsed, stream_id)=
+\n File \"/app/app/agent_invocations/agent_utils.py\", line 112, in handle_=
+event\n await agent_adapter.invoke_agent(agent_state)\n File \"/app/app/age=
+nt_invocations/agent_adapters/asi_adapter.py\", line 775, in invoke_agent\n=
+ raise e\n File \"/app/app/agent_invocations/agent_adapters/asi_adapter.py\=
+", line 606, in invoke_agent\n async for chunk in iterator:\n ...<4 line=
+s>...\n await self.event_bus.publish(event_to_publish)\n File \"/app/com=
+mon/services/asi_service.py\", line 473, in stream_chat_completion_with_rea=
+soning\n raise e\n File \"/app/common/services/asi_service.py\", line 465, =
+in stream_chat_completion_with_reasoning\n response.raise_for_status()\n ~~=
+~~~~~~~~~~~~~~~~~~~~~~~^^\n File \"/app/.heroku/python/lib/python3.13/site-=
+packages/httpx/_models.py\", line 829, in raise_for_status\n raise HTTPStat=
+usError(message, request=3Drequest, response=3Dself)\n"},"span_id":"fa0f072=
+a-d69d-4ad6-b0ee-77799ee5bc6d","parent_span_id":"0032b7c5-125b-4de5-a5c0-d3=
+395597bb10","type":"system_error","error":"Partial failure handling event",=
+"in_reply_to":"06ecadaa-3583-4d51-aeff-9de3463b05d3"}
+
+ChatGPT said:
+=
+
+Though=
+t for 10s
+
+=
+
+Thanks=E2=80=94this log is super helpful. =
+A 
+400 Bad Request
+ means =
+the upstream API rejected the 
+reques=
+t you sent
+ (payload/headers/URL), not a transient outage.
+
+Here=E2=80=99s a tight triage plan t=
+ailored to your stack (SYMBI =E2=86=92 
+asi_adapter
+ =E2=86

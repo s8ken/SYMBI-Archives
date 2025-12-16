@@ -1,0 +1,784 @@
+tch
+
+(
+
+'/api/receipts/demo'
+
+, {
+
+method
+
+: =
+
+'POST'
+
+,
+
+headers
+
+:=
+ {
+
+'content-type'
+
+: 
+
+'application/json'
+
+},
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{
+
+actor
+
+:=
+
+'demo@ycq'
+
+,
+
+intent
+
+=
+: 
+
+'verify-demo'
+
+,
+
+inputs
+
+=
+: { 
+
+q
+
+: 
+
+'hello world'
+
+ },
+
+outputs
+
+: { 
+
+a
+
+: 
+
+'hi!'
+
+ }
+        })
+      });
+
+if
+
+ (!r.=
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`HTTP 
+${r.status}
+
+=
+
+`);
+
+const
+
+ j=
+son =3D 
+
+await
+
+=
+ r.
+
+text
+
+();
+
+setReceipt
+
+(json);
+
+try
+
+ { 
+
+localStorage
+
+.
+
+setItem
+
+(
+
+'ycq_last_receipt'
+
+, json); } 
+
+catch=
+
+ {}
+    } 
+
+catch
+
+ (=
+
+e
+
+:
+
+any
+
+) {
+
+setErr
+
+(e.
+
+message
+
+ || 
+
+'Failed to mint receipt'
+
+);
+    } 
+
+finally
+
+=
+ {
+
+setLoading
+
+(
+
+false
+
+);
+    }
+  }
+
+function
+
+verify
+
+(=
+
+) {
+
+if
+
+ (!rece=
+ipt) { 
+
+setErr
+
+(
+
+'Mint a demo receipt firs=
+t'
+
+); 
+
+return
+
+; }
+
+const
+
+ has=
+h =3D 
+
+'#r=3D'
+
+ =
++ 
+
+b64u
+
+(receipt);
+
+window
+
+.
+
+open
+
+(
+
+'/verifier.html'
+
+ + hash, 
+
+'_blank'
+
+, 
+
+'noopener'
+
+);
+  }
+
+return
+
+ (
+
+<=
+
+section
+
+=
+
+className
+
+=3D
+
+"not-prose mt-6 rounded-2xl border p-4"
+
+>
+
+<
+h=
+3
+
+classNa=
+me
+
+=3D
+
+"text-lg =
+font-semibold"
+
+>Awareness through Auditability
+=
+
+</
+h3
+
+>
+
+<
+p=
+
+classNam=
+e
+
+=3D
+
+"text-sm t=
+ext-zinc-600"
+
+>
+        Mint a signed Trust Receipt, then verify it entirely in your browse=
+r.
+
+</
+=
+p
+
+>
+
+<
+o=
+l
+
+classNa=
+me
+
+=3D
+
+"mt-3 lis=
+t-decimal pl-5 text-sm text-zinc-700"
+
+>
+
+<
+li
+
+>Click 
+
+<
+strong
+
+>Get D=
+emo Receipt
+
+</
+strong
+
+> =E2=80=94 server signs a receipt=
+ (Ed25519).
+
+</
+li
+
+>
+
+<
+li
+
+>Click 
+
+<
+strong
+
+>Verif=
+y in Browser
+
+</
+strong
+
+> =E2=80=94 opens the verifier wi=
+th the receipt preloaded.
+
+</
+li
+
+>
+
+<
+li
+
+>Press 
+
+<
+strong
+
+>Verif=
+y
+
+</
+stron=
+g
+
+> =E2=80=94 checks 
+
+<
+em
+
+&g=
+t;entry_hash
+
+</
+em
+
+> + signature via Web Crypto.
+
+</
+li
+
+>
+
+</
+=
+ol
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"mt-3 fl=
+ex gap-2"
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{mint=
+}
+
+disabled
+
+=3D
+
+{loading}
+
+className
+
+=3D
+
+"px-3 py-2 rounded-xl border=
+ bg-white hover:bg-zinc-50 disabled:opacity-50"
+
+>
+          {loading ? 'Minting=E2=80=A6' : 'Get Demo Receipt'}
+
+</
+button
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{veri=
+fy}
+
+className
+
+=3D
+
+"px-3 py-2 rounded-xl border=
+ bg-white hover:bg-zinc-50"
+
+>
+          Verify in Browser
+
+</
+button
+
+>
+
+<
+a
+
+href
+
+=3D
+
+"/.well-known=
+/ycq-receipt-pubkey"
+
+className
+
+=3D
+
+"px-3 py-2 rounded-xl borde=
+r bg-white hover:bg-zinc-50"
+
+target
+
+=3D
+
+"_blank"
+
+rel
+
+=3D
+
+"noopener"
+
+>
+          Public Verify Key
+
+</
+a
+
+>
+
+<
+a
+
+href
+
+=3D
+
+"/metrics-met=
+hodology"
+
+className
+
+=3D
+
+"px-3 py-2 rounded-xl borde=
+r bg-white hover:bg-zinc-50"
+
+>
+          View Methodology
+
+</
+a
+
+>
+
+</
+=
+div
+
+>
+
+      {err && 
+
+<
+p
+
+className
+
+=3D
+
+"mt-2 text-sm text-red-600"
+
+>{err}
+
+=
+
+</
+p
+
+>}
+
+<
+t=
+extarea
+
+className
+
+=3D
+
+"mt-3 w-full min-h-[200px] tex=
+t-sm font-mono bg-zinc-50 border rounded-xl p-3"
+
+placeholder
+
+=3D
+
+"Demo receipt JSON appears h=
+ere=E2=80=A6"
+
+value
+
+=3D=
+
+{receipt}
+
+onChange
+
+=3D
+
+{e
+
+=3D>setReceipt(e.t=
+arget.value)}
+      />
+
+<
+p=
+
+classNam=
+e
+
+=3D
+
+"mt-2 text=
+-xs text-zinc-500"
+
+>
+        Tip: We also save the last receipt in 
+
+<
+code
+
+>l=
+ocalStorage
+
+</
+code
+
+> as
+
+<
+code
+
+> ycq_last_receipt
+
+</
+code
+
+>.
+
+</
+=
+p
+
+>
+
+</
+se=
+ction
+
+>
+  );
+}
+
+Use it in your page:
+
+tsx
+
+Copy code
+
+// app/demo/page.tsx
+=
+
+import
+
+DemoVerifyBlock
+
+from
+
+'./DemoVerifyBlock'
+
+;
+
+export
+
+default
+
+function
+
+Page
+
+(
+
+) {
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"prose prose-zinc max-w-4xl mx-auto px-4 py-10"
+
+>
+      {/* =E2=80=A6your existing demo content=E2=80=A6 */}
+
+<
+D=
+emoVerifyBlock
+
+ />
+
+</
+ma=
+in
+
+>
+  );
+}
+
+Option B =E2=80=94 Plain HTML sni=
+ppet (no React)
+
+Drop this where you render HTML on=
+
+/demo
+:
+
+html
+
+Copy code
+
+<
+div
+
+clas=
+s
+
+=3D
+
+"verify-bl=
+ock"
+
+style
+
+=3D
+
+"margin-top:1.5re=
+m;border:1px solid #e5e7eb;border-radius:1rem;padding:1rem"
+
+>
+
+<
+h3
+
+style
+
+=3D
+
+"margin:0 0 .25re=
+m 0"
+
+>Awareness through Auditability
+
+</
+h3
+
+=
+
+>
+
+<
+p
+
+style
+=
+
+=3D
+
+"margin:.25rem 0 1=
+rem 0;color:#52525b;font-size:.9rem"
+
+>
+    Mint a signed Trust Receipt, then verify it entirely in your browser.
+
+</
+p
+
+>
+
+<
+ol
+
+s

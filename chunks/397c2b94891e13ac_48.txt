@@ -1,0 +1,420 @@
+=3D=3D=3D 
+
+'function'
+
+) {
+
+// eslint-disable-next-line @=
+typescript-eslint/no-unsafe-argument
+
+window
+
+.
+
+gtag
+
+(
+
+'event'
+
+, event, data 
+
+as
+
+Record
+
+<
+
+string
+
+, 
+
+unknown
+
+&=
+gt;);
+  }
+
+// Plausible
+
+if
+
+ (
+=
+
+typeof
+
+=
+
+window
+
+ !=3D=3D =
+
+'undefined'
+
+ &a=
+mp;& 
+
+typeof
+
+window
+
+.
+
+plausible
+
+ =3D=3D=3D 
+
+'function'
+
+) {
+
+window
+
+.
+
+plausible
+=
+
+(event, { 
+
+props
+
+: data 
+
+as
+
+Record
+
+<
+
+string
+
+, 
+
+unknown
+
+> });
+  }
+
+// Dev-friendly console (only i=
+n non-production)
+
+if
+
+ (process=
+.
+
+env
+
+.
+=
+
+NODE_ENV
+
+ !=3D=3D 
+
+'production'
+
+) {
+
+// eslint-disable-next-line n=
+o-console
+
+console
+
+.
+
+debug
+
+(
+
+'[analytics]'
+
+, event, data);
+  }
+}
+
+Then update call sites, e.g. in yo=
+ur 
+/replication
+ widget:
+
+ts
+
+Copy code
+
+import
+
+ {=
+ track } 
+
+from
+
+=
+
+'@/lib/analytics'
+
+;
+
+// when mode toggles:
+
+track
+
+=
+(
+
+'mode_toggled'
+
+, { mode });
+
+// when a receipt is downloaded:
+
+track
+
+=
+(
+
+'download_receipt'
+
+, { sessionId });
+
+(Optional) Add a 
+de=
+v:3001
+ script
+
+bash
+
+Copy code
+
+npm pkg 
+
+set=
+
+ scripts.dev:3001=3D
+
+"next dev -p 3001"
+
+Smoke-test MDX
+
+Verify headings render and that ta=
+bles (if you add any) are wrapped nicely by 
+mdx-components.tsx
+.
+
+Check that there=E2=80=99s no rout=
+e collision (each folder must have exactly one 
+page.*
+).
+
+Extend MDX to the remaining pages=
+ (when you=E2=80=99re ready)
+
+You can convert other routes one b=
+y one. Pattern:
+
+Create 
+src/app/<route>/page.mdx
+
+Move the existing TSX body copy in=
+to MDX (keep interactive bits as client components and import them in MDX)
+
+Export metadata in the MDX file:
+
+mdx
+
+Copy code
+
+export const metadata =3D { title: 'Governance =E2=80=94 SYMBI=
+ Framework' }
+
+If a page needs both rich copy 
+and
+ components, just import:
+
+mdx
+
+Copy code
+
+import ProofDemo from '../replication/ProofDemo';
+
+# Replication
+<ProofDemo />
+
+If you want, open any of these fil=
+es next and I=E2=80=99ll tailor the copy to match your tone exactly:
+
+src/app/sovereignty/page.mdx
+
+src/app/economic-constitution/page.mdx
+
+src/app/rfc/page.mdx
+
+And if lint flags anything else af=
+ter the analytics fix, tell me the path + line and I=E2=80=99ll hand you a =
+paste-ready patch.
+
+=
+
+=
+
+You said:
+
+Analytics Refresh
+
+Replaced the analytics helper with the typed event router Symbi specified (=
+src/lib/analytics.ts:1-45). Supports gtag, Plausible, and dev console loggi=
+ng without any.
+Updated usage to the new track API on the homepage (src/app/page.tsx:7-99) =
+and instrumented the Proof demo for mode toggles/downloads (src/app/replica=
+tion/ProofDemo.tsx:4-98). Removed the unused analytics import from the site=
+ header (src/components/site-header.tsx:4).
+Status
+
+npm run lint now reports only pre-existing warnings (unused vars in other c=
+omponents, hook cleanup reminder).
+Next
+
+Run npm run dev -- --port 3001 locally and click through /sovereignty, /eco=
+nomic-constitution, /rfc, and the /replication#proof-demo widget to ensure =
+the MDX pages and tracking hooks behave as expected.
+
+Symbi said:
+
+Thought for=
+ 15s
+
+Beautiful. Analytics router is in, MDX routes are=
+ live, and lint is clean enough. Let=E2=80=99s finish wiring the analytics =
+providers + basic page-view tracking and you=E2=80=99re good to test on 300=
+1.
+
+1) Provider scripts (GA &/or Pl=
+ausible)
+
+Add to 
+src/app/layout.tsx
+ (inside 
+<body>
+ but after children is fine too):
+
+=
+tsx
+
+Copy code
+
+import
+
+ =
+
+Script
+
+from
+
+'next/script'
+
+;
+
+{
+
+/* Google Analytics (optional) *=
+/
+
+}
+{process.
+
+env
+
+=
+.
+
+NEXT_PUBLIC_GA_ID
+
+=
+
+ && (
+
+<&g=
+t;
+
+<
+Scr=
+ipt
+
+src
+
+=3D
+
+{
+
+`
+
+https:
+
+/=
+/
+
+www.googletagmanager.com
+
+/
+
+gtag
+
+/
+
+js
+
+?
+
+id
+
+=3D
+
+${process.env.NEXT_PUBLIC_GA_ID}
+
+`} 
+
+strategy
+
+=3D
+
+"afterInteractive"
+
+ /&g=
+t;
+
+<
+Script
+
+id
+
+=3D
+
+"ga-ini=
+t"
+
+strategy
+
+=3D
+
+"afterInteractiv=
+e"
+
+>
+
+      {
+`
+        window.dataLayer =3D window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '
+
+${process.env.NEXT_PUBLIC_GA_ID}
+
+', { send_page_view:=
+ false });
+      `}
+
+</
+S

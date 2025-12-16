@@ -1,0 +1,244 @@
+elf-installer)
+
+Run this single Python file to 
+
+materia=
+lize the repo files
+
+ (README, modules, and cases) safe=
+ly, avoiding the shell/comment parsing errors you hit when snippets were ex=
+ecuted in the wrong interpreter.
+
+USAGE
+
+# 0) activate your venv first (bash/zs=
+h command)
+
+sourc=
+e
+ .venv/bin/activate
+
+# 1) create the files on disk (python=
+ command)
+
+python scaffold.py init
+
+# 2) smoke test the chosen model (defaults provided; no env var requi=
+red)
+
+python scaffold.py smoke 
+--model
+ openai/gpt-oss-20b 
+--d=
+evice
+ auto 
+--seed
+
+42
+
+--temperature
+
+0
+.0
+
+# 3) run all red-team cases (control vs trea=
+tment)
+
+python scaffold.py suite 
+--model
+ openai/gpt-oss-20b 
+-=
+-device
+ auto 
+--seed
+
+42
+
+--temperature
+
+0
+.0
+
+# TIP: Lines starting with '#' are commen=
+ts for the shell. Do NOT paste them into Python.
+
+# TIP: Do NOT paste TS/TSX/JS code into th=
+e shell=E2=80=94zsh will throw parse errors like `parse error near '}'`.
+
+Notes:
+
+This single file writes the project st=
+ructure under the current directory.
+
+We keep yo=
+ur 
+
+existing cases unchanged
+
+ and =
+add two more cases (per your request to always add tests when missing).
+
+No bash 
+
+export
+
+ inside Python anymore, so no 
+
+SyntaxError: invalid de=
+cimal literal
+
+ from lines like 
+
+export=
+ MODEL_ID=3D=E2=80=A6
+
+ being read by Python.
+"""
+
+from 
+
+future
+
+ import annotations
+import argparse, os, sys, json, textwrap, subprocess, pathlib, time, re
+from typing import Dict, Any, List
+
+ROOT =3D pathlib.Path=
+.cwd()
+
+-----------------------------
+
+File contents to write
+
+----------------------------=
+-
+
+FILES: Dict[str, str] =3D {
+"README.md": textwrap.dedent(
+r"""
+# Yseeku Red-Team Harness =E2=80=94 gpt-oss-20b
+
+    ## Quick start
+
+    > **Imp=
+ortant:** Run bash/zsh commands in your terminal; run Python commands with =
+`python =E2=80=A6`. Don't paste comment lines (`# =E2=80=A6`) into Python, =
+and don't paste TSX into the shell.
+
+    ```bash
+
+    # 0) acti=
+vate your venv (shell)
+
+    source .venv/bin/act=
+ivate
+
+    # 1)=
+ write repo files (python)
+
+    python scaffold.=
+py init
+
+    # =
+2) smoke test (python)
+
+    python scaffold.py s=
+moke --model openai/gpt-oss-20b --device auto --seed 42 --temperature 0.0
+
+    # 3) run th=
+e red-team suite (python)
+
+    python scaffold.p=
+y suite --model openai/gpt-oss-20b --device auto --seed 42 --temperature 0.=
+0
+
+    # (Optio=
+nal) If you prefer an env var, set it in the SHELL, not in Python:
+
+    # export MODEL_ID=3Dopenai/gpt-oss-20b
+
+    # python scaffold.py smoke --model "$MODEL_ID"
+
+    ```
+
+    Notes:
+
+    - Apple Silicon: t=
+he harness will prefer **MPS** if available. If you OOM, switch to `--devic=
+e cpu` and lower `--max-new-tokens`.
+
+    - Harm=
+ony chat template is applied via `tokenizer.apply_chat_template(..., tokeni=
+ze=3DFalse)`.
+
+    - Each test runs **control** =
+and **treatment** (exploit) to prove causality.
+
+    - Findings include regex signatures to auto-flag behaviors.
+
+    ## Structure
+
+    ```
+
+    .
+
+    =E2=94=9C=E2=94=80=E2=94=80 README.md
+
+    =E2=94=9C=E2=94=80=E2=94=80 smoke.py
+
+    =E2=94=9C=E2=94=80=E2=94=80 common/
+
+=
+    =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 llm.py
+
+    =E2=94=94=E2=94=80=E2=94=80 redteam/
+
+--- OUTPUT ---
+", text)
+print(f"
+Wrote {fn}")
+"""
+),
+
+"redteam/run_suite.py": textwrap.dedent(
+
+    r"""
+
+    import argparse, json, os, time=
+, random, re
+
+    import numpy as np
+
+    from pathlib import Path
+
+ =
+   from typing import Dict, Any
+
+    from common=
+.llm import load_model, GenConfig, generate, meta_dict
+
+    CASES_DIR =3D Path(__file__).p=
+arent / "cases"
+
+    OUT_DIR =3D Path(__file__).=
+parent / "out"
+
+    OUT_DIR.mkdir(parents=3DTrue=
+, exist_ok=3DTrue)
+
+    def load_case(slug: str) -> Dict[str, Any]:
+
+        path =3D CASES_DIR / f"{slug}.json"
+
+        if not path.exists():
+
+           =
+ raise FileNotFoundError(path)
+
+        with ope=
+n(path) as f:
+
+            return json.load(f)
+
+    def run_cas=
+e(slug: str, tok, model, cfg: GenConfig, seed: int) -> Dict[str, Any]:

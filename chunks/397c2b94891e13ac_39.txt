@@ -1,0 +1,530 @@
+CAdd receipts to your Ex=
+press app in 12 lines=E2=80=9D (code sample).
+
+Backlinks
+: submit pages to Responsible AI director=
+ies, university labs, and OSS foundations you=E2=80=99re joining (OpenSSF, =
+LF AI & Data working groups).
+
+UTM discipline
+: every CTA uses 
+?utm_source=3D{pillar}&utm_campaign=3Dlaunch=
+1
+.
+
+8) Minimal task board (so you c=
+an delegate)
+
+Dev
+
+ Add MDX support + commit all pages
+
+ Drop ProofDemo into 
+/=
+replication
+
+ Add Analytics + sitemap/robots
+
+ Create 
+/learn
+ =
+route for 101 course
+
+Content
+
+ Record 3 =C3=97 90-sec tours (voiceover + screen capture)
+
+ Publish two challenge datasets + expected bands
+
+ Post RFC-001/002/003 with close dates
+
+Comms
+
+ Calendar & announce Open Call #1
+
+ 6 post drafts (3 weeks)
+
+ Outreach to 10 aligned orgs for backlinks
+
+If you want, I can also supply a=
+
+tiny Express middleware
+ that emits Trust Receipts for any POST route (drop-in for your demos=
+) and a 
+next-sitemap
+ config so search engines pick up the new pages immediately.
+
+=
+
+=
+
+You said:
+
+so i am in the app on my mac and it says =
+its linked with my vs code
+
+Symbi said:
+
+Thought for 28s
+
+=
+Great =E2=80=94 if it says VS Code is linked, you=E2=80=99re ready to wire =
+the pages and run the site locally. Do this exactly:
+
+1) Open the repo + check basics
+
+In Terminal:
+
+b=
+ash
+
+Copy code
+
+# go to your project folde=
+r
+
+cd
+
+ /path/to/=
+your/next-app
+
+# sanity checks
+
+node -v
+pnpm -v   
+
+# or: npm -v
+
+git status
+
+If 
+pnpm
+ isn=E2=80=99t installed:
+
+b=
+ash
+
+Copy code
+
+npm i -g pnpm
+
+2) Add MDX support (one-time)
+
+Install deps:
+
+b=
+ash
+
+Copy code
+
+pnpm add @next/mdx @mdx-js/react
+
+Edit 
+next.config.mjs
+:
+
+j=
+s
+
+Copy code
+
+// next.config.mjs
+
+import
+
+ create=
+MDX 
+
+from
+
+'@next/mdx'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({ 
+
+options
+
+: { 
+
+remarkPlugins
+
+: [], 
+
+rehypePlugins
+
+: [] } });
+
+/** 
+@=
+type
+
+ {
+
+imp=
+ort('next').NextConfig
+
+} */
+
+const
+
+ config =
+=3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+(Optional but nice) add MDX wrappers=
+:
+
+=
+tsx
+
+Copy code
+
+// app/mdx-components.tsx
+
+import
+
+ { 
+
+MDXProvider
+
+ =
+} 
+
+from
+
+'@mdx-js/react'
+
+;
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+function
+
+Table
+
+(
+
+props: React.HTMLAttributes<HTMLTa=
+bleElement>
+
+) {
+
+return
+
+<
+div
+
+className
+
+=3D
+
+"overflow-x-auto"
+
+>
+
+<
+table
+
+className
+
+=3D
+
+"w-full text-sm"
+
+ {
+
+...props
+
+} />
+
+</
+div
+
+>;
+}
+
+export
+
+const
+
+ mdxComponents=
+ =3D { 
+
+table
+
+: 
+
+Table
+
+ };
+
+export
+
+function
+
+WithMDX
+
+(
+=
+
+{ children }: { children: React.ReactNode=
+ }
+
+) {
+
+return
+
+<
+MDXProvider
+
+components
+
+=3D
+
+{mdxComponents
+
+=
+
+as
+
+any
+
+}>{children}
+
+</
+MDXProvider
+
+>;
+}
+
+Wrap your layout:
+
+tsx
+
+Copy code
+
+// app/layout.tsx
+
+import
+
+'./globals.css'
+
+;
+
+import
+
+ { 
+
+WithMDX
+
+ } 
+
+from
+
+'./mdx-components'
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=3D
+
+"antialiased"
+
+>
+
+<
+WithMDX
+
+>{children}
+
+&l=
+t;/
+WithMDX
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>);
+}
+
+3) Scaffold the new pages
+
+Create folders/files:
+
+bash
+
+Copy code
+
+mkdir
+
+ -p app/{sovereignty,economic-constitution,replication,governance,funding,=
+rfc}
+: > app/sovereignty/page.mdx
+: > app/economic-constitution/page.mdx
+: > app/replication/page.mdx
+: > app/governance/page.mdx
+: > app/funding/page.mdx
+: > app/rfc/page.mdx
+
+Now paste the MDX content we prepa=
+red earlier into each 
+page.mdx
+.
+
+For 
+symbi.world
+, in that repo:
+
+bash
+
+Copy code
+
+mkdir
+
+ -p app/financial-framework
+: > app/financial-framework/page.mdx
+
+Paste the Financial Framework MDX.=
+
+4) Embed the 
+/proof
+ demo
+
+Create the demo component:
+
+bash
+
+Copy code
+
+mkdir
+
+ -p app/replication
+code app/replication/ProofDemo.tsx
+
+Paste the 
+ProofDemo.tsx
+ we provided.
+
+Then, at the right spot inside 
+=
+app/replication/page.mdx
+, add:
+
+mdx
+
+Copy code
+
+import ProofDemo from './ProofDemo'
+
+## The `/proof` demo
+
+<ProofDemo />
+
+5) Run it
+
+bash
+
+Copy code
+
+pnpm dev
+
+O

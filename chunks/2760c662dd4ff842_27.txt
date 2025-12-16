@@ -1,0 +1,172 @@
+moteService
+lcl                552   0.0  0.0 426928736   4064   ??  S    12:24am   0:00.01 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoteagent
+root                83   0.0  0.1 426970400  17456   ??  Ss   12:24am   0:00.27 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+root                96   0.0  0.0 426965408   6224   ??  Ss+  12:24am   0:00.03 /usr/libexec/remoted
+lcl                824   0.0  0.0 410724112   1488 s000  S+   12:32am   0:00.00 grep -i remote
+_rmd               778   0.0  0.1 410735440   9280   ??  Ss   12:26am   0:00.08 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagedConfigurationFilesSubscriber.xpc/Contents/MacOS/ManagedConfigurationFilesSubscriber
+_rmd               777   0.0  0.1 410734752   8528   ??  Ss   12:26am   0:00.09 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ManagementTestSubscriber.xpc/Contents/MacOS/ManagementTestSubscriber
+_rmd               776   0.0  0.1 410735376  11040   ??  Ss   12:26am   0:00.07 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/SoftwareUpdateSubscriber.xpc/Contents/MacOS/SoftwareUpdateSubscriber
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 Some Remote Management Services Are Still Running
+
+Even after disabling them, 
+
+remotemanagementd
+ and 
+ScreenSharingSubscriber
+ are still active
+, meaning they 
+may have been automatically restarted
+ by macOS.
+
+🚀 Next Step: Force Stop and Unload These Services
+
+Let’s manually 
+force stop them
+ and 
+prevent them from restarting
+.
+
+Run the following 
+one by one
+ in Terminal:
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.remotemanagementd
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remotemanagementd.plist
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.ScreenSharingSubscriber
+sudo launchctl unload -w /System/Library/LaunchAgents/com.apple.ScreenSharingSubscriber.plist
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.remoted
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remoted.plist
+
+🛠️ After Running These, Verify Again
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -i remote
+
+✅ If 
+nothing appears
+, the services are fully stopped.
+
+❌ If 
+they are still running
+, macOS 
+is forcing them to restart
+, and we will take a stronger approach.
+
+📌 
+Run the commands and send me the results!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl stop system/com.apple.remotemanagementd
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remotemanagementd.plist
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl stop system/com.apple.ScreenSharingSubscriber
+sudo launchctl unload -w /System/Library/LaunchAgents/com.apple.ScreenSharingSubscriber.plist
+
+Warning: Expecting a LaunchDaemons path since the command was ran as root. Got LaunchAgents instead.
+
+launchctl bootout
+ is a recommended alternative.
+Unload failed: 5: Input/output error
+Try running 
+launchctl bootout
+ as root for richer errors.
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl stop system/com.apple.remoted
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remoted.plist
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Unload failed: Input/output error
+ – macOS Is Blocking Removal
+
+The error:
+
+lua
+
+Copy
+
+Unload failed: 
+
+5
+
+: Input/
+
+output
+
+error
+
+Try 
+
+running
+
+ `launchctl bootout` as root 
+
+for
+
+ richer errors.
+
+means that 
+macOS is preventing full removal
+, likely due to 
+System Integrity Protection (SIP) or the Sealed System Volume (SSV).
+ Even though we disabled SIP, some protections remain.
+
+🚀 Next Step: Use 
+bootout
+ to Force Stop These Services
+
+Since 
+unload
+ didn’t work, we’ll use 
+bootout
+, which is recommended by macOS.
+
+Run these commands 
+one by one
+:
+
+sh
+
+Copy
+
+sudo launchctl bootout system/com.apple.remotemanagementd
+sudo launchctl bootout system/com.apple.ScreenSharingSubscriber
+sudo launchctl bootout system/com.apple.remoted
+
+📌 
+Once done, verify again with:
+
+sh
+
+Copy
+
+ps aux | grep -i remote
+
+✅ If

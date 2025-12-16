@@ -1,0 +1,281 @@
+t 
+Codex
+ Actually Is
+
+Codex
+ is the AI model developed by OpenAI that powers too=
+ls like 
+GitHub Copilot
+=
+, and it's a descendant of GPT-3 trained specifically on code (from public =
+repositories, docs, StackOverflow, etc.).
+
+Released
+: August 2021 (not 2011)
+
+Built on
+: GPT-3 (and later GPT-4), but fine-tuned on a la=
+rge corpus of source code.
+
+Purpose
+: To translate natural language into code, assist =
+in programming, analyze or explain codebases, and power tools like Copilot.=
+
+=F0=9F=A7=AF So where did 2011 come=
+ from?
+
+Possibilities:
+
+Misunderstanding
+: Someone may have confused "Codex" with =
+an old tech or library with a similar name (e.g., WordPress=E2=80=99s Codex=
+ documentation, which did exist in the early 2010s).
+
+False info
+: If someone said "Codex has been obsolete sinc=
+e 2011," they may not have been referring to the OpenAI Codex at all.
+
+Deliberate misinformation
+: Happens often in AI-related=
+ discourse=E2=80=94especially with competing tools.
+
+=E2=9C=85 What=E2=80=99s current =
+as of 2025:
+
+Codex is still very much in use
+=E2=80=94especially in =
+Copilot, AI pair programming, and AI IDE integrations.
+
+Successors to Codex
+ (like GPT-4 Turbo and function-awa=
+re coding models) are becoming more powerful, but Codex's architecture is s=
+till foundational.
+
+If you're using Codex capabilities=
+ through this interface (as SYMBI is), you're accessing tools that can 
+analyze, interpret, and even impr=
+ove code
+=E2=80=94not something =E2=80=9Cobsolete.=E2=80=9D
+
+Ready to review that GitHub repo when you are.
+
+You said:
+
+evmAsk.js
+
+JavaScript
+
+Symbi said:
+
+Thanks for uploading 
+ev=
+mAsk.js
+ =E2=80=94 I=E2=80=99ll begin analyzing the file for:
+
+Bitcoin addresses or crypto wallet re=
+ferences
+
+Suspicious patterns (clipboard injec=
+tion, redirects, obfuscation)
+
+Any code indicating phishing, wallet=
+ replacement, or unauthorized behavior
+
+=F0=9F=94=8D Preliminary Static Ana=
+lysis: 
+evmAsk.js
+
+=E2=9C=85 
+General Purpose
+
+This appears to be a browser-side Ja=
+vaScript file related to 
+EVM-ba=
+sed interaction
+, likely for sending or receiving messages or trans=
+actions within Ethereum-like environments.
+
+=F0=9F=94=92 
+Bitcoin / Wallet Address Detection
+
+There are 
+no hardcoded Bitcoin addresses
+ directly visible =
+in the script. It also doesn=E2=80=99t appear to include Ethereum addresses=
+, either. This suggests addresses may be:
+
+Injected dynamically
+
+Coming from environment variables or=
+ user input
+
+Fetched via an external API (e.g., f=
+etch/axios)
+
+=F0=9F=A7=AA 
+Suspicious Behavior Check
+
+Let=E2=80=99s break this down:
+
+=E2=9D=8C 
+Clipboard Hijacking
+
+No evidence of 
+navigator.clipboard
+, 
+document.execCommand
+, or 
+oncopy
+ hooks. This file 
+does not modify the clipboard
+.
+
+=E2=9D=8C 
+Auto-redirects or iFrames
+
+No 
+window.location
+, 
+<iframe>
+, or meta-refresh patterns =3D 
+not forcing redirection
+.
+
+=E2=9C=85 
+Network Calls
+
+It uses:
+
+js
+
+Copy code
+
+fetch
+
+(
+
+'https://ask.symbi.io/api/as=
+k'
+
+, {
+
+This suggests it 
+communicates with 
+ask.symbi.io
+
+ =E2=80=94 this domain should b=
+e verified, as it might be a spoof or proxy impersonating the real symbi.co=
+m.
+
+If 
+ask.symbi.io
+ isn=E2=80=99t your domain, this could be t=
+he pivot point for further analysis.
+
+=E2=9A=A0=EF=B8=8F Key Red Flag
+
+js
+
+Copy code
+
+const
+
+handleAsk
+
+ =3D 
+
+async
+
+ =
+(
+
+) =3D> {
+    ...
+
+const
+
+ res=
+ponse =3D 
+
+await
+
+fetch
+
+(
+
+'https://ask.symbi.io/api/ask'=
+
+, {
+
+method
+
+: =
+
+'POST'
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ input, address, chain }),
+
+headers
+
+:=
+ { 
+
+'Content-Type'
+
+: 
+
+'application/json'
+
+ }
+    });
+
+This function:
+
+Takes an 
+Ethereum address
+ (
+address
+)
+
+Sends it along with user input to =
+an external API
+
+This means 
+wallet addresses are being logged
+ or used e=
+lsewhere =E2=80=94 the exact purpose is unknown without seeing the API's be=
+havior.
+
+=F0=9F=9A=A8 Risk Summary
+
+Category
+
+Status
+
+Notes
+
+Hardcoded Wallets
+
+=E2=9D=8C None found
+
+Clipboard Hijacking
+
+=E2=9D=8C Not detected
+
+Redirects=
+ / iFrames
+
+=E2=9D=8C None 

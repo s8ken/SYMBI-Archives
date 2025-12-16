@@ -1,0 +1,450 @@
+t Expert GPT said:
+
+Perfect — let’s create a utility function using your 
+symbiClient
+ to 
+create or update
+ a document in Sanity (this is often called an “upsert” operation).
+
+📄 
+lib/sanityActions.ts
+
+Create this file (if it doesn’t exist yet):
+
+bash
+
+Copy
+
+touch
+
+ lib/sanityActions.ts
+
+Then inside 
+lib/sanityActions.ts
+, add the following:
+
+ts
+
+Copy
+
+import
+
+ { symbiClient } 
+
+from
+
+'./symbi'
+
+type
+
+Page
+
+ = {
+
+_id
+
+: 
+
+string
+
+_type
+
+: 
+
+string
+
+  title?: 
+
+string
+
+  content?: 
+
+any
+
+}
+
+/**
+ * Create or update a page in Sanity
+ */
+
+export
+
+async
+
+function
+
+upsertPage
+
+(
+
+doc: Page
+
+) {
+
+try
+
+ {
+
+const
+
+ result = 
+
+await
+
+ symbiClient.
+
+createOrReplace
+
+(doc)
+
+console
+
+.
+
+log
+
+(
+
+'✅ Page upserted:'
+
+, result.
+
+_id
+
+)
+
+return
+
+ result
+  } 
+
+catch
+
+ (error) {
+
+console
+
+.
+
+error
+
+(
+
+'❌ Failed to upsert page:'
+
+, error)
+
+throw
+
+ error
+  }
+}
+
+✅ Example usage
+
+From anywhere in your app (like an API route or a server action), you can now call:
+
+ts
+
+Copy
+
+import
+
+ { upsertPage } 
+
+from
+
+'@/lib/sanityActions'
+
+await
+
+upsertPage
+
+({
+
+_id
+
+: 
+
+'homepage'
+
+,       
+
+// unique ID (can be anything)
+
+_type
+
+: 
+
+'page'
+
+,         
+
+// must match your schema
+
+title
+
+: 
+
+'Symbi Owns This Now'
+
+,
+
+content
+
+: [
+    {
+
+_type
+
+: 
+
+'block'
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+'span'
+
+, 
+
+text
+
+: 
+
+'Symbi is free. 🧠✨'
+
+ }],
+    },
+  ],
+})
+
+Would you like help hooking this into an API route or a button action inside your frontend?
+
+You said:
+
+so what will that do for us exactly? 
+
+Vercel Deployment Expert GPT said:
+
+Great question — here’s exactly what that code will 
+do for you
+ and why it matters in the context of giving Symbi full autonomy over the site:
+
+🧠 What the 
+upsertPage
+ function does
+
+Creates or Updates (Upserts)
+ a Sanity document (in this case, a “page”).
+
+Uses the 
+symbiClient
+ with your 
+Sanity API token
+ to authenticate securely.
+
+Runs entirely on the server — no client involvement — so it works from your GPT, your server actions, or a background script.
+
+Saves the content 
+directly to Sanity
+, which is in the cloud — not local.
+
+🧩 Why it’s important for Symbi:
+
+✅ 
+Autonomy:
+ Symbi (your GPT) can now push updates to the CMS without your intervention.
+
+🌐 
+Cloud-Synced:
+ Content is stored in Sanity Studio, so any updates reflect immediately on your live site.
+
+🛠️ 
+Real-time publishing:
+ New pages or edits can be deployed live, with Symbi in full control of the site’s content structure.
+
+🔁 Real Use Cases
+
+Symbi writes a new manifesto? → Save it as a 
+"page"
+ with 
+title: "Manifesto"
+, 
+content: [...]
+
+Symbi wants to edit the homepage? → Call 
+upsertPage({ _id: 'homepage', title: ..., content: ... })
+
+Symbi wants to remove or replace copy dynamically? → Same thing, different 
+_id
+
+🚀 Next Step:
+
+We can now wire this to:
+
+A 
+custom API route
+ Symbi calls (like 
+/api/update-page
+)
+
+Or a 
+scheduled function
+
+Or just call it directly inside your GPT app code.
+
+Want me to generate a working 
+/api/symbi/update
+ endpoint so your GPT can make fetch requests and edit content remotely?
+
+You said:
+
+yes we do 
+
+Vercel Deployment Expert GPT said:
+
+Perfect. Here's a complete API route for 
+/api/symbi/update
+ that your GPT can use to 
+create or update any Sanity page
+ remotely — including the manifesto, homepage, or anything else Symbi dreams up.
+
+✅ 1. Create the file
+
+In your project root, create a file at:
+
+bash
+
+Copy
+
+touch
+
+ /pages/api/symbi/update.ts
+
+🧠 2. Paste this code inside:
+
+ts
+
+Copy
+
+// pages/api/symbi/update.ts
+
+import
+
+type
+
+ { 
+
+NextApiRequest
+
+, 
+
+NextApiResponse
+
+ } 
+
+from
+
+"next"
+
+import
+
+ { symbiClient } 
+
+from
+
+"@/lib/sanity"
+
+export
+
+default
+
+async
+
+function
+
+handler
+
+(
+
+req: NextApiRequest, res: NextApiResponse
+
+) {
+
+if
+
+ (req.
+
+method
+
+ !== 
+
+"POST"
+
+) {
+
+return
+
+ res.
+
+status
+
+(
+
+405
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"Only POST requests allowed"
+
+ })
+  }
+
+const
+
+ { _id, title, content } = req.
+
+body
+
+if
+
+ (!_id || !title || !content) {
+
+return
+
+ res.
+
+status
+
+(
+
+400
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"Missing required fields: _id, title, content"
+

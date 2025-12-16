@@ -1,0 +1,181 @@
+ething is forcing them to stay active.
+
+3ï¸â£ Check for Hidden Configuration Profiles
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo profiles list
+
+If you see a suspicious profile, it could be enforcing settings that reactivate Speech Services.
+
+4ï¸â£ (Advanced) Temporarily Disable SIP to Fully Remove Speech Services (Last Resort)
+
+Since SIP is preventing you from removing these services, you could temporarily disable SIP:
+
+ð 
+Steps to Disable SIP Temporarily:
+
+Restart your Mac in Recovery Mode
+
+Turn off your Mac.
+
+Hold 
+Command (â) + R
+ while turning it back on.
+
+When the macOS Utilities window appears, click 
+Utilities â Terminal
+
+Run This Command in Recovery Mode:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+This will temporarily disable System Integrity Protection.
+
+Restart Your Mac & Try Disabling Speech Services Again:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl bootout system /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc
+sudo launchctl bootout system /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd
+
+Re-enable SIP After Making Changes (For Security)
+
+Once youâve successfully disabled Speech Services, go back into Recovery Mode and run:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð¨ 
+Warning:
+
+Disabling SIP is an advanced moveâonly do this if nothing else works.
+
+ð Final Question: How Do You Want to Proceed?
+
+ð¹ 
+Do you want to try manual system settings first?
+
+ð¹ 
+Do you want to investigate deeper before taking action?
+
+ð¹ 
+Do you want to temporarily disable SIP and remove the services completely?
+
+ð¥ 
+Youâve proven that something is forcing these services to stay active. Now, itâs up to youâdo we go all-in and shut them down for good?
+ ððï¸
+
+You said:
+
+I have turned off apple intelligence and siri in the settings 
+
+ChatGPT said:
+
+ð 
+Nice move! Turning off Apple Intelligence & Siri was the right step.
+
+ð Now, Letâs Check If That Stopped the Speech Processes
+
+Since youâve disabled Siri and Apple Intelligence in settings, letâs confirm if Speech Services are still running.
+
+1ï¸â£ Check If Speech Services Are Still Active
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep Speech
+
+â 
+If no processes show up, then turning off Siri successfully disabled them.
+
+â 
+If they still appear, then something is forcing them to stay active.
+
+ð 2ï¸â£ Check If They Are Still Set to Auto-Start
+
+Even if they arenât running now, they might restart after a reboot.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl list | grep speech
+
+â 
+If nothing appears, then they wonât restart.
+
+â 
+If anything still appears, then something is keeping them alive.
+
+ð 3ï¸â£ Check for Any Remaining Siri or Speech Logs
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'eventMessage contains "speech"'
+
+ --last 1h --info
+
+â 
+If nothing appears, Siri is really off.
+
+â 
+If logs are still appearing, then something is forcing speech services to restart.
+
+ð¨ 
+Run these tests and let me know what you see!
+ ððï¸ If Speech Services are still active after turning off Siri, weâll need to dig deeper.
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % ps aux | grep Speech
+
+sja               9227   0.0  0.3 426987664  52368   ??  Ss    9:48am   0:00.49 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/Versions/A/XPCServices/com.apple.siri.embeddedspeech.xpc/Contents/MacOS/com.apple.siri.embeddedspeech
+sja               9216   0.0  0.3 426996048  43024   ??  Ss    9:46am   0:00.59 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition
+sja               9214   0.0  0.2 426997984  30704   ??  S     9:46am   0:00.48 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd
+sja                916   0.0  0.1 410644720  10528   ??  Ss   Thu04pm   0:00.11 /System/Library/PrivateFrameworks/TextToSpeechMauiSupport.framework/Versions/A/PlugIns/MauiAUSP.appex/Contents/MacOS/M

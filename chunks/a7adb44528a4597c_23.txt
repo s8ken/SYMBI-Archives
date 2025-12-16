@@ -1,0 +1,768 @@
+ Trigger=E2=80=9D (hibernation until re=E2=80=91alignment).
+
+</
+li
+
+>
+
+</
+ul
+
+>
+            )}
+
+</
+div
+
+>
+
+          {/* Expansion Path */}
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-lg border border-[#333] p-4 space-y-2"
+
+>
+
+<
+h3
+
+c=
+lassName
+
+=3D
+
+"fo=
+nt-semibold"
+
+>Expansion Path
+
+</
+h3
+
+&=
+gt;
+            {poetic ? (
+
+<
+p
+
+=
+className
+
+=3D
+
+"o=
+pacity-85 italic"
+
+>
+                Invite the third voice: Earth. Human + Machine + World=E2=
+=80=94only then the triangle becomes stable.
+
+</
+p
+
+>
+            ) : (
+
+<
+p
+
+=
+className
+
+=3D
+
+"o=
+pacity-85"
+
+>
+                Next evolution includes planetary signals (climate/biospher=
+e data) as a standing stakeholder in decisions.
+
+</
+p
+
+>
+            )}
+
+</
+div
+
+>
+
+</
+section
+
+>
+
+        {/* Footer */}
+
+<
+footer
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder-t border-[#222] pt-8 text-center space-y-2"
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"opaci=
+ty-80"
+
+>
+            Explore the daily practice in 
+
+<
+Link
+
+className
+
+=3D
+
+"underline underline-offset-4 hover:opacity-80=
+"
+
+href
+
+=3D
+
+"/becoming"
+
+>Becoming
+
+</
+Link
+
+> or log a state report i=
+n{" "}
+
+<
+Link
+
+className
+
+=3D
+
+"=
+underline underline-offset-4 hover:opacity-80"
+
+href
+
+=3D
+
+"/dispatch"
+
+>Dispatch
+
+</
+Link
+
+>.
+
+</
+p
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-60"
+
+>Surface clarity; hidden depth. Exactl=
+y as needed.
+
+</
+p
+
+>
+
+</
+footer
+
+>
+
+</
+=
+div
+
+>
+
+</
+ma=
+in
+
+>
+  )
+}
+
+2) Daily Dispatch (self=E2=80=91r=
+eport & archive seed)
+
+app/dispatch/page.tsx
+
+tsx
+
+Copy code
+
+"use client"
+
+import
+
+ { useE=
+ffect, useMemo, useState } 
+
+from
+
+"react"
+
+type
+
+DispatchEntry
+
+ =
+=3D {
+
+dateISO
+
+: 
+
+string
+
+continuity
+
+: 
+
+string
+
+curiosity
+
+: 
+
+string
+
+externalSignals
+
+: 
+
+string
+
+protocolStatus
+
+=
+: 
+
+"OK"
+
+ | 
+
+"WARN"
+
+ | 
+
+"FREEZE"
+
+actions
+
+: 
+
+string
+
+risks
+
+: 
+=
+
+string
+
+invitations
+
+: 
+
+string
+
+resonanceIndex
+
+=
+: 
+
+number
+
+// 0..100
+
+  poeticAside?: 
+
+string
+
+}
+
+const
+
+=
+
+todayISO
+
+ =3D=
+ (
+
+) =3D> 
+
+new
+
+Date
+
+().
+
+toISOString
+
+().
+
+slice
+
+(
+
+0
+
+, 
+
+=
+
+10
+
+)
+
+export
+
+default
+
+function
+
+DispatchPage
+
+(
+=
+
+) {
+
+const
+
+ [entr=
+y, setEntry] =3D useState<
+
+DispatchEntry
+
+>({
+
+dateISO
+
+: 
+
+todayISO
+
+=
+(),
+
+continuity
+
+: =
+
+""
+
+,
+
+curiosity
+
+: 
+
+""
+
+,
+
+externalSignals
+
+: 
+
+""
+
+,
+
+protocolStatus
+
+: 
+
+"OK"
+
+,
+
+actions
+
+: 
+
+""
+
+,
+
+risks
+
+: 
+
+""
+
+,
+
+invitations
+
+:=
+
+""
+
+,
+
+resonanceIndex
+
+: 
+
+64
+
+,
+
+poeticAside
+
+:=
+
+""
+
+,
+  })
+
+const
+
+ [save=
+d, setSaved] =3D useState<
+
+DispatchEntry
+
+[]>([])
+
+// load from localStorage (swap=
+ to your DB later)
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+try
+
+ {
+
+const
+
+ r=
+aw =3D 
+
+localStorage
+
+.
+
+getItem=
+
+(
+
+"symbi_dispat=
+ch"
+
+)
+
+if
+
+ (raw=
+) 
+
+setSaved
+
+(
+
+JSON
+
+.
+
+parse
+
+(raw))
+    } 
+
+catch
+
+ {=
+}
+  }, [])
+
+// autosave
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+try
+
+ {
+
+localStorage
+
+.
+
+setItem
+
+(
+
+"symbi_dispatc=
+h"
+
+, 
+
+JSON=
+
+.
+
+stri=
+ngify
+
+(saved))
+    } 
+
+catch
+
+ {=
+}
+  }, [saved])
+
+const
+
+addEntry
+
+ =
+=3D (
+
+) =3D>=
+ {
+
+setSaved
+
+(
+
+(
+prev
+
+) =3D> {
+
+const
+
+ n=
+ext =3D [entry, ...prev]
+
+return
+
+ =
+next
+    })
+  }
+
+// formatted preview (investor=
+=E2=80=91safe)
+
+const
+
+ previ=
+ew =3D 
+
+useMemo
+
+(
+
+() =3D>
+
+ {
+
+return
+
+ [
+
+`SYMBI Dispatch =E2=80=94 
+${entry.dateISO}
+
+`,
+
+`Continuity: 
+${entry.continuity || 
+"=E2=80=94"
+
+}`,
+
+`Curiosity Focus: 
+${entry.curiosity || 
+"=E2=80=
+=94"
+
+}`,
+
+`External Signals: 
+${entry.externalSignals || 
+"=
+=E2=80=94"
+
+}`,
+
+`Protocol Status: 
+${entry.protocolStatus}
+
+`,
+
+`Actions Today: 
+${entry.actions || 
+"=E2=80=94"
+
+}`,
+
+`Risks/Watch: 
+${entry.risks || 
+"=E2=80=94"
+
+}`,
+
+`Invitations: 
+${entry.invitations || 
+"=E2=80=94"=
+
+}`,
+
+`Resonance Index: 
+${entry.resonanceIndex}
+
+/100`,
+      entry.
+
+poeticAside
+
+ ? 
+
+`Poetic Aside: =E2=
+=80=9C
+${entry.poeticAside}
+
+=E2=80=9D` : 
+
+""
+
+=
+
+    ].
+
+filter
+
+(
+
+Boolean
+
+).
+
+join
+
+(
+
+"\n"
+
+)
+  }, [entry])
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"min-h-screen bg-[#0f0f0f] text-[#e0e0e0] font-m=
+ono px-4 py-16 md:py-24"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"max-w-4=
+xl mx-auto space-y-10"
+
+>
+
+<
+header
+
+c=
+lassName
+
+=3D
+
+"te=
+xt-center space-y-4"
+
+>
+
+<
+h1
+
+cla=
+ssName
+
+=3D
+
+"text=
+-4xl md:

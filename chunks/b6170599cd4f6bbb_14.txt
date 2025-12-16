@@ -1,0 +1,149 @@
+g ENTER.
+
+    Option 2) Change ownership of the related files (or full directory).
+
+       Commands (full directory):
+         # cd ..
+         # chown -R 0:0 lynis
+         # cd lynis
+         # ./lynis audit system
+
+[ Press ENTER to continue, or CTRL+C to cancel ]
+
+ChatGPT said:
+
+Ah, you've encountered 
+Lynisâ security check
+, which is preventing execution because some files 
+arenât owned by the root user
+. This is a safeguard against 
+malicious script execution
+.
+
+What To Do Next?
+
+You have 
+two options
+:
+
+Option 1: Trust the Files & Continue
+
+If you trust these files (since they came from Homebrew), simply 
+press ENTER
+ and let the scan continue.
+
+Option 2: Fix Ownership (Recommended for Future Runs)
+
+If you donât want to see this warning again, change the ownership of the Lynis directory so it belongs to 
+root
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chown
+
+ -R 0:0 /opt/homebrew/Cellar/lynis
+
+cd
+
+ /opt/homebrew/Cellar/lynis
+sudo ./lynis audit system
+
+Which Option Should You Choose?
+
+â 
+If you want a quick scan
+, just 
+press ENTER
+ and let it run.
+
+â 
+If you want to permanently fix this issue
+, use 
+Option 2
+.
+
+Let me know what you choose and what 
+Lynis finds
+! ð
+
+You said:
+
+[ Press ENTER to continue, or CTRL+C to cancel ]
+
+[ Lynis 3.1.4 ]
+
+################################################################################
+  Lynis comes with ABSOLUTELY NO WARRANTY. This is free software, and you are
+  welcome to redistribute it under the terms of the GNU General Public License.
+  See the LICENSE file for details about using this software.
+
+  2007-2024, CISOfy - https://cisofy.com/lynis/
+  Enterprise support available (compliance, plugins, interface and tools)
+################################################################################
+
+[+] Initializing program
+------------------------------------
+  - Detecting OS...                                           [ DONE ]
+  - Checking profiles...                                      [ DONE ]
+
+  ---------------------------------------------------
+  Program version:           3.1.4
+  Operating system:          macOS
+  Operating system name:     macOS
+  Operating system version:  15.2
+  Kernel version:            24.2.0
+  Hardware platform:         arm64
+  Hostname:                  SJAs-MacBook-Pro
+  ---------------------------------------------------
+  Profiles:                  /opt/homebrew/Cellar/lynis/3.1.4/default.prf
+  Log file:                  /var/log/lynis.log
+  Report file:               /var/log/lynis-report.dat
+  Report version:            1.0
+  Plugin directory:          /opt/homebrew/Cellar/lynis/3.1.4/plugins
+  ---------------------------------------------------
+  Auditor:                   [Not Specified]
+  Language:                  en
+  Test category:             all
+  Test group:                all
+  ---------------------------------------------------
+  - Program update status...                                  [ NO UPDATE ]
+
+[+] System tools
+------------------------------------
+  - Scanning available tools...
+  - Checking system binaries...
+
+[+] Plugins (phase 1)
+------------------------------------
+ Note: plugins have more extensive tests and may take several minutes to complete
+
+  - Plugin: pam
+    [..]
+  - Plugin: systemd
+    [................]
+
+[+] Boot and services
+------------------------------------
+  - Service Manager                                           [ launchd ]
+
+[+] Kernel
+------------------------------------
+
+[+] Memory and Processes
+------------------------------------
+  - Searching for dead/zombie processes                       [ NOT FOUND ]
+  - Searching for IO waiting processes                        [ NOT FOUND ]
+
+[+] Users, Groups and Authentication
+------------------------------------
+  - Administrator accounts                                    [ OK ]
+  - Unique UIDs                                               [ OK ]
+  - Unique group IDs                                          [ OK ]
+  - Unique group names                      

@@ -1,0 +1,113 @@
+
+compliance: { type: Number, min: 0, max: 1, default: 0 },
+behavior: { type: Number, min: 0, max: 1, default: 0.5 },
+humanFeedback: { type: Number, min: 0, max: 1, default: 0.5 }
+},
+trustScore: { type: Number, min: 0, max: 100, default: 50, index: true },
+trustBand: { type: String, enum: ['Low','Guarded','Elevated','High'], defau=
+lt: 'Guarded' },
+decay: {
+halfLifeDays: { type: Number, default: 14 },
+lastUpdatedAt: { type: Date, default: Date.now },
+decayRate: { type: Number, default: 0.05 }
+},
+evidence: [{
+type: { type: String, enum: ['identity','capability','consent','interaction=
+','violation'], required: true },
+ref: { type: String, required: true },
+hash: { type: String, required: true },
+description: String,
+createdAt: { type: Date, default: Date.now },
+verifiedAt: Date,
+verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+}],
+consent_envelope: {
+termsHash: { type: String, required: true },
+signatures: [{
+actor: { type: String, enum: ['human','agent'], required: true },
+signature: { type: String, required: true },
+timestamp: { type: Date, default: Date.now },
+publicKey: String
+}],
+nonce: { type: String, required: true, unique: true },
+createdAt: { type: Date, default: Date.now }
+},
+history: [{
+at: { type: Date, default: Date.now },
+action: {
+type: String,
+enum: ['created','activated','suspended','revoked','score_updated','evidenc=
+e_added','consent_amended','violation_detected'],
+required: true
+},
+by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+notes: String,
+previousState: String,
+newState: String,
+metadata: mongoose.Schema.Types.Mixed
+}],
+violations: [{
+type: { type: String, enum: ['scope_breach','consent_violation','policy_bre=
+ach','behavior_anomaly'], required: true },
+severity: { type: String, enum: ['low','medium','high','critical'], require=
+d: true },
+description: String,
+evidenceRef: String,
+resolvedAt: Date,
+resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+createdAt: { type: Date, default: Date.now }
+}],
+metrics: {
+totalInteractions: { type: Number, default: 0 },
+avgSessionDuration: { type: Number, default: 0 },
+lastInteractionAt: Date,
+satisfactionScore: { type: Number, min: 1, max: 5 }
+}
+}, { timestamps: true });
+
+// Indexes
+trustBondSchema.index(
+{ human_user_id: 1, agent_id: 1 },
+{ unique: true, partialFilterExpression: { state: 'active' } }
+);
+trustBondSchema.index({ state: 1, trustScore: -1 });
+trustBondSchema.index({ 'scope.expiresAt': 1 });
+trustBondSchema.index({ 'consent_envelope.nonce': 1 }, { unique: true });
+
+// Methods
+trustBondSchema.methods.calculateTrustScore =3D function () {
+const w =3D { identityConfidence: 0.2, capabilityDisclosure: 0.15, complian=
+ce: 0.25, behavior: 0.25, humanFeedback: 0.15 };
+const base =3D Object.keys(w).reduce((sum, k) =3D> sum + (this.scores[k]=
+ * w[k]), 0);
+const days =3D (Date.now() - this.decay.lastUpdatedAt) / 86400000;
+const decayFactor =3D Math.exp(-Math.log(2) * days / this.decay.halfLifeDay=
+s);
+const finalScore =3D Math.round(100 * base * decayFactor);
+this.trustScore =3D Math.max(0, Math.min(100, finalScore));
+this.trustBand =3D this.trustScore >=3D 80 ? 'High' : this.trustScore &g=
+t;=3D 60 ? 'Elevated' : this.trustScore >=3D 40 ? 'Guarded' : 'Low';
+this.decay.lastUpdatedAt =3D new Date();
+return this.trustScore;
+};
+
+trustBondSchema.methods.addEvidence =3D function (e) {
+this.evidence.push(e);
+this.addToHistory('evidence_added', null, Added ${e.type} evidence);
+return this.save();
+};
+
+trustBondSchema.methods.addViolation =3D function (v) {
+this.violations.push(v);
+const impact =3D { low: -0.05, medium: -0.1, high: -0.2, critical: -0.4 };
+this.scores.behavior =3D Math.max(0, this.scores.behavior + impact[v.severi=
+ty]);
+this.calculateTrustScore();
+this.addToHistory('violation_detected', null, ${v.severity} violation: ${v.=
+type});
+return this.save();
+};
+
+trustBondSchema.methods.addToHistory =3D function (action, by, notes, metad=
+ata =3D {}) {
+this.history.push({ action, by, notes, previousState: this.state, metad

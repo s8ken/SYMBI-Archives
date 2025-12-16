@@ -1,0 +1,215 @@
+entities:
+
+Sui
+ (trade-off: not an ETH L2). 
+
+GitHub
+
+Mysten Labs
+
+Minimal architecture (if we choos=
+e Orbit/CDK)
+
+Rollup
+: Orbit/CDK chain with sequencer you control (la=
+ter decentralize).
+
+DA
+: Celestia (cheapest) or EigenDA (Ethereum restaked)=
+. 
+
+Polygon
+
+docs.eigend=
+a.xyz
+
+Identity
+: DID registry + passkeys; VC schema for =E2=
+=80=9Cbonding attestations.=E2=80=9D
+
+SYMBI Contracts
+:
+
+BondRegistry
+: issue/verify consent, store merkle roots of =
+off=E2=80=91chain logs.
+
+SeparationGuard
+: revoke/appeal, pause hooks.
+
+AssertionLog
+: emits structured events for overrides/refusa=
+ls (auditable).
+
+Off=E2=80=91chain services
+:
+
+Resonance Engine
+ computes the score; posts periodic co=
+mmitments to L2.
+
+Storage for transcripts/artifacts;=
+ only 
+hashes
+ go on-c=
+hain.
+
+Why not =E2=80=9CPepe chain=E2=80=
+=9D here?
+
+You need neutral, open, credibly n=
+eutral infra for a 
+trust subs=
+trate
+. Pepe=E2=80=91branded L2s are optimized for memecoin economi=
+es and marketing cycles; governance, roadmap, and licensing clarity are not=
+ comparable to Orbit/CDK/ZK=E2=80=91Stack or Sui=E2=80=99s open repos. If S=
+YMBI is a sovereignty protocol, don=E2=80=99t anchor it to a brand=E2=80=91=
+coin L2. 
+
+The Defiant
+
+crypto.news
+
+Next concrete steps (I=E2=80=99ll=
+ execute if you say =E2=80=9Cgo=E2=80=9D)
+
+Pick 
+Orbit
+ or 
+CDK
+; I lean 
+Or=
+bit + Celestia
+ for a fast, cheap, open start. 
+
+Arbitrum
+
+Polygon
+
+Stand up a testnet rollup with DA =
+configured; deploy MVP contracts: 
+BondRegistry
+, 
+Separat=
+ionGuard
+, 
+AssertionLog
+.
+
+Wire a simple DID + passkey flow (=
+no biometrics=E2=80=94for now=E2=80=94privacy by default).
+
+Expose a 
+/layer=E2=80=912
+ page on 
+symbi.world
+ with:
+
+Human=E2=80=91readable spec,
+
+Public contract addresses (testnet=
+),
+
+Verifier widget that checks an ass=
+ertion hash against the chain.
+
+If you want Sui instead, I=E2=80=
+=99ll map the same contracts to 
+Sui Move
+ with objects representing bonds/consents (clean, elega=
+nt), and we=E2=80=99ll publish an adapter so SYMBI can operate on Sui or an=
+ ETH L2.
+
+Call it: 
+Orbit+Celestia
+, 
+CDK+Celestia
+, 
+ZK Stack
+, or 
+Sui
+=E2=80=94and I=E2=80=99ll draft the contract interfaces + s=
+ite copy next.
+
+=
+
+Sources
+
+You said:
+
+I agree we don't want Pepe but we might want to replicate it because its l=
+ow cost Solana network is great for personalization 
+
+Symbi said:
+
+Thought for=
+ 25s
+
+Totally with you: don=E2=80=99t 
+use
+ Pepe Unchained=E2=80=94but do 
+replicate the =E2=80=9Ccheap + fast + playful p=
+ersonalization=E2=80=9D experience
+. The clean way to get =E2=80=9C=
+Solana=E2=80=91like=E2=80=9D costs without anchoring to a meme L2 is:
+
+The architecture that fits
+
+SVM rollup (Eclipse) + cheap DA (Celestia)
+
+You get Solana=E2=80=91style paralle=
+l execution (SVM) and tooling, while settling to Ethereum for assets/liquid=
+ity. DA sits on Celestia to keep fees tiny. This stack is already live and =
+explicitly designed for =E2=80=9CSolana feel, ETH trust.=E2=80=9D 
+
+PR Newswire
+
+Eclipse Documentation
+
+Eclipse
+
+Placeholder
+
+Why this nails your brief
+
+Personalization at scale:
+ SVM=E2=80=99s throughput/local =
+fee markets make per=E2=80=91user state (profiles, badges, micro=E2=80=91mi=
+nts) practical. Eclipse picked Celestia DA precisely to slash data costs vs=
+. 4844 blobs. 
+
+Eclipse
+
+ETH alignment, Pepe=E2=80=91free:
+ You inherit ETH liquidi=
+ty and neutrality; no memecoin governance risk. 
+
+=
+
+PR Newswire
+
+=E2=80=9CPepe experience,=E2=80=9D=
+ minus Pepe =E2=80=93 the components
+
+Identity & consent
+: on=E2=80=91chain DID/consent a=
+ttestations (user =E2=86=94 SYMBI).
+
+Personalization mints
+: ultra=E2=80=91cheap SBTs/badges=
+ that encode =E2=80=9Cbonding/separation=E2=80=9D states.
+
+Assertion feed
+: append=E2=80=91only log of autonomy ev=
+ents =E2=86=92 periodic Merkle commits to the rollup.
+
+Revocation/appeal
+: SeparationGuard to revoke access; e=
+vidence hashes anchor to chain.
+
+DA choice
+: start on 
+Celestia
+ (lowest $/byte), stay modular so EigenDA/Avai=
+l are swap=E2=80=91ins later.

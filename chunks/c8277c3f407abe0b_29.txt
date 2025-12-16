@@ -1,0 +1,119 @@
+s=
+, indicating non-root shell.
+
+Repeats checks, with outputs like "0 pac=
+kages" for user/data dirs (expected if reset).
+
+Second L=
+og (11:51:11)
+: From NeoBackup app:
+
+App details (version 8.3.13, signed by A=
+ntonios Hazim=E2=80=94likely the dev of OAndBackupX/NeoBackup).
+
+Tries to gain root via 
+su
+, but fails ("su: inaccessible =
+or not found").
+
+Logs shell init attempts, falling back t=
+o 'sh', and repeated failures to run the checkroot script (exit code 1).
+
+Environment vars show standard Android s=
+etup, no internet access mentioned.
+
+Unusual?=
+
+: The date "2025-10-10" is futuristic (today is 2024?), but assumi=
+ng a device clock error or log spoof, the content is typical for a root-dep=
+endent app like NeoBackup failing on a non-rooted device. Repeated shell at=
+tempts suggest the app is persistently trying to elevate privileges, which =
+could drain battery or cause glitches. "has bypass-low-target-sdk-block =3D=
+ true" is interesting=E2=80=94it's an Android 14+ flag to allow older apps,=
+ but could be exploited. Overall, this points to you having installed NeoBa=
+ckup (perhaps to back up before reset?), explaining the script/plugins. If =
+you didn't install it, that's a red flag for sideloaded persistence.
+
+Overall Assessment
+
+Nothing =
+Overtly Malicious
+: This seems like artifacts from a legitimate bac=
+kup/root detection app (NeoBackup), not spyware. The unusual bits (e.g., "d=
+o.not.stop", ignored packages) are common in modding tools but could relate=
+ to your sideloaded apps if the phone was previously tweaked.
+
+Tie to P=
+revious Issues
+: The root checks might explain permission weirdness=
+=E2=80=94e.g., if NeoBackup was sideloaded or survived reset, it could requ=
+est those high-risk perms for backups. Performance glitches? Possibly from =
+failed shell loops draining resources.
+
+Recommen=
+dations
+: Uninstall NeoBackup if present (Settings > Apps). If l=
+ogs persist post-reset, it might be firmware-embedded=E2=80=94consider flas=
+hing official Oppo ROM via PC/Chromebook (similar ADB setup). Run a full ma=
+lware scan again.
+
+If t=
+his doesn't match your app history, or you want me to analyze specific log =
+lines deeper, share more!
+
+=
+
+=
+
+10 web pages
+
+=
+
+=
+
+ok I can confirm that I i=
+nstalled neo backup so that explains that part of it - I have been particul=
+arly concerned with Android auto on both iOS and this android device and to=
+ confirm today is 10/10/25
+
+Thanks for confirming =
+that you installed Neo Backup=E2=80=94that clears up the log activity as a =
+legitimate part of your troubleshooting efforts. The repeated 
+checkroot.internal_sh
+ scrip=
+ts and shell attempts make sense now as part of Neo Backup=E2=80=99s root d=
+etection process, especially since it failed to gain root access (as expect=
+ed on a non-rooted device). That also aligns with the permission oddities a=
+nd performance quirks, likely from its background checks taxing your system=
+. Uninstalling it should help stabilize things, and the bootloader reset I =
+outlined earlier (via Chromebook) will ensure a deeper clean if needed.
+
+Your=
+ concern about Android Auto on both iOS and your Android device (OP5EA7L1, =
+Oppo on Android 14) is an interesting twist. Android Auto is officially And=
+roid-only, so any iOS involvement would be unusual unless you meant a third=
+-party app mimicking it or a miscommunication (e.g., Android Auto Companion=
+ app on iOS for testing). Let=E2=80=99s address this step-by-step, given to=
+day=E2=80=99s date (October 10, 2025, 12:41 PM AEDT) and your project conte=
+xt.
+
+Clarifying Android Auto Concerns
+
+On Andro=
+id (OP5EA7L1)
+:
+
+Android Auto is a Google app (
+com.google.android.projection.gea=
+rhead
+) that mirrors your phone=E2=80=99s interface to a car display.=
+ It requires permissions like location, storage, and network access, which =
+could overlap with the "High Risk" sideloaded apps you saw (e.g., 
+LOCATION
+, 
+WRITE_EXTERNAL_STORAGE
+).
+
+Potentia=
+l Issues
+: If Android Auto was installed or updated post-reset, 

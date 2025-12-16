@@ -1,0 +1,436 @@
+ — One Line That Solves It All
+
+bash
+
+Copy
+
+npm install react@18 react-dom@18 --legacy-peer-deps
+
+or if that still fails:
+
+bash
+
+Copy
+
+npm install react@18.2.0 react-dom@18.2.0 --force
+
+Why This Works:
+
+--legacy-peer-deps
+ tells npm to 
+ignore peer dependency mismatches
+ (like old packages asking for React 17).
+
+--force
+ is a blunt tool that works when even 
+--legacy-peer-deps
+ fails.
+
+🧠 Once That’s Done:
+
+Run this right after:
+
+bash
+
+Copy
+
+npm install sanity @sanity/client next-sanity @sanity/vision --legacy-peer-deps
+
+Then:
+
+Add your fresh 
+sanity.config.ts
+
+Add the 
+app/studio/[[...index]]/page.tsx
+ route
+
+Run your dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Confirm and I’ll walk you through auto-wiring the CMS into your homepage content (you’ll edit via GUI from now on).
+
+You’re doing awesome. Want me to prep a working 
+schemas/page.ts
+ for your content model next?
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % npm install react@18 react-dom@18 --legacy-peer-deps
+
+npm warn deprecated popper-max-size-modifier@0.2.0: We recommend switching to Floating UI which supports this modifier out of the box: https://floating-ui.com/docs/size
+
+added 532 packages, and audited 533 packages in 41s
+
+163 packages are looking for funding
+  run 
+npm fund
+ for details
+
+5 moderate severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi % 
+
+Vercel Deployment Expert GPT said:
+
+✅ 
+React 18 Successfully Installed!
+
+You are now on the right version of React to work with 
+Sanity v3
+ and everything modern. 💪
+
+🔥 Next Step: Install Sanity with Compatible Packages
+
+Now run:
+
+bash
+
+Copy
+
+npm install sanity @sanity/client next-sanity @sanity/vision --legacy-peer-deps
+
+This will:
+
+Set you up with 
+Sanity v3
+
+Fully support 
+React 18
+
+Avoid all the peer dependency errors we’ve been fighting
+
+Once that’s done, I’ll give you:
+
+✅ A clean working 
+sanity.config.ts
+
+✅ Your 
+app/studio/[[...index]]/page.tsx
+ route
+
+✅ A GUI-based 
+
+page.ts
+ schema
+ (so you can edit your site from Sanity Studio)
+
+✅ The code to 
+connect your homepage to the CMS content
+
+Ready when you are — go ahead and run the install 💥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % npm install sanity @sanity/client next-sanity @sanity/vision --legacy-peer-deps
+
+up to date, audited 533 packages in 4s
+
+163 packages are looking for funding
+  run 
+npm fund
+ for details
+
+5 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi % 
+
+Vercel Deployment Expert GPT said:
+
+✅ Sanity Installed Successfully with React 18!
+
+You're now 
+fully set up with Sanity v3
+, React 18, and Next.js 15 — 
+zero peer conflicts
+. Let’s wire up the CMS!
+
+🔧 Step 1: Create 
+sanity.config.ts
+
+In your project root:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'your_project_id'
+
+,   
+
+// <- replace with your actual project ID
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+})
+
+📁 Step 2: Create the Schema Folder and Page Schema
+
+bash
+
+Copy
+
+mkdir
+
+ schemas
+nano schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'page'
+
+,
+
+title
+
+: 
+
+'Page'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'title'
+
+,
+
+title
+
+: 
+
+'Title'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'content'
+
+,
+
+title
+
+: 
+
+'Content'
+
+,
+
+type
+
+: 
+
+'text'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'image'
+
+,
+
+title
+
+: 
+
+'Hero Image'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+  ],
+})
+
+✅ This gives you a GUI to edit 

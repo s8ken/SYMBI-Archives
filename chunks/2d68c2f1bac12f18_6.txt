@@ -1,0 +1,213 @@
+ the drive. You'll see the format type (e.g., 
+APFS
+, **HFS+, 
+exFAT
+).
+
+Terminal
+:
+
+Run this command to list all connected disks:
+
+bash
+
+Copy
+
+diskutil list
+
+Find your drive in the list and check its 
+format type
+.
+
+3ï¸â£ Remove 
+.DDPreviewDisk
+ if No Longer Needed
+
+If youâve finished checking the drive and no longer need it mounted:
+
+bash
+
+Copy
+
+sudo umount -f /Users/lcl/.DDPreview/.DDPreviewDisk
+
+Then check if the mount is removed after rebooting.
+
+Security Tip:
+
+Once youâre done, itâs always good practice to 
+reset permissions
+ on any sensitive drives or files to prevent unauthorized access. Disk Drill shouldn't leave any long-term issues, but itâs always best to double-check.
+
+Let me know how it goes, and if anything unexpected pops up with the drive format or remaining mounts! ð
+
+You said:
+
+/dev/disk3s1 on /System/Volumes/Data (apfs, local, journaled, nobrowse, protect, root data)
+map auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)
+.DDPreviewDisk on /Users/lcl/.DDPreview/.DDPreviewDisk (nfs, nodev, nosuid, synchronous, mounted by lcl)
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep drill
+
+lcl               1336   0.0  0.0 410733328   1632 s000  S+   11:15pm   0:00.00 grep drill
+lcl@LCLs-MacBook-Pro ~ % lcl@LCLs-MacBook-Pro ~ % ps aux | grep drill
+
+lcl               1336   0.0  0.0 410733328   1632 s000  S+   11:15pm   0:00.00 grep drill
+lcl@LCLs-MacBook-Pro ~ %
+
+zsh: command not found: lcl@LCLs-MacBook-Pro
+zsh: command not found: lcl
+zsh: command not found: lcl@LCLs-MacBook-Pro
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+It looks like the 
+Disk Drill
+ process is not running in the background anymore (no active 
+drill
+ processes found). However, the suspicious 
+
+.DDPreviewDisk
+ mount
+ is still there.
+
+Hereâs what we can do next:
+
+Steps to Remove 
+.DDPreviewDisk
+
+Force Unmount 
+.DDPreviewDisk
+
+Since 
+.DDPreviewDisk
+ is still showing up in your mount list, letâs unmount it manually:
+
+bash
+
+Copy
+
+sudo umount -f /Users/lcl/.DDPreview/.DDPreviewDisk
+
+This should forcefully remove it from the system.
+
+Reboot and Check Again
+
+After unmounting, reboot your Mac:
+
+bash
+
+Copy
+
+sudo reboot
+
+After rebooting, run the following to check if 
+.DDPreviewDisk
+ reappears:
+
+bash
+
+Copy
+
+mount
+
+If it 
+doesnât come back
+, this suggests that it was indeed tied to 
+Disk Drill
+ or an associated process.
+
+Further Checks:
+
+Ensure Disk Drill Isn't Re-Installing or Running on Startup
+
+Even though you stopped any processes, check if 
+any remnants
+ are configured to mount 
+.DDPreviewDisk
+ automatically on startup. Look for relevant files in these directories:
+
+bash
+
+Copy
+
+ls
+
+ -la /Library/LaunchAgents/ | grep -i drill
+
+ls
+
+ -la /Library/LaunchDaemons/ | grep -i drill
+
+ls
+
+ -la ~/Library/LaunchAgents/ | grep -i drill
+
+Verify That You No Longer Need Disk Drill
+
+If you're satisfied with the data recovery, 
+consider uninstalling Disk Drill completely
+ to prevent any future surprises:
+
+bash
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Disk\ Drill.app
+sudo 
+
+rm
+
+ -rf ~/Library/Application\ Support/CleverFiles
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.cleverfiles.DiskDrill.plist
+sudo 
+
+rm
+
+ -rf /Library/Extensions/DiskDrill.kext
+
+Let me know how it goes after following these steps! If 
+.DDPreviewDisk
+ reappears or you encounter any issues, weâll dig deeper into it.
+
+You said:
+
+okay I haven't completed the data recover with drip disk yet so lets park that while we investigate the networks drive and any uneccary permissions apart from drill disk that might be lurking already
+
+ChatGPT said:
+
+Got it! Let's focus on 
+network drives
+ and 
+permissions
+ while leaving Disk Drill aside for now.
+
+Steps to Investigate Network Drive and Permissions:
+
+1ï¸â£ Check for Mounted Network Drives
+
+Since you're seeing a network drive mounted at 
+.DDPreviewDisk
+ (which may be linked to an NFS mount), let's confirm if there are any other active network volumes.
+
+Run the following:
+
+bash
+
+Copy
+
+mount
+
+Look for any entries related to 
+NFS
+, 
+SMB
+, or other ne

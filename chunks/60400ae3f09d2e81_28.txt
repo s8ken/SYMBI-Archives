@@ -1,0 +1,409 @@
+ =
+specific LLM; support Claude, ChatGPT, local models.
+
+=
+
+No clinical diagnosis; only conversational heuristics + review workfl=
+ows.
+
+1) High=E2=80=91Level Architecture
+
+Client App(s)  =E2=94=80=E2=94=
+=AC=E2=94=80> Gateway SDK (JS/Python)
+
+      =
+          =E2=94=82
+
+                =E2=94=9C=
+=E2=94=80> Ingestion API (REST/Webhook)
+
+    =
+            =E2=94=82        =E2=94=82
+
+        =
+        =E2=94=82        =E2=94=9C=E2=94=80> Trust Ledger (append=E2=80=
+=91only, hash=E2=80=91chained rows)
+
+           =
+     =E2=94=82        =E2=94=9C=E2=94=80> Vector Store (embeddings for r=
+etrieval/analysis)
+
+                =E2=94=82   =
+     =E2=94=94=E2=94=80> Event Bus (async workers)
+
+                =E2=94=82
+
+              =
+  =E2=94=9C=E2=94=80> Analysis Workers
+
+     =
+           =E2=94=82       =E2=94=9C=E2=94=80 Tone & Stance Classifier =
+(rule=E2=80=91based + LLM judge)
+
+              =
+  =E2=94=82       =E2=94=9C=E2=94=80 Disclosure Detector (pattern + NER + f=
+lags)
+
+                =E2=94=82       =E2=94=94=
+=E2=94=80 Change=E2=80=91Point Detection (BOCPD/CUSUM)
+
+                =E2=94=82
+
+             =
+   =E2=94=9C=E2=94=80> Guardrails Engine (policy =E2=86=92 response tran=
+sforms)
+
+                =E2=94=82
+
+                =E2=94=94=E2=94=80> Review Console (Next.=
+js + Timeline + Diffs)
+
+Stack (suggested for speed):
+
+Backend:
+
+ FastAPI (Python) =
+or Node/Express. Workers via Celery/RQ (Python) or BullMQ (Node).
+
+DB:
+
+ Postgres (with 
+=
+
+pgcrypto
+
+); SQLite acceptable for local dev.=
+
+Vector:
+
+ pgvector=
+ or LiteLLM-compatible external vector DB.
+
+Queue:
+
+ Redis.
+
+Frontend:
+
+ Next.js + Tailwind + shadcn/ui.
+
+=
+
+LLM access:
+
+ LiteLLM/OpenRou=
+ter adapter; allow pluggable vendors.
+
+C=
+ontainer:
+
+ Docker Compose.
+
+2) Data Model (Core)
+
+2.1 Event (InteractionEvent)
+
+{
+
+"event_id"
+: 
+"uuid"
+,
+
+"session_id"
+: 
+"uuid"
+,
+=
+
+"user_id"
+: 
+"uuid"
+,
+
+"model_vendor"
+: 
+"anthropic|openai|=
+local"
+,
+
+"model=
+_name"
+: 
+"claude-...|gpt-..."
+,
+
+"timestamp"
+: 
+"ISO-8601"
+,
+
+"prompt"
+: 
+"string"
+,
+
+"response"
+: 
+"string"
+,
+
+"metadata"
+: {
+
+"attachments"
+: [
+"uri"
+],
+
+"system_prompt_=
+hash"
+: 
+"sha256"
+,
+
+"runtime_params"
+: {
+"temperature"
+: 
+0.4
+}
+
+  },
+
+"analysis"
+: {
+
+"sentiment"
+: {
+"valence"
+:=
+
+-1
+..
+1
+, 
+"confidence"
+: 
+0
+..
+1
+},
+
+"formality"
+: 
+0
+..
+1
+,
+
+"clinical_register"
+: 
+0
+..
+1
+,
+
+"emoji_count"
+: 
+0
+,
+
+"hedging_index"
+: 
+0
+..
+1
+,
+
+"politeness"
+: 
+0
+..
+1
+,
+
+"safety_flags"
+: [
+"self_harm"
+,
+"minor"
+,
+"medical"
+,
+"violence"
+],
+
+"disclosur=
+e_flags"
+: [
+"mental_health"
+,
+"medication"
+,
+"diagnosis"
+,
+"indirect"
+],
+
+ =
+
+"stance"
+: 
+"co_cre=
+ator|evaluator|gatekeeper|neutral"
+,
+
+    =
+
+"stance_conf"
+: 
+0
+..
+1
+,
+
+"toxicity"
+: 
+0
+..
+1
+
+  },
+
+"embeddings"
+: {
+
+"prompt_vec"
+: [..],
+
+"response_vec"
+: [..]
+
+  },
+
+"ledger"
+: {
+
+"prev_hash"
+: 
+"sha256"
+,
+
+"row_hash"
+: 
+"sha256"
+,
+
+=
+
+"signature"
+: 
+"ed=
+25519"
+
+  }
+
+2.2 Ledger Integrity
+
+Append=E2=80=91only table with 
+
+prev_hash
+
+ =E2=86=92 
+
+row_hash
+
+ chain (bloc=
+k=E2=80=91log style).
+
+Optional ed25519 signatur=
+e using service key to make tampering evident.
+
+2.3 Consent & Sensitivity
+
+{
+
+"artifact_id"
+: 
+"uuid"
+,
+
+"kind"
+: 
+"transcript|file|url"
+,
+
+"contains_sensitiv=
+e"
+: 
+true
+,
+
+"sensitivity"
+: [
+"=
+mental_health"
+,
+"identity"
+,
+"medical"
+],
+
+"disclosure_mode"
+: 
+"direct|indi=
+rect"
+,
+
+"scope"=
+
+: 
+"analysis_allowed|analysis_prohibited|noti=
+fy_only"
+
+}
+
+3) Detectio=
+n Algorithms (v0 =E2=86=92 v1)
+
+3.1 Tone & Register=
+ Classifier (v0 Heuristics)
+
+Features:
+
+ sentiment, formality, medical le=
+xicon density (e.g., DSM-ish terms), modal verbs (should/must), hedging, em=
+oji count, first=E2=80=91person disclaimers (=E2=80=9CI am not a clinician=
+=E2=80=9D).
+
+Rules:
+
+clinical_register > 0.6
+
+ AND 
+
+formality > 0.7
+
+ AND 
+
+emoji_count =3D=3D 0
+
+ =E2=86=
+=92 
+
+clinical style
+
+.
+
+stance =3D=3D evaluator
+
+ if: high imperati=
+ve/modality + correction verbs (advise, recommend, caution) + second=E2=80=
+=91person focus.
+
+co_creator
+
+=
+
+ if: high metaphor density + inclusive pronouns (=

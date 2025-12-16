@@ -1,0 +1,45 @@
+UNNAMED' '--add-opens=java.base/java.net=ALL-UNNAMED' '--add-opens=java.desktop/javax.swing=ALL-UNNAMED' '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED' '--add-exports=java.desktop/sun.awt=ALL-UNNAMED' '--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED' '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED' -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/Users/sja/Library/Application Support/autopsy/dev/var/log/heapdump.hprof" -Djava.security.manager=allow org.netbeans.Main --cachedir "/Users/sja/Library/Caches/autopsy/dev" --userdir "/Users/sja/Library/Application Support/autopsy/dev" "--branding" "autopsy" 0<&0
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0xa) at pc=0x000000000bad4007, pid=10737, tid=259
+#
+# JRE version: OpenJDK Runtime Environment Homebrew (11.0.26) (build 11.0.26+0)
+# Java VM: OpenJDK 64-Bit Server VM Homebrew (11.0.26+0, mixed mode, tiered, compressed oops, g1 gc, bsd-aarch64)
+# Problematic frame:
+# C  0x000000000bad4007
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid10737.log
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/Homebrew/homebrew-core/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+./../platform/lib/nbexec: line 434: 10737 Abort trap: 6           "/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home/bin/java" -Djdk.home="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home" -classpath "/Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-modules.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-lookup.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-ui.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util.jar" -Dnetbeans.dirs="/Users/sja/Downloads/autopsy-4.21.0/autopsy:/Users/sja/Downloads/autopsy-4.21.0/CoreTestLibs:/Users/sja/Downloads/autopsy-4.21.0/harness:/Users/sja/Downloads/autopsy-4.21.0/java:" -Dnetbeans.home="/Users/sja/Downloads/autopsy-4.21.0/platform" '-Xdock:name=autopsy' '-Xdock:icon=./../../autopsy.icns' '-Xms24m' '-Xmx4G' '-XX:+UseStringDeduplication' '-Dprism.order=sw' '--add-opens=java.base/java.lang=ALL-UNNAMED' '--add-opens=java.base/java.net=ALL-UNNAMED' '--add-opens=java.desktop/javax.swing=ALL-UNNAMED' '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED' '--add-exports=java.desktop/sun.awt=ALL-UNNAMED' '--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED' '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED' -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/Users/sja/Library/Application Support/autopsy/dev/var/log/heapdump.hprof" -Djava.security.manager=allow org.netbeans.Main --cachedir "/Users/sja/Library/Caches/autopsy/dev" --userdir "/Users/sja/Library/Application Support/autopsy/dev" "--branding" "autopsy" 0<&0
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 SIGBUS Crash in Autopsy – Fixing the Java/Native Code Issue on macOS (M1/M2)
+
+The 
+SIGBUS (0xa) crash
+ happens when 
+Autopsy tries to access memory incorrectly
+ on 
+Apple Silicon (arm64)
+. The main causes are:
+
+Incompatibility between OpenJDK and Autopsy (NetBeans-based).
+
+JavaFX errors (Autopsy requires JavaFX but it isn’t bundled 

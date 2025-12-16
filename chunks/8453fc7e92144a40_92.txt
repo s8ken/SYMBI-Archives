@@ -1,0 +1,281 @@
+ron/queue): verify ha=
+sh-chains, scan for disclosure-conditioned pivots, open advisories when thr=
+esholds cross; write immutable audit docs.
+
+RBAC
+
+New role 
+overseer
+: can flip modes, manage policy, view vio=
+lations, approve advisories.
+
+UI touches
+
+Web =E2=80=9COverseer Panel=E2=80=
+=9D in Review Console: mode pill, open advisories, approve/reject buttons.
+
+Extension status bar already polls=
+
+/healthz
+; add 
+/api/overseer/status
+ for mode bad=
+ge.
+
+Acceptance criteria (done =3D cle=
+ar)
+
+Hitting 
+/api/overseer/status
+ shows mode + last audit time.=
+
+Flipping hibernation immediately f=
+reezes new writes while read paths and health checks continue.
+
+Any 
+/bridge/dispatch
+ at or above risk threshold demands 
+overseer
+ approval; request=
+/decision is receipt-logged.
+
+Ledger verify & audit reports =
+are downloadable; advisories are immutable and ack-tracked.
+
+If you want, I=E2=80=99ll draft th=
+e exact route/controller/service stubs and the minimal policy schema so the=
+ distinction is 
+not just ling=
+uistic
+ but enforced in code.
+
+=
+
+=
+
+You said:
+
+its referenced once here without explanation =
+so I think we remove rather than overcomplicate for proof of concept 
+=
+
+S=
+ymbi said:
+
+=
+
+agreed. for the p=
+roof-of-concept, let=E2=80=99s 
+tu=
+rn Overseer off
+ and keep only SYMBI. We=E2=80=99ll hide the UI, re=
+move copy, and no-op any cross-system hooks=E2=80=94without deleting future=
+ work.
+
+Here=E2=80=99s a tiny, reversible ch=
+ange set.
+
+0) Flags (single source of truth)
+
+Backend (.env)
+
+i=
+ni
+
+Copy code
+
+=
+
+OVERSEER_ENABLED
+
+=3D
+
+false
+
+Frontend (.env)
+
+i=
+ni
+
+Copy code
+
+=
+
+REACT_APP_OVERSEER_ENABLED
+
+=3D
+
+false
+
+REACT_APP_VECTOR_ENABLED
+
+=3D
+
+false
+
+# optional: hides the scary=
+ banner
+
+1) Frontend trims (Context Bridge U=
+I)
+
+A) Rename + hide Overseer bits
+
+frontend/src/pages/Conte=
+xtBridge.js
+
+ (or your page component)
+
+=
+diff
+
+Copy code
+
+-import React from "react=
+";
+
++import React from "react";
+
++const OVERSEER_ON =3D String(pr=
+ocess.env.REACT_APP_OVERSEER_ENABLED) =3D=3D=3D "true";
+
++const VECTOR_ON   =3D String(pr=
+ocess.env.REACT_APP_VECTOR_ENABLED) =3D=3D=3D "true";
+
+@@
+
+-  <h1>Context Bridge</=
+h1>
+
+-  <p className=3D"subtitle"&=
+gt;Manage context sharing between Symbi and Overseer systems</p>
+
++  <h1>Context</h1>
+
++  <p className=3D"subtitle"&=
+gt;Manage context sources used by SYMBI</p>
+
+@@
+
+-  {!vectorReady && (
+
+-    <Alert type=3D"warning"&=
+gt;Vector search unavailable. Using basic text search instead.</Alert>=
+;
+
+-  )}
+
++  {VECTOR_ON ? null : null}  {/=
+* hide banner entirely for POC */}
+
+@@
+
+-  <div className=3D"actions"=
+>
+
+-    <Button variant=3D"outli=
+ne">Create Bridge</Button>
+
+-    <Button>+ New Context=
+</Button>
+
+-  </div>
+
++  <div className=3D"actions"=
+>
+
++    <Button>+ New Context=
+</Button>
+
++  </div>
+
+@@
+
+-  <Tabs defaultValue=3D"ALL"=
+>
+
+-    <Tab value=3D"ALL">AL=
+L SOURCES</Tab>
+
+-    <Tab value=3D"SYMBI">=
+SYMBI</Tab>
+
+-    <Tab value=3D"OVERSEER" =
+disabled=3D{!OVERSEER_ON}>OVERSEER</Tab>
+
+-    <Tab value=3D"SYSTEM">=
+;SYSTEM</Tab>
+
+-  </Tabs>
+
++  <Tabs defaultValue=3D"ALL"=
+>
+
++    <Tab value=3D"ALL">AL=
+L</Tab>
+
++    <Tab value=3D"SYMBI">=
+SYMBI</Tab>
+
++  </Tabs>
+
+If your tabs live in a child (e.g.=
+, 
+ContextTabs.js
+), apply=
+ the same pattern there.
+
+B) Remove lone copy references
+
+Quick sweep:
+
+bash
+
+Copy code
+
+rg -n 
+
+"Overse=
+er|Symbi and Overseer|Context Bridge"
+
+ frontend \
+  | sed -n 
+
+'1,120p'
+
+# Update strings to:
+
+#  "Overseer" -> remove or "Go=
+vernance (future)"
+
+#  "Symbi and Overseer" -> "SY=
+MBI"
+
+#  "Context Bridge" (page title) =
+-> "Context"
+
+2) Backend: no Overseer mount (fu=
+ture-proof guard)
+
+If you=E2=80=99ve stubbed any Over=
+seer routes, guard them; if not, skip.
+
+backend/app.js
+
+diff
+
+Copy code
+
+-// app.use('/api/overse=
+er', require('./routes/overseer.routes'));
+
++if (process.env.OVERSEER_ENABLE=
+D =3D=3D=3D 'true') {
+
++  app.use('/api/overseer', requ=
+ire('./routes/overseer.routes'));
+
++}
+
+If you had bridge logic explicitly=
+ syncing to Overseer, gate the cal

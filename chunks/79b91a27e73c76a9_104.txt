@@ -1,0 +1,325 @@
+y
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 
+Try these steps and let me know if Autopsy finally runs! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo mkdir -p /opt/javafx
+
+sja@SJAs-MacBook-Pro ~ % sudo mv ~/Downloads/javafx-sdk-11.0.2 /opt/javafx
+
+mv: rename /Users/sja/Downloads/javafx-sdk-11.0.2 to /opt/javafx/javafx-sdk-11.0.2: No such file or directory
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Fixing "No such file or directory" When Moving JavaFX
+
+It seems like 
+macOS's System Integrity Protection (SIP)
+ might be blocking 
+/opt/
+. Let's work around it.
+
+✅ Step 1: Verify That JavaFX Actually Exists
+
+Run this command to 
+make sure the extracted JavaFX folder is actually there
+:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+Expected output:
+
+Copy
+
+Edit
+
+drwxr-xr-x   10 sja   staff   320 Mar 18 12:34 javafx-sdk-11.0.2
+
+📌 
+If you don’t see 
+javafx-sdk-11.0.2
+, the extraction failed.
+
+In that case, re-extract it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+Then check again:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+✅ Step 2: Try Moving JavaFX Again
+
+Now try moving the extracted JavaFX 
+to 
+/usr/local/javafx/
+ instead of 
+/opt/
+
+ (since 
+/opt/
+ is locked on macOS with SIP enabled):
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /usr/local/javafx
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /usr/local/javafx/
+
+📌 
+We use 
+/usr/local/
+ because macOS allows changes there without disabling SIP.
+
+✅ Step 3: Set JavaFX Path in Environment Variables
+
+Now, update your environment so Java can find JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it 
+permanent
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/java
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ls -l ~/Downloads | grep javafx
+
+sja@SJAs-MacBook-Pro ~ % 
+
+2/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 JavaFX Folder is Missing – Let’s Fix It! 🔥
+
+Since 
+ls -l ~/Downloads | grep javafx
+
+returned nothing
+, that means 
+the JavaFX extraction failed, or the files are missing
+. Let's 
+re-download and extract it properly
+.
+
+✅ Step 1: Re-Download JavaFX
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+✅ Step 2: Extract JavaFX Again
+
+Once downloaded, extract it:
+
+sh
+
+Copy
+
+Edit
+
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+Now, check that the files exist:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+📌 
+If you see 
+javafx-sdk-11.0.2
+, the extraction worked.
+
+✅ Step 3: Move JavaFX to a Permanent Location
+
+Since 
+
+/opt/
+ is blocked by macOS System Integrity Protection (SIP)
+, we’ll move JavaFX to a 
+safe location
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /usr/local/javafx
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /usr/local/javafx/
+
+✅ Step 4: Set JavaFX Path for Java
+
+Now, configure Java to recognize JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it 
+permanent
+ by adding it to your 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 5: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 
+Try these steps and let me know if Autopsy finally launches! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro Downloads % ls -l ~/Downloads | grep javafx
+
+drwxr-xr-x   4 sja  staff         128 16 Jan  2019 javafx-sdk-11.0.2
+sja@SJAs-MacBook-Pro Downloads % sudo mkdir -p /usr/local/javafx
+sudo mv ~/Downloads/javafx-sdk-11.0.2 

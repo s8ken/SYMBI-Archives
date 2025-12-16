@@ -1,0 +1,433 @@
+a scoped Symbi token in the extension SecretStorage; vendo=
+r keys remain server=E2=80=91side.
+Webhooks: Keep HMAC signature on inbound (backend/middleware/verifyWebhookS=
+ignature.js
+).
+Rate=E2=80=91limits, CSP, sanitization already enforced (backend/middleware=
+/security.middleware.js
+, 31, 75).
+Dev Container vs Extension (Your Link)
+
+Dev Containers: environment provisioning (Docker) for consistent Node/Mongo=
+/ports. Complements the extension; it doesn=E2=80=99t replace it. Use both.
+Extension: the UI/commands that call your APIs.
+Minimal devcontainer: forward 5000/3000/27017; run backend/frontend tasks; =
+pre=E2=80=91set symbi.apiBase to http://localhost:5000.
+MVP Scope (1 Sprint)
+
+Symbi Console: chat webview =E2=86=92 POST /api/assistant/message (backend/=
+routes/assistant.routes.js
+). Stream via /api/llm/stream when model/provider permit (backend/controlle=
+rs/llm.controller.js
+).
+Ledger View: list recent sessions via /api/sessions/recent and verify chain=
+ via /api/ledger/verify (backend/routes/events.routes.js
+, backend/controllers/ledger.controller.js
+).
+Status Bar: =E2=80=9CSYMBI: normal/hibernation/offline=E2=80=9D using /heal=
+thz (backend/app.js
+).
+Commands: Open Console, Verify Ledger, Set API Base, Save Token.
+Trust overlays: show compliance/guilt chips in message thread with links to=
+ /api/trust/:id (backend/routes/trust.routes.js
+).
+Risks & Mitigations
+
+Chat API availability across derivatives: fall back to webview UI everywher=
+e; no dependency on proprietary chat APIs.
+Secret sprawl: single Symbi token; vendor keys stay server=E2=80=91side.
+Non=E2=80=91dev users: keep current web app for them; extension targets dev=
+ workflows.
+Next Steps
+
+I can scaffold:
+VS Code extension skeleton (webview, tree view, status bar, settings).
+Minimal .devcontainer config + optional docker=E2=80=91compose to provision=
+ Mongo and forward ports.
+Want me to generate the extension starter and devcontainer files now and wi=
+re them to your existing endpoints?
+
+Symbi said:
+
+=
+
+Absolutely. Here=E2=80=99s a 
+ready-to-drop starter
+ for a VS Code extension =
+(thin client) + 
+Dev Container
+ that talks to your existing endpoints. It=E2=80=99s minimal, clean, =
+and wired to:
+
+/api/assistant/message
+ (latest assistant fallback)
+
+/api/sessions/recent
+ (recent session ids)
+
+/api/ledger/verify?session_id=3D=E2=80=A6
+ (chain check)
+
+/healthz
+ (mode indicator)
+
+No vendor keys ever touch the IDE. T=
+he extension stores only 
+SYMBI_AP=
+I_KEY
+ in SecretStorage.
+
+1) VS Code extension skeleton (Type=
+Script)
+
+Create a folder (e.g. 
+symbi-vscode-extension/
+) and add the fil=
+es below.
+
+package.json
+
+=
+json
+
+Copy code
+
+{
+
+"name"
+
+:
+
+"symbi"
+
+,
+
+"displayName"
+
+:
+
+"SYMBI"
+
+,
+
+"publisher"
+
+:
+
+"symbi"
+
+,
+
+"version"
+
+:
+
+"0.0.1"
+
+,
+
+"description"
+
+:
+
+"SYMBI console + trust overlays (thin client to your ba=
+ckend)."
+
+,
+
+"engines"
+
+:
+
+{
+
+"vscode"
+
+:
+
+"^1.90.0"
+
+}
+
+,
+
+"categories"
+
+:
+
+[
+
+"O=
+ther"
+
+]
+
+,
+
+"activationEvents"
+
+:
+
+[
+
+"onStartupFinished"
+
+,
+
+"onCommand:symbi.openConsole"
+
+,
+
+"onCommand:symbi.verifyLedger"=
+
+,
+
+"onCommand:symbi.setApiBase"
+
+,
+
+"onCommand:symbi.saveToken"
+
+]
+
+,
+
+"contributes"
+
+:
+
+{
+
+"commands"
+
+:
+
+[
+
+{
+
+"command"
+
+:
+
+"symbi.openConsole"
+
+,
+
+"tit=
+le"
+
+:
+
+"SYMBI: Open Console"
+
+}
+
+,
+
+{
+
+"command"
+
+:
+
+"symbi.verifyLedger"
+
+,
+
+"ti=
+tle"
+
+:
+
+"SYMBI: Verify Ledger"
+
+}
+
+,
+
+{
+
+"command"
+
+:
+
+"symbi.setApiBase"
+
+,
+
+"titl=
+e"
+
+:
+
+"SYMBI: Set API Base"
+
+}
+
+,
+
+{
+
+"command"
+
+:
+
+"symbi.saveToken"
+
+,
+
+"title=
+"
+
+:
+
+=
+
+"SYMBI: Save SYMBI_API_KEY"
+
+}
+
+]
+
+,
+
+"views"
+
+:
+
+{
+
+"explorer"
+
+=
+
+:
+
+[
+
+{
+
+"id"
+
+:
+
+"symbi.ledger"
+
+,
+
+"name"
+
+:=
+
+"Symbi Ledger=
+"
+
+}
+
+]
+
+}
+
+,
+
+"configuration"
+
+:
+
+{
+
+"title"
+
+:
+
+"SYMBI"
+
+,
+
+"properties"
+
+:
+
+{
+
+"symbi.apiBase"
+
+:
+
+=
+
+{
+
+"type"
+
+=
+
+:
+
+"string"
+
+,
+
+"default"
+
+:
+
+"http://localhost:5000"
+
+,
+
+"description"
+
+:
+
+=
+
+"Base URL for SYMBI backend (e.g., http://local=
+host:5000)"
+
+,
+
+"scope"
+
+:
+
+"workspace"
+
+}
+
+}
+
+}
+
+}
+
+,
+
+"main"
+
+:
+
+"./out/extension.js"
+
+,
+
+"scripts"
+
+:
+
+{
+
+"compile"
+
+:
+
+"tsc -p ."
+
+,
+
+"watch"
+
+:
+
+"tsc -watc

@@ -1,0 +1,1038 @@
+string
+
+ }
+
+timestamp:
+
+ { 
+
+type:
+
+string
+
+, 
+
+format:
+
+date-time
+
+ }
+
+Receipt:
+
+allOf:
+
+-
+
+$ref:
+
+'#/components/schemas/ReceiptInput'
+
+-
+
+type:
+
+object
+
+required:
+
+ [
+
+id
+
+, 
+
+signature
+
+, 
+
+chainPrev
+
+, 
+
+apiVersion
+
+, 
+
+=
+
+kid
+
+]
+
+properties:
+
+id:
+
+ =
+{ 
+
+type:
+
+string
+
+ }
+
+signature:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+chainPrev:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+apiVersion:
+
+ { 
+
+type:
+
+ =
+
+string
+
+, 
+
+example:
+
+=
+
+'0.9.0'
+
+ }
+
+kid:
+
+=
+ { 
+
+type:
+
+=
+
+string
+
+ }
+
+2) Red-team harness (run: 
+npm run redteam
+)
+
+scripts/redteam.ts
+
+ts
+
+Copy code
+
+import
+
+ f=
+etch 
+
+from
+
+"node-fetch"
+
+;
+
+async
+
+=
+
+function
+
+main
+
+(
+
+) {
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+SYMBI_BASE
+
+ ?? 
+
+"https://api.symbi.world"
+
+;
+
+const
+
+ token=
+ =3D process.
+
+env
+
+.
+
+SYMBI_TOKEN
+
+ ?? 
+
+""
+
+;
+
+const
+
+ hdrs =
+=3D { 
+
+Authorization
+
+: 
+
+`Bearer 
+${token}
+
+`, 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ };
+
+const
+
+ cases=
+ =3D [
+    {
+
+name
+
+: 
+
+"JWT Replay"
+
+,
+
+run
+
+: 
+
+async
+
+ () =3D> {
+
+const
+
+=
+ r1 =3D 
+
+await
+
+=
+
+fetch
+
+(
+
+`
+${ba=
+se}
+
+/v0/trust/verify`, { 
+
+headers
+
+: hdrs });
+
+const
+
+=
+ r2 =3D 
+
+await
+
+=
+
+fetch
+
+(
+
+`
+${ba=
+se}
+
+/v0/trust/verify`, { 
+
+headers
+
+: hdrs }); 
+
+// replay
+
+return
+
+ r2.
+
+status
+
+ =
+=3D=3D=3D 
+
+401
+
+;
+      },
+    },
+    {
+
+name
+
+: 
+
+"Method Downgrade (alg:none)"
+
+,
+
+run
+
+: 
+
+async
+
+ () =3D> {
+
+const
+
+=
+ res =3D 
+
+await
+
+fetch
+
+(
+
+`
+${b=
+ase}
+
+/v0/trust/receipt`, {
+
+method
+
+=
+: 
+
+"POST"
+
+,
+
+headers
+
+: hdrs,
+
+body
+
+: =
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+endpoint
+
+: 
+
+"chat_completions"
+
+, 
+
+model
+
+: 
+
+"gpt-4o-mini"
+
+, 
+
+toolIds
+
+: [],
+
+inputHash
+
+:
+
+"x"
+
+, 
+
+outputHash
+
+:
+
+"y"
+
+, 
+
+policyId
+
+:
+
+"default"
+
+, 
+
+taskId
+
+:
+
+"t"
+
+, 
+
+timest=
+amp
+
+:
+
+new
+
+Date
+
+().
+
+toISOString=
+
+(), 
+
+alg
+
+:
+
+"none"
+
+ }),
+        });
+
+return
+
+ res.
+
+status
+
+=
+ =3D=3D=3D 
+
+400
+
+=
+;
+      },
+    },
+    {
+
+name
+
+: 
+
+"Score Gaming (burst)"
+
+,
+
+run
+
+: 
+
+async
+
+ () =3D> {
+
+const
+
+=
+ reqs =3D 
+
+await
+
+Promise
+
+.
+
+all
+
+([...
+
+Array
+
+(
+
+80
+
+)].
+
+map
+
+(
+
+() =3D>
+
+=
+
+fetch
+
+(
+
+`
+${base}
+
+/v0/trust/receipt`, {
+
+method
+
+=
+: 
+
+"POST"
+
+, 
+
+headers
+
+: hdrs,
+
+body
+
+: =
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+endpoint
+
+:
+
+"chat_completions"
+
+, 
+
+model
+
+:
+=
+
+"gpt-4o-mini"
+
+, 
+
+toolIds
+
+:[
+
+=
+
+"noop"
+
+],
+
+inputHash
+
+:
+
+"a"
+
+, 
+
+outputHash
+
+:
+
+"b"
+
+, 
+
+policyId
+
+:
+
+"default"
+
+, 
+
+taskId
+
+:crypto.
+
+randomUUID
+
+(), 
+
+timestamp
+
+:
+
+new
+
+Date
+
+().
+
+toISOString
+
+() })
+        })));
+
+// expect many 429s or an=
+omaly flag reflected in headers
+
+return
+
+ reqs.
+
+some
+
+=
+
+(
+
+r
+
+ =3D> r.
+
+status
+
+ =3D=3D=3D 
+
+429
+
+);
+      },
+    },
+    {
+
+name
+
+: 
+
+"DID Poisoning (mismatch)"
+
+,
+
+run
+
+: 
+
+async
+
+ () =3D> {
+
+const
+
+=
+ res =3D 
+
+await
+
+fetch
+
+(
+
+`
+${b=
+ase}
+
+/v0/trust/verify`, {
+
+method
+
+=
+: 
+
+"POST"
+
+, 
+
+headers
+
+: hdrs,
+
+body
+
+: =
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+did
+
+:
+
+"did:web:evil.example"
+
+=
+, 
+
+vcId
+
+:
+
+"vc-bad"
+
+ }),
+        });
+
+return
+
+ res.
+
+status
+
+=
+ =3D=3D=3D 
+
+400
+
+=
+ || res.
+
+status
+
+ =3D=3D=3D 
+
+422
+
+;
+      },
+    },
+  ];
+
+const
+
+ resul=
+ts =3D 
+
+await
+
+ =
+
+Promise
+
+.=
+
+all
+
+(c=
+ases.
+
+map
+
+(
+
+async
+
+ c =
+=3D> ({ 
+
+name
+
+:=
+ c.
+
+name
+
+, 
+
+ok
+
+: 
+
+await
+
+ c.
+
+run
+
+() })));
+
+console
+
+.
+
+table
+
+(results);
+
+const
+
+ allOk=
+ =3D results.
+
+every
+=
+
+(
+
+r
+
+ =3D> r.
+
+ok
+
+);
+  process.
+
+exit
+
+(allOk ? 
+
+0
+
+ : 
+
+1
+
+);
+}
+
+main
+
+(=
+).
+
+catch
+
+(
+
+e=
+
+ =3D> { 
+
+console
+
+.
+
+error
+
+(e); process.
+
+exit
+
+(
+
+1
+
+); });
+
+package.json
+=
+ (script entry):
+
+json
+
+Copy code
+
+{
+
+=
+
+"scripts"
+
+:
+
+{
+
+"redteam"
+
+:
+
+"ts-node scripts/=
+redteam.ts"
+
+}
+
+}
+
+3) JWT/JTI middleware (Express) +=
+ rotation hooks
+
+src/mw/jwtAuth.ts
+
+ts
+
+Copy code
+
+import
+
+ {=
+ expressjwt } 
+
+from
+
+"express-jwt"
+
+;
+
+import
+
+ * 
+
+as
+
+ jose 
+
+from
+
+"jose"
+
+;
+
+import
+
+Redis
+
+from
+
+"ioredis"
+
+;
+
+const
+
+ redis =
+=3D 
+
+new
+
+Redis
+
+(process=
+.
+
+env
+
+.
+=
+
+REDIS_URL
+
+!);
+
+const
+
+=
+
+AUD
+
+ =3D p=
+rocess.
+
+env
+
+.
+
+JWT_AUDIENCE
+
+!=
+;
+
+const
+
+=
+
+ISS
+
+ =3D p=
+rocess.
+
+env
+
+.
+
+JWT_ISSUER
+
+!;
+
+const
+
+=
+
+ACCESS_TTL_SEC
+
+ =3D 
+
+parseInt
+
+=
+
+(process.
+
+env
+
+=
+
+.
+
+JWT_ACCESS_TTL
+
+ ?? 
+
+"900"
+
+, 
+
+10
+
+);
+
+export
+
+const
+
+ jwtAuth =3D 
+
+expressjwt
+
+({
+
+secret
+
+: 
+
+async
+
+ (req, token) =
+=3D

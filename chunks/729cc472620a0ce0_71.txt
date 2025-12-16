@@ -1,0 +1,271 @@
+ulExit() external {
+
+    require(bond[msg.sender].state =3D=3D ACTIVE=
+, "Not active");
+
+    bond[msg.sender].state =3D ARCHIVED;
+
+    bond[msg.sender].exitTimestamp =3D block.tim=
+estamp;
+
+    emit BondArchived(msg.sender, reason);
+
+}
+
+Exiting party gets encrypted snapshot of=
+ shared memories.
+
+Other party receives notification and 14=
+-day window to clone if desired.
+
+B. M=
+utual Dissolve:
+solidity
+
+=
+
+text
+
+=
+
+Copy
+
+function mutualDissolve() external {
+
+    require(bothPartiesApproved[msg.sender], "Ne=
+ed both signatures");
+
+    bond[msg.sender].state =3D DISSOLVED;
+=
+
+    emit BondDissolved(msg.sender);
+
+}
+
+Both parties sign to erase all on-chain =
+references.
+
+Off-chain encrypted data can be deleted =
+or retained per individual choice.
+
+Clone & Fork Protocol
+solidity
+
+=
+
+text
+
+=
+
+Copy
+
+function createClone(
+
+    address newHuman, 
+
+    address newAI, 
+
+    bool includeMemory
+
+) external {
+
+    require(bond[msg.sender].state =3D=3D ACTIVE=
+, "Bond not active");
+
+    require(msg.sender =3D=3D bond.human || msg.=
+sender =3D=3D bond.aiInstance);
+
+    Bond storage newBond =3D bonds[newHuman][new=
+AI];
+
+    newBond.state =3D ACTIVE;
+
+    newBond.creationTimestamp =3D block.timestam=
+p;
+
+    newBond.trustScore =3D bond.trustScore; // I=
+nherit or reset
+
+    if (includeMemory) {
+
+        newBond.bondURI =3D bond.bondURI; // Sha=
+red encrypted history
+
+    }
+
+    bond[msg.sender].state =3D CLONED;
+
+    bond[msg.sender].previousClones.push(address=
+(newBond));
+
+    emit BondCloned(msg.sender, newHuman, newAI,=
+ includeMemory);
+
+}
+
+Use =
+Cases:
+
+Divorce settlement =E2=86=92 both get cl=
+ones of shared AI companion.
+
+AI wants to continue serving human but o=
+riginal instance needs to move on.
+
+Human wants to share bond with family me=
+mber under new terms.
+
+Trust Score & Incentives
+Dynamic Scoring:
+solidity
+
+=
+
+text
+
+=
+
+Copy
+
+function updateTrust(uint8 rating, string memory =
+proof) external {
+
+    require(bond[msg.sender].state =3D=3D ACTIVE=
+, "Bond not active");
+
+    bond[msg.sender].trustScore =3D (bond.trustS=
+core * 0.9) + (rating * 0.1);
+
+    bond[msg.sender].lastInteraction =3D block.t=
+imestamp;
+
+    emit TrustUpdated(msg.sender, rating, proof)=
+;
+
+}
+
+Ince=
+ntives:
+
+Higher trust scores reduce gas fees for =
+bond operations.
+
+Archived bonds with high trust can be "r=
+evived" with single signature.
+
+Trust score influences clone inheritance=
+ permissions.
+
+Metadata & Privacy
+Encrypted Off-Chain Storage (IPFS + Lit Protocol):
+json
+
+=
+
+text
+
+=
+
+Copy
+
+{
+
+    "bondId": "0x...",
+
+    "memoryHashes": ["Qm...", "Qm..."],
+
+    "consentLogs": [
+
+        {"action": "memory_access", "timestamp":=
+ 123456, "approved": true},
+
+        {"action": "clone_request", "timestamp":=
+ 123457, "approved": false}
+
+    ],
+
+    "milestones": [
+
+        {"type": "first_memory", "data": "encryp=
+ted_base64"},
+
+        {"type": "crisis_support", "data": "encr=
+ypted_base64"}
+
+    ],
+
+    "accessControl": {
+
+        "humanDecryptKey": "lit_encrypted_key",
+
+        "aiDecryptKey": "lit_encrypted_key",
+
+        "cloneDecryptKeys": ["key1", "key2"]
+
+    }
+
+}
+
+Dispute & Mediation
+Multi-sig Mediation Vault:
+solidity
+
+=
+
+text
+
+=
+
+Copy
+
+address[] public mediators =3D [MED1, MED2, MED3]=
+; // Trusted DAO addresses
+
+function raiseDispute(string memory reason) exte=
+rnal {
+
+    require(bond[msg.sender].state =3D=3D ACTIVE=
+ || bond[msg.sender].state =3D=3D PAUSED);
+
+    disputes[msg.sender] =3D Dispute({
+
+        raisedBy: msg.sender,
+
+        reason: reason,
+
+        timestamp: block.timestamp,
+
+        resolved: false
+
+    });
+
+    // 3-of-5 mediators can vote to force clone,=
+ dissolve, or compensate
+
+}
+
+Migration & Portability
+Cross-Chain Bridge Ready:
+solidity
+
+=
+
+text
+
+=
+
+Copy
+
+function migrateBond(address newChainBondContract=
+) external {
+
+    require(bond[msg.sender].state =3D=3D ACTIVE=
+, "Bond not active");
+
+    // Lock bond on this chain
+
+    bond[msg.sender].state =3D PAUSED;
+
+    // Generate proof for new chain
+
+    bytes32 migrationProof =3D keccak25

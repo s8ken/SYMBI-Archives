@@ -1,0 +1,85 @@
+mpy'
+ =E2=80=94 Num=
+Py must be installed 
+before
+ running 
+build.py
+=
+, and ideally inside a venv so the build sees it.
+
+If you hit compiler/headers error=
+s next
+
+These are the usual quick fixes on=
+ Apple Silicon:
+
+bash
+
+Copy code
+
+# Ensure Homebrew headers=
+ are visible to builds
+
+brew --prefix        
+
+# usually /o=
+pt/homebrew
+
+# JPEG-turbo is already installed=
+; if pkg-config is missing, add it:
+
+brew install pkg-config
+
+# If build tools are missing or c=
+lang errors appear:
+
+xcode-select --install
+
+If a later error mentions other li=
+bs (GLFW/GLEW/etc.), install them with Homebrew:
+
+bash
+
+Copy code
+
+brew install glfw glew cmake
+
+Sanity checks
+
+bash
+
+Copy code
+
+# Inside the venv:
+=
+
+python -c 
+
+"import sys, numpy; prin=
+t(sys.version); print(numpy.__version__)"
+
+which
+
+ python
+
+which
+
+ pip
+
+That should unblock you. If the build now fails with a 
+different
+ traceback, paste t=
+he last ~30 lines and I=E2=80=99ll triage the exact missing dep/flag and gi=
+ve you the one-liner fix.
+
+=
+
+=
+
+=
+
+New version of GPT available
+ - Continue chat=
+ting to use the old version, or start a 
+new chat
+ for the latest version.

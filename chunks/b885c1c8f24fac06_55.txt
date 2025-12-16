@@ -1,0 +1,428 @@
+ import { ThemeProvider } from "next-themes";
+ 3 â import { Inter } from "next/font/google";
+   â°ââââ
+  Ã You're importing a component that needs 
+useState
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  â 
+  â  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  â 
+  â 
+   â­â[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 â import { useEffect, useState } from "react";
+   Â·                     ââââââââ
+ 2 â import { ThemeProvider } from "next-themes";
+ 3 â import { Inter } from "next/font/google";
+   â°ââââ
+
+Import trace for requested module:
+./app/layout.tsx
+ GET / 500 in 1847ms
+
+ChatGPT said:
+
+ð¥ 
+The error is clear: Next.js requires 
+"use client";
+ in 
+app/layout.tsx
+, but itâs still not being recognized properly.
+ Letâs 
+fix it properly this time.
+ ðð
+
+ð¹ Step 1: Modify 
+app/layout.tsx
+ Properly
+
+1ï¸â£ Open 
+app/layout.tsx
+ in 
+Nano
+:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+2ï¸â£ 
+Make sure the very first line is exactly this:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+This 
+must
+ be the very first line, before any imports.
+
+3ï¸â£ 
+Replace everything inside 
+app/layout.tsx
+ with this:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;  
+
+// â Ensures this runs only on the client side
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+        {isClient ? (
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+>
+            {children}
+
+</
+ThemeProvider
+
+>
+        ) : (
+
+<>
+
+{children}
+
+</>
+
+        )}
+
+</
+body
+
+>
+    </html>
+  );
+}
+
+â 
+Why This Fix Works:
+
+"use client";
+ is now 
+correctly placed at the top
+ (Next.js requires it to be the first line).
+
+Ensures dark mode logic only runs on the client
+ to prevent hydration mismatches.
+
+Prevents Next.js from trying to run hooks (
+useEffect
+, 
+useState
+) on the server.
+
+ð¹ Step 2: Save & Exit
+
+1ï¸â£ 
+Press 
+CTRL + X
+
+2ï¸â£ 
+Press 
+Y
+
+ (to confirm save)
+
+3ï¸â£ 
+Press 
+Enter
+
+ (to exit Nano)
+
+ð¹ Step 3: Restart the Next.js Server
+
+Since we changed an important layout file, restart the dev server:
+
+1ï¸â£ 
+Stop the server (if running):
+
+bash
+
+Copy
+
+Edit
+
+CTRL + C
+
+2ï¸â£ 
+Restart it:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+3ï¸â£ 
+Test your site at 
+http://localhost:3000
+
+4ï¸â£ 
+Check Safari console (
+CMD + Option + C
+) to see if the hydration error is gone.
+
+ð¹ Step 4: Push Fix to GitHub & Redeploy
+
+If the error is fixed:
+
+1ï¸â£ 
+Commit & push the update to GitHub:
+
+bash
+
+Copy
+
+Edit
+
+git add app/layout.tsx
+git commit -m 
+
+"Fixed Next.js hydration issue and marked layout as client component"
+
+git push origin main
+
+2ï¸â£ 
+Go to Vercel & Click "Redeploy"
+
+ð¥ 
+Try this and let me know if the error is finally gone!
+ ðð
+
+You said:
+
+how do I get out of the thing I just pasted in terminal
+
+ChatGPT said:
+
+ð¥ 
+You're probably stuck in Nano or another text editor in the terminal.
+ No worriesâhere's how to 
+exit cleanly and save (or discard) changes.
+ ðð
+
+ð¹ If You're in Nano (Text Editor)
+
+1ï¸â£ 
+To save and exit:
+
+Press 
+
+CTRL + X
+
+ (exit)
+
+Press 
+
+Y
+
+ (confirm saving)
+
+Press 
+
+Enter
+
+ (save the file and exit)
+
+2ï¸â£ 
+To exit without saving:
+
+Press 
+
+CTRL + X
+
+Press 
+
+N
+
+ (donât save)
+
+Press 
+
+Enter
+
+ð¹ If You're in Vim (Accidentally)
+
+1ï¸â£ 
+Press 
+Esc
+
+ (to exit insert mode)
+
+2ï¸â£ 
+Type:
+
+less
+
+Copy
+
+Edit
+
+:
+
+q

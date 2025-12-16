@@ -1,0 +1,99 @@
+------------------
+
+[+] Containers
+------------------------------------
+
+[+] Security frameworks
+------------------------------------
+  - Checking presence AppArmor                                [ NOT FOUND ]
+  - Checking presence SELinux                                 [ NOT FOUND ]
+  - Checking presence TOMOYO Linux                            [ NOT FOUND ]
+  - Checking presence grsecurity                              [ NOT FOUND ]
+  - Checking for implemented MAC framework                    [ NONE ]
+
+[+] Software: file integrity
+------------------------------------
+  - Checking file integrity tools
+    - mtree                                                   [ FOUND ]
+  - Checking presence integrity tool                          [ FOUND ]
+
+[+] Software: System tooling
+------------------------------------
+  - Checking automation tooling
+  - Automation tooling                                        [ NOT FOUND ]
+  - Checking for IDS/IPS tooling                              [ NONE ]
+
+[+] Software: Malware
+------------------------------------
+  - Checking ClamAV scanner                                   [ FOUND ]
+  - Malware software components                               [ FOUND ]
+    - Active agent                                            [ NOT FOUND ]
+    - Rootkit scanner                                         [ NOT FOUND ]
+
+[+] File Permissions
+------------------------------------
+  - Starting file permissions check
+    File: /etc/group                                          [ OK ]
+    File: /etc/passwd                                         [ OK ]
+    File: /etc/ssh/sshd_config                                [ SUGGESTION ]
+    File: /etc/hosts.equiv                                    [ OK ]
+
+[+] Home directories
+------------------------------------
+  - Permissions of home directories                           [ WARNING ]
+  - Ownership of home directories                             [ OK ]
+  - Checking shell history files                              [ OK ]
+
+[+] Kernel Hardening
+------------------------------------
+
+[+] Hardening
+------------------------------------
+    - Installed compiler(s)                                   [ FOUND ]
+    - Installed malware scanner                               [ FOUND ]
+
+[+] Custom tests
+------------------------------------
+  - Running custom tests...                                   [ NONE ]
+
+[+] Plugins (phase 2)
+------------------------------------
+  - Plugins (phase 2)                                         [ DONE ]
+
+================================================================================
+
+  -[ Lynis 3.1.4 Results ]-
+
+  Warnings (1):
+  ----------------------------
+  ! Nameserver 113.212.173.22 does not respond [NETW-2704] 
+      https://cisofy.com/lynis/controls/NETW-2704/
+
+  Suggestions (14):
+  ----------------------------
+  * Install a PAM module for password strength testing like pam_cracklib or pam_passwdqc or libpam-passwdqc [AUTH-9262] 
+    - Related resources
+      * Article: Configure minimum password length for Linux systems: https://linux-audit.com/configure-the-minimum-password-length-on-linux-systems/
+      * Website: https://cisofy.com/lynis/controls/AUTH-9262/
+
+  * Symlinked mount point needs to be checked manually [FILE-6310] 
+    - Details  : /home
+    - Solution : 
+    - Related resources
+      * Website: https://cisofy.com/lynis/controls/FILE-6310/
+
+  * Symlinked mount point needs to be checked manually [FILE-6310] 
+    - Details  : /tmp
+    - Solution : 
+    - Related resources
+      * Website: https://cisofy.com/lynis/controls/FILE-6310/
+
+  * Symlinked mount point needs to be checked manually [FILE-6310] 
+    - Details  : /var
+    - Solution : 
+    - Related resources
+      * Website: https://cisofy.com/lynis/controls/FILE-6310/
+
+  * Add the IP name and FQDN to /etc/hosts for proper name resolving [NAME-4404] 
+    - Related resources
+      * Article: Keeping your /etc/hosts file healthy: https://linux-audit.com/is-your-etc-hosts-file-healthy/

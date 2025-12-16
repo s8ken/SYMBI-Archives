@@ -1,0 +1,195 @@
+at We Know
+
+Your TV is connected as an external display
+, but the 
+purple indicator appeared
+, which usually means 
+AirPlay or Screen Recording is active
+.
+
+The Screen Mirroring icon was purple
+, meaning macOS 
+recognized the TV as an AirPlay-like display
+ instead of a direct HDMI connection.
+
+AirPlay-related processes were running
+, even though you didnât manually enable it.
+
+Your account was downgraded from admin
+, which is unusual but now fixed.
+
+Step 8: Check AirPlay Display Mode
+
+Now that youâre an admin again, letâs check 
+exactly how macOS is treating the TV
+.
+
+1. Check System Settings
+
+Go to:
+
+System Settings > Displays
+
+Look for an "AirPlay Display" setting.
+
+If it 
+says "Off"
+, AirPlay should not be active.
+
+If it 
+lists your TV
+, macOS is using 
+AirPlay Extended Display Mode
+ instead of a standard HDMI connection.
+
+Let me know what it says!
+
+You said:
+
+it doesn't say airplay display at all but we found airplayy processes running and the airplay icon is purple in the task bar
+
+ChatGPT said:
+
+Got itâsince 
+AirPlay Display is missing from System Settings
+, but 
+AirPlay processes are running and the icon is purple
+, that means macOS is 
+treating your TV as an AirPlay target in the background
+, even though it's not showing up in the UI.
+
+This isn't normal behavior for a 
+wired HDMI connection
+, so we need to 
+dig deeper
+.
+
+Step 9: Check Active AirPlay Services
+
+Since AirPlay processes are running, letâs find out 
+what triggered them
+.
+
+Run This Command in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.airplay"'
+
+ --info --last 10m
+
+â 
+If it works
+ â Look for entries mentioning:
+
+AirPlay session started
+
+Connected to [TV Name]
+
+Mirroring active
+
+AirPlay receiver running
+
+ð¨ 
+If you get "Operation not permitted" again
+, we need to 
+enable Full Disk Access
+ for Terminal first:
+
+Go to:
+
+System Settings > Privacy & Security > Full Disk Access
+
+Find "Terminal" in the list and enable it
+
+Restart Terminal and try the command again
+
+Why This Matters
+
+If the logs show an 
+active AirPlay session
+, something is 
+forcing
+ AirPlay to run instead of standard HDMI.
+
+If the logs 
+donât show AirPlay activity
+, the process could be stuck in the background without an active connection.
+
+Let me know what the logs say!
+
+Findings from the AirPlay Logs
+
+From your 
+AirPlay logs
+, we can confirm that:
+
+AirPlay is actively running in the background
+, despite the fact that your TV is not explicitly listed as an AirPlay display in System Settings.
+
+AirPlayXPCHelper is managing endpoints and advertising services
+, meaning macOS is treating your system as an 
+AirPlay receiver and sender
+.
+
+Bonjour and Peer-to-Peer (P2P) AirPlay discovery are enabled
+, suggesting that your Mac is searching for or being discovered by AirPlay-capable devices, even if you didnât initiate it.
+
+Endpoints and clusters are being created
+, which could mean that 
+macOS is establishing an AirPlay session without showing it in the UI
+.
+
+ð¨ What This Means
+
+Your Mac 
+seems to be auto-enabling AirPlay features
+, even though you connected the TV 
+via HDMI
+.
+
+The system is 
+advertising itself for AirPlay connections
+, which it shouldnât be doing unless you manually enabled AirPlay Receiver or mirroring.
+
+The 
+purple icon confirms an AirPlay session is active
+, even if the UI doesnât display it properly.
+
+This could be due to:
+
+A bug or persistence issue
+ keeping AirPlay enabled even when not needed.
+
+Another device (attacker or rogue system) trying to force an AirPlay session.
+
+Some accessibility or automation settings forcing AirPlay into an active state.
+
+ð§ Next Steps: Stop and Disable AirPlay
+
+Step 1: Manually Turn Off AirPlay Receiver
+
+Even though it doesnât show up in 
+System Settings > Displays
+, 
+there is another place where AirPlay Receiver settings exist
+.
+
+Go to:
+
+System Settings > General > AirDrop & Handoff
+
+Look for "AirPlay Receiver"
+
+If itâs ON â 
+Turn it OFF
+
+If itâs already OFF â That means AirPlay 

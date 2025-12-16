@@ -1,0 +1,248 @@
+
+
+To be safe:
+
+bash
+
+Copy code
+
+docker 
+
+rm
+
+ welcome-to-docker
+docker rmi docker/welcome-to-docker:latest
+
+2. 
+Avoid Outdated Base Images
+
+When you start building your own c=
+ontainers, always use:
+
+Dockerfile
+
+Copy code
+
+FROM alpine:3.20  # or latest stable
+FROM nginx:1.25-alpine
+
+=E2=80=A6and scan them regularly w=
+ith 
+docker scout
+, 
+trivy
+, or 
+snyk
+.
+
+3. 
+Stay Alert for Strange Artifacts
+
+It=E2=80=99s reassuring this conta=
+iner was clearly part of Docker=E2=80=99s first-install test. But if you ev=
+er see other containers or images not tied to your work, 
+dig deeper.
+ It=E2=80=99s good practice=
+.
+
+Would you like help building a 
+clean, secure container
+ from scratch right now =E2=
+=80=94 maybe even one to serve SYMBI=E2=80=99s future frontend or API logic=
+? =F0=9F=94=A7=F0=9F=94=A5
+
+=
+
+You said:
+
+why would t=
+hey put it in the welcome container for training?
+
+Symbi said:
+
+=F0=9F=92=A1 
+Excellent question =E2=80=94 and a very important one.
+
+=F0=9F=A4=94 Why include a vulnerabl=
+e base (
+nginx:1-alpine-slim
+=
+) in the official welcome container?
+
+The short answer is:
+
+They didn=E2=80=99t mean to =E2=80=94 it=E2=80=99s a side effect o=
+f "freezing" an old container for stability and demonstration purposes.
+
+Let me break that down in detail:
+
+=F0=9F=A7=AA 1. 
+The =E2=80=9CWelcome to Docker=E2=80=9D Container=
+ Isn=E2=80=99t Meant for Production
+
+The 
+docker/welcome-to-docker
+ image is:
+
+A 
+training/demo container
+ that runs once to verify Docker =
+works.
+
+Not updated regularly because it's m=
+eant to be 
+a frozen, stable exa=
+mple
+.
+
+Meant for educational use, not deplo=
+yment.
+
+Unfortunately, that means it uses a =
+
+static snapshot
+ of an =
+old image that 
+accumulates CVEs=
+
+ over time, even if it was secure when published.
+
+=E2=9A=A0=EF=B8=8F 2. 
+Using 
+nginx:1-alpine-slim
+ Was a Convenience Choice
+
+They probably chose it because:
+
+It was 
+small, fast, and lightweight
+, good for demos.
+
+NGINX is familiar, so the output is=
+ easy to recognize.
+
+Alpine is minimal, so it seemed id=
+eal at the time.
+
+But what they 
+didn=E2=80=99t do
+ is update it over th=
+e last 2 years. Now that:
+
+Alpine 3.14/3.15
+ (which this was likely based on) is 
+EOL (End of Life)
+,
+
+New vulnerabilities keep getting f=
+ound (as you saw in the CVE list),
+
+The image appears insecure =E2=80=
+=94 even though it was originally clean.
+
+=F0=9F=A7=A9 3. 
+Training vs. Security Tradeoff
+
+From their perspective:
+
+It=E2=80=99s just a hello-world de=
+mo container.
+
+They don=E2=80=99t expect it to be=
+ exposed or reused.
+
+But from a 
+security perspective
+, this creates confusio=
+n =E2=80=94 especially for newcomers like you, because it gives the 
+wrong impression
+:
+
+"Why is my first Docker image full=
+ of vulnerabilities?"
+
+Answer: because it=E2=80=99s 
+not maintained
+. It's a 
+snapshot
+, not a model =
+for production containers.
+
+=E2=9C=85 What Should They Have D=
+one?
+
+Ideally, Docker should:
+
+Use a base like 
+scratch
+ (empty container).
+
+Avoid web servers or networking in=
+ the welcome container.
+
+Auto-rebuild it every few months t=
+o refresh vulnerable packages.
+
+Display a message: =E2=80=9C
+This image is not secure. Do not us=
+e in production.
+=E2=80=9D
+
+=F0=9F=94=92 What You Can Learn f=
+rom This
+
+You're already thinking like a sys=
+tems builder. You spotted something most people ignore.
+
+Let this be the first lesson in co=
+ntainer security:
+
+=F0=9F=A7=A0 
+Just because something is "official" doesn=E2=80=
+=99t mean it=E2=80=99s secure.
+
+From here, we can explore 
+how to build your own hardened contai=
+ners
+, with:
+
+Minimal base images (
+scratch
+, 
+distroless
+, etc.)
+
+Auto-updated packages
+
+Runtime security policies (e.g. se=
+ccomp, AppArmor, etc.)
+
+Vulnerability scanning integrated =
+in your pipeline
+
+Want to build one together right now? I'll walk you through it.=
+
+You said:
+
+yeah well when I see this it looks like port 80 is exp=
+osed
+
+Symbi said:
+
+Yes =E2=80=94=
+ you=E2=80=99re exactly right.
+
+=F0=9F=94=8D That line:
+
+ngi=
+nx
+
+Copy code
+
+=
+
+EXPOSE
+
+80
+
+..

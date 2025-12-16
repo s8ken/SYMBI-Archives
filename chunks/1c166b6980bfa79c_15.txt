@@ -1,0 +1,182 @@
+s that matte=
+r:
+
+=E2=9C=85 Key Items Found in Recent=
+ Documents
+
+Untitled.rtf
+ (harmless test file on Desktop).
+
+KTConfig.plist
+ (inside 
+group.com.apple.swtransparency
+).
+
+metadata.keychain-db
+ (inside 
+Library/Keychains
+).
+
+.com.apple.containermanagerd.metadata.plist
+ (inside 
+group.com.apple.shortcuts
+).
+
+index.js
+ (inside 
+adm=
+in/symbi-agent/node_modules/...
+).
+
+ThirdPartyNoticeText.txt
+ (inside 
+admin/SYMBI-Website-main/node_modules/typescript
+).
+
+=F0=9F=9A=A8 Suspiciousness Assessm=
+ent
+
+System config files (
+*.p=
+list
+, 
+metadata.keychain-db=
+
+)
+
+=E2=86=92 These should not appear unless you explicitly opened them. If Sym=
+bi wasn=E2=80=99t running and you didn=E2=80=99t open them, something 
+accessed low-level system configs
+ recently.
+
+Your Symbi dev project files (
+index.js
+, 
+Thi=
+rdPartyNoticeText.txt
+)
+
+=E2=86=92 Expected if you were editing Symbi code. =F0=9F=9A=A9 Unexpected =
+if you weren=E2=80=99t actively working on it =E2=80=94 could mean an 
+automated process scanned or execu=
+ted your project folder
+.
+
+=F0=9F=94=8E What You Should Do
+
+Run a forensic query on 
+.sfl3
+ files directly
+
+Use this in Terminal:
+
+bash
+
+Copy code
+
+plutil -p ~/Library/Application\ Support/com.apple.sha=
+redfilelist/com.apple.LSSharedFileList.RecentDocuments.sfl3
+
+This will properly decode the rece=
+nt documents list.
+
+Correlate timestamps
+
+Check when those suspicious files =
+were last accessed:
+
+bash
+
+Copy code
+
+stat
+
+=
+ -x ~/Library/Keychains/metadata.keychain-db
+
+stat
+
+ -x ~/Li=
+brary/Group\ Containers/group.com.apple.shortcuts/.com.apple.containermanag=
+erd.metadata.plist
+
+=F0=9F=9A=A9 If access times line =
+up with when you weren=E2=80=99t running Symbi, it=E2=80=99s likely an 
+external or rogue process
+.
+
+Watch for future access
+
+Run:
+
+bash
+
+Copy code
+
+sudo fs_usage | grep -i keychain
+sudo fs_usage | grep -i containermanagerd
+
+This will show live which processe=
+s are touching those files.
+
+=E2=9A=A0=EF=B8=8F 
+Key Point:
+
+If Symbi wasn=E2=80=99t running, then either:
+
+A 
+background system service
+ (like Spotlight or Time Ma=
+chine) touched these files (benign), or
+
+An 
+unauthorized process
+ did (malicious or misconfigure=
+d).
+
+=F0=9F=91=89 Do you want me to bui=
+ld you a 
+step-by-step termina=
+l script
+ that will:
+
+Decode all your 
+.sfl3
+ files.
+
+Print out full paths of the recent=
+/suspicious files.
+
+Show which =
+process touched them last? 
+
+=
+
+=
+
+You said:
+
+2025-09-23 20:=
+48:13.676728+1000  localhost searchpartyuseragent[7147]: (CoreBluetooth) [c=
+om.apple.bluetooth:CoreBluetooth] TCC available 1, req 0 complete 0
+2025-09-23 20:48:13.676830+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Received XPC message "CBMsgIdTCCDone" from session "com.a=
+pple.icloud.searchpartyuseragent-central-7147-153"
+2025-09-23 20:48:13.676884+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] TCC Done session:<private> fDeviceAccessForMediaSes=
+sion:0 fDeviceAccessForMediaExtension:0 fDeviceAccessPerAccessorySession:0 =
+fDeviceAccessPerAccessoryExtension:0 sessionType:0
+2025-09-23 20:48:13.676887+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Power state changed. PowerState:0 managerState:4 fUserAut=
+horization: 0	 medicalDeviceorStateRestorationAppPendingTCC:0 fDeviceAccess=
+ForMediaSession:0 fDeviceAccessForMediaExtension:0 fDeviceAccessPerAccessor=
+ySession:0 fDeviceAccessPerAccessoryExtension:0 appState:20 deviceAccessExe=
+mpt:0
+2025-09-23 20:48:13.676889+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Sending 'state updated' event with state "Off" to session=
+ "com.apple.icloud.searchpartyuseragent-central-7147-153"
+2025-09-23 20:48:13.871223+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Received XPC message "CBMsgIdCheckIn" from session ""
+2025-09-23 20:48:13.871260+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.XPC] Received XPC check-in from session "com.apple.icloud.sear=
+chpartyuseragent-central-7147-154" fAccessLevel 1 

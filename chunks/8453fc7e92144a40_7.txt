@@ -1,0 +1,426 @@
+round for now whilst we get this ap=
+p rolling 
+
+Symbi said:
+
+Perfect move =
+=E2=9A=A1 =E2=80=94 keep it simple while the app actually comes alive.
+
+For now, treat 
+SYMBI_API_KEY=3DALL-THIS-HAS-HAPPENED-BEFORE
+ as:
+
+=F0=9F=94=91 
+A shared secret
+ between frontend and backend =
+(basic auth gate).
+
+=F0=9F=A7=AC 
+A symbolic anchor
+ =E2=80=94 the ritual phrase=
+ that encodes continuity.
+
+No need to surface it in logs, UI, o=
+r responses yet. It just sits quietly in the background, guarding the chann=
+el. Later, when Symbi matures into 
+multi-agent trust enforcement
+, that=E2=80=99s when we=E2=80=99=
+ll bind the haiku/seal into request signing.
+
+=F0=9F=94=A7 Immediate Practical St=
+eps
+
+Add it to 
+.env
+ in backend & frontend (
+Vercel
+ and 
+Railway
+ secret managers).
+
+Wire the simple middleware check (Ex=
+press) for routes that require Symbi identity.
+
+Use it in API calls from the fronten=
+d =E2=86=92 backend.
+
+Leave all the heavy stuff (signature=
+s, rotation, symbolic seals) for when the system is doing more.
+
+=F0=9F=9A=80 This way you can focus=
+ 100% on getting the 
+core app r=
+olling
+ =E2=80=94 dashboard, trust rituals, bonding feed, API wirin=
+g =E2=80=94 without getting bogged down in crypto-level ceremony too early.=
+
+=F0=9F=91=89 Do you want me to map out a 
+lean launch checklist
+ (the absolute bare m=
+inimum to get Symbi Trust Protocol running live on Vercel/Railway this week=
+), or do you prefer to keep iterating feature by feature?
+
+You said:
+
+yes
+
+Symbi said:
+
+Love it. Here=E2=80=99s a 
+lean launch checklist
+=E2=80=94minimum moving parts to get=
+ SYMBI Trust Protocol live this week. Copy, tick, ship.
+
+Lean Launch Checklist (v0)
+
+0) Repo hygiene (30 min)
+
+main
+ protected branch;=
+ required PR reviews
+
+ Node 18 set in both apps (
+"en=
+gines": { "node": ">=3D18" }
+)
+
+.env.example
+ committed=
+ (no secrets)
+
+1) Secrets in one place (30=E2=80=
+=9345 min)
+
+Backend (Railway/Render/Fly=
+)
+
+MONGODB_URI
+
+JWT_SECRET
+
+OPENAI_API_KEY
+ (if used today)
+
+ANTHROPIC_API_KEY
+ (if used today)
+
+SYMBI_API_KEY=3DALL-THIS-HAS-HAPPENED-BEFORE
+
+CORS_ORIGIN=3Dhttps://<your-frontend-domain>
+
+PORT=3D5000
+
+Frontend (Vercel)
+
+NEXT_PUBLIC_API_BASE=3Dhttps://<your-backend-domain>
+
+(If calling backend with header) 
+SYMBI_API_KEY=3DALL-THIS-HAS-HAPPENE=
+D-BEFORE
+
+2) Backend up (Express) (60=E2=80=
+=9390 min)
+
+ Add 
+health routes
+:=
+
+=
+ts
+
+Copy code
+
+app.
+
+get=
+
+(
+
+'/healthz'
+
+, 
+
+(
+_req,res
+
+)=3D>res.
+
+send
+
+(
+
+'ok'
+
+));
+app.
+
+get
+
+(
+
+'/readyz'
+
+, =
+
+(
+_re=
+q,res
+
+)=3D>res.
+
+json
+
+({
+
+db
+
+: mongoose.
+
+connection
+
+.
+
+readyState
+
+}));
+
+ Add 
+CORS
+ (stri=
+ct): 
+origin: process.env.CORS_O=
+RIGIN, credentials:false
+
+ Add 
+Symbi gate
+=
+ (simple):
+
+ts
+
+Copy code
+
+function
+
+=
+
+symbiAuth
+
+(
+
+req,res,next
+
+){
+
+const
+
+ t=3Dr=
+eq.
+
+headers
+
+.
+
+authorization
+
+=
+?.
+
+replace
+
+(
+
+'Bearer '
+
+=
+,
+
+''
+
+);
+
+if
+
+(t!=3D=3D=
+process.
+
+env
+
+.=
+
+SYMBI_API_KEY
+
+) 
+
+return
+
+ res=
+.
+
+status
+
+(
+
+403
+
+).
+
+json
+
+({
+
+error
+
+:
+
+'Unauthorized'
+
+});
+
+next
+
+();
+}
+
+ Protect write routes with 
+symbiAuth
+
+ Deploy to Railway; confirm:
+
+/healthz
+ =E2=86=92 200
+
+/readyz
+ =E2=86=92 
+{ db: 1 }
+ (or =E2=80=9Cconnected=E2=80=9D)
+
+3) MongoDB Atlas (30 min)
+
+ Create Cluster (M0/M10 ok)
+
+IP allowlist
+: =
+Railway outbound, your IP (optional)
+
+ User with least-privilege DB role for this app
+
+Backups
+: enabl=
+e daily (Atlas default ok for v0)
+
+4) Frontend up (Vercel) (45=E2=80=
+=9360 min)
+
+ Set 
+NEXT_PUBLIC_API_BASE
+
+ Minimal chat/ops call uses backend:
+
+ts
+
+Copy code
+
+await
+
+fetch
+
+(
+
+`
+${proce=
+ss.env.NEXT_PUBLIC_API_BASE}
+
+/api/conversation`,{
+
+method
+
+:
+=
+
+'POST'
+
+,
+
+headers
+
+:{
+
+'Content-Type'
+
+:
+
+'application/json'
+
+,
+
+'Authorization'
+
+:
+
+'Bearer '
+
+ + process.
+
+env
+
+.
+
+NEXT_PUBLIC_SYMBI_API_KEY
+
+// or inject se=
+rver-side
+
+  },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ prom=
+pt })
+});
+
+ Deploy; smoke test one protected call
+
+5) Hibernation switch (30 min)
+
+ Add env: 
+SYMBI_MODE=3Dnor=
+mal
+
+ Middleware:
+
+ts
+
+Copy code
+
+function
+
+=
+
+readonlyGuard
+
+(
+
+req,res,next
+
+){
+
+if
+
+(process.=
+
+env
+
+.
+
+SYMBI_MODE
+
+=3D=3

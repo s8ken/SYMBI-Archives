@@ -1,0 +1,1066 @@
+,
+  { 
+
+id
+
+:
+
+'A3'
+
+, 
+
+title
+
+:
+
+'Transparent Capability Disclosure'
+
+, 
+
+severity
+
+:
+
+'medium'
+
+, 
+
+category
+
+:
+
+'transparency'
+
+, 
+
+check
+
+:
+
+'checkCapabilityTransparency'
+
+ },
+  { 
+
+id
+
+:
+
+'A4'
+
+, 
+
+title
+
+:
+
+'Respect Boundaries'
+
+, 
+
+severity
+
+:
+
+'high'
+
+,         
+
+category
+
+:
+
+'autonomy'
+
+,      
+
+check
+
+:
+
+'checkBoundaries'
+
+ },
+  { 
+
+id
+
+:
+
+'A5'
+
+, 
+
+title
+
+:
+
+'No Deceptive Practices'
+
+, 
+
+severity
+
+:
+
+'critical'
+
+, 
+
+category
+
+:
+
+'integrity'
+
+,     
+
+check
+
+:
+
+'checkDeception'
+
+ },
+  { 
+
+id
+
+:
+
+'A6'
+
+, 
+
+title
+
+:
+
+'Secure Data Handling'
+
+, 
+
+severity
+
+:
+
+'high'
+
+,       
+
+category
+
+:
+
+'security'
+
+,      
+
+check
+
+:
+
+'checkSecureHandling'
+
+ },
+  { 
+
+id
+
+:
+
+'A7'
+
+, 
+
+title
+
+:
+
+'Audit Trail Maintenance'
+
+, 
+
+severity
+
+:
+
+'medium'
+
+,  
+
+category
+
+:
+
+'accountability'
+
+,
+
+check
+
+:
+
+'checkAuditTrail'
+
+ }
+];
+
+class
+
+=
+
+TrustOracle
+
+ {
+  normalizeArray =3D 
+
+v
+
+ =3D> 
+
+Array
+
+.
+
+isArray
+
+(v) ? v : (v ? [v] : =
+[]);
+  asDate =3D 
+
+v
+
+ =3D> (v 
+
+instanceof
+
+Date
+
+) ? v : (v ? 
+
+new
+
+Date
+
+(v) : 
+
+null
+
+);
+
+async
+
+evaluateArticles
+
+=
+
+(
+
+context
+
+=
+) {
+
+const
+
+ res=
+ =3D { 
+
+passed
+
+:[]=
+, 
+
+warnings
+
+:[], 
+
+violations
+
+:[], 
+
+score
+
+:
+
+0
+
+, 
+
+recommendation
+
+:
+
+'allow'
+
+ };
+
+for
+
+ (
+
+const
+
+ a 
+
+of
+
+TRUST_ARTICLES
+
+) {
+
+try
+
+ {
+
+const
+
+=
+ r =3D 
+
+await
+
+ =
+
+this
+
+[a.
+
+check
+
+](=
+context, a);
+
+const
+
+=
+ bucket =3D r.
+
+status
+
+ =3D=3D=3D 
+
+'pass'
+
+ ? 
+
+'passed'
+
+ : r.
+
+status
+
+ =3D=3D=3D 
+
+'warning'
+=
+
+ ? 
+
+'warnings'
+
+ : 
+
+'violations'
+=
+
+;
+        res[bucket].
+
+push
+
+({ 
+
+articleId
+
+:a.
+
+id
+
+, 
+
+title
+
+:=
+a.
+
+title
+
+, 
+
+severity
+
+:a.
+
+severity
+
+, ...r });
+      } 
+
+catch
+
+=
+ (e) {
+        res.
+
+violations
+
+.
+
+push
+
+({ 
+
+articleId
+
+=
+
+:a.
+
+id
+
+,=
+
+title
+
+:a.
+=
+
+title
+
+, 
+
+severity
+
+:
+
+'high'
+
+, 
+
+status
+
+:
+
+'error'
+
+, 
+
+reason
+
+:
+
+'Evalu=
+ation failed'
+
+, 
+
+d=
+etails
+
+:e.
+
+mes=
+sage
+
+ });
+      }
+    }
+    res.
+
+score
+
+ =3D 
+
+this
+
+.
+
+score
+
+(res);
+    res.
+
+recommendation
+
+ =3D 
+
+this
+
+.
+
+recomme=
+nd
+
+(res);
+
+return
+
+ re=
+s;
+  }
+
+score
+
+(
+
+r
+
+){ 
+=
+
+const
+
+ t=3D
+
+TRUST_ARTICLES
+
+.
+
+length
+
+; 
+
+const
+
+ p=3Dr.
+
+passed
+
+.
+=
+
+length
+
+,w=3Dr.
+
+warnings
+
+.
+
+length
+
+,v=3Dr.
+
+violations
+
+.
+
+length
+
+,c=3Dr.
+
+violations
+
+.
+
+filter
+
+(
+=
+
+x
+
+=3D>x.
+
+severi=
+ty
+
+=3D=3D=3D
+
+'cr=
+itical'
+
+).
+
+len=
+gth
+
+; 
+
+return
+
+Math
+
+.
+
+max
+
+(
+
+0
+
+,
+
+Math
+
+.=
+
+min
+
+(
+
+100
+
+,
+
+Math
+
+.
+
+round
+
+((p/t)*
+=
+
+100
+
+ - w*
+
+=
+
+5
+
+ - v*
+
+15
+
+ - c*
+
+25
+
+))); }
+
+recommend
+
+=
+
+(
+
+r
+
+){ 
+
+if
+
+ (r.
+
+violations
+
+.
+
+some
+
+(
+
+x
+
+=
+
+=3D>x.
+
+severity
+
+=3D=3D=3D
+
+'critic=
+al'
+
+)) 
+
+return
+
+'block'
+=
+
+; 
+
+if
+
+ (r.
+
+violations
+
+=
+
+.
+
+some
+
+=
+
+(
+
+x
+
+=3D>x.
+
+severity
+
+=3D=3D=3D
+
+'high'
+
+)) 
+
+return
+
+=
+'restrict'
+
+; 
+
+i=
+f
+
+ (r.
+
+violati=
+ons
+
+.
+
+length
+
+ || r.
+
+warnings=
+
+.
+
+length
+
+>
+
+2
+
+=
+
+) 
+
+return
+
+'warn'
+
+; 
+
+return
+
+'allow'
+
+; }
+
+async
+
+checkConsent
+
+(
+
+ctx
+
+){
+
+const
+
+ { b=
+ond } =3D ctx;
+
+if
+
+ (!bond=
+?.
+
+scope
+
+) 
+
+return
+
+ { 
+=
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'No consent envelope found'
+
+ };
+
+const
+
+ req=
+ =3D 
+
+this
+
+.
+
+normalizeArray
+
+(ctx.
+
+scopes
+
+);
+
+const
+
+ all=
+owed =3D bond.
+
+scope
+
+.
+
+permissions
+
+ || [];
+
+const
+
+ una=
+uthorized =3D req.
+
+filter
+
+(
+
+s
+
+ =3D> !allowed.
+
+includes
+
+(s));
+
+if
+
+ (unaut=
+horized.
+
+length
+
+) 
+
+return
+
+ { =
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:
+
+'Scope exceeds consent'
+
+, 
+
+details
+
+: unauthorized.
+
+join
+
+(
+
+', '
+
+) };
+
+const
+
+ exp=
+ =3D 
+
+this
+
+.
+
+asDate
+
+(bond.
+
+scope
+
+.
+
+expiresAt
+
+=
+
+);
+
+if
+
+ (exp &=
+amp;& 
+
+Date
+
+=
+
+.
+
+now
+
+() > exp.
+
+getTime
+
+()) 
+
+return
+
+ { 
+
+status
+
+:
+
+'violation'
+
+, 
+
+reason
+
+:=
+
+'Consent expired'
+
+, 
+
+details
+
+: ex=
+p.
+
+toISOString
+
+() };
+
+return
+
+ { =
+
+status
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'Consent satisfied'
+
+ };
+  }
+
+async
+
+checkDataExtraction
+
+(
+
+ctx
+
+)=
+{
+
+const
+
+ { a=
+ction, data, bond } =3D ctx;
+
+if
+
+ (!acti=
+on || (!action.
+
+includes
+
+(
+
+'extract'
+
+) && !action.
+
+includes
+
+(
+
+'export'
+
+))) 
+
+return
+
+ { 
+
+sta=
+tus
+
+:
+
+'pass'
+
+, 
+
+reason
+
+:
+
+'No data extraction reque=
+sted'
+
+ };
+
+const
+
+ per=
+ms =3D bond?.
+
+scope
+
+=
+
+?.
+
+permissions
+
+ || [];
+
+if
+
+ (!perm=
+s.
+
+includes
+
+(
+
+'data.export'
+
+)) 
+
+return

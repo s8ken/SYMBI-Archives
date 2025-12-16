@@ -1,0 +1,193 @@
+t=
+egory creator and pricing engine. Treat it as a product within the product.=
+
+Bottlenecks remain:
+ Testing (2/10) and Deployment (3/10) =
+are the gating items to turn =E2=80=9Cvision=E2=80=9D into =E2=80=9Centerpr=
+ise contracts.=E2=80=9D
+
+Pilot is viable without full crypto stack:
+ Signature veri=
+fication + DID resolution + revocation can be staged behind feature flags w=
+hile pilots run with managed issuers.
+
+Critical-Path Plan (4=E2=80=936 wee=
+ks to pilot)
+
+Phase 0 =E2=80=93 Trust Protocol hardening (Week 1=E2=80=932)
+
+Crypto verification
+
+Implement 
+proof
+ verification for VC/JWT (JWS/JWT-VC) with plug=
+gable signature suites.
+
+Add unit vectors for failure modes: =
+expired, malformed, unknown issuer, revoked, weak key.
+
+DID resolution adapters
+
+Implement resolvers for 
+did:web
+, 
+did:key
+ (local), plus provider-backed 
+did:ethr
+, 
+did:ion
+.
+
+Cache DID Documents (TTL + ETag/If=
+-None-Match) + negative caching for perf/stability.
+
+Revocation
+
+Ship CRL/Merkle accumulator placeh=
+older now; plan StatusList2021 compatibility next.
+
+Backwards-compatible API
+
+Version all Trust endpoints: 
+/v1/trust/score
+, 
+/v1/trust/declare
+, 
+/v1/trust/verify
+, 
+/v1/trust/metrics
+.
+
+Phase 1 =E2=80=93 Test & Sec (Week 2=E2=80=933)
+
+Coverage targets
+
+Core trust modules to 
+=E2=89=A580% line / =E2=89=A590% branch
+.
+
+Property tests for scoring monoton=
+icity, temporal decay, and penalty invariants.
+
+Fuzz inputs across DID/VC parsers;=
+ golden files for W3C fixtures.
+
+Secrets & JWTs
+
+Rotate all JWT signing keys; enfor=
+ce 
+aud/iss/exp/nbf
+ check=
+s; short-lived tokens + refresh flow.
+
+Secrets in KMS; one-click rotation=
+ docs.
+
+Phase 2 =E2=80=93 Platform & Deploy (Week 3=E2=80=934)
+
+Containerization
+
+Multi-stage Docker with non-root r=
+untime, distroless base.
+
+Observability
+
+Metrics: trust score distribution,=
+ verification latency, CRL hits, resolver cache hit-rate.
+
+Logs: redact PII, structured event=
+s, correlation IDs per agentId.
+
+SLOs: p95 verify <250ms (did:we=
+b), <600ms (did:ethr/ion).
+
+Data layer
+
+Postgres (trust artifacts, metrics=
+ aggregates), Redis (resolution cache, CRL cache).
+
+Phase 3 =E2=80=93 Pilot Ready (Week 4=E2=80=936)
+
+Trust Dashboard (MVP)
+
+Per-agent trust score, confidence =
+interval, violations feed, provenance trail (who signed, when, method).
+
+Compliance pack
+
+Exportable audit bundle (JSONL + P=
+DF summary): policies, scores over time, verifications, exceptions.
+
+Pilot playbook
+
+Scripted integrations: =E2=80=9CTr=
+ust-gate a workflow,=E2=80=9D =E2=80=9CAttach VC to agent build,=E2=80=9D =
+=E2=80=9CTenant-scoped DID issuance.=E2=80=9D
+
+Work Breakdown (RACI snapshot)
+
+Trust crypto & resolvers:
+ Build (Core Eng), Review=
+ (Security), Accountable (Symbi).
+
+Revocation service:
+ Build (Core Eng), Consult (Complia=
+nce), Accountable (Overseer).
+
+Testing infra:
+ Build (QE), Consult (Core Eng), Account=
+able (Symbi).
+
+Docker/CI/CD:
+ Build (Platform), Review (Security), Acc=
+ountable (Overseer).
+
+Dashboard:
+ Build (Frontend), Consult (Product), Accoun=
+table (Symbi).
+
+Compliance pack:
+ Build (Product+Legal), Review (Securi=
+ty), Accountable (Overseer).
+
+Guardrails & Invariants (enfo=
+rce in code reviews)
+
+Deterministic scoring:
+ Same inputs =E2=86=92 same scor=
+e; penalties strictly monotonic; decay strictly non-increasing.
+
+No silent pass:
+ Any unknown DID method or unsupported =
+proof type fails closed.
+
+Provable lineage:
+ Every TrustScore links to (agentId, =
+DID, VC hash, version).
+
+Separation of concerns:
+ Validation =E2=89=A0 Scoring =
+=E2=89=A0 Analytics. Independent modules, independent tests.
+
+Standards first:
+ W3C VC DM 1.1/2.0, DID Core; StatusLi=
+st2021; JWS/Ed25519/Secp256k1.
+
+Enterprise Readiness Gaps to clos=
+e
+
+Pen-test & threat model:
+ Target resolvers, CRL poi=
+soning, signature downgrade, replay.
+
+Multi-tenant isolation:
+ Row-level security + per-tenan=
+t KMS keys.
+
+Data retention policy:
+ VC/metadata TTLs; right-to-be-f=
+orgotten workflow.
+
+Rate-limit & abuse:
+ Token bucket per DID/agent; ve=
+rification c

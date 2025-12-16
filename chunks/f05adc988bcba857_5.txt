@@ -1,0 +1,566 @@
+g
+ (e.g., change the background color).
+
+If you still have issues, 
+send me any new error logs
+ after restarting the server.
+
+Let me know if anything else breaks!
+ ð 
+
+You said:
+
+it looks as intended locally - if I wanted to add a text animation (so eg letters typing) how would I do that?
+
+ChatGPT said:
+
+Great! Since your project is working as expected locally, let's 
+add a text animation effect
+ to create a 
+typing effect
+ for your text.
+
+ð Adding a Typing Animation Effect
+
+1ï¸â£ Install 
+react-typical
+ (Best for Simplicity)
+
+To create a typing effect without manually coding animations, install 
+
+react-typical
+
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install react-typical
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn add react-typical
+
+2ï¸â£ Use It in Your 
+page.tsx
+
+Modify your 
+
+app/page.tsx
+
+ to include the animation:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+Typical
+
+from
+
+"react-typical"
+
+;
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+fill
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+sizes
+
+=
+
+"(max-width: 768px) 160px, 160px"
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Typing effect for the title */}
+
+<
+h1
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+>
+
+<
+Typical
+
+steps
+
+=
+
+{[
+
+"
+
+SYMBI
+
+", 
+
+1000
+
+, "
+
+Welcome
+
+to
+
+SYMBI
+
+", 
+
+1500
+
+, "
+
+Coming
+
+Soon
+
+", 
+
+2000
+
+]}
+
+loop
+
+=
+
+{Infinity}
+
+wrapper
+
+=
+
+"span"
+
+            />
+
+</
+h1
+
+>
+
+<
+div
+
+className
+
+=
+
+"h-1 w-24 bg-primary mx-auto mb-8"
+
+>
+
+</
+div
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-2xl md:text-3xl font-medium text-white"
+
+>Coming Soon
+
+</
+h2
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+<
+footer
+
+className
+
+=
+
+"py-4"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground"
+
+>Â© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+ð¨ How It Works
+
+The 
+Typical
+ component 
+types and deletes words dynamically
+.
+
+The 
+steps
+ array defines the 
+text
+ and how long it appears (
+in milliseconds
+).
+
+"SYMBI", 1000,
+ â Displays 
+SYMBI
+ for 1 second.
+
+"Welcome to SYMBI", 1500,
+ â Changes to 
+Welcome to SYMBI
+ for 1.5 seconds.
+
+"Coming Soon", 2000,
+ â Types 
+Coming Soon
+ and holds for 2 seconds.
+
+loop={Infinity}
+ makes the animation repeat forever.
+
+wrapper="span"
+ ensures proper text styling.
+
+3ï¸â£ (Optional) Use a CSS-Based Approach Instead
+
+If you donât want to install an external package, you can use 
+CSS animations
+:
+
+ð Add This in 
+globals.css
+
+css
+
+Copy
+
+Edit
+
+@keyframes
+
+ typing {
+
+from
+
+ {
+
+width
+
+: 
+
+0
+
+;
+  }
+
+to
+
+ {
+
+width
+
+: 
+
+100%
+
+;
+  }
+}
+
+.typing-container
+
+ {
+
+display
+
+: inline-block;
+
+overflow
+
+: hidden;
+
+white-space
+
+: nowrap;
+
+border-right
+
+: 
+
+2px
+
+ solid white;
+
+width
+
+: 
+
+0
+
+;
+
+animation
+
+: typing 
+
+3s
+
+steps
+
+(
+
+20
+
+, end) forwards;
+}
+
+ð Modify 
+page.tsx
+
+tsx
+
+Copy
+
+Edit
+
+<h1 className=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white typing-container"
+
+>
+
+SYMBI
+
+</h1>
+
+ð Deploy to Vercel
+
+Once you're happy with the animation, push the changes to GitHub:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Added typing animation effect"
+
+git push origin main
+
+Vercel will 
+automatically deploy
+ your latest changes. ð
+
+Would you like a more complex animation (like fade-in or color-changing text)? Let me know! ðð
+
+You said:
+
+cool so I want it to say the following on repeat infinity with fade in and out all in white.... SYMBI for 3 seconds, Intelligence Unbound 2 seconds, Hope 0.6 seconds, Unity 0.6 seconds, Humanity 0.5 seconds, 0.5 seconds, Peace 0.45 seconds, Equality 0.4 s

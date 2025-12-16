@@ -1,0 +1,128 @@
+rovider@unknown:0:0\nStudioTelemetryProvider@unknown:0:0\nRouterProvider@unknown:0:0\nComponent@\nErrorBoundary@unknown:0:0\nWorkspaceRouterProvider@unknown:0:0\nSourceProvider@unknown:0:0\nWorkspaceProvider@unknown:0:0\nWorkspaceLoader@unknown:0:0\nComponent@\nErrorBoundary@unknown:0:0\nWorkspaceLoaderBoundary@unknown:0:0\nAuthBoundary@unknown:0:0\nUserColorManagerProvider@unknown:0:0\nLayerProvider@unknown:0:0\not@unknown:0:0\nThemeProvider@unknown:0:0\nStudioThemeProvider@unknown:0:0\nRouterHistoryProvider@unknown:0:0\nActiveWorkspaceMatcher@unknown:0:0\nWorkspacesProvider@unknown:0:0\nComponent@\nErrorBoundary@unknown:0:0\nStudioErrorBoundary@unknown:0:0\nToastProvider@unknown:0:0\not@unknown:0:0\nThemeProvider@unknown:0:0\nColorThemeProvider@unknown:0:0\nColorSchemeLocalStorageProvider@unknown:0:0\nColorSchemeProvider@unknown:0:0\nStudioProvider@unknown:0:0\nStudio@unknown:0:0\ndiv@unknown:0:0\nNextStudioLayoutComponent@unknown:0:0\nStyledComponentsRegistry@unknown:0:0\nNextStudioComponent@unknown:0:0\nSuspense@unknown:0:0\nNextStudioLazyClientComponent@unknown:0:0\nStudioPage@unknown:0:0\nClientPageRoot@unknown:0:0\nInnerLayoutRouter@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nHTTPAccessFallbackBoundary@unknown:0:0\nLoadingBoundary@unknown:0:0\nErrorBoundary@unknown:0:0\nComponent@\nScrollAndFocusHandler@unknown:0:0\nRenderFromTemplateContext@unknown:0:0\nOuterLayoutRouter@unknown:0:0\nInnerLayoutRouter@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nHTTPAccessFallbackBoundary@unknown:0:0\nLoadingBoundary@unknown:0:0\nErrorBoundary@unknown:0:0\nComponent@\nScrollAndFocusHandler@unknown:0:0\nRenderFromTemplateContext@unknown:0:0\nOuterLayoutRouter@unknown:0:0\nInnerLayoutRouter@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nComponent@\nHTTPAccessFallbackBoundary@unknown:0:0\nLoadingBoundary@unknown:0:0\nErrorBoundary@unknown:0:0\nComponent@\nScrollAndFocusHandler@unknown:0:0\nRenderFromTemplateContext@unknown:0:0\nOuterLayoutRouter@unknown:0:0\nV@unknown:0:0\nJ@unknown:0:0\nThemeProvider@unknown:0:0\nbody@unknown:0:0\nhtml@unknown:0:0\nRootLayout@unknown:0:0\nClientSegmentRoot@unknown:0:0\nComponent@\nRedirectBoundary@unknown:0:0\nComponent@\nHTTPAccessFallbackBoundary@unknown:0:0\nDevRootHTTPAccessFallbackBoundary@unknown:0:0\nPureComponent@\nHotReload@unknown:0:0\nRouter@unknown:0:0\nComponent@\nErrorBoundary@unknown:0:0\nAppRouter@unknown:0:0\nServerRoot@unknown:0:0\nRoot@unknown:0:0",
+    "line": 8,
+    "column": 3917,
+    "stack": "@"
+  },
+  "eventId": null
+}
+
+ChatGPT said:
+
+Thanks for sharing that detailed error. The key issue is here:
+
+Request error while attempting to reach https://wryptr7v.api.sanity.io/...
+
+This indicates a 
+network error
+, meaning your Studio can't reach Sanityâs API.
+
+â Most Likely Cause:
+
+Your local development server (e.g., 
+http://localhost:3000
+) is 
+not whitelisted in Sanityâs CORS settings
+.
+
+ð§ Fix: Add 
+localhost
+ to Sanity CORS origins
+
+Go to the 
+Sanity project settings
+
+In the 
+API
+ tab, scroll to 
+CORS Origins
+ and click â
+Add CORS Origin
+â
+
+Enter:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+â Check 
+âAllow credentialsâ
+
+Save
+ the changes.
+
+ð Then:
+
+Restart your local dev server
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Head to 
+http://localhost:3000/studio
+, try editing again.
+
+Let me know if you hit any blockers after this. Once the connection is stable, weâll make sure your site pulls in Sanity content as intended.
+
+You said:
+
+yeah its for the 3000 and the 3001
+
+ChatGPT said:
+
+Perfect â you're spot on for whitelisting both ports.
+
+â Here's what your Sanity CORS origins list should include:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+http:
+
+//localhost:3001
+
+And for each, make sure:
+
+â âAllow credentialsâ is 
+checked
+
+ð¾ You 
+save
+ after adding each one
+
+ð Once added:
+
+Restart your local server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Open your Sanity Studio at 
+
+http://localhost:3000/studio
+
+(or port 3001, depending on whatâ

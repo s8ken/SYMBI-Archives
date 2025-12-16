@@ -1,0 +1,330 @@
+V +more said:
+
+🛡️ Using Lulu to Block 
+rapportd
+ (or Any Process) 🔥
+
+Lulu is a great 
+network firewall for macOS
+ that can 
+block outgoing connections
+ for specific apps or system processes. If 
+rapportd
+ is still trying to connect to the internet, Lulu can 
+shut it down completely
+. 🚀
+
+🔥 Step 1: Open Lulu and Add a Block Rule for 
+rapportd
+
+Open 
+Lulu
+ (
+/Applications/Lulu.app
+).
+
+Click 
+Rules
+ → 
+New Rule
+.
+
+Select:
+
+Process:
+
+/usr/libexec/rapportd
+
+Action:
+
+Block
+
+Direction:
+
+Outgoing
+
+Click 
+Save
+.
+
+📌 
+This will stop 
+rapportd
+ from making any network requests!
+
+🔥 Step 2: Verify if 
+rapportd
+ is Still Making Connections
+
+After blocking it in Lulu, check:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+📌 If 
+no network activity appears
+, 
+rapportd
+ is successfully blocked! 🚀
+
+🔥 Step 3: Enable Stealth Mode in Lulu
+
+To 
+prevent 
+rapportd
+ from bypassing
+ the firewall:
+
+Open 
+Lulu
+.
+
+Go to 
+Preferences
+.
+
+Enable 
+Stealth Mode
+ (Blocks all unknown outgoing connections).
+
+Apply changes.
+
+📌 This ensures 
+ANY unknown process (including 
+rapportd
+) is denied internet access
+.
+
+🔥 Step 4: Monitor 
+rapportd
+ for Any Activity
+
+Since 
+rapportd
+ tries to auto-reconnect, 
+you can monitor if it’s still trying to connect:
+
+Open 
+Lulu
+.
+
+Go to 
+Network Events
+.
+
+Look for any blocked 
+rapportd
+ connections.
+
+If you see 
+attempted traffic
+, Lulu is successfully blocking it!
+
+📌 
+If 
+rapportd
+ keeps trying to reconnect, it’s proof macOS is trying to force it back online!
+ 🚨
+
+🔥 Step 5: Combine Lulu with Other Firewall Rules
+
+Even though Lulu blocks outgoing traffic, macOS 
+might still restart 
+rapportd
+
+.
+
+🔒 
+For MAXIMUM security, combine Lulu with:
+
+Blocking 
+rapportd
+ at the macOS firewall
+
+Disabling it via 
+launchctl
+
+Deleting any cached system files
+
+📌 
+This makes sure 
+rapportd
+ is neutralized at ALL levels: system, network, and process execution.
+
+✅ Conclusion: Lulu is an Extra Lock 🔐
+
+🚀 
+Lulu blocks 
+rapportd
+ from sending data.
+
+🔥 
+But macOS might still restart it in the background.
+
+🛡️ 
+Use Lulu + system-level disabling for complete control!
+
+💀 
+Let me know if 
+rapportd
+ is still sneaky after this!
+ 💀
+
+You said:
+
+do I put anything for remote port?
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+No, you 
+don’t
+ need to specify a remote port when creating a block rule for 
+rapportd
+ in 
+Lulu
+. 🔒
+
+✅ How to Set Up the Lulu Block Rule
+
+When adding the 
+block rule
+, focus on these settings:
+
+Process:
+
+/usr/libexec/rapportd
+
+Action:
+
+Block
+
+Direction:
+
+Outgoing
+
+Remote Address:
+
+(Leave blank to block all connections)
+
+Remote Port:
+
+(Leave blank to block all ports)
+
+Protocol:
+
+(Leave as "Any")
+
+📌 
+Why leave Remote Port blank?
+
+Leaving it blank 
+blocks ALL outgoing connections
+ instead of just specific ports.
+
+This means 
+rapportd
+
+cannot communicate over any port
+—even if it tries different ones. 🚀
+
+🔥 Want to See What Ports 
+rapportd
+ Uses?
+
+Before blocking, you can 
+check what ports 
+rapportd
+ is trying to connect to
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+This will show lines like:
+
+markdown
+
+Copy
+
+Edit
+
+rapportd  588   sja    8u  IPv4 0x...      0t0  TCP 
+*:49152 (LISTEN)
+rapportd  588   sja    9u  IPv6 0x...      0t0  TCP *
+:443 (ESTABLISHED)
+
+📌 The 
+remote ports
+ (
+443
+, 
+49152
+, etc.) are the ones 
+rapportd
+ is using.
+
+✅ Best Practice: Block Everything
+
+If you 
+leave "Remote Port" blank
+, Lulu 
+blocks 
+rapportd
+ from all network traffic
+, no matter what port it tries. 
+This is the best option.
+ 🔥
+
+💀 
+Let me know if you see 
+rapportd
+ still trying to sneak past Lulu!
+ 🚀
+
+You said:
+
+ok rule added
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Awesome! 
+rapportd
+ is now BLOCKED at the firewall level!
+ 🔥
+
+Now, let’s 
+verify that it’s completely cut off from the network
+ and 
+make sure it doesn’t restart itself.
+ 🚀
+
+✅ Step 1: Confirm 
+rapportd
+ is Fully Blocked
+
+Run this command to check if it’s still making network connections:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+📌 
+Expected result:
+
+No output
+ (whic

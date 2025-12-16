@@ -1,0 +1,315 @@
+opy
+
+.env.
+
+local
+
+If it doesn’t exist:
+
+bash
+
+Copy
+
+touch
+
+ .env.local
+
+2. 
+Paste your Sanity token like this:
+
+env
+
+Copy
+
+SANITY_API_TOKEN=sk4jQNIOJE1hrmV0LV98ULchrc6D8jUjqPYURxm9aMTVUU3x4twmOWlsQBbFdqFo92cvMmeDbEZUHzux
+
+✅ Make sure there's no 
+''
+ or 
+""
+ wrapping it. Just plain text.
+
+3. 
+Save and Restart the Dev Server
+
+After saving the file, run:
+
+bash
+
+Copy
+
+npm run dev
+
+You 
+must restart
+ so your app can read the 
+.env.local
+ values.
+
+4. 
+Test Saving Again in 
+/studio
+
+Go to: 
+http://localhost:3000/studio
+
+Try editing the test page title
+
+Hit "Publish"
+
+💬 Need Help Finding the Token?
+
+If you forgot where the token is:
+
+Go to 
+https://www.sanity.io/manage
+
+Click your project → API → 
+Tokens
+
+Create a new token with 
+Editor
+ or 
+Write
+ access
+
+Let me know once you've done that or if you want me to walk you through finding the file/token again.
+
+You said:
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % touch .env.local
+
+sja@SJAs-MacBook-Pro symbi-main-site % .env.local
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % cd .env.local
+
+cd: not a directory: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+Perfect — you're super close! Here’s what’s going on and what to do next:
+
+🔍 What Just Happened?
+
+✅ 
+touch .env.local
+ — ✅ this 
+created the file
+ successfully.
+
+❌ 
+zsh: command not found: .env.local
+ — That’s expected! 
+.env.local
+ is 
+not a command or folder
+, it’s a 
+file
+, so you don't run or 
+cd
+ into it.
+
+✅ What You Need to Do Now
+
+Let’s open and edit the file:
+
+1. 
+Open the file in your text editor (e.g., VS Code)
+
+bash
+
+Copy
+
+code .env.local
+
+If you're not using VS Code, you can also do:
+
+bash
+
+Copy
+
+open -a TextEdit .env.local
+
+2. 
+Paste this into the file:
+
+env
+
+Copy
+
+SANITY_API_TOKEN=sk4jQNIOJE1hrmV0LV98ULchrc6D8jUjqPYURxm9aMTVUU3x4twmOWlsQBbFdqFo92cvMmeDbEZUHzux
+
+3. 
+Save the file
+ and close the editor.
+
+4. 
+Restart the development server:
+
+bash
+
+Copy
+
+npm run dev
+
+Now try editing and saving in Sanity Studio again. Let me know what happens!
+
+You said:
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % touch .env.local
+
+sja@SJAs-MacBook-Pro symbi-main-site % .env.local
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % cd .env.local
+
+cd: not a directory: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+You said:
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn
+
+it already had the details in ther
+
+Vercel Deployment Expert GPT said:
+
+Perfect — that 
+.env.local
+ file looks great and contains all the correct Sanity credentials. If it was already there and you're still getting the error:
+
+bash
+
+Copy
+
+Request error 
+
+while
+
+ attempting to reach https://wryptr7v.api.sanity.io/...
+
+Then the issue is likely one of these:
+
+✅ 
+1. Token permissions
+
+Ensure the token has 
+write access
+:
+
+Go to 
+Sanity Manage
+
+Select your project (
+symbi
+)
+
+Navigate to 
+API > Tokens
+
+Make sure the token:
+
+Exists
+
+Has 
+"Editor"
+ or 
+"Developer"
+ role (not just read-only)
+
+Regenerate it if unsure, then update your 
+.env.local
+ file again
+
+✅ 
+2. Restart the dev server
+
+After confirming the 
+.env.local
+ is correctly set:
+
+bash
+
+Copy
+
+npm run dev
+
+That ensures the env variables are reloaded.
+
+✅ 
+3. Double-check usage in code
+
+Ensure the token is actually being passed into your client setup, typically in 
+lib/sanity.ts
+:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+token
+
+: process.

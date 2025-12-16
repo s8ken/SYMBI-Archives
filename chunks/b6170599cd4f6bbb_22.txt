@@ -1,0 +1,340 @@
+stigate If Your Router is Injecting the DNS
+
+Sometimes, 
+your router forces DNS settings
+. Letâs check:
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+ð If 
+113.212.173.22
+ appears here, your 
+router is forcing this DNS.
+
+4ï¸â£ Override Router DNS via Macâs Hosts File (If Necessary)
+
+If the DNS keeps coming back, we can 
+force override DNS resolution
+ using 
+/etc/hosts
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/hosts
+
+At the 
+bottom
+ of the file, add:
+
+Copy
+
+Edit
+
+8.8.8.8 google.com
+8.8.4.4 google.com
+
+Save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+Enter
+).
+
+Then, flush DNS again:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+ð Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+If 
+113.212.173.22
+ is 
+still there
+, then:
+
+Your 
+router is forcing it
+ (youâll need to log into your router settings and manually change DNS).
+
+Or, 
+a hidden process is setting it
+ (weâll scan for it next). ð
+
+You said:
+
+yes I am on ethernet right now
+
+ChatGPT said:
+
+Step 2: Fixing Ethernet DNS Hijacking ð¨
+
+Since you're on 
+Ethernet
+, the rogue nameserver 
+
+113.212.173.22
+
+ may be coming from your 
+router
+ or a hidden network configuration. Letâs take a 
+stronger
+ approach to remove it.
+
+ð  Step 1: Force Reset Ethernet DNS
+
+Run the following 
+two commands
+ to remove and replace your Ethernet DNS settings:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+ð This 
+removes all existing DNS settings
+ and replaces them with 
+Google DNS
+.
+
+Now, 
+flush DNS
+ to apply the change:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+ð Step 2: Check If the Rogue DNS is Gone
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+If 
+113.212.173.22
+ is gone
+, the issue is fixed.
+
+ð 
+If itâs still there
+, then 
+your router is forcing it
+ or a hidden process is injecting it.
+
+ð  Step 3: Check If Your Router is Forcing DNS
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+ð 
+If 
+113.212.173.22
+ appears here
+, your 
+router is overriding your DNS settings
+.
+
+ð If The Router is the Problem:
+
+1ï¸â£ 
+Log into your router settings
+
+Open your browser and go to:
+
+cpp
+
+Copy
+
+Edit
+
+http:
+
+//192.168.1.1
+
+http:
+
+//192.168.0.1
+
+http:
+
+//192.168.68.1
+
+Log in (check the router sticker for username/password).
+
+2ï¸â£ 
+Find DNS settings
+ (usually under "Internet" or "LAN Settings").
+
+If 
+113.212.173.22
+ is listed, 
+change it to
+:
+
+Copy
+
+Edit
+
+8.8.8.8
+8.8.4.4
+
+3ï¸â£ 
+Save & Restart Router
+
+After making changes, 
+restart your router and Mac
+.
+
+ð Next Step
+
+ð 
+Run 
+scutil --dns
+ again.
+
+If 
+113.212.173.22
+ is gone
+, the problem is solved! â
+
+If itâs still there
+, we need to 
+scan for hidden processes modifying network settings
+.
+
+Let me know the results! ðð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+Ethernet is not a recognized network service.
+** Error: The parameters were not valid.
+Ethernet is not a recognized network service.
+** Error: The parameters were not valid.
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Ah, macOS 
+doesn't always use "Ethernet" as the exact network service name
+. We need to find the correct name for your wired connection first.
+
+Step 1: Find Your Network Service Name
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+networksetup -listallnetworkservices
+
+ð 
+Look for the correct name of your Ethernet connection.
+ It might be named:
+
+Ethernet
+
+USB Ethernet
+
+Thunderbolt Ethernet
+
+USB 10/100/1000 LAN
+
+Something else entirely!
+
+Step 2: Reset DNS for the Correct Ethernet Service
+
+Once you find the correct name, run these commands (replacing 
+YourEthernetName
+ with the actual name):
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"YourEthernetName"
+
+ empty
+sudo networksetup -setdnsservers 
+
+"YourEthernetName"
+
+ 8.8.8.8 8.8.4.4
+
+Then, 
+flush DNS cache
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 3: Check If the Bad DNS is Gone
+
+Run:
+
+sh
+

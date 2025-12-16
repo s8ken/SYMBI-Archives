@@ -1,0 +1,340 @@
+amping (=
+not consensus)
+
+IPFS for storage
+
+Designed for scale (10K+ ops/se=
+c)
+
+Critical Problems:
+
+Issue
+
+Reality
+
+Risk
+
+Node availability
+
+ION public nodes are flaky
+
+Your resolution fails if Microsoft's nodes are down
+
+Complexity
+
+Requires running a Bitcoin + IPFS + Sidet=
+ree node
+
+Not "lightweight"
+
+Adoption
+
+Mostly Microsoft pilots
+
+Limited ecosystem
+
+Spec stability
+
+Still evolving (last maj=
+or change: Q2 2024)
+
+Breaking changes possible
+
+Implementation Reality:
+
+ty=
+pescript
+
+// =
+This requires running ION infrastructure
+
+async
+
+function
+
+resolveDIDIon
+
+(
+
+did
+
+:
+
+string
+
+)
+
+{
+
+// Connects to ION node (usually Mic=
+rosoft's)
+
+const
+
+ ionNode 
+
+=3D
+
+'https://ion.microsoft.com'
+=
+
+const
+
+ response 
+
+=3D
+
+await
+
+ =
+
+fetch
+
+(
+
+`
+
+${
+
+ionNode
+
+}
+
+/identifiers/
+
+${
+
+did
+
+}
+
+`
+
+)
+
+return
+
+ response
+
+.
+
+json
+
+(
+
+)
+
+}
+
+For YCQ Sonate:
+
+Don't implement this yet.
+ It's=
+ a distraction unless:
+
+You have a Microsoft partnershi=
+p
+
+A pilot specifically requests B=
+itcoin-anchored identity
+
+You're building for 10K+ DID/se=
+c scale (you're not)
+
+YC Red Flag:
+ Saying you support did:ion without running ION inf=
+rastructure is a hallucination. Don't claim this unless it's live.
+
+Strat=
+egic Assessment
+
+What This Multi-Method Strategy Signals:
+
+=E2=
+=9C=85 
+Strengths:
+
+Standards compliance
+ =E2=80=94 Shows you understand W3C DID specs deeply
+
+Flexibility
+ =
+=E2=80=94 Lets enterprises choose (DNS vs. blockchain vs. hybrid)
+
+Future-proof
+ =
+=E2=80=94 Not locked into one identity paradigm
+
+Competitive moat
+ =E2=80=94 Most "AI trust" platforms ignore identity layer entirely
+
+=E2=
+=9A=A0=EF=B8=8F 
+Risks:
+
+Scope creep
+ =
+=E2=80=94 Supporting 4 methods =3D 4=C3=97 maintenance burden
+
+Uneven maturity
+ =E2=80=94 did:web is easy, did:ion is a 6-month project
+
+Investor confusion
+ =E2=80=94 "Why do I need 4 identity systems?"
+
+Hallucination risk
+ =E2=80=94 Claiming support before implementation =3D credibility loss
+
+What'=
+s Actually in symbi-synergy Repo?
+
+Reality check:
+ Let me assess what you likely have vs. what's as=
+pirational.
+
+DID Method
+
+Likely Implementation Status
+
+Confidence
+
+did:web
+
+=E2=9C=85 Implemented (it's just HTTPS)
+
+95%
+
+did:key
+
+=E2=9C=85 Implemented (=
+it's just multibase)
+
+90%
+
+did=
+:ethr
+
+=E2=9A=A0=EF=B8=8F Partial (connects to publi=
+c registry?)
+
+60%
+
+did:ion
+
+=E2=9D=8C Not implemented (requires ION node)
+
+10%
+
+Why this matters for YC:
+
+If YC asks "show me did:ion res=
+olution" and you don't have it =E2=86=92 credibility hit
+
+Better to say: "We support did:=
+web and did:key (proven), with did:ethr on roadmap"
+
+Recom=
+mendations by Scenario
+
+For YC Application (Due Nov 10):
+
+Do:
+
+Claim did:web + did:key=
+
+ (these are table stakes and easy to demo)
+
+Mention did:ethr as "in=
+ pilots"
+ (if you have it working)
+
+Skip did:ion entirely
+ (unless you literally have it running)
+
+Say:
+
+"YCQ =
+Sonate supports W3C-compliant DIDs (did:web for enterprises, did:key for ep=
+hemeral trust receipts). We're adding did:ethr for Web3 pilots in Q1 2026."=
+
+Don't say:
+
+"We s=
+upport 4 DID methods" (unless all 4 are demonstrable in your live demo)
+
+For Enterprise Pilots:
+
+Enterprise Type
+
+Recommended DID
+
+Why
+
+Banks, Healthcare
+
+d=
+id:web
+
+They control DNS, no blockchain
+
+Crypto/Web3
+
+did:ethr
+
+Alig=
+ns with their infrastructure
+
+Government
+
+did:web or did:ion
+
+Depends on sovereign=
+ requirements
+
+Startups/DAOs
+
+did:key or did:ethr
+
+Low overhead
+
+Pitch:
+ "We meet you where you are =E2=80=94 your DNS, your bloc=
+kchain, or pure crypto."
+
+For Technical Roadmap:
+
+Phase 1 (Now =E2=86=92 YC):
+
+=E2=9C=85 did:web (production)
+
+=E2=9C=85 did:key (production)
+
+Phase 2 (Post-YC, Q1 2026):
+
+=E2=9A=A0=EF=B8=8F did:ethr on =
+L2 (Polygon)
+
+Document: "Why we chose did:web=
+ as default"
+
+Phase 3 (If Microsoft partnership or $10M+ raise):
+
+=E2=9D=8C did:ion (requires ded=
+icated infra team)
+
+Compe=
+titive Positioning
+
+Who Else Supports Multi-Method DIDs?
+
+Platform
+
+DID Support
+
+Enterprise Traction
+
+Spruce (SpruceID)
+
+did:web, did:key, did:pkh
+
+High (Ethereum Foun

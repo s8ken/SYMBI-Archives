@@ -1,0 +1,321 @@
+openjdk: Failed to download resource "libpng"
+Download failed: https://ghcr.io/v2/homebrew/core/libpng/blobs/sha256:b4a7f252793b6a2d9d111cecaf5f0c91fd91d9c1c174a8796a487621a05f6f24
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Homebrew Download Failed – Fixing Connection Issues
+
+Your Mac 
+failed to connect to 
+ghcr.io
+ (GitHub Container Registry)
+, which means 
+Homebrew can't fetch OpenJDK or dependencies
+. Let’s fix it!
+
+🔥 Step 1: Check Your Internet Connection
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ping -c 4 google.com
+
+📌 
+If it fails
+, you have 
+no internet
+, and need to reconnect to Wi-Fi or Ethernet.
+
+🔥 Step 2: Check If You’re Behind a Firewall or VPN
+
+If you’re using 
+a firewall (like Lulu) or a VPN
+, try:
+
+sh
+
+Copy
+
+Edit
+
+sudo pfctl -d  
+
+# Temporarily disable macOS firewall
+
+📌 
+Now retry:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjdk
+
+📌 
+If it works, your firewall/VPN was blocking Homebrew.
+
+🔥 Step 3: Manually Set an Alternative Mirror
+
+Since Homebrew is failing to reach 
+ghcr.io
+, let’s force it to use a different mirror:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+brew install openjdk
+
+📌 
+This tells Homebrew to download from a more stable mirror.
+
+🔥 Step 4: Reset & Update Homebrew
+
+If the error continues, 
+reset Homebrew and force-update it
+:
+
+sh
+
+Copy
+
+Edit
+
+brew update-reset
+brew update
+brew install openjdk
+
+📌 
+This fixes broken installs and refreshes Homebrew’s sources.
+
+🔥 Step 5: Try Installing OpenJDK Manually
+
+If all else fails, 
+manually download OpenJDK and install it
+:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask temurin
+
+📌 
+This installs OpenJDK via a cask instead of downloading dependencies separately.
+
+🚀 Final Steps
+
+Once 
+OpenJDK is installed
+, retry installing Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+brew install sleuthkit
+
+📌 
+That should get everything working!
+ 🎉
+
+🚀 
+Try these steps and let me know which one fixes it!
+ 🔥
+
+You said:
+
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+
+openjdk is keg-only, which means it was not symlinked into /opt/homebrew,
+because macOS provides similar software and installing this software in
+parallel can cause all kinds of trouble.
+
+If you need to have openjdk first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk/include"
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+✅ OpenJDK Successfully Installed – Now Let’s Finalize It 🚀
+
+Great! 
+OpenJDK is installed
+, but since it’s "keg-only," we need to 
+configure it properly
+ before running Autopsy.
+
+🔥 Step 1: Make Java Work System-Wide
+
+Run these commands to set up Java globally:
+
+1️⃣ 
+Symlink OpenJDK so macOS finds it properly
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+
+📌 
+This ensures Java is detected as a system-installed JDK.
+
+2️⃣ 
+Add Java to your PATH
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 
+Now, Java will work in all terminal sessions.
+
+3️⃣ 
+(Optional) Set Java Environment Variables for Compilation
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ CPPFLAGS=
+
+"-I/opt/homebrew/opt/openjdk/include"
+
+📌 
+This is needed only if you compile Java apps.
+
+🔥 Step 2: Verify Java Installation
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+Expected Output:
+ Something like:
+
+pgsql
+
+Copy
+
+Edit
+
+openjdk 
+
+version
+
+ "21.0.1" 
+
+2023
+
+-11
+
+-15
+
+OpenJDK Runtime Environment (build 
+
+21.0
+
+.1
+
++
+
+12
+
+-9
+
+)
+OpenJDK 
+
+64
+
+-
+
+Bit
+
+Server
+
+ VM (build 
+
+21.0
+
+.1
+
++
+
+12
+
+-9
+
+, mixed mode)
+
+✅ 
+If you see this, Java is properly installed and ready to go!
+ 🎉
+
+🔥 Step 3: Install The Sleuth Kit (Required for Autopsy)
+
+Now, install 
+The Sleuth Kit
+ (Autopsy's backend):
+
+sh
+
+Copy
+
+Edit
+
+brew install

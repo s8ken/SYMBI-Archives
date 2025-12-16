@@ -1,0 +1,298 @@
+srutil 
+
+enable
+
+reboot
+
+Then, check if AirPlay is still running:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+4️⃣ Alternative: Block the AirPlay Services via Firewall
+
+If settings 
+won’t apply
+, try preventing 
+network traffic for AirPlay
+ instead:
+
+bash
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /System/Library/CoreServices/AirPlayUIAgent.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/AirPlayXPCHelper
+
+Then restart the firewall:
+
+bash
+
+Copy
+
+Edit
+
+sudo pkill -HUP socketfilterfw
+
+🚀 Next Steps
+
+If 
+defaults write
+ now works → Restart & confirm AirPlay is gone
+.
+
+If AirPlay still runs → Move or delete the binaries manually in Recovery Mode
+ (like we did before).
+
+Let me know what happens after these steps! 🚨
+
+Great! The command executed without errors this time. Now, let's 
+verify that the setting has been applied
+ and ensure that 
+AirPlay is fully disabled
+.
+
+1️⃣ Verify AirPlay Settings
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay
+
+Expected output: It should show 
+receiver-enabled = 0
+ or 
+false
+.
+
+If you get 
+"Domain com.apple.airplay does not exist"
+, let me know.
+
+2️⃣ Kill Any Running AirPlay Processes
+
+Even though we changed the setting, 
+AirPlay processes might still be running
+. Let’s kill them:
+
+bash
+
+Copy
+
+Edit
+
+sudo killall -9 AirPlayUIAgent
+sudo killall -9 AirPlayXPCHelper
+
+If it says 
+"No matching processes found"
+, that’s a 
+good sign
+—it means AirPlay isn’t running.
+
+Now, check if they are gone:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+If you 
+still see AirPlay processes
+, we will take further action.
+
+3️⃣ Restart SystemUIServer
+
+Sometimes, changes don’t apply until 
+SystemUIServer
+ is restarted. Run:
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+4️⃣ Restart Your Mac & Confirm
+
+Reboot your Mac.
+
+After restarting
+, check for any AirPlay processes:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+If nothing shows up, 
+AirPlay is fully disabled
+.
+
+Let me know what happens after these steps! 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+✅ 
+Success!
+ The setting has been correctly applied. 
+AirPlay is now disabled at the system level.
+
+🔍 Next Steps: Verify That AirPlay is Fully Shut Down
+
+Now, let’s confirm that no AirPlay-related processes are still running.
+
+1️⃣ 
+Check for Running AirPlay Processes
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+If 
+no output
+ appears (except for the 
+grep
+ process itself), 
+AirPlay is completely disabled
+.
+
+If you 
+still see processes running
+, we will forcefully stop them.
+
+2️⃣ 
+Force Kill AirPlay Processes (If Needed)
+
+If you still see AirPlay processes, run:
+
+bash
+
+Copy
+
+Edit
+
+sudo killall -9 AirPlayUIAgent
+sudo killall -9 AirPlayXPCHelper
+
+Then, recheck:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+3️⃣ 
+Restart SystemUIServer to Ensure Changes Take Effect
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+4️⃣ 
+Reboot Your Mac & Final Confirmation
+
+Restart your Mac.
+
+After reboot, check again with:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+
+If no output appears, 
+AirPlay is fully disabled and will not restart on boot.
+
+🎯 Final Check: Does the Purple AirPlay Icon Still Appear?
+
+If 
+the icon is gone
+, 
+AirPlay is fully disabled.
+
+If 
+it still appears
+, let me know.
+
+Let me know how it looks after reboot! 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    allowAirPlay = 0;
+    "receiver-enabled" = 0;
+}
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -E "AirPlay|screensharing|screencapture|VNC"
+
+lcl                554  

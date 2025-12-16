@@ -1,0 +1,188 @@
+ths
+ and 
+if any dependencies are broken
+.
+
+🚀 
+Try these fixes and let me know what happens! 🔥
+
+You said:
+
+2025-03-18 02:28:45.714 java[13326:76768] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % java -XshowSettings:properties | grep java.library.path
+
+Property settings:
+    file.encoding = UTF-8
+    file.separator = /
+    ftp.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    http.nonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    java.class.path = 
+    java.class.version = 61.0
+    java.home = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+    java.io.tmpdir = /var/folders/zt/jn1c6p4n2vxbb5j4dl4c85fm0000gn/T/
+    java.library.path = /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+        /usr/local/lib
+
+        /Users/sja/Library/Java/Extensions
+        /Library/Java/Extensions
+        /Network/Library/Java/Extensions
+        /System/Library/Java/Extensions
+        /usr/lib/java
+        .
+    java.runtime.name = OpenJDK Runtime Environment
+    java.runtime.version = 17.0.14+7-LTS
+    java.specification.maintenance.version = 1
+    java.specification.name = Java Platform API Specification
+    java.specification.vendor = Oracle Corporation
+    java.specification.version = 17
+    java.vendor = Azul Systems, Inc.
+    java.vendor.url = http://www.azul.com/
+    java.vendor.url.bug = http://www.azul.com/support/
+    java.vendor.version = Zulu17.56+15-CA
+    java.version = 17.0.14
+    java.version.date = 2025-01-21
+    java.vm.compressedOopsMode = Zero based
+    java.vm.info = mixed mode, sharing
+    java.vm.name = OpenJDK 64-Bit Server VM
+    java.vm.specification.name = Java Virtual Machine Specification
+    java.vm.specification.vendor = Oracle Corporation
+    java.vm.specification.version = 17
+    java.vm.vendor = Azul Systems, Inc.
+    java.vm.version = 17.0.14+7-LTS
+    jdk.debug = release
+    line.separator = \n 
+    native.encoding = UTF-8
+    os.arch = aarch64
+    os.name = Mac OS X
+    os.version = 15.2
+    path.separator = :
+    socksNonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    sun.arch.data.model = 64
+    sun.boot.library.path = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/lib
+    sun.cpu.endian = little
+    sun.io.unicode.encoding = UnicodeBig
+    sun.java.launcher = SUN_STANDARD
+    sun.jnu.encoding = UTF-8
+    sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+    sun.stderr.encoding = UTF-8
+    user.country = AU
+    user.dir = /Users/sja/Downloads/autopsy-4.21.0/bin
+    user.home = /Users/sja
+    user.language = en
+    user.name = sja
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+libtsk_jni
+ Still Not Loading – Next Steps 🔥
+
+Your 
+Java settings show 
+/usr/local/lib
+ is included
+, but 
+Autopsy still isn't finding 
+libtsk_jni
+
+. That suggests either:
+
+1️⃣ 
+Java isn't looking in the right place inside the JAR file
+, or
+
+2️⃣ 
+There's a linking issue in 
+libtsk_jni.dylib
+
+Let's 
+confirm and fix the root cause
+.
+
+✅ Step 1: Check 
+libtsk_jni.dylib
+ for Broken Dependencies
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+📌 
+If any line says "not found," we have a linking issue to fix.
+
+✅ Step 2: Manually Force Java to Use the Right 
+libtsk_jni.dylib
+ Path
+
+If 
+libtsk_jni.dylib
+ is in 
+/usr/local/lib
+, but Autopsy 
+still can't find it
+, try 
+explicitly telling Java where it is
+:
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 
+This forces Java to use 
+/usr/local/lib
+ every time.
+
+Now, 
+relaunch Autopsy
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jd

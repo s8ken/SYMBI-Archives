@@ -1,0 +1,902 @@
+JSON
+
+.
+
+stringify
+=
+
+(assistant?.
+
+tools
+
+ || [], 
+
+null
+
+, 
+
+2
+
+=
+
+));
+  }, [assistant]);
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+    (
+
+async
+
+ ()=
+ =3D> {
+
+try
+
+ {
+
+const
+
+=
+ r =3D 
+
+await
+
+ =
+
+fetch
+
+=
+(
+
+`
+${bas=
+e}
+
+/api/llm/models/openai`, { 
+
+headers
+
+: { 
+
+"Content-Type"
+
+:
+
+"application/json"
+
+ } });
+
+const
+
+=
+ d =3D 
+
+await
+
+ =
+r.
+
+json
+
+();
+
+const
+
+=
+ list =3D 
+
+Array
+
+.
+
+isArray
+
+(d?.
+
+data
+
+=
+
+) ? d.
+
+data
+
+ : (d.
+
+models
+
+ || d || []);
+
+setModels
+
+(list.
+
+map
+
+(
+
+m
+
+ =3D> (
+
+typeof
+
+ m =3D=3D=3D 
+
+"string"
+
+ ? m : (m.
+
+id
+
+ || m.
+
+name
+
+))).
+
+filter
+
+(
+
+Boolean
+
+));
+      } 
+
+catch
+
+=
+ { 
+
+/* ignore */
+
+ }
+    })();
+  }, [base]);
+
+const
+
+save
+
+ =3D 
+
+async
+
+ (
+=
+
+) =3D> {
+
+try
+
+ {
+
+const
+
+ t=
+ools =3D 
+
+JSON
+
+.
+
+parse
+
+=
+
+(toolsText || 
+
+"[]"
+
+);
+
+const
+
+ r=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/api/assistant/
+
+${assistant.assistantId}
+
+`, {
+
+method
+
+: =
+
+"PUT"
+
+,
+
+headers
+
+:=
+ { 
+
+"Content-Type"
+
+:
+
+"application/json"
+
+ },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ name, instructions, model, tools })
+      });
+
+if
+
+ (!r.=
+
+ok
+
+) 
+
+throw
+
+new
+
+Error
+
+(
+
+`save 
+${r.status}
+
+=
+
+`);
+
+onClose
+
+(
+
+true
+
+=
+);
+    } 
+
+catch
+
+ (=
+e) {
+
+alert
+
+=
+
+(
+
+String
+
+(e?.
+
+message
+
+ || e));
+    }
+  };
+
+if
+
+ (!open) =
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"fixed inset-0 bg-black/30 flex items-center just=
+ify-center z-50"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"bg-whit=
+e rounded-xl p-4 w-[720px] max-w-[95vw]"
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"text-=
+lg font-semibold mb-2"
+
+>Edit Assistant
+
+</
+div
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"space=
+-y-2"
+
+>
+
+<
+label
+
+=
+className
+
+=3D
+
+"b=
+lock text-sm"
+
+>Name
+
+</
+label
+
+>
+
+<
+input
+
+=
+className
+
+=3D
+
+"b=
+order p-2 w-full"
+
+value
+
+=3D
+
+{nam=
+e}
+
+onChange
+
+=3D
+
+{e
+
+=
+
+=3D>setName(e.target.value)} />
+
+<
+label
+
+=
+className
+
+=3D
+
+"b=
+lock text-sm"
+
+>Model
+
+</
+label
+
+>
+
+<
+select
+
+className
+
+=3D
+
+"=
+border p-2 w-full"
+
+value
+
+=3D
+
+{mo=
+del}
+
+onChange
+
+=3D
+
+{e
+
+=3D>setModel(e.target.value)}>
+            {[model, ...models].filter((v,i,a)=3D>a.indexOf(v)=3D=3D=3Di=
+).map(m=3D>(
+
+<
+option
+
+key
+
+=3D
+
+{m}=
+
+value
+
+=3D
+
+{m}
+
+>{m}
+
+</
+option
+
+>
+            ))}
+
+</
+select
+
+>
+
+<
+label
+
+=
+className
+
+=3D
+
+"b=
+lock text-sm"
+
+>Instructions
+
+</
+label
+
+>
+
+<
+textarea
+
+className
+
+=3D
+
+"border p-2 w-full h-28"
+
+value
+
+=3D
+
+{instructions}
+
+onChange
+
+=3D
+
+=
+{e
+
+=3D>setInstructions(e.target.value)} />
+
+<
+label
+
+=
+className
+
+=3D
+
+"b=
+lock text-sm"
+
+>Tools (JSON array)
+
+</
+label
+
+=
+
+>
+
+<
+textarea
+
+className
+
+=3D
+
+"border p-2 w-full h-24"
+
+value
+
+=3D
+
+{toolsText}
+
+=
+onChange
+
+=3D
+
+{e
+
+=3D>setToolsText(e.target.value)} />
+
+</
+div
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"flex =
+gap-2 justify-end mt-4"
+
+>
+
+<
+button
+
+className
+
+=3D
+
+"=
+border px-3 py-1 rounded"
+
+onClick
+
+=3D
+
+{()
+
+=3D>onClose(false)}>Cancel
+
+</
+button
+
+=
+
+>
+
+<
+button
+
+className
+
+=3D
+
+"=
+bg-black text-white px-4 py-1.5 rounded"
+
+onClick
+
+=3D
+
+{save}
+
+>Save
+
+</
+button
+
+>
+
+</
+div
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+2) Assistants page: list, =E2=80=
+=9CUse Most Recent=E2=80=9D, edit
+
+frontend/src/pages/=
+Assistants.js
+
+ (add or patch)
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+AssistantEditDialog
+
+from
+
+"../components/assistants/AssistantE=
+ditDialog"
+
+;
+
+export
+
+default
+
+function
+
+AssistantsPage
+
+(
+
+) {
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+const
+
+ [item=
+s, setItems] =3D 
+
+React
+
+.
+
+useState
+
+([]);
+
+const
+
+ [edit=
+ing, setEditing] =3D 
+
+React
+
+.
+
+useSta=
+te
+
+(
+
+null
+
+);
+
+const
+
+ [useM=
+ostRecent, setUseMostRecent] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+localStorage
+
+.
+
+getItem
+
+(
+
+"useMostRecentAssistant"
+
+)=3D=3D=3D
+
+"true"
+
+);
+
+const
+
+load
+
+ =3D 
+
+async
+
+ (
+=
+
+) =3D> {
+
+const
+
+ r =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}
+
+/api/assistant/list`);
+
+const
+
+ d =
+=3D 
+
+await
+
+ r.
+
+json
+
+()=
+;
+
+setItems
+
+(
+
+Array
+
+.
+
+isArray
+
+(d) ? d : d.
+
+items
+=
+
+ || d.
+
+assistants
+
+ || []);
+  };
+
+React
+
+.=
+
+useEffect
+
+(
+
+()=3D>
+
+{ 
+
+load
+
+(); }, []);
+
+const
+
+toggleMostRecent
+
+=
+
+ =3D (
+
+) =
+=3D> {
+
+const
+
+ v =
+=3D !useMostRecent;
+
+setUseMostRecent
+
+(v);
+
+loca

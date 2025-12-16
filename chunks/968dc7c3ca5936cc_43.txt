@@ -1,0 +1,223 @@
+ay processes
+
+â 
+No AirPlay services running
+
+â 
+But system logs still show AirPlay errors
+
+ð¨ 
+Your Mac is detecting the TV as an "AV Receiver," which might be triggering the icon.
+
+ð What We Learned From Your Logs
+
+Your TV is appearing as an "AV Receiver."
+
+macOS might be 
+treating it as an AirPlay receiver
+ rather than a normal display.
+
+AirPlay logs show connection errors (
+kConnectionErr -6753
+).
+
+This means macOS is 
+trying and failing to communicate with an AirPlay service
+âeven though we removed it.
+
+AirPlayReceiverKit
+ is still "advertising access."
+
+This suggests some AirPlay-related feature is still 
+enabled on a UI level
+ (even though the backend is gone).
+
+ð Next Steps to Finally Remove the Icon
+
+We now 
+focus on two things
+:
+
+Stopping macOS from treating your TV as an AirPlay receiver.
+
+Forcing macOS to forget AirPlay preferences permanently.
+
+ð¥ï¸ Step 1: Disconnect the TV & Restart
+
+Physically unplug the HDMI cable from the Mac
+ (or turn off the TV).
+
+Restart your Mac
+ and check if the icon disappears.
+
+â 
+If the icon disappears, the TV was triggering AirPlay.
+
+ð¨ 
+If it's still there, continue to Step 2.
+
+ð ï¸ Step 2: Disable AirPlay Receiver at System Level
+
+Even though 
+AirPlay is removed
+, macOS still 
+thinks your Mac can receive AirPlay streams.
+
+Try disabling this feature manually:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+â 
+This tells macOS to stop acting as an AirPlay receiver.
+
+ð¹ 
+Check if the icon disappears after this command.
+
+ðï¸ Step 3: Delete Hidden AirPlay Service Files
+
+Even though we removed AirPlayâs core services, some preference files might still exist.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.airplay*
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.apple.airplay*
+killall SystemUIServer
+
+â 
+This removes any leftover AirPlay preferences.
+
+ð¹ 
+Restart your Mac after this and check if the icon is gone.
+
+ð Step 4: Force Remove Any Remaining AirPlay Services
+
+Even though 
+launchctl
+ didnât show active AirPlay services before, letâs try 
+one last force removal
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+killall SystemUIServer
+
+â 
+This forces any remaining AirPlay UI services to shut down.
+
+ð¨ Let Me Know What Happens!
+
+Did unplugging the TV remove the icon?
+
+Did 
+defaults write com.apple.airplay receiver-enabled -bool NO
+ help?
+
+Did deleting AirPlay preferences (
+rm -rf
+) fix it?
+
+Does 
+launchctl bootout system/com.apple.AirPlayXPCHelper
+ return any errors?
+
+ð 
+If the icon is still there after all this, weâll go even deeper! Let me know what happens.
+
+You said:
+
+when I disconnect the icon immediately dissapears
+
+ChatGPT said:
+
+â Confirmed: The TV is Triggering the AirPlay Icon
+
+ð 
+Weâve found the root cause!
+ Your Mac is 
+not running AirPlay
+, but 
+it thinks your TV is an AirPlay-compatible receiver.
+
+â 
+Unplugging the TV instantly removes the icon.
+
+ð¨ 
+Reconnecting the TV brings the icon back.
+
+ð Why This is Happening
+
+Your TV is being detected as an "AV Receiver"
+ (as shown in 
+system_profiler SPDisplaysDataType
+).
+
+macOS 
+thinks it's an AirPlay target
+, even though we removed AirPlay services.
+
+This is a UI-only issue
+âAirPlay is not active, but macOS is 
+still recognizing AirPlay-capable devices
+.
+
+ð Final Fix: Stop macOS From Detecting the TV as an AirPlay Receiver
+
+Since we now 
+know the trigger
+, we need to 
+force macOS to stop treating your TV as an AirPlay device.
+
+ð ï¸ Step 1: Manually Disable AirPlay for External Displays
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+â 
+This tells macOS to stop acting as an AirPlay receiver.
+
+ð¹ 
+Reconnect your TV and check if the icon still appears.
+
+ð¥ï¸ Step 2: Check Display Settings (Disable Mirroring)
+
+Go to 
+System Sett

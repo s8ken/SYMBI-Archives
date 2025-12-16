@@ -1,0 +1,384 @@
+Edit
+
+git add .
+git commit -m 
+
+"Fixed hydration issue & logo path"
+
+git push origin main
+
+2ï¸â£ 
+Go to Vercel and click "Redeploy"
+
+â Now the hydration error should be gone!
+
+ð¥ 
+Try these fixes and let me know what happens! Weâre almost live!
+ ðð
+
+You said:
+
+wait start slow where am I going
+
+ChatGPT said:
+
+ð¥ 
+Gotcha! Letâs slow it down and go step by step.
+ Weâll 
+first identify whatâs causing the hydration issue
+, then 
+fix it one piece at a time.
+ ðð
+
+ð¹ Step 1: Identify Where the Error is Happening
+
+Right now, Next.js is 
+hydrating (re-rendering) the page on the client
+, but something 
+doesnât match the server-side rendered (SSR) HTML.
+
+ð 
+We need to find which component is causing the problem.
+
+1ï¸â£ 
+Open your terminal and stop the Next.js server
+
+bash
+
+Copy
+
+Edit
+
+CTRL + C
+
+(This stops the 
+npm run dev
+ process.)
+
+2ï¸â£ 
+Restart it with this command
+ (to see detailed logs):
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Look for console errorsâit may point to the component causing hydration issues.
+
+3ï¸â£ 
+Also check your browser console
+ (Chrome: 
+Right Click > Inspect > Console
+).
+
+If you see errors like 
+"Hydration failed..."
+, check what part of the page is breaking.
+
+Does the error mention a specific component?
+
+ð¹ Step 2: Debug Which Component is Causing the Issue
+
+If 
+the error doesnât show a clear component
+, we can 
+log which parts are rendering differently.
+
+1ï¸â£ Open 
+
+app/layout.tsx
+
+ and add this debug line inside your 
+useEffect
+ hook:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect } 
+
+from
+
+"react"
+
+;
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+"Hydration debug:"
+
+, 
+
+document
+
+.
+
+body
+
+.
+
+innerHTML
+
+);
+}, []);
+
+2ï¸â£ Save and 
+restart the server
+ (
+npm run dev
+).
+
+3ï¸â£ 
+Check the browser console logs.
+
+Does something look off?
+
+Are parts of the page different from what the server expects?
+
+ð¹ Step 3: Fix Common Hydration Issues
+
+Once we know 
+which component is breaking
+, we can fix it.
+
+â Fix: If Your Code Uses 
+window
+ or 
+document
+
+Next.js renders on the server first, and 
+window
+/
+document
+ donât exist on the server.
+
+Solution:
+ Wrap them inside 
+useEffect
+.
+
+â 
+Bad code (causes hydration issues)
+:
+
+tsx
+
+Copy
+
+Edit
+
+if
+
+ (
+
+typeof
+
+window
+
+ !== 
+
+"undefined"
+
+) {
+
+console
+
+.
+
+log
+
+(
+
+window
+
+.
+
+innerWidth
+
+);
+}
+
+â 
+Fix:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect } 
+
+from
+
+"react"
+
+;
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+window
+
+.
+
+innerWidth
+
+);
+}, []);
+
+â Fix: If Dark Mode or Class Name is Changing
+
+Your error mentions 
+className="dark"
+ â This means 
+your dark mode logic might be running differently on the client vs server.
+
+Solution:
+ Move dark mode logic to 
+useEffect
+ inside 
+theme-provider.tsx
+
+ð¹ Step 4: Fix the Logo Issue
+
+Your 
+logo might not be loading due to the wrong file path
+.
+
+1ï¸â£ 
+Check if the logo exists
+ inside 
+
+public/
+
+Go to 
+public/
+ â Look for 
+
+symbi-logo.jpg
+
+If itâs missing, move it into 
+public/
+
+2ï¸â£ 
+Update the logo reference in your code
+
+tsx
+
+Copy
+
+Edit
+
+<img src=
+
+"/symbi-logo.jpg"
+
+ alt=
+
+"Symbi Logo"
+
+ width={
+
+200
+
+} height={
+
+100
+
+} />
+
+â 
+Why?
+ Next.js requires static assets to be inside the 
+public/
+ folder.
+
+ð¹ Step 5: Push Fixes to GitHub & Redeploy
+
+Once youâve made these changes:
+
+1ï¸â£ 
+Save your files
+
+2ï¸â£ 
+Commit and push to GitHub
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed hydration issue & logo path"
+
+git push origin main
+
+3ï¸â£ 
+Go to Vercel â Click "Redeploy"
+
+ð¥ 
+Try this step-by-step and let me know where you are!
+ ðð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1275ms
+ â Compiling / ...
+ â Compiled / in 1008ms (628 modul

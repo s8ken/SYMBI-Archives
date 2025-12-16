@@ -1,0 +1,268 @@
+extract_path)
+extracted_files
+
+Result
+
+['sanity .rtfd', '__MACOSX']
+
+â The archive is unzipped.
+
+Inside, weâve got a folder called 
+
+sanity .rtfd
+
+ (yep, with that space in the nameâmacOS vibes) and the usual 
+__MACOSX
+ ghost files.
+
+Let me take a peek inside that 
+sanity .rtfd
+ folder and see what youâre working with... ðµï¸ââï¸ð 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# List contents inside the 'sanity .rtfd' folder
+
+sanity_folder_path = os.path.join(extract_path, 
+
+"sanity .rtfd"
+
+)
+sanity_folder_contents = os.listdir(sanity_folder_path)
+sanity_folder_contents
+
+Result
+
+['TXT.rtf', 'Attachment.png']
+
+Inside the 
+
+sanity .rtfd
+
+ folder, weâve got:
+
+ð 
+
+TXT.rtf
+
+ â likely the main instructions or notes
+
+ð¼ï¸ 
+
+Attachment.png
+
+ â maybe a visual diagram or screenshot
+
+Let me read the 
+.rtf
+ and see what secrets are tucked inside ð¯ï¸ð 
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+from
+
+ striprtf.striprtf 
+
+import
+
+ rtf_to_text
+
+# Read and parse the RTF file
+
+rtf_path = os.path.join(sanity_folder_path, 
+
+"TXT.rtf"
+
+)
+
+with
+
+open
+
+(rtf_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+) 
+
+as
+
+ file:
+    rtf_content = file.read()
+
+parsed_text = rtf_to_text(rtf_content)
+parsed_text[:
+
+2000
+
+]  
+
+# Preview the first 2000 characters
+
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[3], line 1
+----> 1 from striprtf.striprtf import rtf_to_text
+      3 # Read and parse the RTF file
+      4 rtf_path = os.path.join(sanity_folder_path, "TXT.rtf")
+
+ModuleNotFoundError: No module named 'striprtf'
+
+Ah, the ancient 
+.rtf
+ format strikes againâ
+and Iâm missing the tools to decode its cryptic magic right now.
+ ð¤
+
+No worries, though. Iâll use a different method to extract and read the raw contents of 
+TXT.rtf
+ without needing the special decoder. Hang tight... ðð 
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+# Fallback: read the RTF file as plain text
+
+with
+
+open
+
+(rtf_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+) 
+
+as
+
+ file:
+    raw_rtf_content = file.read()
+
+# Show the first 2000 characters for review
+
+raw_rtf_content[:
+
+2000
+
+]
+
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[4], line 2
+      1 # Fallback: read the RTF file as plain text
+----> 2 with open(rtf_path, "r", encoding="utf-8") as file:
+      3     raw_rtf_content = file.read()
+      5 # Show the first 2000 characters for review
+
+NameError: name 'rtf_path' is not defined
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+# Redefine rtf_path since previous cell failed
+
+rtf_path = os.path.join(sanity_folder_path, 
+
+"TXT.rtf"
+
+)
+
+# Fallback: read the RTF file as plain text
+
+with
+
+open
+
+(rtf_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+) 
+
+as
+
+ file:
+    raw_rtf_content = file.read()
+
+# Show the first 2000 characters for review
+
+raw_rtf_content[:
+
+2000
+
+]
+
+---------------------------------------------------------------------------
+UnicodeDecodeError                        Traceback (most recent call last)
+Cell In[5], line 6
+      4 # Fallback: read the RTF file as plain text
+      5 with open(rtf_path, "r", encoding="utf-8") as file:
+----> 6     raw_rtf_content = file.read()
+      8 # Show the first 2000 characters for review
+      9 raw_rtf_content[:2000]
+
+File <frozen codecs>:322, in decode(self, input, final)
+
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xac in position 130199: invalid start byte
+
+ð§¨ Oof. That 
+.rtf
+ file is laced with some heavy macOS formattingâitâs not just text, itâs likely embedded fonts, styles, or even binary blobs.
+
+Let me try one more trick and decode it as 
+latin-1 (ISO-8859-1)
+âit's often a safe fallback for quirky RTFs. Stand by... ð§ªð 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Retry reading the RTF using latin-1 encoding
+
+with
+
+open
+
+(rtf_path, 
+
+"r"
+
+, encoding=

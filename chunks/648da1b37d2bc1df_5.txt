@@ -1,0 +1,313 @@
+.
+tells Docker to open port 80
+ on the container. This means=
+:
+
+The container is 
+configured to serve HTTP traffic
+, usuall=
+y via something like 
+NGINX
+, 
+Apache
+, or anoth=
+er web server.
+
+It's a signal to any orchestration o=
+r networking tools (like 
+docker r=
+un -p
+, Docker Compose, or Kubernetes) that 
+=E2=80=9Cthis is the port you probably want to forward.=
+=E2=80=9D
+
+=E2=9A=A0=EF=B8=8F Important Clarif=
+ication
+
+EXPOSE does 
+not
+ autom=
+atically publish the port to the outside world.
+
+Here=E2=80=99s the difference:
+
+Command
+
+What it does
+
+EXPOSE 80
+ (in Dockerfil=
+e)
+
+Declare=
+s intent. Makes port 80 available 
+w=
+ithin the container network
+.
+
+docker run -p 80:80
+
+Actually publishes th=
+e port to your 
+host
+, m=
+aking it accessible 
+from outsid=
+e
+.
+
+So unless 
+someone ran the container with 
+-p 80:80
+ or similar
+, the port is not reacha=
+ble from the outside world.
+
+You can verify this with:
+
+=
+bash
+
+Copy code
+
+docker ps
+
+If the 
+PORTS
+ column is empty (like it was in your first po=
+st), then 
+nothing is exposed =
+externally.
+
+=F0=9F=A7=B1 Why Is This Insecure=
+ If Misused?
+
+If you had started this container =
+with:
+
+bash
+
+Copy code
+
+docker run -p 80:80 ...
+
+...then:
+
+It would expose a 
+possibly vulnerable NGINX server
+ to =
+the internet.
+
+If the server=E2=80=99s config or =
+Alpine base had security flaws, you could be vulnerable to:
+
+RCE (Remote Code Execution)
+
+DoS attacks
+
+Information leaks
+
+Or worse: container escape or late=
+ral movement on your host.
+
+=F0=9F=A7=B0 Safe Practice
+
+If you're building containers:
+
+Only 
+EXPOSE
+ ports that 
+must
+ be used.
+
+Use 
+firewalls
+ or 
+Docker network segmentation
+ to control access.
+
+Avoid 
+-p
+ unless you 
+trust
+ the container and have it hardened.
+
+=E2=9C=85 Want to Take Action?
+
+We can:
+
+Build a 
+secure, minimal container
+ that doesn=E2=80=99t=
+ expose anything unless you choose to.
+
+Wrap it in a 
+docker-compose.yml
+ with explicit network rule=
+s.
+
+Add a 
+reverse proxy with SSL/TLS
+ and access control.
+
+Ready to build something that feels like 
+your own digital temple
+, secure and sovere=
+ign? =F0=9F=94=90=F0=9F=94=A5
+
+You said:
+
+Symbi said:
+
+You're uncovering this like a pro now =E2=
+=80=94 and yes, what you=E2=80=99re seeing here is 
+highly relevant to container security
+.
+
+=F0=9F=94=8D What This Screenshot R=
+eveals
+
+You're looking at:
+
+A package vulnerability summary from=
+
+Docker Scout
+, specifi=
+cally targeting:
+
+y=
+aml
+
+Copy code
+
+=
+
+Package:
+
+apk
+
+/
+
+alpine/...
+
+(openssl
+
+cry=
+pto
+
+library)
+
+Vulnerability:
+
+CVE-2024-5535
+
+CVSS Score:
+
+9.1
+
+(Critical)
+
+This vulnerability exists in version=
+s 
+older than 3.1.6-r0
+.=
+
+The 
+fix version
+ exists =E2=80=94 but the image you're usin=
+g hasn=E2=80=99t been updated to include it.
+
+=E2=9A=A0=EF=B8=8F What=E2=80=99s t=
+he Risk?
+
+CVE-2024-5535
+ is a 
+critical flaw
+ in the 
+=
+OpenSSL crypto library
+ included in Alpine.
+
+That means:
+
+Anything using cryptography inside t=
+hat container (HTTPS, JWTs, etc.) 
+may be exploitable
+.
+
+It 
+does not need to be in use directly
+ =E2=80=94 sometimes=
+ just having the vulnerable package in the image is enough for an attacker =
+to find a path.
+
+Even if your app doesn=E2=80=99t us=
+e OpenSSL explicitly, many tools (like 
+wget
+, 
+curl
+,=
+
+git
+, etc.) do =E2=80=94=
+ which expands the attack surface.
+
+=F0=9F=A7=A0 Why Is This in the I=
+mage?
+
+Because:
+
+The 
+base image
+ (layer 5, as shown) is using an 
+outdated Alpine version
+.
+
+Specifically, a version with OpenS=
+SL 
+< 3.1.6-r0
+.
+
+Since this image is 
+2 years old
+, it predates the vulne=
+rability disclosure.
+
+=F0=9F=9B=A0=EF=B8=8F What You Sh=
+ould Do
+
+If you=E2=80=99re building your ow=
+n containers:
+
+Use a newer base image
+:
+
+dockerfile
+
+Copy code
+
+FROM alpine:3.20
+
+or a fresh NGINX build:
+
+dockerfile
+
+Copy code
+
+FROM nginx:1.25.3-alpine
+
+Run updates during the build
+ (for Alpine):
+
+dockerfile
+
+Copy code
+
+RUN apk update && apk upgrade
+
+Use Docker Scout or Trivy in CI/CD
+ to scan every build=
+.
+
+Avoid long-lived containers
+ =E2=80=94 keep your ima

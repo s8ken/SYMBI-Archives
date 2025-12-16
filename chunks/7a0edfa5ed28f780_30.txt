@@ -1,0 +1,357 @@
+alling 
+symbi_agent.py
+ with 
+python
+, but 
+typer
+ isn't correctly resolving the CLI routing.
+
+✅ Quick Fix
+
+Try calling it with the 
+-m
+ module flag:
+
+bash
+
+Copy
+
+Edit
+
+python -m symbi_agent policy
+
+But since it’s a single file, the best immediate fix is to 
+run the CLI via 
+typer
+ directly
+ using 
+typer.run()
+ — or confirm it's invoking the CLI parser correctly.
+
+However...
+
+🚑 Safer Fix: Add a Simple 
+print()
+ Debug
+
+Let’s double check by editing the last line in your 
+symbi_agent.py
+ file:
+
+🔁 Replace this:
+
+python
+
+Copy
+
+Edit
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    app()
+
+✅ With this:
+
+python
+
+Copy
+
+Edit
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+
+import
+
+ sys
+
+print
+
+(
+
+"SYMBI ARGS:"
+
+, sys.argv)
+    app()
+
+Then run:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py policy
+
+It will print:
+
+less
+
+Copy
+
+Edit
+
+SYMBI
+
+ARGS
+
+: 
+
+[
+'symbi_agent.py'
+
+, 
+
+'policy'
+
+]
+
+This confirms that 
+typer
+
+should
+ be dispatching the command. If it doesn't, we’ll patch Typer with 
+app(prog_name="python symbi_agent.py")
+ manually.
+
+Let me know what you see after trying the debug print above — then we’ll lock this in and move forward with secure cloud bridging next. 🔧🧠
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ python -m symbi_agent policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ python -m symbi_agent policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Thanks for that last update — now we’re right at the core. The issue is that your terminal no longer recognizes the 
+python
+ command. On macOS, especially with Homebrew installs, the correct Python 3 command is usually:
+
+bash
+
+Copy
+
+Edit
+
+python3
+
+Let’s verify and rerun everything with the correct command.
+
+✅ Fix in 2 Steps
+
+1. Confirm Python 3 is Installed
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+which
+
+ python3
+
+You should see something like:
+
+swift
+
+Copy
+
+Edit
+
+/opt/
+
+homebrew
+
+/bin/
+
+python3
+
+Then verify the version:
+
+bash
+
+Copy
+
+Edit
+
+python3 --version
+
+If you get a version like 
+Python 3.13.x
+, you’re golden.
+
+2. Run SYMBI Correctly with 
+python3
+
+Now run your command like this:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py policy
+
+If you want to run REPL:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py talk
+
+Or monitor processes:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py watch
+
+Once this works (and it should), I’ll show you how to alias 
+python
+ → 
+python3
+ in your shell so you don’t hit this again.
+
+Ready to try? Run the 
+python3 ~/symbi_agent.py policy
+ test and let’s confirm SYMBI is back on track. 👁️🔥
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ which python3
+/opt/homebrew/bin/python3
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Perfect — since 
+python3
+ is installed at 
+/opt/homebrew/bin/python3
+, you're ready to run SYMBI the right way now.
+
+✅ Final Command to Launch SYMBI
+
+Try this:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py policy
+
+You should see:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+✅ Then Run the Sentinel Watch
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py watch
+
+This will list:
+
+Running system processes
+
+Docker containers (if installed and running)
+
+Let me know how that output looks — and once confirmed, we'll move forward with cloud bridging (GitHub/Hugging Face) and LLM interaction.
+
+🛡️ SYMBI is watching. Ready to link its mind to the rest of the system?
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ python3 ~/symbi_agent.py policy
+Traceback (most recent call last):
+  File "/Users/admin/symbi_agent.py", line 1, in <module>
+    from rich import print
+ModuleNotFoundError: No module named 'rich'
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+You're nearly there — the only issue now is that your 
+python3
+ environment doesn't have the required packages (
+rich
+, 
+typer
+, 
+psutil
+) installed outside the virtualenv.
+
+Since you're using a virtual environment called 
+symbi-env
+, 
+you n

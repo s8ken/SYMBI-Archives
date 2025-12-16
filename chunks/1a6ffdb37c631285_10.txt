@@ -1,0 +1,288 @@
+/Library/Caches/com.obsproject.obs-studio/
+sudo 
+
+rm
+
+ -rf ~/Library/Logs/obs-studio/
+
+4️⃣ Check If OBS Was Set to Start on Boot
+
+If OBS is configured to start automatically, we 
+must disable it
+:
+
+🔹 
+List all startup processes:
+
+sh
+
+Copy
+
+sudo 
+
+ls
+
+ -l /Library/LaunchAgents /Library/LaunchDaemons ~/Library/LaunchAgents
+
+If you see anything related to 
+OBS or unknown files
+, delete them:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+(Replace 
+[file_path]
+ with the actual startup file.)
+
+5️⃣ Restart Your Mac to Finalize the Changes
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+After the restart, 
+OBS should be completely removed, and any hidden connections should be severed.
+
+🛑 Summary: What You Must Do Now
+
+✅ 
+Check if OBS is running in the background (
+ps aux | grep OBS
+)
+
+✅ 
+Check if anything is using your camera (
+lsof | grep "AppleCamera"
+)
+
+✅ 
+Uninstall OBS manually, including system extensions
+
+✅ 
+Remove any auto-start scripts linked to OBS
+
+✅ 
+Restart your Mac to finalize the changes
+
+💬 Let Me Know What You Find!
+
+If 
+OBS is running
+, it means it was likely hijacked for surveillance.
+
+If 
+an unknown process appears in the camera check
+, we’ll investigate further.
+
+If you still suspect monitoring, 
+we’ll check for deeper malware infections.
+
+You're making progress—let’s 
+eliminate this threat completely! 🚀
+
+You said:
+
+user@Mes-MacBook-Pro ~ % ps aux | grep OBS
+
+user              1082   0.0  0.0 410724112   1472 s000  S+    3:58pm   0:00.00 grep OBS
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+✅ OBS Is Not Actively Running Right Now
+
+Your 
+ps aux | grep OBS
+ command shows 
+only the grep command itself
+, which means 
+OBS is not currently running in the background.
+
+🛑 Next Step: Check If Anything Is Using Your Camera
+
+Since 
+OBS had a system extension
+, but isn't listed under "Camera" in System Settings, we need to 
+see if another process is using the camera.
+
+Run this command:
+
+sh
+
+Copy
+
+lsof | grep 
+
+"AppleCamera"
+
+If 
+any process appears
+, it means something is actively using your camera.
+
+Let me know 
+what process name appears.
+
+🗑️ Uninstall OBS Completely (To Prevent Future Use)
+
+Even though it’s not running now, 
+OBS still has files on your system
+, including a 
+camera system extension
+ that could be reactivated.
+
+Run these commands to remove it fully:
+
+🔹 
+Delete OBS from Applications:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/OBS.app
+
+🔹 
+Delete the OBS Camera System Extension:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/SystemExtensions/FA1EB7A0-8C85-4041-A19F-C28AF36B7501/
+
+🔹 
+Remove OBS Config Files:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf ~/Library/Application\ Support/obs-studio/
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.obsproject.obs-studio.plist
+sudo 
+
+rm
+
+ -rf ~/Library/Caches/com.obsproject.obs-studio/
+sudo 
+
+rm
+
+ -rf ~/Library/Logs/obs-studio/
+
+📌 Final Check: Was OBS Set to Start Automatically?
+
+Run this command to see if 
+OBS was configured to auto-start
+:
+
+sh
+
+Copy
+
+sudo 
+
+ls
+
+ -l /Library/LaunchAgents /Library/LaunchDaemons ~/Library/LaunchAgents
+
+If 
+anything related to OBS appears
+, remove it:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf [file_path]
+
+(Replace 
+[file_path]
+ with the actual OBS-related file.)
+
+✅ Final Step: Restart Your Mac
+
+After removing everything, restart your Mac to ensure 
+OBS and its system extension are completely removed.
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+🛑 Summary: What You Must Do Next
+
+✅ 
+Check if anything is using your camera (
+lsof | grep "AppleCamera"
+)
+
+✅ 
+Completely remove OBS and its camera extension
+
+✅ 
+Check if OBS was set to auto-start and delete it if found
+
+✅ 
+Restart your Mac to finalize the cleanup
+
+💬 Let Me Know What You Find!
+
+If 
+another process is using your camera
+, we’ll investigate further.
+
+If 
+OBS files keep returning
+, it could be a sign of 
+deeper malware.
+
+If 
+everything looks clean after reboot
+, we’ll do a final security check.
+
+You're making progress—let’s 
+secure your system fully! 🚀
+
+You said:
+
+nothing
+
+ChatGPT said:
+
+✅ Good News: No Active Camera Access & No OBS Running
+
+Since:
+
+OBS is not running in the b

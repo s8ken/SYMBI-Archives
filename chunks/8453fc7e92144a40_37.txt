@@ -1,0 +1,441 @@
+ature.js
+:
+
+js
+
+Copy code
+
+const
+
+ cr=
+ypto =3D 
+
+require
+
+(
+
+'crypto'
+
+)=
+;
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+function
+
+=
+
+verifyWebhookSignature
+
+(
+
+{ header =3D 
+'x-symbi-signature'
+
+, s=
+ecretEnv =3D 
+
+'WEBHOOK_SECRET'
+
+ } =3D {}) {
+
+const
+
+ secre=
+t =3D process.
+
+env
+
+[secretEnv];
+
+if
+
+ (!secret=
+) 
+
+return
+
+(
+_req, _=
+res, next
+
+) =3D> 
+
+next
+
+(); 
+
+// no-op if not configured
+
+return
+
+(
+req, re=
+s, next
+
+) =3D> {
+
+try
+
+ {
+
+const
+
+ s=
+ig =3D req.
+
+get
+
+(header) || 
+
+''
+
+;
+
+// req.rawBody should be pr=
+ovided by body-parser 'verify' hook or raw parser
+
+const
+
+ b=
+ody =3D req.
+
+rawBody
+
+ || 
+
+JSON
+
+.
+
+stringify
+
+(req.
+
+body
+
+ || {});
+
+const
+
+ h=
+mac =3D crypto.
+
+createHmac=
+
+(
+
+'sha256'
+
+, secret).
+
+=
+update
+
+(body, 
+
+'=
+utf8'
+
+).
+
+digest
+
+(
+
+'hex'=
+
+);
+
+if
+
+ (!cr=
+ypto.
+
+timingSafeEqual
+
+(
+
+Buffer
+
+.
+
+from
+
+(sig), 
+
+Buffer
+
+.
+
+from
+
+(hmac))) {
+
+return
+
+ res.
+
+status
+
+(
+
+401
+
+).
+
+json
+
+({=
+
+error
+
+: 
+
+'Invalid signature'
+
+ })=
+;
+      }
+
+next
+
+();
+    } 
+
+catch
+
+ (=
+e) {
+
+return
+
+ =
+res.
+
+status
+
+(
+
+401
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+'Signature check failed'
+
+=
+ });
+    }
+  };
+};
+
+Capture raw body
+ for webhook routes in 
+backend/app.js
+:
+
+diff
+
+Copy code
+
+@@
+
+- app.use(express.json({ limit: =
+'10mb' }));
+
++ const rawBodySaver =3D (req, r=
+es, buf) =3D> { if (buf?.length) req.rawBody =3D buf.toString('utf8'); }=
+;
+
++ app.use(express.json({ limit: =
+'10mb', verify: rawBodySaver }));
+
++ app.use(express.urlencoded({ e=
+xtended: true, limit: '10mb', verify: rawBodySaver }));
+
+Apply
+ middleware to public webhooks:
+
+diff
+
+Copy code
+
+--- a/backend/routes/webh=
+ook.routes.js
+
++++ b/backend/routes/webhook.rout=
+es.js
+
+@@
+ const router =3D require('express').Router();
+
++const verifyWebhookSignature =
+=3D require('../middleware/verifyWebhookSignature');
+
+=20
+
+-// Public test/status
+
+-router.post('/sky/:agentId', co=
+ntroller.sky); 
+
++// Signed webhook (optional whe=
+n WEBHOOK_SECRET unset)
+
++router.post('/sky/:agentId', ve=
+rifyWebhookSignature(), controller.sky);
+
+ router.post('/test', controller.test);
+ router.get('/status', controller.status);
+
+Env:
+ add to 
+.env.example
+:
+
+ini
+
+Copy code
+
+=
+
+WEBHOOK_SECRET
+
+=3Dchange=
+-me
+
+3) 
+RBAC on sensitive trust ops
+
+Enforce
+ admin for audit and destructive operations.
+
+diff
+
+Copy code
+
+--- a/backend/routes/trus=
+t.routes.js
+
++++ b/backend/routes/trust.routes=
+.js
+
+@@
+ const { requireAuth, requireRole } =3D require('../middleware/auth.middlew=
+are');
+ router.use(requireAuth);
+=20
+
+-router.post('/:id/audit', contr=
+oller.audit);
+
++router.post('/:id/audit', requi=
+reRole('admin'), controller.audit);
+
+=20
+
+-router.put('/:id', controller.u=
+pdate);
+
+-router.delete('/:id', controlle=
+r.remove);
+
++router.put('/:id', requireRole(=
+'admin'), controller.update);
+
++router.delete('/:id', requireRo=
+le('admin'), controller.remove);
+
+(If trust routes are mounted elsewhere, I=E2=80=99ll apply role g=
+uards at that layer.)
+
+4) 
+Fix stream semantics (real SSE OR rename)
+
+Option A (preferred): implement ac=
+tual SSE for OpenAI responses.
+
+diff
+
+Copy code
+
+--- a/backend/controllers=
+/llm.controller.js
+
++++ b/backend/controllers/llm.con=
+troller.js
+
+@@
+
+-exports.stream =3D async (req, =
+res) =3D> {
+
+-  // simulated streaming...
+
+-};
+
++exports.stream =3D async (req, =
+res) =3D> {
+
++  res.setHeader('Content-Type',=
+ 'text/event-stream');
+
++  res.setHeader('Cache-Control'=
+, 'no-cache');
+
++  res.setHeader('Connection', '=
+keep-alive');
+
++  res.flushHeaders?.();
+
++  const { prompt, model =3D 'gp=
+t-4o' } =3D req.body || {};
+
++  try {
+
++    // Provider call with strea=
+ming; pseudocode to keep vendor-agnostic
+
++    const iterator =3D await op=
+enaiStream({ prompt, model }); // yield strings/chunks
+
++    for await (const chunk of i=
+terator) {
+
++      res.write(`data: ${JSON.s=
+tringify({ delta: chunk })}\n\n`);
+
++    }
+
++    res.write('event: done\ndat=
+a: {}\n\n');
+
++    res.end();
+
++  } catch (e) {
+
++    res.write(`event: error\nda=
+ta: ${JSON.stringify({ error: String(e.message||e) })}\n\n`);
+
+=
+
++    res.end();
+
++  }
+
++}

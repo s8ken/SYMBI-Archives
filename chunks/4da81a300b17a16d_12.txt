@@ -1,0 +1,186 @@
+ or BSSIDs (MAC addresses):
+
+bash
+
+Copy
+
+Edit
+
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s > ~/Desktop/Nearby_WiFi_Networks.txt
+
+ð  
+Step 5: Full Network Configuration (IP, MAC Address)
+
+Record your Macâs full network details for cross-reference and to check if altered remotely:
+
+bash
+
+Copy
+
+Edit
+
+ifconfig > ~/Desktop/Full_Network_Config.txt
+
+ð© 
+Step 6: Export and Review Suspicious Profiles
+
+Extract currently installed profiles for detailed review:
+
+bash
+
+Copy
+
+Edit
+
+profiles -P -o ~/Desktop/Installed_Profiles_Detail.txt
+
+â 
+Step 6: Archive All Logs into One Secure Place (Recommended)
+
+To keep everything safe and organized, bundle all these collected logs into a single compressed archive for analysis or reporting:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+zip -r Investigation_Logs.zip *.txt *.
+
+log
+
+â ï¸ 
+Important Notes
+
+Perform these commands soonâattackers frequently erase logs or obscure traces.
+
+After gathering evidence, immediately store copies on secure external storage.
+
+Keep these logs off the affected Mac
+ to prevent the attacker from erasing them again.
+
+Let me know once you've gathered these files, and weâll move on to carefully reviewing them together for identifiable attacker information.
+
+You said:
+
+I know a key suspect so we can potential match it to them
+
+ChatGPT said:
+
+You said:
+
+check the room call I was on - how many calls was it? where can I find that info
+
+ChatGPT said:
+
+To find and verify details about recent video calls (such as Zoom calls, FaceTime, or similar) and confirm if your key suspect was involved, you can quickly gather relevant evidence from system logs:
+
+Step-by-step Instructions (Terminal Commands):
+
+â 
+Step 1: Check recent Zoom meeting connections (critical):
+
+This captures recent Zoom connections (IP addresses, timestamps, and potentially meeting IDs):
+
+bash
+
+Copy
+
+Edit
+
+grep zoom.us ~/Library/Logs/zoom.us/zoom.us.log > ~/Desktop/zoom_recent_activity.log
+
+If this file doesn't exist or returns no results, try:
+
+bash
+
+Copy
+
+Edit
+
+grep -i zoom ~/Library/Logs/*.
+
+log
+
+ > ~/Desktop/Zoom_All_Logs.txt
+
+â 
+Step 2: Check detailed recent Zoom logs for IP addresses (advanced):
+
+If the above doesn't yield enough details, check deeply using macOS's logs for IPs specifically tied to Zoom:
+
+bash
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'process contains "zoom.us"'
+
+ --last 12h > ~/Desktop/Zoom_System_Log.txt
+
+â 
+Step 2 (Alternate): Check detailed network history (last 12 hours, for IPs and sessions):
+
+Extract all recent network connections and filter explicitly for Zoom-related connections:
+
+bash
+
+Copy
+
+Edit
+
+sudo lsof -nPi | grep zoom.us > ~/Desktop/Zoom_Current_Network.txt
+
+â 
+Step 3: Match IPs or Timezones to Suspect:
+
+Once you have these log files on your Desktop:
+
+Active_IP_Connections.txt
+
+Zoom_System_Log.txt
+
+Recent_SSH_attempts.log
+ (if available)
+
+Zoom.us.log
+
+Inspect them carefully:
+
+Match 
+timestamps
+ against known interaction times with your suspect.
+
+Check 
+IP addresses
+ against known IP ranges or locations associated with your suspect.
+
+Verify IPs through online Geo-IP lookup (if necessary).
+
+If you want help interpreting any of these logs once generated, feel free to upload the logs here, and I can help identify clear matches or anomalies.
+
+ð 
+Next Immediate Action:
+
+Run the above commands carefully, then let me know as soon as you have the log files readyâIâll assist you step-by-step in checking them against your suspect.
+
+You said:
+
+Last login: Sat Mar  8 04:00:33 on ttys000
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % sudo log collect --output ~/Desktop/Security_Incident_Logs.logarchive
+
+Password:
+log: uuid text missing: /private/var/db/uuidtext/14/31CB6FB2C933419A610855C0829726: No such file or directory (2)
+Archive successfully written to /Users/lcl/Desktop/Security_Incident_Logs.logarchive
+lcl@LCLs-MacBook-Pro ~ % grep zoom.us ~/Library/Logs/zoom.us/zoom.us.log > ~/Desktop/zoom_recent_activity.log
+
+grep: /Users/lcl/Libra

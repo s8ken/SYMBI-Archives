@@ -1,0 +1,430 @@
+ Pros: Real Socket.IO, fe=
+wer surprises.
+
+=E2=9A=A0=EF=B8=8F Cons: Two deploys (frontend + backend).
+
+Option B =E2=80=94 Single Vercel =
+deploy (demo endpoints; no sockets)
+
+You were seeing 
+/api
+ returning HTML because routes fell =
+through to the SPA. Fix is: export 
+the app handler
+, and route 
+/api/*
+
+befo=
+re
+ the catch-all.
+
+api/index.js
+ (serverless wrapper)
+
+js
+
+Copy code
+
+// api/index.js
+
+const
+
+ serverl=
+ess =3D 
+
+require
+
+(
+
+'serverless-http'
+
+);
+
+// IMPORTANT: import the *Express=
+ app*, not the Socket.IO server
+
+// Ensure backend/app.js does: mo=
+dule.exports =3D app;
+
+const
+
+ app =3D=
+
+require
+
+(
+
+'../backend/app'
+
+)=
+;
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+serverless
+
+(app);
+
+// If your app.js exports a funct=
+ion, do:
+
+// const createApp =3D require('.=
+./backend/app');
+
+// module.exports =3D serverless(=
+createApp());
+
+vercel.json
+ (order matters)
+
+json
+
+Copy code
+
+{
+
+"version"
+
+:
+
+2
+
+,
+
+"builds"
+
+:
+
+[
+
+{
+
+"src"
+
+:
+
+"api/index.js"
+
+,=
+
+"use"
+
+:
+
+"@vercel/node"
+
+}
+
+,
+
+{
+
+"src"
+
+:
+
+"frontend/package.json"
+
+,
+
+"use"
+
+:
+
+"@vercel/static-build"
+
+,
+
+=
+
+"config"
+
+:
+
+{
+
+"distDir"=
+
+:
+
+ =
+
+"build"
+
+}
+
+=
+
+}
+
+]
+
+,
+
+"routes"
+
+:
+
+[
+
+{
+
+"src"
+
+:
+
+"^/api/(.*)$"
+
+,
+
+"dest"
+
+:
+
+"api/index.js"
+
+}
+
+,
+
+{
+
+"src"
+
+:
+
+"^/(.*)$"
+
+,
+
+"dest"
+
+=
+
+:
+
+"frontend/build/$1"
+
+}
+
+]
+
+}
+
+Remove any previous =E2=80=9C/ =E2=
+=86=92 index.html=E2=80=9D route that steals 
+/api/*
+. API must be first.
+
+Vercel env (Production/Preview/Dev)
+
+ini
+
+Copy code
+
+=
+
+NODE_ENV
+
+=3Ddemo
+
+DEMO_MODE
+
+=3D
+
+true
+
+JWT_SECRET
+
+=3Ddem=
+o-jwt-secret-for-showcase-
+
+on
+
+ly
+
+REACT_APP_DEMO_MODE
+
+=3D
+
+true
+
+CORS_ORIGINS
+
+=3Dh=
+ttps://<your-vercel-app>.vercel.app
+
+MONGODB_URI
+
+=3D&l=
+t;atlas-uri>   
+
+# optional for =
+read-only demo you can skip
+
+Redeploy
+
+bash
+
+Copy code
+
+vercel --prod
+
+Verify
+
+bash
+
+Copy code
+
+curl -s https://<your-vercel-app>.vercel.app/api=
+/healthz
+curl -s https://<your-vercel-app>.vercel.app/api/llm/models/openai | =
+
+head
+
+=E2=9C=85 Pros: One URL for demo; =
+quick.
+
+=E2=9A=A0=EF=B8=8F Cons: Serverless functions aren=E2=80=99t ideal for Sock=
+et.IO; treat chat features as degraded (polling or disabled).
+
+Why your current deploy returned =
+HTML for 
+/api
+
+vercel.json
+ had a SPA catch-all taking precedence over 
+/api
+.
+
+api/index.js
+ imported 
+backend/server
+ instead of the 
+pure Express app
+; serverless wants a 
+(req,res)
+ handler, not a bound http=
+ server.
+
+Demo-mode checklist (investor-saf=
+e)
+
+Badge & limits:
+
+REACT_APP_DEMO_MODE=3Dtrue
+, rate limit active, demo users =
+seeded.
+
+No vendor keys client-side:
+ only JWT/SYMBI token in th=
+e client; all provider keys server-side.
+
+/metrics protected (prod):
+ set 
+METRICS_TOKEN
+ if you expose it publicly.
+
+Happy path:
+ Assistants list/models; Roundtable orchest=
+rate; Ledger verify; Trust chips visible on sample convo.
+
+If you freeze, do this one thing
+
+Ship 
+Option A
+. It=E2=80=99s two toggles and a URL swap=
+, and it future-proofs sockets + background work. Your Vercel frontend alre=
+ady looks great=E2=80=94pair it with a solid API base and you=E2=80=99re de=
+mo-complete.
+
+You=E2=80=99ve already done the ha=
+rdest part. Now it=E2=80=99s just topology and routing. Pick A or B; paste =
+the snippets; verify 
+/healthz
+. I=E2=80=99m here to keep this on the rails.
+
+=
+
+=
+
+You said:
+
+COMPREHENSIVE_TEST_REPORT.md
+
+File
+
+Symbi said:
+=
+
+Though=
+t for 26s
+
+=
+
+I read your test report. Net: 
+approved for fundraising demos
+, with=
+ one minor issue=E2=80=94
+/api ro=
+uting falls through to the SPA
+, which is non-blocking for the demo=
+. Frontend perf (=E2=89=88100 ms avg) and security headers both scored 
+A/A+
+. 
+
+Ship checklist (pick one path)
+
+A) Best-practice: Frontend on Verce=
+l, Backend on Railway
+
+Deploy API
+
+b=
+ash
+
+Copy code
+
+# from repo root
+
+railway init -n yseeku-api && railway up
+
+Railway =E2=86=92 Variables:
+
+i=
+ni
+
+Copy code
+
+=
+
+MONGODB_URI
+
+=3D...
+
+JWT_SECRET
+
+=3D...
+
+CORS_ORIGINS
+
+=3Dh=
+ttps://<your-vercel>.vercel.app
+
+OPENAI_API_KEY
+
+=
+=3D... (optional)
+
+ANTHROPIC_API_KEY
+
+=3D... (optional)
+
+Point frontend at 

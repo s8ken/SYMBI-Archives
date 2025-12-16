@@ -1,0 +1,278 @@
+reamed Videos
+
+Even if the 
+main stream was sent online
+, some apps (especially OBS, ffmpeg, or QuickTime) 
+might have saved copies before uploading
+.
+
+Run this to 
+find hidden or saved video files
+:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f \( -name 
+
+"*.mp4"
+
+ -o -name 
+
+"*.mov"
+
+ -o -name 
+
+"*.mkv"
+
+ -o -name 
+
+"*.avi"
+
+ \) -
+
+ls
+
+Check timestamps
+âif video files exist from 
+the last 3 months
+, they might be 
+local copies of livestreams
+.
+
+ð¡ 4ï¸â£ Find How They Maintained Persistent Access
+
+If this has been 
+happening for 3 months
+, the attacker 
+must have had a way to maintain access
+âpossibly through:
+
+iCloud syncing
+ (they could be pulling video/audio from your iCloud account).
+
+Remote access (SSH, VNC, AirPlay, Sidecar, Accessibility tools).
+
+A. Check for Remote Access Services
+
+sh
+
+Copy
+
+sudo netstat -an | grep LISTEN
+
+ð 
+Look for:
+
+Ports 5900
+ (VNC / Remote Screen Sharing)
+
+Ports 22
+ (SSH - Remote Terminal Access)
+
+Ports 443, 5223
+ (Apple iCloud Sync & Remote Management)
+
+If anything unexpected is open, that means 
+your system was accessible remotely
+.
+
+B. Check for AirPlay & Sidecar Streaming
+
+Since 
+you suspected AirPlay mirroring
+, check if Sidecar or AirPlay is still running:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "airplay" OR eventMessage contains "sidecar"'
+
+ --last 90d
+
+If 
+Sidecar or AirPlay
+ was enabled in the background, someone could have been 
+wirelessly mirroring your screen
+.
+
+ð 5ï¸â£ Secure Your System (If You Havenât Already)
+
+Since this has been happening for 
+3 months
+, you need to 
+remove all potential access points
+:
+
+A. Change ALL Passwords & Log Out Remote Access
+
+Change Apple ID password.
+
+Log out all devices
+ at 
+Apple ID
+.
+
+Disable iCloud Drive
+ in 
+System Settings â Apple ID â iCloud Drive
+ (to prevent syncing leaks).
+
+B. Block Remote Access & Screen Sharing
+
+Run:
+
+sh
+
+Copy
+
+sudo systemsetup -setremotelogin off
+sudo launchctl 
+
+disable
+
+ system/com.apple.screensharing
+sudo launchctl 
+
+disable
+
+ system/com.apple.smbd
+
+This disables 
+SSH, screen sharing, and remote file sharing.
+
+C. Reset Network Settings (If an Unknown Device Had Access)
+
+Run:
+
+sh
+
+Copy
+
+sudo ifconfig en0 down
+sudo ifconfig en0 up
+
+This 
+resets your network interface
+, disconnecting any persistent remote access.
+
+ð¨ Summary of Critical Next Steps
+
+â 
+Find out where the stream was sent (
+log show --predicate 'DNS' --last 90d
+).
+
+â 
+Check which apps uploaded the most data (
+nettop | grep "upload"
+).
+
+â 
+Search for hidden or saved video recordings (
+find ~/ -name "*.mp4"
+).
+
+â 
+Check if remote access was active (
+netstat -an | grep LISTEN
+).
+
+â 
+Investigate AirPlay & Sidecar streaming (
+log show --predicate 'airplay'
+).
+
+â 
+Disable all remote access tools (
+sudo systemsetup -setremotelogin off
+).
+
+â 
+Reset Apple ID & log out unknown iCloud devices.
+
+Since this has been happening 
+for months
+, itâs critical to 
+find out how they maintained access
+ and 
+where your livestreams were sent
+. Run these steps and let me know what you findâIâll help analyze the results. ð¨
+
+You said:
+
+one step at a time please
+
+ChatGPT said:
+
+Got it! Letâs go step by step.
+
+Step 1: Find Out Where Your Livestream Was Sent
+
+Since this has been happening for 
+three months
+, letâs first check 
+which websites or services your Mac was connecting to for streaming.
+
+ð  Action: Check Past DNS Requests (Which Sites Were Contacted?)
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d
+
+This will list 
+all the websites and servers
+ your Mac has connected to in the last 
+90 days
+.
+
+ð What to Look For
+
+Twitch:
+
+live.twitch.tv
+
+YouTube Live:
+
+rtmp.youtube.com
+
+Facebook Live:
+
+facebook.com/live
+
+YouStream or unknown streaming services
+
+Any strange domain names/IP addresses
+
+ð© Let me know what results you get.
+
+If the list is long, I can help you 
+filter out the important connections.
+ Then weâll move to 
+Step 2: Check Which App Was Sendin

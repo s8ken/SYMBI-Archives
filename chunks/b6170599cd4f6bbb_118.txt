@@ -1,0 +1,223 @@
+ies are missing, we need to fix them.
+
+â Step 2: Force 
+libtsk_jni.dylib
+ to Load Correctly
+
+Try setting up 
+install_name_tool
+ to 
+fix the library path
+ inside 
+libtsk_jni.dylib
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo install_name_tool -change /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.dylib /usr/local/lib/libtsk.dylib /usr/local/lib/libtsk_jni.dylib
+
+ð This tells 
+libtsk_jni.dylib
+ to 
+use the correct 
+libtsk.dylib
+ file
+ in 
+/usr/local/lib/
+.
+
+Now, 
+restart Autopsy again:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+â Step 3: If 
+libtsk.dylib
+ is Missing, Copy It
+
+If 
+otool -L
+ showed that 
+
+libtsk.dylib
+ is missing
+, copy it manually:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.dylib /usr/local/lib/
+sudo 
+
+chmod
+
+ 755 /usr/local/lib/libtsk.dylib
+
+ð This ensures 
+libtsk.dylib
+ exists in 
+/usr/local/lib/
+, where Java expects it.
+
+Now 
+restart Autopsy again
+.
+
+ð If It Still Fails, Send This Output
+
+If 
+Autopsy still doesn't load 
+libtsk_jni.dylib
+
+, send me the output of:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+otool -L /usr/local/lib/libtsk.dylib
+
+ð This will confirm 
+if the libraries are correctly linked
+.
+
+ð 
+Try these steps and let me know what happens! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % otool -L /usr/local/lib/libtsk_jni.dylib
+
+/usr/local/lib/libtsk_jni.dylib:
+	/opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib (compatibility version 23.0.0, current version 23.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)
+	/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib (compatibility version 9.0.0, current version 9.6.0)
+	/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/opt/homebrew/opt/afflib/lib/libafflib.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew/opt/libewf/lib/libewf.2.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.105.0)
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ 
+libtsk_jni.dylib
+ Dependency Issue â Let's Fix It! ð¥
+
+Your 
+otool -L /usr/local/lib/libtsk_jni.dylib
+ output shows that it depends on several 
+Homebrew libraries stored in 
+/opt/homebrew/opt/
+
+. If Autopsy can't find 
+libtsk_jni.dylib
+, it's likely because 
+Java doesn't know where to look for these dependencies
+.
+
+â Step 1: Verify That All Dependencies Exist
+
+Run the following command to ensure all the required 
+.dylib
+ files exist:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+
+ls
+
+ -l /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+
+ls
+
+ -l /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+
+ls
+
+ -l /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+
+ls
+
+ -l /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+
+ls
+
+ -l /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+ð 
+If any file is missing, reinstall its package
+:
+
+sh
+
+Copy
+
+Edit
+
+brew reinstall sleuthkit sqlite openssl@3 afflib libewf
+
+â Step 2: Force Java to Recognize All Dependency Paths
+
+Since Java 
+doesnât automatically look in 
+/opt/homebrew/opt/
+
+, we need to 
+explicitly add these paths
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/usr/local/lib:/opt/homebrew/lib:/opt/homebrew/opt/sleuthkit/lib:/opt/homebrew/Cellar/sleuthkit/4.13.0/lib:/opt/homebrew/opt/sqlite/lib:/opt/homebrew/opt/openssl@3/lib:/opt/homebrew/opt/afflib/lib:/opt/homebrew/opt/libewf/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=/usr/local/lib:/opt/homebrew/lib:/opt/homebrew/opt/sleuthkit/lib:/opt/homebrew/Cellar/sleuthkit/4.13.0/lib:/opt/homebrew/opt/sqlite/lib:/opt/homebrew/opt/openssl@

@@ -1,0 +1,334 @@
+traces export per observability configs\n \n=
+8) Contract tests scaffold\n bash\n# add basic tests to validate openapi.ya=
+ml vs implemented routes\n \n9) Commit & PR\n
+
+bash\ngit add -A\ngit diff --staged --patch | sed -n '1,400p'\ng=
+it commit -m "ops: baseline remediation (security headers, health/readiness=
+, CI guard
+
+Symbi said:
+
+Thought for 23s
+
+=
+PLAN RS-001 =E2=80=94 Baseline hardening (read-only preview)
+
+Goal:
+ Prioritized, low-blast-radius remediation to harden sec=
+urity, reliability, CI, and observability.
+
+Mode:
+
+hibernation
+ (no writes/deploys until expli=
+cit approval).
+
+Workspace root:
+
+/Users/admin/Symbi Synergy
+ (note=
+ the space; all paths quoted).
+
+Assumptions:
+ Node/Expr=
+ess backend, React/Next frontend, MongoDB Atlas, Vercel (FE), Railway (BE),=
+ GitHub Actions.
+
+Scope anchors (read-only inspection):
+
+CI: 
+.github/workflows/ci.yml
+, 
+.github/workflows/codeql.yml
+
+Backend: 
+backend/server.js
+, 
+backend/middleware/security.middleware.js
+, 
+backend/middleware/auth.middleware.js
+, 
+backend/controllers/
+
+Frontend: 
+frontend/package.json
+, 
+frontend/src/
+
+Infra: 
+vercel.json
+, 
+=
+Dockerfile
+, 
+docker-compose=
+.yml
+
+Obs: 
+observability/
+
+Policy/Docs: 
+SECURITY.md
+, 
+PRIVACY.md
+, 
+README.m=
+d
+, 
+openapi.yaml
+, 
+.env.example
+
+Steps (priority order):
+
+Secrets & config hygiene (High)
+ =E2=80=94 verify requ=
+ired env 
+names only
+ exist (
+MONGODB_URI
+, 
+JWT_SECRET
+, 
+OPENAI_API_KEY
+, 
+ANTHROPIC_API_KEY
+, 
+SYMBI_API_KEY
+, 
+CO=
+RS_ORIGIN
+, 
+NODE_ENV
+, 
+LOG_LEVEL
+). Ensure 
+.env.example
+ includes pla=
+ceholders; no secrets.
+
+AuthN/Z & validation (High)
+ =E2=80=94 inspect JWT =
+alg pinning/exp/clock skew; role checks; input schemas in controllers; erro=
+r messages not overbroad.
+
+HTTP security (High)
+ =E2=80=94 confirm Helmet, rate-li=
+mit, body size limits, strict CORS tied to 
+CORS_ORIGIN
+.
+
+Health/readiness & timeouts (High)
+ =E2=80=94 
+/healthz
+, 
+/readyz
+, and sane server timeouts to preven=
+t resource exhaustion.
+
+Supply chain (High)
+ =E2=80=94 lockfile hygiene, 
+npm audit
+ gating; minimal, pat=
+ched base image in 
+Dockerfile
+.
+
+CI/CD guardrails (Med)
+ =E2=80=94 CI runs lint/test/bui=
+ld/audit/SCA; branch protection/required checks.
+
+Observability (Med)
+ =E2=80=94 ensure log redaction; co=
+nsistent trace IDs; optional 
+/m=
+etrics
+.
+
+API contract integrity (Med)
+ =E2=80=94 validate 
+openapi.yaml
+ vs implemented ro=
+utes; add contract tests scaffold.
+
+Frontend hardening (Med)
+ =E2=80=94 CSP headers/meta, d=
+ependency audit, sanitize any dynamic HTML.
+
+Docs & runbooks (Low)
+ =E2=80=94 refresh 
+SECURITY.md
+/
+PRIVACY.md
+; add incident + key-rotation runboo=
+ks.
+
+Rollback:
+ All changes (when approved) ship on a branch=
+ with PR; revertible via 
+git re=
+vert
+ or PR close. No writes in this preview.
+
+DRY-RUN / DIFF (read-only command=
+s to execute on approval)
+
+bash
+
+Copy code
+
+# repo & CI status
+
+cd
+
+"/Users/admin/Symbi Synergy"
+
+git status -s
+sed -n 
+
+'1,200p'
+
+".github/workflows/ci.yml"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+".github/workflows/codeql.yml"
+
+ || 
+
+true
+=
+
+# backend surface
+
+ls
+
+ -la 
+
+"backend/middleware"
+
+sed -n 
+
+'1,200p'
+
+"backend/server.js"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+"backend/middleware/security.mid=
+dleware.js"
+
+ || 
+
+true
+
+sed -n 
+
+'1,200p'
+
+"backend/middleware/auth.middlew=
+are.js"
+
+ || 
+
+tr=
+ue
+
+# deps & vulns (names/counts =
+only; no secrets)
+
+node -v && npm -v
+npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ || 
+
+true
+
+( 
+
+cd
+
+ fronten=
+d && npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ ) || =
+
+true
+
+# observability config
+
+ls
+
+ -la 
+
+"observability"
+
+ || =
+
+true
+
+sed -n 
+
+'1,200p'
+
+"observability/otel/config.yaml"=
+
+ 2>/dev/null || 
+
+true
+
+# API contract
+
+head
+
+ -n 120 =
+
+"openapi.yaml"
+
+=
+ || 
+
+true
+
+# env template (names only)
+
+sed -n 
+
+'1,200p'
+
+".env.example"
+
+ || 
+
+true
+
+No files will be modified; this is an inspection plan.
+
+ON APPROVAL (exact, reversible ac=
+tions)
+
+bash
+
+Copy code
+
+# 1) Branch baseline
+
+cd
+
+"/Users/admin/Symbi Syner

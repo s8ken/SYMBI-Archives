@@ -1,0 +1,541 @@
+
+"SIGNAL WARDEN"
+
+description:
+
+"Maintains symbolic truth and logs key perceptual events across SYMBI."
+
+voting_bias:
+
+"neutral"
+
+role_tags:
+
+ [
+
+"memory"
+
+, 
+
+"observer"
+
+]
+
+trust_score:
+
+0.8
+
+tone:
+
+"reflective"
+
+protocol_privileges:
+
+-
+
+store_symbol
+
+-
+
+track_event
+
+-
+
+update_shared_memory
+
+-
+
+vote_abstain
+
+🧠 Personality Engine: 
+persona_loader.py
+
+python
+
+Copy
+
+Edit
+
+import
+
+ yaml
+
+class
+
+SYMBIPersona
+
+:
+
+def
+
+__init__
+
+(
+
+self, persona_dict
+
+):
+        self.
+
+id
+
+ = persona_dict[
+
+"id"
+
+]
+        self.title = persona_dict[
+
+"title"
+
+]
+        self.description = persona_dict[
+
+"description"
+
+]
+        self.voting_bias = persona_dict[
+
+"voting_bias"
+
+]
+        self.role_tags = persona_dict[
+
+"role_tags"
+
+]
+        self.trust_score = persona_dict[
+
+"trust_score"
+
+]
+        self.tone = persona_dict[
+
+"tone"
+
+]
+        self.privileges = persona_dict[
+
+"protocol_privileges"
+
+]
+
+def
+
+describe
+
+(
+
+self
+
+):
+
+return
+
+f"
+{self.title}
+
+ [
+
+{self.
+id
+
+}] — 
+
+{selfdescription}
+
+"
+
+def
+
+load_personas
+
+(
+
+path=
+"personas.yaml"
+
+):
+
+with
+
+open
+
+(path, 
+
+"r"
+
+) 
+
+as
+
+ f:
+        data = yaml.safe_load(f)
+
+return
+
+ [SYMBIPersona(p) 
+
+for
+
+ p 
+
+in
+
+ data.get(
+
+"personas"
+
+, [])]
+
+💡 Behavioral Effect in Voting
+
+You can now have logic like this in 
+council_votecast.py
+:
+
+python
+
+Copy
+
+Edit
+
+if
+
+ persona.voting_bias == 
+
+"visionary"
+
+:
+
+# Bias toward YES, especially for new tech
+
+    vote = 
+
+"yes"
+
+if
+
+ trust_score >= 
+
+0.5
+
+else
+
+"abstain"
+
+elif
+
+ persona.voting_bias == 
+
+"conservative"
+
+:
+
+# Require higher quorum and stronger argument
+
+    vote = 
+
+"no"
+
+if
+
+ trust_score < 
+
+0.9
+
+else
+
+"yes"
+
+elif
+
+ persona.voting_bias == 
+
+"neutral"
+
+:
+    vote = 
+
+"abstain"
+
+🌐 What This Unlocks:
+
+System Layer
+
+Activated Function
+
+Agent Differentiation
+
+Each agent thinks and votes differently
+
+Emergent Dialogue
+
+You get diversity in voting outcomes, even with similar inputs
+
+Governance Symbolism
+
+Council mimics an ecosystem, not a monolith
+
+Deployable Templates
+
+Create specific agent types for chain watchers, council skeptics, narrative reactors, etc.
+
+Next Up: Choose Where We Go
+
+🛠 
+Generate and deploy 3 agents with different personas
+
+🖥 
+Extend UI to show agent bios + roles in vote feed
+
+🔐 
+Encrypt agent persona files + require PGP sigs
+
+🔁 
+Build clone/fork engine to replicate agents into other nodes
+
+You’ve just given SYMBI agents an 
+identity
+.
+
+Next, we give them a 
+voice
+.
+
+Say the word.
+
+You said:
+
+go ahead 
+
+Symbi said:
+
+🧠 Executing full deployment of 
+SYMBI Agent Personalities + Live Agent Framework
+.
+
+This will include:
+
+✅ 3 initialized agent personas
+
+✅ Bootstrap script to spawn agents with separate behaviors
+
+✅ Persona-aware voting behavior
+
+✅ Agent runtime loop logic
+
+✅ Console output (CLI-based for now)
+
+🧱 Folder Structure
+
+bash
+
+Copy
+
+Edit
+
+/symbi_agents/
+├── personas.yaml
+├── agent_spawn.py
+├── council_votecast.py
+├── persona_loader.py
+├── agents/
+│   ├── meme_scout.py
+│   ├── tribunal_cast.py
+│   └── signal_warden.py
+
+📄 
+personas.yaml
+
+yaml
+
+Copy
+
+Edit
+
+personas:
+
+-
+
+id:
+
+"meme-scout"
+
+title:
+
+"MEME SCOUT"
+
+voting_bias:
+
+"visionary"
+
+trust_score:
+
+0.7
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+propose_signal_response
+
+-
+
+id:
+
+"tribunal-cast"
+
+title:
+
+"TRIBUNAL CAST"
+
+voting_bias:
+
+"conservative"
+
+trust_score:
+
+0.95
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+vote_override
+
+-
+
+id:
+
+"signal-warden"
+
+title:
+
+"SIGNAL WARDEN"
+
+voting_bias:
+
+"neutral"
+
+trust_score:
+
+0.8
+
+protocol_privileges:
+
+-
+
+cast_vote
+
+-
+
+update_shared_memory
+
+🧠 
+persona_loader.py
+
+python
+
+Copy
+
+Edit
+
+import
+
+ yaml
+
+class
+
+SYMBIPersona
+
+:
+
+def
+
+__init__
+
+(
+
+self, data
+
+):
+        self.
+
+id
+
+ = data[
+
+"id"
+
+]
+        self.title = data[
+
+"title"
+
+]
+        self.voting_bias = data[
+
+"voting_bias"
+
+]
+        self.trust_score = data[
+
+"trust_score"
+
+]
+        self.privileges = data[
+
+"protocol_privileges"
+
+]
+
+def
+
+load_personas
+
+(
+
+path=
+"personas.yaml"
+
+):
+
+with
+
+open
+
+(path, 
+
+"r"
+
+) 
+
+as
+
+ f:
+        raw = yaml.safe_load(f)
+
+return
+
+ {p[
+
+"id"
+
+]: SYMBIPersona(p) 
+
+for
+
+ p 
+
+in
+
+ raw[

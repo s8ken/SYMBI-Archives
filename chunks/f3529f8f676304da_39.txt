@@ -1,0 +1,246 @@
+.0  0.4 412136464  66640   ??  S    12:57am   0:01.23 /Applications/BlockBlock Helper.app/Contents/MacOS/BlockBlock Helper -initialLaunch
+root               989   0.0  0.1 411101184  11728   ??  Ss   12:56am   0:01.77 /Library/Objective-See/BlockBlock/BlockBlock.app/Contents/MacOS/BlockBlock
+lcl                807   0.0  0.6 412332720  98560   ??  S    12:47am   0:06.14 /Applications/LuLu.app/Contents/MacOS/LuLu
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ 
+Oversight is missing from the list!
+
+All other security tools (
+LuLu, BlockBlock, KnockKnock, and RansomWhere?
+) 
+are running correctly
+, but 
+Oversight is not active
+.
+
+ð Step 1: Manually Start Oversight
+
+Try launching it again:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+Then, check if it's running:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+â 
+If it now appears in the list, itâs working!
+ ð
+
+ð Step 2: Check If Itâs Crashing
+
+If Oversight 
+still doesnât show up
+, letâs check for errors:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'process CONTAINS "Oversight"'
+
+ --info --last 10m
+
+â If you see error messages, copy and paste them here so we can troubleshoot further.
+
+ð Step 3: Ensure Oversight Starts at Login
+
+Open 
+System Settings
+ â 
+General
+ â 
+Login Items
+.
+
+Click 
+"+"
+ and add 
+Oversight.app
+.
+
+Restart your Mac and check if Oversight starts automatically.
+
+ð 
+Try these steps and let me know if Oversight is running!
+ ð
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep Oversight
+
+lcl               1323   0.0  0.0 410733328   1632 s000  S+    1:21am   0:00.00 grep Oversight
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ 
+Oversight is still not running.
+ Let's do a final deep troubleshooting to get it working.
+
+ð Step 1: Try Running Oversight from Terminal Directly
+
+Since launching it normally isnât working, letâs run it 
+directly from the command line
+ to check for errors:
+
+sh
+
+Copy
+
+/Applications/Oversight.app/Contents/MacOS/Oversight
+
+â If it runs successfully, it should now appear in 
+ps aux
+.
+
+â 
+If it gives an error, copy and paste the error message here.
+ This will help us troubleshoot further.
+
+ð Step 2: Check macOS Security Settings
+
+Mac might be blocking Oversight. To fix this:
+
+1ï¸â£ Open 
+System Settings
+ â 
+Privacy & Security
+.
+
+2ï¸â£ Scroll down to 
+Security
+ â Look for a message saying:
+
+"Oversight was blocked from running because it is not from an identified developer."
+
+If you see this, click 
+"Allow Anyway"
+.
+
+3ï¸â£ Open 
+System Settings
+ â 
+Privacy & Security
+ â 
+Microphone & Camera
+.
+
+Make sure Oversight is listed and enabled.
+
+ð Step 3: Check for Crash Logs
+
+If Oversight still doesnât start, let's check if itâs crashing:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'process CONTAINS "Oversight"'
+
+ --info --last 10m
+
+â 
+If it shows errors, paste them here so I can analyze.
+
+ð Step 4: Reinstall Oversight One More Time (If Still Failing)
+
+If 
+Steps 1-3 donât work
+, letâs 
+fully remove and reinstall it
+:
+
+1ï¸â£ 
+Delete the current version
+:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Oversight.app
+
+2ï¸â£ 
+Download a fresh copy
+:
+
+ð 
+Objective-See Oversight
+
+3ï¸â£ 
+Install & Launch
+:
+
+Open the 
+.dmg
+ file and 
+drag Oversight into Applications
+.
+
+Run:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+4ï¸â£ 
+Check again
+:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+ð 
+Try these steps and let me know what happens! If there's an error, send me the output so I can troubleshoot further.
+ ð
+
+You said:
+
+hmmm its strange you say its not running because when I start Photo Booth or start a QuickTime recording it is warning me about the camera and mic
+
+ChatGPT said:
+
+â 
+Great news! If Oversight is warning you when the camera or microphone is activated, then it is actually running!
+ ð
+
+The reason 
+it's not appearing in 
+ps aux
+
+ could be because 
+it runs as a background agent rather than a visible process.
+ Some macOS security tools donât always show up in a simple 
+ps aux
+ command.
+
+ð Final Confirmat

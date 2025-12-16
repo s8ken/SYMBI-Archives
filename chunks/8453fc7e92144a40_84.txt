@@ -1,0 +1,245 @@
+e.service.js
+
+Add after you compute scores & pick 
+chosen
+:
+
+diff
+
+Copy code
+
++const { appendEvent } =
+=3D require('./ledger.service');
+
+ // ... inside orchestrate result handling:
+ const receipt =3D {
+   type: 'bridge_receipt',
+   task,
+   session_id, // ensure your caller passes session_id; normalize if needed
+   agents_considered: proposals.map(p =3D> ({ agent_key: p.agent_key, sc=
+ore: p.score })),
+   chosen: chosen ? { agent_key: chosen.agent_key, score: chosen.score, pro=
+posal_id: chosen.proposal?.proposal_id } : null,
+   rationale: chosen?.rationale || 'ranking_by_score',
+   raw: process.env.SYMBI_RECEIPTS_VERBOSE 
+
+=3D=3D=3D '1' ? proposals : undefined
+
+ };
+ try {
+
+-  // (no-op previously)
+
++  await appendEvent({
+
++    session_id,
+
++    timestamp: new Date().toISO=
+String(),
+
++    prompt: `[BRIDGE] ${task}`,=
+
++    response: `Chosen: ${receip=
+t.chosen?.agent_key || 'none'} (score=3D${receipt.chosen?.score ?? 'n/a'})`=
+,
+
++    metadata: { receipt: { ...r=
+eceipt, raw: undefined } }, // keep raw optional
+
++    analysis: { actions: ['brid=
+ge_receipt'] }
+
++  });
+
+ } catch (e) { /* do not fail the request; log instead */ }
+
+Patch 
+backend/controllers/bridge.controller.js
+
+Make sure 
+session_id
+ is accepted/passed through (normalize if needed):
+
+diff
+
+Copy code
+
+-const { task, agents =
+=3D [], dryRun =3D true } =3D req.body || {};
+
++const { task, agents =3D [], dr=
+yRun =3D true, session_id } =3D req.body || {};
+
+ // pass session_id down to bridge service so receipts can attach to the le=
+dger chain
+
+-const out =3D await bridgeServi=
+ce.orchestrate({ task, agents, dryRun });
+
++const out =3D await bridgeServi=
+ce.orchestrate({ task, agents, dryRun, session_id });
+
+Verify
+
+bash
+
+Copy code
+
+# run orchestrate with a =
+session_id
+
+curl -s -X POST 
+
+$API
+
+/api/bridge/orchestrate \
+  -H 
+
+"Authorization: 
+$JWT
+
+" -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+
+'{"task":"demo receipts","age=
+nts":["codex","v0"],"session_id":"conv:<CONV_ID>"}'
+
+ | jq
+
+# check ledger for bridge_receipt=
+
+curl -s 
+
+"
+$API
+
+/api/ledger?session_id=3Dconv:<CONV_=
+ID>" -H 
+
+"Authorization: 
+$JWT
+
+" \
+  | jq 
+
+'[.[] | select(.metadata.re=
+ceipt.type=3D=3D"bridge_receipt")] | length'
+
+Rollback: remove 
+appendEvent
+ block and the 
+session_id
+ threading.
+
+3) Tiny UAT add-ons (optional, bu=
+t handy)
+
+Postman
+: add a =E2=80=9CBridge: Receipt Present=E2=80=
+=9D request:
+
+http
+
+Copy code
+
+GET {{baseUrl}}/api/ledger?session_id=3Dconv:{{convId}}
+Authorization: {{jwt}}
+Tests:
+pm.test('has receipt', function () {
+  const j =3D pm.response.json();
+  pm.expect(j.some(e =3D> e.metadata && e.metadata.receipt &=
+& e.metadata.receipt.type=3D=3D=3D'bridge_receipt')).to.eql(true);
+});
+
+Shell check
+:
+
+bash
+
+Copy code
+
+curl -s 
+
+"
+$API
+
+/api/ledger?sessio=
+n_id=3Dconv:<CONV_ID>" -H 
+
+"A=
+uthorization: 
+$JWT
+
+=
+" \
+  | jq 
+
+'map(select(.metadata.recei=
+pt.type=3D=3D"bridge_receipt")) | .[0].metadata.receipt'
+
+Go/No-Go gates (fast)
+
+/metrics
+ responds (or 401s without token in prod) =E2=9C=
+=85
+
+Orchestrate with 
+session_id
+ writes a 
+bridge_receipt
+ to the ledger =E2=9C=85=
+
+ledger/verify
+ still returns 
+{ ok: true }
+ =E2=9C=85
+
+No new secrets client-side (only J=
+WT / SYMBI_API_KEY) =E2=9C=85
+
+If you want me to also wire 
+RBAC hardening
+ on sensitiv=
+e trust routes (one small patch with 
+requireRole('admin')
+ and a unit test), say the word and I=E2=
+=80=99ll drop the exact diff.
+
+=
+
+=
+
+You said:
+
+Perfect! Your ship-re=
+ady improvements are excellent. I'll add the /metrics check to the smoke te=
+st and enhance the Postman collection with bridge receipt verification to c=
+omplete the UAT coverage.
+
+tools/smoke.sh
+
++ 6 - 1
+
+Review
+
+Now let me add the bridge receipt verification test to the Postman collecti=
+on as requested.
+
+tools/SYMBI_Postman_Collection.json
+
++ 1 - 1
+
+Review
+
+Let me test the updated smoke script to verify the metrics endpoint check w=
+orks correctly.
+
+Symbi Synergy Terminal
+
+API_BASE=3Dhttp://localhost:5000 ./tools/smoke.sh | tail -10
+
+Excellent! The metrics

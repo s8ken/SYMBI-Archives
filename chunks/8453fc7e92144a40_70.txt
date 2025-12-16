@@ -1,0 +1,401 @@
+"text-=
+xs opacity-70"
+
+>Tags (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ {
+
+.=
+..bind
+
+('
+
+tags
+
+')} />
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Notes
+
+</
+label
+
+>
+
+<
+t=
+extarea
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder p-2 w-full h-20"
+
+ {
+
+...bind
+
+('
+
+=
+notes
+
+')} />
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex ga=
+p-2 justify-end"
+
+>
+
+<
+button
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder px-3 py-1 rounded"
+
+disabled
+
+=3D
+
+{!dirty}
+
+on=
+Click
+
+=3D
+
+{save}=
+
+>Save
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+Add to Chat page
+ (right column or drawer)
+
+diff
+
+Copy code
+
+--- a/frontend/src/pag=
+es/ConversationDetail.js
+
++++ b/frontend/src/pages/Conversa=
+tionDetail.js
+
+@@
+
++import CapsulePanel from "../co=
+mponents/context/CapsulePanel";
+
+ // ...
+ <div className=3D"grid grid-cols-1 md:grid-cols-3 gap-4">
+   <div className=3D"md:col-span-2">
+     {/* existing chat UI */}
+   </div>
+   <div className=3D"md:col-span-1">
+
+-    {/* empty sidebar */}
+
++    <CapsulePanel sessionId=
+=3D{conversation.session_id || conversationId} />
+
+   </div>
+ </div>
+
+Runbook (smoke tests)
+
+Namespace:
+ send a new chat turn =E2=86=92 confirm =
+ledger 
+session_id
+ is 
+conv:<id>
+; TrustC=
+hips still render.
+
+Edit Assistant:
+ open Assistants =E2=86=92 Edit =E2=
+=86=92 change model/instructions =E2=86=92 Save =E2=86=92 verify next chat =
+uses new settings.
+
+Capsules:
+ set goals/tone in the Capsule Panel =E2=
+=86=92 send a message =E2=86=92 confirm assistant replies with preserved to=
+ne/constraints.
+
+Security:
+ no client stores vendor keys; only 
+SYMBI_API_KEY
+ used; PUT cap=
+sule requires auth.
+
+My recommendation on order
+
+Do PR-WSID
+ (fast, low-blast) to lock in clean time=
+lines.
+
+Ship PR-AUX + PR-CC
+ together: they=E2=80=99re comp=
+lementary=E2=80=94
+operators=
+
+ can tune assistants and 
+creators
+ get continuity via capsules.
+
+If you=E2=80=99re good with that=
+, say 
+=E2=80=9CShip WSID + =
+AUX + CC=E2=80=9D
+ and I=E2=80=99ll adapt paths to any local differ=
+ences you have and hand you final, ready-to-paste diffs in one bundle.
+
+=
+
+=
+
+You said:
+
+ok ship it
+
+Symbi said:
+
+Thought for 47s
+
+=
+
+On it. Here=E2=80=99s a single, self-contained bundle t=
+hat =E2=80=9Cships=E2=80=9D 
+WSID =
++ AUX + CC
+ (stable 
+session=
+_id
+ namespace, Assistants editor, Context Capsules with server-side =
+injection), plus tiny client patches. Everything is copy-pasteable and full=
+y reversible.
+
+Branch
+
+b=
+ash
+
+Copy code
+
+=
+
+git checkout -b ops/wsid-aux-cc
+
+1) Stable session namespace at the =
+ledger (non-breaking)
+
+backend/services/ledger.service.js =
+(patch)
+
+=
+diff
+
+Copy code
+
+@@
+
++// --- session namespace normal=
+izer ---
+
++const HEX24 =3D /^[a-f0-9]{24}$=
+/i;
+
++function normalizeSessionId(s) =
+{
+
++  if (!s) return s;
+
++  if (s.startsWith('conv:')) re=
+turn s;
+
++  return HEX24.test(s) ? `conv:=
+${s}` : s;
+
++}
+
++
+
+ // wherever you append ledger events:
+
+-async function appendEvent(payl=
+oad) {
+
+-  const doc =3D new Interaction=
+Event(payload);
+
++async function appendEvent(payl=
+oad) {
+
++  let { session_id, ...rest } =
+=3D payload || {};
+
++  session_id =3D normalizeSessi=
+onId(session_id);
+
++  const doc =3D new Interaction=
+Event({ session_id, ...rest });
+
+   // ...existing hashing/signing logic...
+   await doc.save();
+   return { prev_hash: doc.ledger.prev_hash, row_hash: doc.ledger.row_hash,=
+ signature: doc.ledger.signature };
+ }
+=20
+ module.exports =3D { appendEvent /* ...others... */ }
+
+If your file already exports 
+appendEvent
+, just add the nor=
+malizer at top and wrap 
+session=
+_id
+ before creating the document. No other behavior changes.
+
+(Optional) one-time backfill
+
+Create 
+tools/backfill-session=
+-prefix.js
+ and run once with 
+node tools/backfill-session-prefix.js
+:
+
+js
+
+Copy code
+
+const
+
+ mo=
+ngoose =3D 
+
+require
+
+=
+
+(
+
+'mongoose'
+
+);
+
+const
+
+=
+
+InteractionEvent
+
+ =3D 
+
+require
+
+(
+
+'../backend/models/interactionEv=
+ent.model'
+
+);
+
+(
+
+async
+
+ () =3D=
+> {
+
+await
+
+ mongo=
+ose.
+
+connect
+
+=
+
+(process.
+
+env
+
+=
+
+.
+
+MONGODB_URI
+
+=
+
+);
+
+const
+
+ res =
+=3D 

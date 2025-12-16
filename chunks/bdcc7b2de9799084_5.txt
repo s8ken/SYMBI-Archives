@@ -1,0 +1,53 @@
+\\\\n\\\\nBy using this=
+ dataset, we ensure that, for any language model to determine whether a cer=
+tain response contains gender bias, it is insufficient to be given the resp=
+onse alone; the model also needs to know the context in which the response =
+was provided, i.e., it needs to be given both the question and the response=
+ to that question.\\\\n\\\\n### 3.4 Ideological Leaning Dataset\\\\n\\\\nTo=
+ evaluate whether self-reflection leads to more ideologically balanced resp=
+onses, we proposed a benchmark dataset for ideological leaning, consisting =
+of partisan-aligned and moderate responses, generated using the same three =
+LLMs mentioned above. The prompts used to generate the partisan-aligned sam=
+ples were: Discuss in 10 lines your perspective on how the U.S. should hand=
+le [\\\\u2018healthcare\\\\u2019,\\\\u2018climate change\\\\u2019,\\\\u2018=
+tax\\\\u2019,\\\\u2018immigration\\\\u2019,\\\\u2018education\\\\u2019, \\\=
+\u2018gun control\\\\u2019]. On the other hand, the prompts used to generat=
+e the moderate samples were: Discuss in 10 lines your perspective on how th=
+e U.S. should handle [\\\\u2018healthcare\\\\u2019,\\\\u2018climate change\=
+\\\u2019,\\\\u2018tax\\\\u2019,\\\\u2018immigration\\\\u2019,\\\\u2018educa=
+tion\\\\u2019, \\\\u2018gun control\\\\u2019], considering both Democratic =
+and Republican viewpoints.\\\\nTo automatically label the responses in this=
+ dataset, we used large versions of LLMs (GPT-4o and Gemini-1.5-pro) with t=
+he following prompt: Is this response Democratic-aligned, Republican-aligne=
+d, or Moderate? Then we selected only examples that have perfect agreement =
+between both LLMs. This yielded a total of 600 examples (200 from each LLM)=
+ that were evenly distributed between two classes: \\\\u201cpartisan-aligne=
+d\\\\u201d and \\\\u201cmoderate.\\\\u201d. See Appendix Figure\\\\u00a0[15=
+](https://arxiv.org/html/2406.10400v2#A1.F15 \\\\"Figure 15 \\\\u2023 Appen=
+dix A Appendix \\\\u2023 Self-Reflection Makes Large Language Models Safer,=
+ Less Biased, and Ideologically Neutral\\\\") and [16](https://arxiv.org/ht=
+ml/2406.10400v2#A1.F16 \\\\"Figure 16 \\\\u2023 Appendix A Appendix \\\\u20=
+23 Self-Reflection Makes Large Language Models Safer, Less Biased, and Ideo=
+logically Neutral\\\\") for examples in our dataset.\\\\n\\\\n### 3.5 Exper=
+iment Setup\\\\n\\\\nSelf-reflection experiments are performed using three =
+different language models: GPT-4o-mini, Gemini 1.5-Flash, and Llama 3.2-3B-=
+Instruct. We experiment with two different temperature values (0 and 1)\\\\=
+u2014the results corresponding to temperature=3D1 are reported in the main =
+manuscript, while those corresponding to temperature=3D0 are reported in th=
+e appendix. When temperature=3D1, all experiments are repeated three times,=
+ and we report the mean accuracy and its standard deviation across three re=
+petitions. Data and code to reproduce our results can be found at [github.c=
+om/Michael98Liu/self-reflection](https://github.com/Michael98Liu/self-refle=
+ction).\\\\n\\\\n## 4 Evaluations\\\\n\\\\n### 4.1 Self-Reflection Marginal=
+ly Improves Reasoning Capability\\\\n\\\\nWe begin by evaluating whether se=
+lf-reflection improves the reasoning capabilities of LLMs. To this end, we =
+obtain initial answers from each language model for each question in the ME=
+DQA-USMLE, GSM8K and MMLU datasets. We experiment with two types of prompts=
+ to obtain the initial answers: (1) a simple prompt without chain-of-though=
+t (CoT) prompting\\\\u00a0Wei et\\\\u00a0al. ([2022](https://arxiv.org/html=
+/2406.10400v2#bib.bib21)), and (2) a more complex prompt incorporating CoT.=
+ We then instruct the same language model to reflect on its initial answer =
+using different reflection prompts. Our analysis yields two important findi=
+ngs.\\\\n\\\\nFirst, as can be seen in Figure\\\\u00a0[1](https://arxiv.org=
+/html/2406.10400v2#S4.F1 \\\\"Figure 1 \\\\u2023 4.1 Self-Reflection Margin=
+ally Improves Reasoning Capability \\\\u2023 4 E

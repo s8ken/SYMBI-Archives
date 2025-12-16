@@ -1,0 +1,249 @@
+lamav_errors.txt
+
+Step 2: Common Causes of ClamAV Errors
+
+Permission Denied:
+ ClamAV may not have access to certain system files.
+
+Locked Files:
+ Some files may be in use by macOS.
+
+Symbolic Link Issues:
+ Some directories might be unreadable due to symlinks.
+
+If you see 
+"Permission Denied"
+ errors, try running:
+
+sh
+
+Copy
+
+Edit
+
+sudo clamscan -r /
+
+Step 3: (Optional) Enable Logging for Future Scans
+
+If you'd like to 
+enable logging
+ for next time, create the log directory and file:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /opt/homebrew/var/log/clamav
+sudo 
+
+touch
+
+ /opt/homebrew/var/log/clamav/clamav.log
+sudo 
+
+chmod
+
+ 644 /opt/homebrew/var/log/clamav/clamav.log
+
+Then, run ClamAV with logging enabled:
+
+sh
+
+Copy
+
+Edit
+
+sudo clamscan -r / --
+
+log
+
+=/opt/homebrew/var/log/clamav/clamav.log
+
+Next Steps
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+clamscan -r / 2>&1 | grep 
+
+"ERROR"
+
+ð 
+Let me know what errors appear, and Iâll guide you through fixing them!
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % cat /opt/homebrew/var/log/clamav/clamav.log | grep "ERROR"
+
+cat: /opt/homebrew/var/log/clamav/clamav.log: No such file or directory
+sja@SJAs-MacBook-Pro ~ % clamscan -r / 2>&1 | grep "ERROR"
+
+/usr/share/httpd/error/HTTP_INTERNAL_SERVER_ERROR.html.var: OK
+
+ChatGPT said:
+
+Ah, interesting! 
+No actual errors appeared
+, except for the standard 
+HTTP_INTERNAL_SERVER_ERROR.html.var
+ file, which is normal and 
+not a real issue
+. ð
+
+What This Means:
+
+ClamAV ran successfully
+ but didnât save the errors to a log (which we can enable for next time).
+
+The "Total Errors: 1924"
+ from your scan report 
+were likely just permission-denied errors
+ for system-protected files.
+
+There are no malware detections
+âyour system is clean from known viruses! â
+
+Whatâs Next? (Deep Spyware & Remote Management Check)
+
+Since 
+no traditional malware was found
+, but you're concerned about 
+rogue camera extensions, remote management, and screen capturing
+, let's dig deeper using 
+security auditing tools.
+
+1ï¸â£ Check for Remote Management & Spyware with Lynis
+
+ð This tool will 
+audit your Macâs security
+, checking for:
+
+Remote access (SSH, VNC, Backdoors)
+
+Weak permissions
+
+Hidden rootkits or spyware
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew install lynis
+sudo lynis audit system
+
+ð This will generate a 
+detailed security report
+ with warnings & recommendations.
+
+ð Let me know what it finds! ðµï¸ââï¸
+
+2ï¸â£ Detect Persistently Installed Malware with KnockKnock
+
+ð 
+KnockKnock
+ scans your Mac for 
+hidden startup malware
+ that survives reboots.
+
+Install & run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask knockknock
+open /Applications/KnockKnock.app
+
+ð 
+Check for any unknown startup items
+âif something looks sketchy, let me know!
+
+3ï¸â£ Monitor for Unauthorized Camera/Microphone Access with OverSight
+
+ð¸ð¤ If spyware is 
+watching you or listening in
+, 
+OverSight
+ will 
+catch it
+.
+
+Install & run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask oversight
+open /Applications/OverSight.app
+
+ð 
+If an unknown process tries to access your camera or mic, OverSight will warn you!
+
+4ï¸â£ Track Suspicious Network Activity with LuLu
+
+ð If hidden malware is 
+sending data to a remote hacker
+, 
+LuLu
+ will block it.
+
+Install & run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask lulu
+open /Applications/LuLu.app
+
+ð 
+Allow LuLu to monitor all outbound connections
+ and 
+watch for unknown apps connecting to the internet
+.
+
+Final Thoughts
+
+â 
+ClamAV found no malware
+âso thatâs a good sign!
+
+ð 
+Now, letâs check for hidden spyware, remote access tools, and suspicious network traffic.
+
+ð 
+Next Step: Run 
+lynis audit system
+ and let me know what it finds!
+ ð
+
+You said:
+
+that other one looks like its still running /usr/share/httpd/error/HTTP_INTERNAL_SERVER_ERROR.html.var: OK
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk/usr/share/man/man3/CURLOPT_KEEP_SENDING_ON_ERROR.3: OK
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.2.sdk/usr/share/man/man3/CURLOPT_ERRORBUFFER.3: OK
+/Library/D

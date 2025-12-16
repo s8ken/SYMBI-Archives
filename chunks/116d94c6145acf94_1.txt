@@ -1,0 +1,360 @@
+
+per/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Pyth=
+on3
+ resulted in an 
+exec format error
+. This typically occurs when the shell tries to =
+execute a file that is not a valid executable for the system.
+
+Cause:
+
+The file 
+Python3
+ in the specified path is likely not the=
+ actual Python executable. On macOS, the Python framework installed by Xcod=
+e Command Line Tools places the executable in a different location, often a=
+ symbolic link or a different binary name.
+
+You might be trying to run the framework=
+ itself or a non-executable component.
+
+Solution:
+
+Use the =
+correct Python executable
+: Instead of directly referencing the fra=
+mework path, use the 
+py=
+thon3
+ command, which should be available in your PATH if the Command=
+ Line Tools are installed correctly. Run:
+
+Bash
+
+Copy
+
+python3
+
+ --version
+
+This should conf=
+irm if Python 3.9 is installed and accessible.
+
+Check th=
+e installation
+: Ensure the Xcode Command Line Tools are properly i=
+nstalled. Run:
+
+Bash
+
+Copy
+
+xco=
+de-select
+
+ --install
+
+If already installed, verify the Python pa=
+th:
+
+Bash
+
+Copy
+
+which
+
+ python3
+
+It should point to something like 
+/Library/Developer/CommandLineTools/usr/bin/python3=
+
+ or 
+/usr/bin/pyt=
+hon3
+.
+
+Alternat=
+ive
+: If you need a specific Python version, consider using a versi=
+on manager like 
+pyenv
+ to install and manage Python versions:
+
+Bash
+
+Copy
+
+brew
+
+ install
+
+ pyenv
+
+pyenv
+=
+
+ install
+
+ 3.9.0
+
+pyenv
+=
+
+ global
+
+ 3.9.0
+
+Fix the =
+command
+: If you must use the framework path, the actual executable=
+ is likely at:
+
+Bash
+
+Copy
+
+=
+
+/Library/Dev=
+eloper/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/b=
+in/python3
+
+Try running that instead=
+.
+
+2. 
+npm I=
+nstall Error: 
+EACCES: p=
+ermission denied
+
+The =
+command 
+npm install -g =
+npm@11.5.2
+ failed with an 
+EACCES
+ (permission denied) error when trying to update npm=
+ globally.
+
+Cause:
+
+The error occurs because the user (
+standard
+) lacks write=
+ permissions to 
+/usr/lo=
+cal/lib/node_modules
+, where global npm packages are installed. This =
+is common on macOS when Node.js was installed without proper permissions or=
+ with a different user (e.g., via 
+sudo
+).
+
+macOS=E2=80=99s default permissions for =
+
+/usr/local
+ often=
+ require elevated privileges for global installations.
+
+Solutions:
+
+Here=
+ are several ways to resolve this, ordered from least to most invasive:
+
+Option 1: 
+Use 
+sudo
+ to Run the C=
+ommand
+
+Run =
+the command with elevated privileges:
+
+Bash
+
+Copy
+
+sudo
+
+ npm
+
+ install
+
+ -g
+
+ npm@11.5.2
+
+=
+
+Caution
+: Using 
+sudo
+ can lead to permission issues later if other tools or scripts run as a=
+ non-root user. Only use this if you=E2=80=99re comfortable managing permis=
+sions manually.
+
+Option 2: 
+Fix P=
+ermissions for Node.js
+
+Adju=
+st the permissions of the Node.js global directory to allow your user to wr=
+ite to it:
+
+Bash
+
+Copy
+
+sudo
+
+ chown
+
+ -R
+
+ $(
+
+whoami
+
+)
+
+:admin
+
+ /usr/local/lib/node_modules
+
+sudo
+
+ chmod
+
+ -R
+
+ u+=
+w
+
+ /usr/local/lib/node_modu=
+les
+
+Then=
+ retry:
+
+Bash
+
+Copy
+
+npm
+
+ install
+
+ -g
+
+ npm@11.5.2=
+
+Option 3: 
+Use a=
+ Node Version Manager (Recommended)
+
+To a=
+void permission issues entirely, use a Node version manager like 
+nvm
+ (Node Version Manager)=
+. This installs Node.js and npm in your home directory, avoiding system-lev=
+el permission issues.
+
+Install 
+nvm
+:
+
+Bash
+
+Copy
+
+curl
+
+ -o-
+=
+
+ https://raw.githubusercontent.co=
+m/nvm-sh/nvm/v0.40.1/install.sh
+
+ |
+
+ bash
+
+=
+
+Close and reopen your terminal, or sourc=
+e the shell configuration:
+
+Bash
+
+Copy
+
+source
+
+ ~/.zshrc
+
+Install Node.js (which includes npm):
+
+Bash
+
+Copy
+
+nvm
+
+ install
+
+ 22
+
+nvm
+
+ use
+
+ 22
+
+Update npm globally without 
+sudo
+:
+
+Bash
+
+Copy
+
+npm
+
+ install
+
+ -g
+
+ npm@11.5.2
+
+Benefits=
+
+: 
+nvm
+ a=
+voids permission issues and allows you to switch between Node versions easi=
+ly.
+
+Option 4: 
+Insta=
+ll npm in a User Directory
+
+Conf=
+igure npm to install global packages in a directory you own:
+
+Bash
+
+Copy
+
+mkdir
+
+ ~/.npm-global
+
+npm
+
+ config
+
+ set
+
+ =
+prefix

@@ -1,0 +1,227 @@
+rror stream
+    --help-extra  print help on extra options to the output stream
+    -ea[:<packagename>...|:<classname>]
+    -enableassertions[:<packagename>...|:<classname>]
+                  enable assertions with specified granularity
+    -da[:<packagename>...|:<classname>]
+    -disableassertions[:<packagename>...|:<classname>]
+                  disable assertions with specified granularity
+    -esa | -enablesystemassertions
+                  enable system assertions
+    -dsa | -disablesystemassertions
+                  disable system assertions
+    -agentlib:<libname>[=<options>]
+                  load native agent library <libname>, e.g. -agentlib:jdwp
+                  see also -agentlib:jdwp=help
+    -agentpath:<pathname>[=<options>]
+                  load native agent library by full pathname
+    -javaagent:<jarpath>[=<options>]
+                  load Java programming language agent, see java.lang.instrument
+    -splash:<imagepath>
+                  show splash screen with specified image
+                  HiDPI scaled images are automatically supported and used
+                  if available. The unscaled image filename, e.g. image.ext,
+                  should always be passed as the argument to the -splash option.
+                  The most appropriate scaled image provided will be picked up
+                  automatically.
+                  See the SplashScreen API documentation for more information
+    @argument files
+                  one or more argument files containing options
+    -disable-@files
+                  prevent further argument file expansion
+    --enable-preview
+                  allow classes to depend on preview features of this release
+    --custom-providers <provider>(,<provider>)
+                  add configurations for custom providers
+To specify an argument for a long option, you can use --<name>=<value> or
+--<name> <value>.
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+libtsk_jni
+ Still Not Found – Java IS Looking in the Right Place 🔥
+
+From your output, 
+Java is correctly searching in 
+/usr/local/lib
+
+, but 
+Autopsy still isn't finding 
+libtsk_jni.dylib
+
+.
+
+✅ Step 1: Check If Java Can Manually Load 
+libtsk_jni
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+java -Djava.library.path=/usr/local/lib -jar ~/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+
+📌 
+If it starts successfully,
+ we know the issue is only within Autopsy’s launcher script.
+
+✅ Step 2: Force Autopsy to Load the Library
+
+Since Java is looking in 
+/usr/local/lib
+, let's 
+make sure 
+libtsk_jni.dylib
+ is properly loaded
+:
+
+1️⃣ 
+Force a direct copy (instead of a symlink)
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+
+2️⃣ 
+Check the file permissions
+:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+
+📌 Expected output:
+
+swift
+
+Copy
+
+Edit
+
+-
+
+rwxr
+
+-
+
+xr
+
+-
+
+x  
+
+1
+
+ root  wheel  
+
+500000
+
+Mar
+
+18
+
+02
+
+:
+
+15
+
+/usr/
+
+local
+
+/lib/
+
+libtsk_jni.dylib
+
+3️⃣ 
+If necessary, change permissions
+ to make sure Java can access it:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 755 /usr/local/lib/libtsk_jni.dylib
+
+✅ Step 3: Manually Set The Java Library Path for Autopsy
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 This 
+forces Java to always look in 
+/usr/local/lib
+
+ when loading libraries.
+
+**✅ Step
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % java -Djava.library.path=/usr/local/lib -jar ~/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+
+no main manifest attribute, in /Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+no main manifest attribute
+ – Boot JAR is Not the Main Entry Point 🔥
+
+The error 
+"no main manifest attribute"
+ means that 
+boot.jar
+ is not the correct file to launch Autopsy. Instead, we need to launch the 
+NetBeans-based launcher co

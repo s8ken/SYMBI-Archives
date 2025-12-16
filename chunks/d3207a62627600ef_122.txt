@@ -1,0 +1,341 @@
+k/Contents/Home"
+
+✅ Step 3: Check Inside Autopsy for the 
+libtsk_jni
+ Path
+
+If it still fails, 
+we need to check how Autopsy is looking for 
+libtsk_jni
+
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep -i 
+
+"libtsk_jni"
+
+ ~/Downloads/autopsy-4.21.0/autopsy/etc/autopsy.conf
+
+📌 If 
+Autopsy has a hardcoded path
+, we might need to 
+edit the config file
+ to match our library location.
+
+🚀 If It Still Fails, Send Me This Output:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+grep -i 
+
+"libtsk_jni"
+
+ ~/Downloads/autopsy-4.21.0/autopsy/etc/autopsy.conf
+
+📌 
+This will confirm where Autopsy is looking and how to fix it.
+
+🚀 
+Try these fixes and let me know what happens! 🔥
+
+You said:
+
+ok should we just uninstall everything and start again?
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 Full Reset & Clean Reinstall of Autopsy 🔥
+
+Yeah, at this point, 
+a clean start
+ will be faster than debugging every single issue. Let's completely 
+wipe everything
+ and do a 
+fresh install
+.
+
+🚨 Step 1: Uninstall Everything (Autopsy, Java, Dependencies)
+
+Run these commands 
+one by one
+ to remove everything related to Autopsy, Java, and its dependencies:
+
+sh
+
+Copy
+
+Edit
+
+# 🔥 Remove Autopsy
+
+rm
+
+ -rf ~/Downloads/autopsy-*
+
+# 🔥 Uninstall Java (Zulu JDK)
+
+brew uninstall --cask zulu@17
+brew uninstall --cask zulu@11
+brew uninstall openjdk@17
+brew uninstall openjdk@11
+
+# 🔥 Uninstall Homebrew dependencies
+
+brew uninstall sleuthkit
+brew uninstall libewf
+brew uninstall afflib
+brew uninstall openssl
+brew uninstall sqlite
+
+# 🔥 Remove leftover system libraries
+
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libtsk*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libewf*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libafflib*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libcrypto*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libsqlite*
+sudo 
+
+rm
+
+ -rf /usr/local/javafx
+
+🚀 
+Confirm the cleanup
+ by running:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ /usr/local/lib | grep 
+
+"libtsk\|libewf\|libafflib\|libcrypto\|libsqlite"
+
+📌 If 
+no results appear, everything is gone.
+
+✅ Step 2: Fresh Install of Dependencies
+
+Now, reinstall everything 
+cleanly
+ in the correct order.
+
+1️⃣ 
+Reinstall Homebrew dependencies
+
+sh
+
+Copy
+
+Edit
+
+brew install sleuthkit libewf afflib openssl sqlite
+
+2️⃣ 
+Reinstall Java (Zulu JDK 17)
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu@17
+
+3️⃣ 
+Confirm Java is installed
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+It should output Java 17!
+
+4️⃣ 
+Reinstall JavaFX
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p /usr/local/javafx
+
+cd
+
+ ~/Downloads
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-x64_bin-sdk.zip
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+mv
+
+ javafx-sdk-11.0.2 /usr/local/javafx
+
+5️⃣ 
+Set up environment variables
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 17)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 3: Fresh Install of Autopsy
+
+1️⃣ 
+Download & Extract Autopsy
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://github.com/sleuthkit/autopsy/releases/download/autopsy-4.21.0/autopsy-4.21.0.zip
+unzip autopsy-4.21.0.zip
+
+2️⃣ 
+Fix Permissions
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+
+chmod
+
+ +x autopsy
+
+3️⃣ 
+Run Autopsy
+
+sh
+
+Copy
+
+Edit
+
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 This Should Work!
+
+After a full reset, 
+Autopsy should now run without any missing dependencies
+.
+
+📌 If it 
+still fails
+, send me the output of:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+java -version
+
+🚀 
+Try it out and let me know! 🔥
+
+New version of GPT available
+ - Continue chatting to use the old version, or start a 
+new chat
+ for the latest version.
+
+">

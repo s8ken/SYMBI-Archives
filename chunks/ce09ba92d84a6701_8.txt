@@ -1,0 +1,600 @@
+Resonate. The verifier S=
+DK bits exist in protocol land; the 
+browser verifier UI
+ and the 
+methodology page
+ are the missing shippables in the =
+product website.
+
+YC app asks
+: a crisp 
+demo
+, a clear 
+what is live vs. what is roadmap
+, and links they can click.=
+ The plan above gives you those artifacts without renaming anything.
+
+TL;DR =E2=80=94 do these 5 this w=
+eek
+
+Publish 
+/metrics-methodology
+ (content=E2=80=99s drafte=
+d).
+
+Make 
+/trust-demo#verify
+ a true paste-to-verify flow.
+
+Add 
+footer provenance line
+ (Symphony core / Synergy pr=
+oduct).
+
+Record 
+90s demo video
+; bundle the YC one-pager PDF.
+
+Run the 
+numbers consistency pass
+ (95%/313+) + =E2=80=
+=9CExample=E2=80=9D labels on receipts. 
+
+Want me to generate the verifier H=
+TML+JS and a minimal 
+/metrics-m=
+ethodology
+ Next.js page as drop-in files next?
+
+=
+
+=
+
+You said:
+
+yes please
+
+Symbi said:
+
+Thought for 12s
+
+=
+
+Ycq Sonate =E2=80=94 Verifier Html+js And Next
+
+=
+
+Copy
+
+Edit
+
+Downl=
+oad
+
+Below are t=
+wo drop=E2=80=91in files:
+
+1) 
+
+/public/verifier.html
+
+A zero=E2=80=91dependency page that verifies a pasted Trust Receipt=
+ using Web Crypto (Ed25519) + SHA=E2=80=91256. It expects the receipt to in=
+clude:
+
+inputs_hash
+
+ (hex)
+
+outputs_hash
+
+ (hex)
+
+prev_hash
+
+ (hex)
+
+entry_hash
+
+ (hex)
+
+payload
+
+=
+ (canonical JSON string OR base64; we=E2=80=99ll try both)
+
+ed25519_pubkey
+
+ (raw 32=E2=80=91byte k=
+ey, base64url or hex)
+
+ed25519_sig
+
+ (64=E2=80=91byte signature, base64url or hex)
+
+optional: 
+
+policy_id
+
+, 
+
+guardrail_action
+
+, 
+
+le=
+dger_height
+
+If your current=
+ receipts use different field names, adjust the accessors in 
+
+deriveEntryHash
+
+ and 
+
+getBytes
+
+.
+
+<!doctype html>
+
+<
+html
+
+lang
+=3D
+"en"
+>
+
+<
+head
+>
+
+  <
+meta
+
+charset
+=3D
+"utf-8"
+ />
+
+  <
+meta
+
+name
+=3D
+"viewport"
+
+content
+=
+=3D
+"width=3Ddevice-width, initial-scale=3D1"
+=
+ />
+
+  <
+title
+>Trust Receipt Verifier =E2=80=94 YCQ Sonate</
+title
+>
+
+  <
+style
+>
+
+body
+{
+font-family
+:
+ui-sans-serif
+,
+system-ui
+,
+-apple-system
+;
+max-width
+:
+920
+
+px
+;
+margin
+:
+32
+
+px
+
+auto
+;
+padding
+:
+0
+
+16
+
+px
+}
+
+    .
+row
+{
+disp=
+lay
+:
+flex
+;
+gap
+:
+16
+
+px
+;
+align-items
+:
+center
+}
+
+textarea
+{
+width
+:
+100
+
+%
+;
+min-height
+:
+260
+
+px
+}
+
+pre
+{
+background
+:
+#f6f7f8
+;
+padding
+:
+12
+
+px
+;
+border-radius
+:
+12
+
+px
+;
+overflow
+:
+auto
+}
+
+    .
+btn
+{
+padding
+:
+10
+
+px
+
+14
+
+px
+;
+border-radius
+:
+1=
+0
+
+px
+;
+border
+:
+1
+
+px
+
+solid
+
+#ddd
+;
+background
+:
+#fff
+;
+cursor
+:
+pointer
+}
+
+    .
+btn
+:
+hover
+{
+background
+:
+#f3f4f6
+}
+
+    .
+ok
+{
+color
+:
+#065f46
+;
+background
+:
+#ecfdf5
+;
+border-color
+:
+#a7f3d0
+}
+
+  =
+  .
+bad
+{
+color
+:=
+
+#991b1b
+;
+background
+:
+#fef2f2
+;
+border=
+-color
+:
+#fecaca
+}
+
+    .
+muted
+{
+co=
+lor
+:
+#6b7280
+}
+
+    .
+inline
+{
+disp=
+lay
+:
+inline-block
+;
+margin-left
+:
+6
+
+px
+}
+
+    .
+g=
+rid
+{
+display
+:
+g=
+rid
+;
+grid-template-columns
+:
+1
+
+fr
+
+1
+
+fr
+;
+gap=
+
+:
+16
+
+px
+}=
+
+@media
+ (
+max-width
+: 
+800
+
+px
+){.
+grid
+{
+grid-template-columns
+:
+1
+
+fr
+}}
+
+  <=
+/
+style
+>
+
+</=
+
+head
+>
+
+<
+body
+>
+
+  <
+h1
+>Trust Receipt Verifier</
+h1
+>
+
+  <
+p
+
+class
+=3D
+"muted"
+>Paste a receipt JSON below. We will: (1) recompute <=
+;
+em
+>entry_hash</
+em
+> from <
+em
+>prev_hash + i=
+nputs_hash + outputs_hash</
+em
+>, (2) ve=
+rify the Ed25519 signature over the <
+em
+&g=
+t;payload</
+em
+>, and (3) show a concise=
+ verdict.</
+p
+>
+
+  <
+div
+
+class
+=3D
+"grid"
+>
+
+    <
+div
+>
+
+      <
+labe=
+l
+
+for
+=3D
+"rece=
+ipt"
+>Receipt JSON</
+label
+>
+
+      <
+textarea
+=
+
+id
+=3D
+"receipt"
+
+placeholder
+=3D
+'{"=
+inputs_hash":"=E2=80=A6","outputs_hash":"=E2=80=A6","prev_hash":"=E2=80=A6"=
+,"entry_hash":"=E2=80=A6","payload":"=E2=80=A6","ed25519_pubkey":"=E2=80=A6=
+","ed25519_sig":"=E2=80=A6"}'
+></
+textar=
+ea
+>
+
+      <
+div
+
+class
+=3D
+=
+"row"
+
+style
+=3D
+"
+
+margin-top
+:
+=
+8
+
+px
+
+"
+&g=
+t;
+
+        <
+button
+
+class
+=3D
+"btn"
+
+id
+=3D
+"btnVeri=
+fy"
+>Verify</
+button
+>
+
+        <
+button
+
+class
+=3D
+"btn"
+
+id
+=3D
+"btnExample"
+=
+>Load Example</
+button
+>
+
+        <
+span
+
+class
+=3D
+"muted"
+>No da=
+ta leaves your browser.</
+span
+>
+
+      </
+div
+>
+
+    </
+div
+>
+
+    <
+div
+>
+
+How to link it:
+
+ a=
+dd a CTA to 
+
+/verifier.html
+
+ o

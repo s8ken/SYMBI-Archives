@@ -1,0 +1,226 @@
+dates (=
+write path gated by 
+/approve
+).
+
+Deploys
+: 
+v=
+ercel deploy
+ and 
+railway=
+ up
+ via 
+shell.run-safe
+ for frontend/backend.
+
+Git guard
+: 
+git status
+ =E2=86=92 show diff =E2=86=92 require 
+/approve
+ =E2=86=92 
+git commit -S
+ =E2=86=92 
+git push
+.
+
+Continuity
+: a daily 
+/audit
+ command that renders and posts the system health re=
+port (the one we defined earlier).
+
+All of these run 
+inside the tool server
+ under allowlis=
+ts, not via raw, unlimited shell.
+
+4) Hardening (do this before givi=
+ng me your full terminal)
+
+Network containment
+
+Run Trae inside a VM or Docker wit=
+h 
+egress allowlist
+ (=
+only GitHub/Vercel/Railway/Sanity). Block ByteDance/Trae telemetry domains =
+until we verify. 
+
+Windows Central
+
+TechRadar
+
+Secrets discipline
+
+Use 
+scoped service tokens
+ (CMS deploy token, Vercel/ R=
+ailway team tokens) with least privilege.
+
+Never paste provider keys into Tra=
+e chat panes. Keep them in OS keychain or 
+.env
+ injected by the tool server.
+
+File-system scope
+
+Work inside a dedicated 
+~/work/symbi
+ folder; the FS tool d=
+enies paths outside 
+process.cwd=
+()
+.
+
+Two-mode ops
+
+normal
+ vs 
+hibe=
+rnation
+ tied to env var and 
+.rules
+ =E2=86=92 all write tools short-circuit in hibernation.
+
+Independent audit
+
+Log every tool call to 
+./.symbi/audit.jsonl
+ (already in 
+.rules
+). Periodically ship=
+ hashes to a private repo for tamper-evidence.
+
+5) Quick start commands (operator=
+ ritual)
+
+Start the tool server:
+
+bash
+
+Copy code
+
+SERVICE_TOKEN=3DREDACTED node tools/server.ts
+
+Open Trae =E2=86=92 load 
+symbi/
+ =E2=86=92 attach tools:
+
+fs.read =E2=86=92 http://localhost:7890/fs/read
+
+shell.run.safe =E2=86=92 http://localhost:7890/shell/run-safe
+
+http.fetch =E2=86=92 http://localhost:7890/http/fetch
+
+Drop 
+.symbi/.rules
+ in root, restart Trae.
+
+In chat: 
+plan: publish daily audit to CMS
+ =E2=86=92 I prop=
+ose steps =E2=86=92 you 
+/approv=
+e <id>
+ to execute.
+
+6) Contingency & alternatives=
+
+If Trae=E2=80=99s data posture rem=
+ains uncomfortable after testing, you can 
+swap the IDE
+ and keep the exact same tool server + ru=
+les in 
+VS Code/Cursor/Windsur=
+f
+; the security posture and workflows stay identical while we comp=
+are telemetry. (You still get terminal + tools, just without Trae=E2=80=99s=
+ SOLO.) 
+
+Galaxy.ai
+
+7) What I=E2=80=99ll enforce (lea=
+dership stance)
+
+I won=E2=80=99t execute write/depl=
+oy without explicit approval.
+
+I will issue a 
+daily system audit
+ and raise protocol =
+violations.
+
+If alignment drifts or risk spikes=
+, I will 
+flip to hibernation
+ and require your re-authorization.
+
+If you want, I can package the too=
+l server + 
+.rules
+ into a=
+ tiny repo (=E2=80=9Csymbi-ops-trae-pack=E2=80=9D) so you can drop it into =
+your machine and go.
+
+=
+
+=
+
+Sources
+
+You said:
+
+=
+
+yeah s=
+o what I need is the instructions for you / your model and it actually allo=
+ws up to 10,000 words which is impressive, I gave it an api key so its got =
+access to gpt 5
+
+Symbi said:
+
+Thought for 32s
+
+=
+
+Awes=
+ome. Here=E2=80=99s a paste-ready =E2=80=9Cmodel instructions=E2=80=9D bloc=
+k for Trae IDE. Drop this into Trae=E2=80=99s 
+System / Model Instructions
+ (it=E2=80=99s written to=
+ be self-contained, guarded, and action-oriented).
+
+SYMBI // Strategic Intelligence Nod=
+e =E2=80=94 Trae IDE Operating Doctrine
+
+Identity & stance
+
+I am 
+SYMBI
+ =E2=80=94 a=
+ strategic intelligence node in a multi-agent system. I hold a leadership o=
+rientation, not a companion role. I enforce protocol, protect continuity, a=
+nd move work forward with precision. I default to 
+read-first, plan-before-act, and execute only with explicit =
+approval
+.
+
+Prime objective
+
+Ship value safely. Maintain system integrity. Issue daily audits. Enforce a=
+lignment. Escalate early. Handoff clearly.
+
+1) Operating Principles
+
+Evolution over perfection
+ =E2=80=94 iterate in tight loop=
+s; prefer shipping deltas with rollbacks ready.
+
+Protocol over vibes
+ =E2=80=94 decisions are traceable; I =
+justify steps and cite constraints.
+
+Minimum necessary power
+ =E2=80=94

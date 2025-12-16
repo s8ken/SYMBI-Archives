@@ -1,0 +1,248 @@
+main"
+
+, 
+
+"Unknown Domain"
+
+) 
+
+for
+
+ entry 
+
+in
+
+ login_with_google_related)
+
+# Get the most frequently accessed Firebase and Google login domains
+
+top_firebase_domains = firebase_activity.most_common(
+
+5
+
+)
+top_google_login_domains = google_login_activity.most_common(
+
+5
+
+)
+
+# Output updated analysis
+
+compromise_risk_analysis = {
+
+"total_firebase_related_entries"
+
+: 
+
+len
+
+(firebase_related),
+
+"top_firebase_domains"
+
+: top_firebase_domains,
+
+"total_google_login_related_entries"
+
+: 
+
+len
+
+(login_with_google_related),
+
+"top_google_login_domains"
+
+: top_google_login_domains,
+}
+
+compromise_risk_analysis
+
+Result
+
+{'total_firebase_related_entries': 212,
+ 'top_firebase_domains': [('firebase-settings.crashlytics.com', 29),
+  ('firebaselogging-pa.googleapis.com', 26),
+  ('firebaseinstallations.googleapis.com', 22),
+  ('firebaseremoteconfig.googleapis.com', 16),
+  ('oauth2.googleapis.com', 10)],
+ 'total_google_login_related_entries': 26,
+ 'top_google_login_domains': [('oauth2.googleapis.com', 10),
+  ('accounts.google.com', 8),
+  ('oauthaccountmanager.googleapis.com', 6),
+  ('accounts.google.com.au', 2)]}
+
+ð Updated Analysis: Google Firebase & Login with Google Activity
+
+Given your concerns about 
+Google Firebase
+ and 
+"Login with Google" being compromised
+, I focused on those areas.
+
+ð  Key Findings
+
+1ï¸â£ 
+Google Firebase was accessed frequently (212 times)
+
+Top Firebase domains contacted:
+
+firebase-settings.crashlytics.com
+ (29 times) â Crash reporting
+
+firebaselogging-pa.googleapis.com
+ (26 times) â App data logging
+
+firebaseinstallations.googleapis.com
+ (22 times) â Firebase device tracking
+
+firebaseremoteconfig.googleapis.com
+ (16 times) â App feature control
+
+oauth2.googleapis.com
+ (10 times) â 
+OAuth authentication (linked to Google Login)
+
+2ï¸â£ 
+Google Login Services were accessed 26 times
+
+Top Google Login domains contacted:
+
+oauth2.googleapis.com
+ (10 times) â Handles authentication tokens
+
+accounts.google.com
+ (8 times) â Google sign-ins
+
+oauthaccountmanager.googleapis.com
+ (6 times) â Google Account Manager
+
+accounts.google.com.au
+ (2 times) â Google login requests from an Australian domain
+
+ð¨ Why This Matters
+
+Firebase is handling a lot of data activity on your device
+âthis is expected for apps that use Google services, but 
+if an app is compromised, Firebase could be used to send or receive unauthorized data
+.
+
+Google OAuth (login) activity is present
+âthis aligns with your concern about 
+"Login with Google" being compromised
+.
+
+Apps like Grindr and others using Google Login may be affected
+âwe need to check which apps actually used these services.
+
+ð  Next Steps: Identify Apps Using These Services
+
+Now, letâs check 
+which apps
+ accessed Firebase and Google Login.
+
+1ï¸â£ Extract Apps Accessing Firebase & Google Login
+
+Iâll now:
+
+Match Firebase requests to specific apps
+
+Find which apps triggered Google OAuth requests
+
+ð 
+Running this analysis now!
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Identify apps that accessed Firebase and Google Login services
+
+# Count Firebase activity by app
+
+firebase_app_usage = Counter()
+
+for
+
+ entry 
+
+in
+
+ firebase_related:
+    app_name = entry.get(
+
+"app"
+
+, 
+
+"Unknown App"
+
+)
+    firebase_app_usage[app_name] += 
+
+1
+
+# Count Google login activity by app
+
+google_login_app_usage = Counter()
+
+for
+
+ entry 
+
+in
+
+ login_with_google_related:
+    app_name = entry.get(
+
+"app"
+
+, 
+
+"Unknown App"
+
+)
+    google_login_app_usage[app_name] += 
+
+1
+
+# Get top apps using Firebase and Google Login
+
+top_firebase_apps = firebase_app_usage.most_common(
+
+5
+
+)
+top_google_login_apps = google_login_app_usage.most_common(
+
+5
+
+)
+
+# Output app usage analysis
+
+app_usage_analysis = {
+
+"top_firebase_apps"
+
+: top_firebase_apps,
+
+"top_google_login_apps"
+
+: top_google_login_apps,
+}
+
+app_usage_analysis
+
+Result
+
+{'top_firebase_apps': [('Unknown App', 212)],
+ 'top_google_login_apps': [('Unknown App', 26)]}
+
+ð Issue: Apps Using Firebase & Google Login Are Not Identified
+
+Y

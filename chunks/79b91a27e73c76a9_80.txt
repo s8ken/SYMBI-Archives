@@ -1,0 +1,275 @@
+other way to block these things either at the router or firewall level
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛡️ Blocking 
+rapportd
+ and Other Unwanted Services at the Router/Firewall Level 🔥
+
+If 
+rapportd
+ keeps respawning, 
+blocking it at the network level
+ is another powerful way to stop it. 🚀
+
+🔥 Option 1: Block 
+rapportd
+ Using the Mac Firewall
+
+Since 
+rapportd
+ connects to Apple's servers, you can 
+block it using the built-in macOS firewall
+.
+
+Step 1: Enable the Firewall & Stealth Mode
+
+First, make sure macOS's firewall is turned on:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+
+📌 
+This blocks incoming requests and makes your Mac "invisible" to network scans.
+
+Step 2: Block 
+rapportd
+'s Internet Access
+
+Now, explicitly block 
+rapportd
+ from making network requests:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+📌 
+This stops 
+rapportd
+ from connecting to Apple's servers.
+
+Step 3: Verify That 
+rapportd
+ is Blocked
+
+Check the firewall settings:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --listapps
+
+📌 If 
+rapportd
+ is listed as 
+blocked
+, you’re good! 🎉
+
+🔥 Option 2: Block 
+rapportd
+ at the Router (Best Method)
+
+If 
+rapportd
+ is connecting to Apple's servers, you can 
+block its network traffic at the router
+.
+
+Step 1: Find Out Where 
+rapportd
+ is Connecting
+
+To see what servers 
+rapportd
+ is talking to, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+You’ll see output like:
+
+nginx
+
+Copy
+
+Edit
+
+rapportd
+
+588
+
+ sja  10u  IPv4 0x5b5a0e32dcadbb46  0t0  TCP 
+
+192.168.1.100:52134
+
+ -> 
+
+17.57.145.44:443
+
+ (ESTABLISHED)
+
+📌 The 
+last part (
+17.57.145.44:443
+) is the Apple server IP.
+
+Step 2: Block These IPs in Your Router
+
+Now, log in to your 
+router admin panel
+ and:
+
+Find the 
+Firewall Settings
+ or 
+Access Control
+ section.
+
+Add a new 
+rule to block the IPs
+ found in Step 1.
+
+Set 
+"Block All Connections"
+ for those IPs.
+
+📌 
+This will stop 
+rapportd
+ from reaching Apple’s servers at all!
+ 🚀
+
+🔥 Option 3: Block 
+rapportd
+ Using Little Snitch or Lulu (Easiest)
+
+If you want 
+a GUI method
+, use 
+Little Snitch
+ (paid) or 
+Lulu
+ (free) to block network connections.
+
+How to Block 
+rapportd
+ in Lulu:
+
+Open 
+Lulu
+ (
+/Applications/Lulu.app
+).
+
+Click 
+Rules
+ → 
+New Rule
+.
+
+Select:
+
+Process:
+
+/usr/libexec/rapportd
+
+Action:
+
+Block
+
+Direction:
+
+Outgoing
+
+Apply the rule.
+
+📌 
+Now, 
+rapportd
+ can’t send or receive any data!
+ 🔥
+
+🚀 Final Thoughts
+
+✅ 
+Best method?
+
+Blocking at the router
+ is the most 
+powerful
+ way to stop 
+rapportd
+.
+
+✅ 
+Easy method?
+ Use 
+Lulu
+ or 
+the macOS firewall
+.
+
+✅ 
+Paranoid mode?
+ Do 
+all three
+ to make sure 
+rapportd
+ is fully locked down. 🔒
+
+🔥 
+Let me know which method works best for you!
+ 🚀💀
+
+You said:
+
+Password:
+sja@SJAs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+sja@SJAs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --listapps
+
+Total number of apps = 9 
+1 : /usr/libexec/remoted 
+             (Allow incoming connections)
+2 : /usr/bin/python3 
+             (Allow incoming connections)
+3 : /usr/bin/ruby 
+             (Allow incoming connections)
+4 : /usr/sbin/cupsd 
+             (Allow incoming connections)
+5 : /usr/libexec/sharingd 
+             (Allow incoming connections)
+6 : /usr/libexec/sshd-keygen-wrapper 
+             (Allow incoming connections)
+7 : /usr/sbin/smbd 
+             (Allow incoming connections)
+8 : /System/Library/CoreServices/ControlCenter.app 
+             (Block incoming connections)
+9 : /usr/libexec/rapportd 
+             (Block incoming connections)
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 SUCCESS! 

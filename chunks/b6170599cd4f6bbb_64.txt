@@ -1,0 +1,299 @@
+ 
+Try deleting them:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+ð 
+If you get "Operation not permitted," SIP (System Integrity Protection) is blocking us.
+
+ð Step 5: Block Control Center & 
+rapportd
+ from Running
+
+If deletion doesnât work, we 
+block execution
+ by making them unreadable:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+ð 
+This prevents these services from launching.
+
+ð Step 6: (Only If All Else Fails) Disable SIP, Remove Them, and Re-enable SIP
+
+If 
+SIP (System Integrity Protection) is preventing these services from being removed
+, we must 
+temporarily disable SIP
+.
+
+1ï¸â£ Reboot into macOS Recovery Mode
+
+Restart your Mac and hold 
+Command (â) + R
+ until you see the Apple logo.
+
+Go to Utilities â Terminal
+
+Disable SIP by running:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+Reboot normally
+
+2ï¸â£ Delete Control Center & 
+rapportd
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+ð 
+This removes the files and makes them unreadable.
+
+3ï¸â£ Re-enable SIP for Security
+
+After removing the files, 
+reboot into macOS Recovery Mode again
+, and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+This turns SIP back on to protect your system again.
+
+ð¯ Final Steps
+
+â 
+Try killing the processes & disabling them using 
+launchctl bootout
+
+â 
+If that fails, delete their auto-launch files
+
+â 
+If deletion is blocked, block them using 
+chmod 000
+
+â 
+If all else fails, disable SIP, remove them, and re-enable SIP
+
+ð 
+Try these steps and let me know what happens! If they are STILL running, weâll take it to the next level.
+ ð¥ð
+
+You said:
+
+alright I'll need to disable sip and come back
+
+ChatGPT said:
+
+ð Understood! Disabling SIP is the Final Step â Iâll Be Here When Youâre Back
+ ðð
+
+Since 
+SIP (System Integrity Protection) is preventing Control Center & 
+rapportd
+ from being removed
+, 
+disabling SIP temporarily is necessary
+ to fully delete them.
+
+ð 
+Quick Reminder of the Steps:
+
+1ï¸â£ 
+Reboot into macOS Recovery Mode
+ (
+Command â + R
+ during startup).
+
+2ï¸â£ 
+Open Terminal
+ from the Utilities menu.
+
+3ï¸â£ 
+Run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+4ï¸â£ 
+Restart your Mac normally.
+
+5ï¸â£ 
+Delete Control Center & 
+rapportd
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+6ï¸â£ 
+Reboot back into Recovery Mode and re-enable SIP
+ for security:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+Once youâre back, run 
+netstat -an | grep LISTEN
+ again and let me know if the ports are FINALLY gone!
+ ð¥ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo rm -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+Password:
+rm: /System/Library/LaunchAgents/com.apple.controlcenter.plist: Read-only file system
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð Still Read-Only After Disabling SIP? Letâs Fix That!
+
+Even after 
+disabling SIP
+, macOS 
+still treats the filesystem as read-only
+ in some cases.
+
+ð 
+Let's make the filesystem writable and remove the files again!
+
+ð Step 1: Remount System Drive as Writable
+
+Since macOS 
+mounts 
+/System
+ as read-only
+, we need to 
+remount it as writable
+ before deletion.
+
+Run this in 
+Recovery Mode
+ (if not already in Recovery Mode, reboot and hold 
+â + R
+ to enter it):
+
+sh
+
+Copy
+
+Edit
+
+mount -uw /
+
+ð 
+This will make the s

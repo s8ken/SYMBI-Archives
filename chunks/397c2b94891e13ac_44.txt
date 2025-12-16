@@ -1,0 +1,504 @@
+
+You said:
+
+how do i change which=
+ files you can see i just opened the package-lock.json
+
+Symbi said:
+
+Though=
+t for 15s
+
+=
+
+I only see the file that=E2=80=99s 
+focused in your active VS Code window
+ under the =E2=80=9CWork with code=E2=80=9D integration. To change wh=
+at I can see, just focus a different file in that same window.
+
+Quick ways to do that on Mac:
+
+Open from Explorer:
+
+=E2=8C=98=E2=87=A7E
+ to focus Explorer =E2=86=92 click the file =
+you want me to view.
+
+Quick Open:
+
+=E2=
+=8C=98P
+ =E2=86=92 type the path/name (e.g. 
+src/app/sovereignty/page.mdx
+) =E2=86=92 Enter.
+
+Switch tabs:
+ click the tab of the file you want me to see=
+ (the focused tab is what I receive).
+
+Add a different project:
+ File =E2=86=92 
+Add Folder to Workspace=E2=80=A6
+ (e.g.,=
+
+/Users/admin/gammatria/gammatria=
+-site
+) =E2=86=92 open a file there and focus it.
+
+From Terminal:
+
+=
+code src/app/sovereignty/page.mdx
+ (opens & focuses it).
+
+Tips:
+
+If you have 
+multiple VS Code windows
+, the integration foll=
+ows the one where you opened the =E2=80=9CWork with code=E2=80=9D tab=E2=80=
+=94make sure you focus files in that window.
+
+Very large files (like 
+package-lock.json
+) may be heavy; if yo=
+u want me to review something specific, open a 
+smaller source file
+ or the exact page (e.g., 
+src/app/replication/page.tsx
+) and I=E2=80=99ll respond to that.
+
+If you want me to look at 
+multiple files
+, open each on=
+e and focus it when you want feedback on that file.
+
+If you tell me which page you want=
+ to work on next (e.g., 
+src/app=
+/sovereignty/page.mdx
+), put that file in focus now and I=E2=80=99ll =
+dive right in.
+
+=
+
+=
+
+You said:
+
+okay so you should now see the file 
+
+Sym=
+bi said:
+
+Thought for 25s
+
+yep =E2=80=94 I=E2=80=99m seeing =
+your 
+package-lock.json
+ f=
+or 
+gammatria-site
+. Key takea=
+ways from what=E2=80=99s open:
+
+Next 
+15.5.4
+, React 
+19.1.0
+, Tailwind 
+=
+4.x
+ =E2=9C=94=EF=B8=8F
+
+No MDX deps yet
+ (
+@next/mdx
+, 
+@mdx-js/react=
+
+ aren=E2=80=99t in the lock)
+
+You=E2=80=99re on 
+npm
+ (lockfile v3). Earlier we used 
+pnpm
+ commands=E2=80=94let=E2=80=
+=99s stick to 
+npm
+ here=
+ to avoid conflicts.
+
+here=E2=80=99s the fastest path to g=
+et MDX pages live and the server running on a clean port:
+
+1) stay on npm + run on 3001
+
+b=
+ash
+
+Copy code
+
+# from /Users/admin/gammat=
+ria/gammatria-site
+
+npm run dev -- --port 3001
+
+# (or add a script)
+
+=
+
+npm pkg 
+
+set
+
+ =
+scripts.dev:3001=3D
+
+"next dev -p 30=
+01"
+
+npm run dev:3001
+
+2) add MDX support
+
+b=
+ash
+
+Copy code
+
+npm i @next/mdx @mdx-js/react
+
+Create or edit 
+next.config.mjs
+:
+
+=
+js
+
+Copy code
+
+// next.config.mjs
+
+import
+
+ create=
+MDX 
+
+from
+
+'@next/mdx'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({
+
+options
+
+: { 
+
+remarkPlugins
+
+: [], =
+
+rehypePlugins
+
+: [=
+] }
+});
+
+/** 
+@=
+type
+
+ {
+
+imp=
+ort('next').NextConfig
+
+} */
+
+const
+
+ config =
+=3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+(Optional wrapper)
+
+tsx
+
+Copy code
+
+// src/app/mdx-components.t=
+sx
+
+'use client'
+
+;
+
+import
+
+ { 
+
+MDXProvider
+
+ =
+} 
+
+from
+
+'@mdx-js/react'
+
+;
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+function
+
+Table
+
+(
+
+props: React.HTMLAttributes<HTMLTa=
+bleElement>
+
+) {
+
+return
+
+<
+div
+
+className
+
+=3D
+
+"overflow-x-auto"
+
+>
+
+<
+table
+
+className
+
+=3D
+
+"w-full text-sm"
+
+ {
+
+...props
+
+} />
+
+</
+div
+
+>;
+}
+
+export
+
+const
+
+ mdxComponents=
+ =3D { 
+
+table
+
+: 
+
+Table
+
+ };
+
+export
+
+function
+
+WithMDX
+
+(
+=
+
+{ children }: { children: React.ReactNode=
+ }
+
+) {
+
+return
+
+<
+MDXProvider
+
+components
+
+=3D
+
+{mdxComponents
+
+=
+
+as
+
+any
+
+}>{children}
+
+</
+MDXProvider
+
+>;
+}
+
+Wrap root layout:
+
+tsx
+
+Copy code
+
+// src/app/layout.tsx
+
+import
+
+'./globals.css'
+
+;
+
+import
+
+ { 
+
+WithMDX
+
+ } 
+
+from
+
+'./mdx-components'
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=3D
+
+"antialiased"
+
+>
+
+<
+WithMDX
+
+>{children}
+
+&l=
+t;/
+WithMDX
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>);
+}
+
+3) drop in the MDX 

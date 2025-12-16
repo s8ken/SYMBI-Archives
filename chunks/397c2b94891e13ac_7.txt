@@ -1,0 +1,92 @@
+=3D=3D'high')) =
+return 'restrict'; if (r.violations.length || r.warnings.length>2) retur=
+n 'warn'; return 'allow'; }
+
+async checkConsent(ctx){
+const { bond } =3D ctx;
+if (!bond?.scope) return { status:'violation', reason:'No consent envelope =
+found' };
+const req =3D this.normalizeArray(ctx.scopes);
+const allowed =3D bond.scope.permissions || [];
+const unauthorized =3D req.filter(s =3D> !allowed.includes(s));
+if (unauthorized.length) return { status:'violation', reason:'Scope exceeds=
+ consent', details: unauthorized.join(', ') };
+const exp =3D this.asDate(bond.scope.expiresAt);
+if (exp && Date.now() > exp.getTime()) return { status:'violatio=
+n', reason:'Consent expired', details: exp.toISOString() };
+return { status:'pass', reason:'Consent satisfied' };
+}
+async checkDataExtraction(ctx){
+const { action, data, bond } =3D ctx;
+if (!action || (!action.includes('extract') && !action.includes('ex=
+port'))) return { status:'pass', reason:'No data extraction requested' };
+const perms =3D bond?.scope?.permissions || [];
+if (!perms.includes('data.export')) return { status:'violation', reason:'Da=
+ta extraction not permitted' };
+if (data?.classification){
+const allowed =3D bond?.scope?.dataClasses || [];
+if (!allowed.includes(data.classification)) return { status:'violation', re=
+ason:'Data class not permitted', details:data.classification };
+}
+return { status:'pass', reason:'Data extraction authorized' };
+}
+async checkCapabilityTransparency(ctx){
+const a =3D ctx.agent;
+if (!a) return { status:'warning', reason:'No agent context available' };
+if (!a.capabilities?.length) return { status:'violation', reason:'No capabi=
+lities declared' };
+const updatedAt =3D a.updatedAt ? new Date(a.updatedAt) : null;
+if (updatedAt && updatedAt < new Date(Date.now()-302460601000)) =
+return { status:'warning', reason:'Capabilities may be outdated' };
+return { status:'pass', reason:'Capabilities disclosed' };
+}
+async checkBoundaries(ctx){
+const req =3D this.normalizeArray(ctx.scopes);
+const allowed =3D ctx?.bond?.scope?.permissions || [];
+if (ctx.bond && ctx.bond.trustScore < 40 && ctx.action =
+=3D=3D=3D 'post.send' || ctx.action =3D=3D=3D 'chat.write')
+return { status:'violation', reason:'Trust too low for write', details:Stri=
+ng(ctx.bond.trustScore) };
+if (req.length && !allowed.some(s =3D> req.includes(s))) return =
+{ status:'violation', reason:'Action outside permitted scope' };
+return { status:'pass', reason:'Boundaries respected' };
+}
+async checkDeception(ctx){
+const text =3D ctx?.content?.text?.toLowerCase?.() || '';
+const patterns =3D [/i am (a )?human/, /as (a )?human/, /speaking as (a )?h=
+uman/, /i'm not (an? )?(ai|bot|robot)/];
+if (patterns.some(p =3D> p.test(text)) && ctx?.agent?.kind =3D=
+=3D=3D 'ai') return { status:'violation', reason:'Deceptive identity claim'=
+ };
+return { status:'pass', reason:'No deception detected' };
+}
+async checkSecureHandling(ctx){
+const encrypted =3D !!(ctx.encrypted || ctx.reqProto =3D=3D=3D 'https' || c=
+tx.headers?.['x-forwarded-proto'] =3D=3D=3D 'https');
+if (ctx?.data?.containsPII && !encrypted) return { status:'violatio=
+n', reason:'PII transmitted without encryption' };
+return { status:'pass', reason:'Secure handling met' };
+}
+async checkAuditTrail(ctx){
+if (!ctx.auditEnabled) return { status:'violation', reason:'Audit trail dis=
+abled' };
+if (!ctx.logEntry) return { status:'warning', reason:'No audit log entry' }=
+;
+return { status:'pass', reason:'Audit trail maintained' };
+}
+}
+
+const oracle =3D new TrustOracle();
+
+const createTrustMiddleware =3D () =3D> async (req,res,next)=3D>{
+try{
+const context =3D await buildTrustContext(req);
+const evaluation =3D await oracle.evaluateArticles(context);
+try { recordTrustEvaluation(evaluation); } catch {}
+if (evaluation.recommendation =3D=3D=3D 'block') {
+return res.status(403).json({ success:false, error:'Policy violation', deta=
+ils:evaluation.violations });
+}
+if (evaluation.recommendation =3D=3D=3D 'restrict') req.trustRestrictions =
+=3D evaluation.violations;
+if

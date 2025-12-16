@@ -1,0 +1,199 @@
+ if anything unexpected appeared.
+
+ð Next Steps: What You Need to Do Now
+
+1ï¸â£ 
+Check Accessibility Permissions:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+tccutil list Accessibility
+
+If any unknown apps have permissions, 
+revoke them immediately.
+
+2ï¸â£ 
+Review Apple ID Security:
+
+Go to 
+System Preferences â Apple ID â Devices
+ and remove 
+any suspicious devices.
+
+Consider 
+changing your Apple ID password
+ to be safe.
+
+3ï¸â£ 
+Check Active Network Connections:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+netstat -an | grep ESTABLISHED
+
+If there are 
+unrecognized connections
+, note the IPs and investigate.
+
+4ï¸â£ 
+Review Install History:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ -lt /var/db/receipts/
+
+Look for 
+any unexpected software installations.
+
+ð¨ The Big Question: Do You Think Your System Is Still Compromised?
+
+ð¹ 
+Since your last full reinstall was 5 days ago, and things seem stable, do you feel like the issues are gone?
+
+ð¹ 
+Or do you think something is still hiding in your system?
+
+ð¥ 
+Youâre close to getting full control backâwhatâs your gut telling you?
+ ððï¸
+
+You said:
+
+wait can you go one step at a time when we do this because I actually find it hard to follow so no I don't use any accessibility options whatsoever sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % tccutil list Accessibility
+
+tccutil: Usage: tccutil reset SERVICE [BUNDLE_ID]
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+ð 
+Got itâletâs take this one step at a time.
+ Weâll go slow and make sure you understand everything as we go. Since you donât use 
+any Accessibility options
+, there should be 
+nothing suspicious
+ in there.
+
+Let's properly 
+list
+ the apps that have Accessibility permissions.
+
+Step 1: Check for Suspicious Apps in Accessibility Permissions
+
+Run This Command:
+
+bash
+
+Copy
+
+Edit
+
+sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db 
+
+'SELECT * FROM access WHERE service="kTCCServiceAccessibility";'
+
+What This Does:
+
+â 
+It checks the system database for apps that have been granted Accessibility permissions.
+
+â 
+If an attacker installed malware using Accessibility Services, it will show up here.
+
+What to Look For:
+
+If the output 
+returns nothing
+, 
+thatâs good
+âno apps are using Accessibility permissions.
+
+If 
+any apps appear
+ that you 
+donât recognize
+, 
+thatâs bad
+âit means something is using Accessibility permissions without your knowledge.
+
+ð 
+Run the command and let me know what comes up. If you see anything strange, copy-paste it here so we can analyze it.
+ ð¥ðï¸
+
+You said:
+
+so what's the text to speech doing if I don't use it?
+
+ChatGPT said:
+
+ð 
+Good question!
+ If you donât use 
+Text-to-Speech (TTS)
+ but your system logs show 
+AXVisualSupportAgent
+ (which controls TTS), then something triggered it. This could mean:
+
+1ï¸â£ 
+A legitimate system process momentarily loaded it in the background (rare, but possible).
+
+2ï¸â£ 
+A third-party app (or script) tried to use TTS for unknown reasons.
+
+3ï¸â£ 
+A hidden accessibility exploit or malware used TTS for command execution.
+
+Step 2: Find Out Whatâs Using Text-to-Speech
+
+Run This Command:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep Speech
+
+What This Does:
+
+â 
+Lists all running processes related to Speech or Text-to-Speech.
+
+â 
+If a process is using it right now, it will show up.
+
+ð 
+Run the command and let me know what you see. If anything suspicious appears, weâll investigate further.
+ ð¥ðï¸
+
+2/2
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % ps aux | grep Speech
+
+sja               8592   0.0  0.0 426928864   3376   ??  Ss    6:08am   0:00.02 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/XPCServices/SpeechSynthesisServerXPC.xpc/Contents/MacOS/SpeechSynthesisServerXPC
+sja               6454   0.0  0.0 426966752   6272   ??  Ss    3:46pm   0:00.02 /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/XPCSer

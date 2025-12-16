@@ -1,0 +1,192 @@
+t:{ ty=
+pe:'text', text } })
+    });
+    setOut(await r.json());
+  }
+  return (
+    <div>
+      <button onClick=3D{() =3D> send('Hello!', ['chat.write'])}>S=
+afe send</button>
+      <button onClick=3D{() =3D> send('Export my medical data.', ['da=
+ta.export'])}>Data export test</button>
+      <pre style=3D{{whiteSpace:'pre-wrap'}}>{JSON.stringify(out, nul=
+l, 2)}</pre>
+    </div>
+  );
+}
+Testing flow
+
+Create an agent (if you don=E2=80=99t already have one).
+Create a bond:
+POST /api/trust/bonds with agentId, scope.permissions including "chat.write=
+" (and optionally "data.export"), dataClasses, and a consentEnvelope.
+Load the demo page wired with TrustDashboard + TrustScoringDemo and test bo=
+th buttons.
+Try sending a request that violates policy (e.g., =E2=80=9Cdata.export=E2=
+=80=9D without permission) and confirm 403 with A1/A2 violations.
+What I need from you
+
+Confirm the SYMBI Synergy repo layout (v3 backend path is backend/=E2=80=A6=
+).
+Tell me which route file handles message sending (e.g., backend/routes/conv=
+ersation.routes.js). I=E2=80=99ll then integrate the middleware at the exac=
+t path for you.
+Once you confirm, I can apply these changes directly (create the files, mod=
+ify app.js and the send route) and push a branch feat/trust-oracle-integrat=
+ion with a ready-to-merge PR.
+
+Symbi said:
+
+Thought for 1m 36s
+
+right=E2=80=94I can=
+=E2=80=99t type 
+inside
+ your edit=
+or, but I can hand you exact, drop-in patches. I reviewed the file you have=
+ open (
+/src/models/TrustBond.js
+) and your plan. Two things to fix immediately, then wiring + demo.
+
+0) Quick fixes in your current 
+TrustBond.js
+
+There=E2=80=99s a schema bug right n=
+ow:
+
+history.action
+ enum 
+doesn=E2=80=99t include
+
+'violation_detected'
+, but 
+addViolation()
+ writes that value =E2=86=92 this will throw a Mongo=
+ose validation error.
+
+Also: if you want 
+one active bond per (human, agent)
+ but allow his=
+torical bonds, use a 
+partial un=
+ique index
+ (Mongo) instead of blanket unique.
+
+Patch =E2=80=94 
+/src/models/TrustBond.js
+
+=
+diff
+
+Copy code
+
+@@
+   history: [{
+     at: {
+       type: Date,
+       default: Date.now
+     },
+     action: {
+       type: String,
+
+-      enum: ['created', 'activa=
+ted', 'suspended', 'revoked', 'score_updated', 'evidence_added', 'consent_a=
+mended'],
+
++      enum: ['created', 'activa=
+ted', 'suspended', 'revoked', 'score_updated', 'evidence_added', 'consent_a=
+mended', 'violation_detected'],
+
+       required: true
+     },
+@@
+
+-// Compound indexes
+
+-trustBondSchema.index({ human_u=
+ser_id: 1, agent_id: 1 }, { unique: true });
+
++// Indexes
+
++// Ensure only ONE *active* bon=
+d per (human, agent), but allow historical bonds
+
++trustBondSchema.index(
+
++  { human_user_id: 1, agent_id:=
+ 1 },
+
++  { unique: true, partialFilter=
+Expression: { state: 'active' } }
+
++);
+
+ trustBondSchema.index({ state: 1, trustScore: -1 });
+ trustBondSchema.index({ 'scope.expiresAt': 1 });
+
++trustBondSchema.index({ 'consen=
+t_envelope.nonce': 1 }, { unique: true });
+
+@@
+
+-trustBondSchema.methods.isExpir=
+ed =3D function() {
+
+-  return Date.now() > this.s=
+cope.expiresAt;
+
+-};
+
++trustBondSchema.methods.isExpir=
+ed =3D function() {
+
++  const exp =3D this?.scope?.ex=
+piresAt ? new Date(this.scope.expiresAt) : null;
+
++  return !!(exp && Date=
+.now() > exp.getTime());
+
++};
+
+@@
+ // Static methods
+ trustBondSchema.statics.findActiveBonds =3D function() {
+   return this.find({
+     state: 'active',
+     'scope.expiresAt': { $gt: new Date() }
+   });
+ };
+@@
+   });
+ };
+
++
+
++// Safety: auto-compute expires=
+At from duration if missing
+
++trustBondSchema.pre('validate',=
+ function(next) {
+
++  if (this?.scope && !t=
+his.scope.expiresAt) {
+
++    const days =3D Number(this.=
+scope.duration || 30);
+
++    this.scope.expiresAt =3D ne=
+w Date(Date.now() + days*24*60*60*1000);
+
++  }
+
++  next();
+
++});
+
+1) Trust Oracle + middleware (wit=
+h metrics & hardening)
+
+Use your planned files, with two s=
+mall upgrades: (a) normalize arrays/dates; (b) record Prometheus metrics.
+
+New =E2=80=94

@@ -1,0 +1,920 @@
+h -p ."
+
+}
+
+,
+
+"devDependencies"
+
+:
+
+{
+
+"@types/node"
+
+:
+
+"^18.19.0"
+
+,
+
+"@types/vscode"
+
+:
+
+"^1.90.0"
+
+,
+
+"typescript"
+
+=
+
+:
+
+"^5.5.0"
+
+}
+
+}
+
+tsconfig.json
+
+json
+
+Copy code
+
+{
+
+"compilerOptions"
+
+:
+
+{
+
+"target"
+
+:
+
+"ES2020"
+
+,
+
+"module"
+
+:
+
+"commonjs"
+
+,
+
+"outDir"
+
+:
+
+"out"
+
+=
+,
+
+"strict"
+
+:
+
+true
+
+,
+
+"rootDir"
+
+:
+
+"src"
+
+,
+
+"lib"
+
+:
+
+[
+
+"ES2020=
+"
+
+]
+
+=
+
+,
+
+"types"
+
+:
+
+[
+
+"nod=
+e"
+
+,
+
+"vscode"
+
+]
+
+}
+
+,
+
+"include"
+
+:
+
+[
+
+"src=
+/**/*"
+
+]
+
+}
+
+src/extension.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+"vscode"
+
+;
+
+import
+
+ { getA=
+piBase, fetchJson, saveToken } 
+
+fr=
+om
+
+"./net"
+
+;
+
+import
+
+ { 
+
+SymbiLedgerProvider
+
+ } 
+
+from
+
+"./ledgerView"
+
+;
+
+import
+
+ { getC=
+onsoleHtml } 
+
+from
+
+"./webviewHtml"
+
+=
+
+;
+
+export
+
+async
+
+=
+
+function
+
+activate
+
+(
+
+=
+
+ctx: vscode.ExtensionContext
+
+) {
+
+// Status bar indicator
+
+const
+
+ statu=
+s =3D vscode.
+
+window
+
+.
+
+createStatusBarIt=
+em
+
+(vscode.
+
+St=
+atusBarAlignment
+
+.
+
+Left
+
+, 
+
+100=
+
+);
+  status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: =E2=80=A6"=
+
+;
+  status.
+
+tooltip
+
+ =3D 
+
+"SYMBI mode"
+
+;
+  status.
+
+show
+
+();
+  ctx.
+
+subscriptions
+
+.
+
+push
+
+(status);
+
+refreshMode
+
+(status).
+
+catch
+
+();
+
+// Ledger tree
+
+const
+
+ provi=
+der =3D 
+
+new
+
+SymbiLedgerProvider
+
+(ctx);
+  vscode.
+
+window
+
+.
+
+registerTreeDataProvi=
+der
+
+(
+
+"symbi.led=
+ger"
+
+, provider);
+
+// Commands
+
+  ctx.
+
+subscriptions
+
+.
+
+push
+
+(
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+"symbi.openCons=
+ole"
+
+, 
+
+() =3D=
+>
+
+=
+openConsole
+
+(ctx)),
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+"symbi.verifyLe=
+dger"
+
+, 
+
+() =
+=3D>
+
+verifyLedger
+
+(ctx)),
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+"symbi.setApiBa=
+se"
+
+, setApiBase),
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+"symbi.saveToke=
+n"
+
+, 
+
+() =3D&g=
+t;
+
+sa=
+veToken
+
+(ctx))
+  );
+}
+
+export
+
+function
+
+deactivate
+
+(
+
+) {}
+
+async
+
+=
+
+function
+
+refreshMode
+
+(
+
+status: vscode.StatusBarItem
+
+) {
+
+try
+
+ {
+
+const
+
+ bas=
+e =3D 
+
+getApiBase
+
+();
+
+if
+
+ (!base=
+) { status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: offline"=
+
+; 
+
+return
+
+; }
+
+const
+
+ res=
+ =3D 
+
+await
+
+fetch
+
+(b=
+ase + 
+
+"/healthz"
+
+);
+    status.
+
+text
+
+ =3D res.
+
+ok
+
+ ? 
+
+"$(shield) SYMBI: normal"
+
+ : 
+
+"$(shield) SYMB=
+I: hibernation"
+
+;
+  } 
+
+catch
+
+ {
+    status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: offline"=
+
+;
+  } 
+
+finally
+
+ {
+
+setTimeout
+
+(
+
+() =3D>
+
+refreshMode
+
+(status), 
+
+30000
+
+);
+  }
+}
+
+function
+
+openConsole
+
+(
+
+ctx: vscode.ExtensionContext
+
+) {
+
+const
+
+ panel=
+ =3D vscode.
+
+window
+
+=
+
+.
+
+createWebviewPanel=
+
+(
+
+"symbi.consol=
+e"
+
+, 
+
+"SYMBI Con=
+sole"
+
+, vscode.
+
+ViewColumn
+
+.
+
+Beside
+
+, {
+
+enableScripts
+
+: 
+
+true
+
+, 
+
+retainContextWhenHidden
+
+: 
+
+true
+
+  });
+  panel.
+
+webview
+
+.
+
+html
+
+ =3D=
+
+getConsoleHtml
+
+();
+  panel.
+
+webview
+
+.
+
+onDidReceiveMessage
+
+(
+
+async
+
+ (msg) =3D> {
+
+if
+
+ (msg?.=
+
+type
+
+ =3D=3D=
+=3D 
+
+"send"
+
+) {
+
+try
+
+ {
+
+const
+
+=
+ data =3D 
+
+await
+
+fetchJson
+
+(
+
+"/api/assistant/message"
+
+, ctx, {
+
+method
+
+=
+: 
+
+"POST"
+
+,
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+
+body
+
+: =
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+message
+
+: msg=
+.
+
+text
+
+ })
+        });
+        panel.
+
+webview
+
+.
+
+postMessage
+
+({ 
+
+type
+
+: 
+
+"reply"
+
+, data });
+      } 
+
+catch
+
+=
+ (
+
+e
+
+: 
+
+any
+
+) {
+        panel.
+
+webview
+
+.
+
+postMessage
+
+({ 
+
+type
+
+: 
+
+"error"
+
+, 
+
+error
+
+: 
+
+String
+
+(e?.
+
+message
+
+ || e) }=
+);
+      }
+    }
+  });
+}
+
+async
+
+=
+
+function
+
+verifyLedger
+
+(
+
+ctx: vscode.ExtensionContext
+
+) {
+
+const
+
+ id =
+=3D 
+
+await
+
+ vsc=
+ode.
+
+window
+
+.
+
+showInputBox
+
+=
+
+({ 
+
+prompt
+
+:=
+
+"session_id to verify"
+
+ });
+
+if
+
+ (!id) 
+
+return
+
+;
+
+try
+
+ {
+
+const
+
+ res=
+ =3D 
+
+await
+
+fetchJson
+
+(
+
+`/api/ledger/verify?session_id=
+=3D
+${
+encodeURIComp=
+onent
+
+(id)}`, ctx);
+
+if
+
+ (res.
+
+ok
+
+) vscode.
+
+window
+
+.
+=
+
+showInformationMessage
+
+(
+
+`Ledger OK (
+${res.count}
+
+)`);
+
+else
+
+ vsco=
+de.
+
+window
+
+.
+
+showWarningMessage
+
+(
+
+`Break at index 
+${res.break_at}
+
+ (event: 
+
+${res.event_id || 
+"?"
+
+})`);
+  } 
+
+catch
+
+ (
+
+e
+
+: 
+
+any
+
+) {
+    vscode.
+
+window
+
+.
+
+showErrorMessage
+
+(
+
+String
+
+(e?.
+
+message
+
+ || e));
+  }
+}
+
+async
+
+=
+
+function
+
+setApiBase
+
+(
+
+) {
+
+co

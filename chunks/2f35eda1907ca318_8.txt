@@ -1,0 +1,505 @@
+Password
+ â If you provide part of it, I can check for matches.
+
+Generate Password Variations
+ â Based on your name, birth year, or common patterns.
+
+Look for Hidden Data
+ â If you suspect data is missing, we might need 
+image.squash
+.
+
+Would you like to search for your 
+exact password
+ or generate 
+possible variations
+ based on these wordlists? ð
+
+Sources
+
+You said:
+
+see what you can find in terms of an exact password
+
+ChatGPT said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Load and search for exact password matches within passwords.txt
+
+passwords_path = 
+
+"/mnt/data/passwords.txt"
+
+# Read the passwords file
+
+with
+
+open
+
+(passwords_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ f:
+    passwords_list = f.read().splitlines()
+
+# Convert passwords into a set for quick searching
+
+passwords_set = 
+
+set
+
+(passwords_list)
+
+# Return the total number of passwords and a few samples
+
+len
+
+(passwords_set), passwords_list[:
+
+20
+
+]  
+
+# First 20 passwords as a preview
+
+Result
+
+(30000,
+ ['123456',
+  'password',
+  '12345678',
+  'qwerty',
+  '123456789',
+  '12345',
+  '1234',
+  '111111',
+  '1234567',
+  'dragon',
+  '123123',
+  'baseball',
+  'abc123',
+  'football',
+  'monkey',
+  'letmein',
+  'shadow',
+  'master',
+  '696969',
+  'mustang'])
+
+Password Search Results
+
+The 
+passwords.txt
+ file contains 
+30,000 passwords
+.
+
+It includes 
+common and weak passwords
+ such as:
+
+pgsql
+
+Copy
+
+123456
+
+, 
+
+password
+
+, qwerty, 
+
+12345
+
+, dragon, abc123, letmein, monkey, mustang
+
+If your password is a 
+common one
+, it might already be in this list.
+
+Would you like me to check 
+a specific password
+ or 
+search for related words
+ from the other datasets? ð 
+
+You said:
+
+find possible variations based on the word lists
+
+ChatGPT said:
+
+I will generate 
+possible password variations
+ using combinations of:
+
+Names
+ (
+female_names.txt
+, 
+male_names.txt
+, 
+surnames.txt
+)
+
+Common words
+ (
+english_wikipedia.txt
+)
+
+Numbers
+ (common patterns like years, sequences, and repeated digits)
+
+I'll create variations such as:
+
+Name + Number
+ â 
+Emma123
+, 
+Smith1980
+
+Word + Symbol
+ â 
+Football!
+, 
+Sunshine#
+
+Popular Phrases
+ â 
+ILoveYou1
+, 
+TrustNo1
+
+Leetspeak Replacements
+ (
+a
+ â 
+@
+, 
+e
+ â 
+3
+, etc.) â 
+P@ssw0rd
+
+Let me generate the list now.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ random
+
+import
+
+ itertools
+
+# Load words from the datasets
+
+def
+
+load_wordlist
+
+(
+
+filepath, max_words=
+1000
+
+):
+
+with
+
+open
+
+(filepath, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ f:
+        words = f.read().splitlines()
+
+return
+
+ words[:max_words]  
+
+# Limit for performance
+
+# Load data from name and word lists
+
+female_names = load_wordlist(
+
+"/mnt/data/female_names.txt"
+
+, 
+
+500
+
+)
+male_names = load_wordlist(
+
+"/mnt/data/male_names.txt"
+
+, 
+
+500
+
+)
+surnames = load_wordlist(
+
+"/mnt/data/surnames.txt"
+
+, 
+
+500
+
+)
+common_words = load_wordlist(
+
+"/mnt/data/english_wikipedia.txt"
+
+, 
+
+500
+
+)
+
+# Common number patterns
+
+common_numbers = [
+
+"123"
+
+, 
+
+"321"
+
+, 
+
+"007"
+
+, 
+
+"666"
+
+, 
+
+"777"
+
+, 
+
+"999"
+
+, 
+
+"111"
+
+, 
+
+"2024"
+
+, 
+
+"1990"
+
+, 
+
+"1987"
+
+, 
+
+"2000"
+
+]
+
+# Generate variations
+
+generated_passwords = 
+
+set
+
+()
+
+# Name-based variations
+
+for
+
+ name 
+
+in
+
+ itertools.chain(female_names, male_names, surnames):
+
+for
+
+ num 
+
+in
+
+ common_numbers:
+        generated_passwords.add(
+
+f"
+{name}
+
+{num}
+
+")
+        generated_passwords.add(
+
+f"
+{num}
+
+{name}
+
+")
+
+# Common word variations
+
+for
+
+ word 
+
+in
+
+ common_words:
+
+for
+
+ num 
+
+in
+
+ common_numbers:
+        generated_passwords.add(
+
+f"
+{word}
+
+{num}
+
+")
+        generated_passwords.add(
+
+f"
+{num}
+
+{word}
+
+")
+
+# Symbol variations
+
+symbols = [
+
+"!"
+
+, 
+
+"@"
+
+, 
+
+"#"
+
+, 
+
+"$"
+
+, 
+
+"%"
+
+, 
+
+"*"
+
+]
+
+for
+
+ word 
+
+in
+
+ itertools.chain(female_names, male_names, common_words):
+
+for
+
+ symbol 
+
+in
+
+ symbols:
+        generated_passwords.add(
+
+f"
+{word}
+
+{symbol}
+
+")
+        generated_passwords.add(
+
+f"
+{symbol}
+
+{word}
+
+")
+
+# Leetspeak replacements
+
+leet_map = 
+
+str
+
+.maketrans(
+
+"aeios"
+
+, 
+
+"@310$"
+
+)
+
+f

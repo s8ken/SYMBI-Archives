@@ -1,0 +1,124 @@
+ck (MP3/WAV) =E2=86=92 mint as NFT (testnet).
+
+&nbs=
+p;  * Show the NFT metadata (stored on IPFS).
+
+B. A=
+I Stem Separation
+
+Navigate to /libs/ai/audio.
+
+Run the Demucs script:
+
+&nbs=
+p;  
+ &nbs=
+p;&nbsp;&nbsp;python separate_stems.py --input my_track.mp3 &nb=
+sp;&nbsp;&nbsp;
+
+**
+
+user
+that's so interesting as you have inadvertently identified another product =
+use but can you see how what is referred to fits into the trust architectur=
+e
+assistant
+Yes! You=E2=80=99ve touched on a critical insight: The music rights/royalty=
+ system (even in its nascent form in YCQ-sonate) isn=E2=80=99t just a featu=
+re=E2=80=94it=E2=80=99s a trust architecture that aligns with SYMBI=E2=80=
+=99s core principles of decentralized identity, data sovereignty, and auton=
+omous agents. Let=E2=80=99s break down how these components fit into SYMBI=
+=E2=80=99s trust stack, and why this accidentally reveals a broader pattern=
+ for any creative IP system (music, film, writing, etc.).
+
+SYMBI=E2=80=99s Trust Architecture: The =
+4 Layers
+SYMBI=E2=80=99s design (across all repos) is built on four layers of trust,=
+ each addressing a different failure in centralized systems:
+LayerProblem It SolvesHow It Applies to Music RightsRelevant Repo/Code1. De=
+centralized Identity (DID)"Who are you?" (Fake accounts, impersonation)Prov=
+es creators/rights-holders are real without platforms like Spotify acting a=
+s gatekeepers.symbi-synergy/apps/identity2. Data Sovereignty"Who controls t=
+he data?" (Labels owning masters)Artists own their stems/metadata (encrypte=
+d on IPFS), not corporations.YCQ-sonate/libs/ipfs3. Verifiable Computation"=
+Can we trust the logic?" (Black-box royalties)Smart contracts enforce split=
+s transparently (no label accounting tricks).symbi-synergy/contracts4. Auto=
+nomous Agents"Who executes the rules?" (Middlemen skimming)AI agents auto-d=
+istribute royalties when streams occur (no human interference).symbi-synerg=
+y/apps/agent
+
+How Music Rights Fit Into This Architect=
+ure
+Let=E2=80=99s map the royalty/splits system to SYMBI=E2=80=99s trust layers=
+:
+Layer 1: DID =3D "Who Owns the Rights?"
+
+Problem: In traditional music, rights ow=
+nership is opaque. Labels or PROs (like ASCAP) act as intermediaries, often=
+ misassigning credits.
+
+SYMBI Solution:
+
+&nbs=
+p; * Each creator (artist, producer, mixer) has a DID (e.g., did:ethr:=
+0x123).
+
+&nbs=
+p; * Verifiable Credentials (VCs) prove their role (e.g., "I mixed thi=
+s track").
+
+&nbs=
+p; * ZK Proofs allow selective disclosure (e.g., "Prove I=E2=80=99m th=
+e producer without revealing my identity").
+
+Code Example:
+
+&nbs=
+p; 
+ &nbsp;&=
+;nbsp;// From symbi-synergy/contracts/identity/DIDRegistry.sol &nbsp;&a=
+mp;nbsp;function addCredential( &nbsp;&nbsp;&nbsp;&nbsp;&am=
+p;nbsp;&nbsp;bytes32 did, &nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;string memory credentialType, // e.g., "Producer" &nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string memory proofCID   =
+     // IPFS link to evidence (e.g., contract) &nbsp;&nbsp;) public=
+ { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;require(owns=
+DID(msg.sender, did), "Not DID owner"); &nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;credentials[did].push(Credential(credentialType, p=
+roofCID)); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;emit=
+ CredentialAdded(did, credentialType, proofCID); &nbsp;&nbsp;} &=
+;nbsp;&nbsp;
+
+Why It Matters:
+
+&nbs=
+p; * No more "ghost producers" (uncredited contributors).
+
+&nbs=
+p; * Courts/streaming platforms can verify ownership without a label.
+
+Laye=
+r 2: Data Sovereignty =3D "Who Controls the Assets?"
+
+Problem: Masters and metadata are locked=
+ in label vaults or corporate databases (e.g., Sony=E2=80=99s "Black Box").=
+
+SYMBI Solution:
+
+&nbs=
+p; * Stems and metadata are stored encrypted on IPFS.
+
+&nbs=
+p; * Access controls are managed via DID-linked permissions.
+
+&nbs=
+p; * Example: A mixer can grant a label temporary access to a stem (re=
+vocable).
+
+Code Example:
+
+&nbs=
+p; 
+ &nbsp;&=
+;nbsp;// From YCQ-sonate/libs/ipfs/index.ts &nbsp;&nbsp;async funct=
+ion uploadEncrypted

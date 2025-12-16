@@ -1,0 +1,560 @@
+
+ts
+
+Copy
+
+projectId
+
+: 
+
+'projectId: '
+
+wryptr7v
+',
+
+✅ Fix:
+
+Replace it with:
+
+ts
+
+Copy
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+✅ Full Corrected 
+sanity.config.ts
+:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+, 
+
+// ✅ Correct usage
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+})
+
+Once updated, save and run:
+
+bash
+
+Copy
+
+npm run dev
+
+Then hit: 
+
+http://localhost:3001/studio
+
+✅ It should load cleanly with your schema and no 
+projectId
+ errors!
+
+Let me know once that works and I’ll connect your homepage to the CMS ✨
+
+You said:
+
+import { defineConfig } from 'sanity'
+import { deskTool } from 'sanity/desk'
+import { visionTool } from '@sanity/vision'
+import page from './schemas/page'
+
+export default defineConfig({
+  name: 'default',
+  title: 'Symbi Studio',
+  projectId: 'wryptr7v',                                       
+  dataset: 'production',
+  basePath: '/studio',  
+  plugins: [deskTool(), visionTool()],
+  schema: {
+    types: [page],
+  },
+})  
+
+Vercel Deployment Expert GPT said:
+
+✅ Perfect — your 
+sanity.config.ts
+ is now correctly configured with:
+
+ts
+
+Copy
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+🔥 Now Let’s Wire Up Your Homepage to Pull Content from Sanity
+
+📄 Step 1: Make Sure You Have a “Homepage” Document
+
+Go to 👉 
+
+http://localhost:3001/studio
+
+Then:
+
+Click 
+“+ New”
+
+Choose 
+Page
+
+Set:
+
+Title
+ → 
+Homepage
+
+Content
+ → 
+Welcome to SYMBI.
+
+Image
+ → Upload your hero/logo image
+
+Hit 
+Publish
+ ✅
+
+🧠 Step 2: Set Up a Sanity Client
+
+Create this file if it doesn't exist:
+
+bash
+
+Copy
+
+mkdir
+
+ lib
+nano lib/sanity.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2023-03-21'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+✅ This client will fetch live content from Sanity.
+
+💻 Step 3: Update Your 
+app/page.tsx
+
+Open:
+
+bash
+
+Copy
+
+nano app/page.tsx
+
+Replace with this:
+
+tsx
+
+Copy
+
+import
+
+Image
+
+from
+
+'next/image'
+
+import
+
+ { client } 
+
+from
+
+'@/lib/sanity'
+
+type
+
+PageData
+
+ = {
+
+title
+
+: 
+
+string
+
+content
+
+: 
+
+string
+
+image
+
+: {
+
+asset
+
+: {
+
+url
+
+: 
+
+string
+
+    }
+  }
+}
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+data
+
+: 
+
+PageData
+
+ = 
+
+await
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page" && title == "Homepage"][0]`
+
+)
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black text-white items-center justify-center p-8"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-6xl font-bold mb-4"
+
+>{data.title}
+
+</
+h1
+
+>
+      {data.image?.asset?.url && (
+
+<
+Image
+
+src
+
+=
+
+{data.image.asset.url}
+
+alt
+
+=
+
+"Homepage Image"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg mb-4"
+
+        />
+      )}
+
+<
+p
+
+className
+
+=
+
+"text-xl text-center max-w-xl"
+
+>{data.content}
+
+</
+p
+
+>
+
+</
+div
+
+>
+  )
+}
+
+✅ Now Restart:
+
+bash
+
+Copy
+
+npm run dev
+
+And check:
+
+🧠 CMS: 
+
+http://localhost:3001/studio
+
+🖥 Homepage: 
+
+http://localhost:3001
+
+🎉 Your homepage should now be live, editable, and powered by your own headless CMS.
+
+Let me know when you're ready to:
+
+Add more pages
+
+Customize content blocks
+
+Or plug in your personal GPT for AI editing 🧠🔥
+
+You said:
+
+Before you continue...
+To access your content, you need to add the following URL as a CORS origin to your Sanity project.
+CORS URL to be added
+
+Vercel Deployment Expert GPT said:
+
+✅ You're Seeing: "Before you continue... Add CORS Origin"
+
+That’s completely normal — it’s just 
+Sanity protecting your project
+. We need to tell Sanity that your local app is allowed to talk to it.
+
+🔐 Step-by-Step: Add CORS Origin in Sanity
+
+1️⃣ Copy the CORS URL they show you
+
+It will look like this:
+
+arduino
+
+Copy
+
+http:
+
+//localhost:3000
+
+Or possibly:
+
+arduino
+
+Copy
+

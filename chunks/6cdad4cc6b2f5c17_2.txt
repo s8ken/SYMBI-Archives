@@ -1,0 +1,318 @@
+
+ using RSA.
+
+Would you like a script for verifying the 
+digital signatures
+ as well? 🔐
+
+You said:
+
+english_wikipedia.txt
+
+Document
+
+can you check the following file?
+
+ChatGPT said:
+
+I have the file content. Now, I'll compute its SHA-256 hash and compare it with the expected hash from your JSON data. Let me proceed with that.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ hashlib
+
+# Define the expected hash from the JSON data
+
+expected_hash = 
+
+"45LehOF92Hsuyqz_guy0LJ5X7pM-NiAiWBm6bUxz1HQ"
+
+# Replace with actual expected hash
+
+# Compute SHA-256 hash of the uploaded file
+
+file_path = 
+
+"/mnt/data/english_wikipedia.txt"
+
+def
+
+compute_sha256
+
+(
+
+file_path
+
+):
+    hasher = hashlib.sha256()
+
+try
+
+:
+
+with
+
+open
+
+(file_path, 
+
+"rb"
+
+) 
+
+as
+
+ f:
+
+while
+
+ chunk := f.read(
+
+4096
+
+):
+                hasher.update(chunk)
+
+return
+
+ hasher.hexdigest()
+
+except
+
+ FileNotFoundError:
+
+return
+
+None
+
+# Compute and compare hashes
+
+computed_hash = compute_sha256(file_path)
+computed_hash
+
+Result
+
+'b29af10c62218f948eb299e0c68b176ab1c5ecdfe9813bd957bf2c434e90813e'
+
+The computed SHA-256 hash of the file is:
+
+b29af10c62218f948eb299e0c68b176ab1c5ecdfe9813bd957bf2c434e90813e
+
+This does 
+not
+ match the expected hash 
+
+45LehOF92Hsuyqz_guy0LJ5X7pM-NiAiWBm6bUxz1HQ
+
+ from your JSON data.
+
+What This Means:
+
+The file 
+has been modified
+ or is 
+not the same version
+ as the one referenced in the JSON.
+
+If you expected the file to match, it may have been altered or corrupted.
+
+If the expected hash is encoded differently (e.g., Base64 instead of Hex), I can convert and re-check.
+
+Would you like me to investigate further? 🔍 
+
+You said:
+
+yes
+
+ChatGPT said:
+
+It looks like the expected hash (
+45LehOF92Hsuyqz_guy0LJ5X7pM-NiAiWBm6bUxz1HQ
+) might be 
+Base64-encoded
+ instead of a direct hex representation. I'll decode it and compare it properly. Let me do that now.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ base64
+
+# Convert Base64-encoded expected hash to hex
+
+expected_hash_base64 = 
+
+"45LehOF92Hsuyqz_guy0LJ5X7pM-NiAiWBm6bUxz1HQ"
+
+expected_hash_bytes = base64.urlsafe_b64decode(expected_hash_base64 + 
+
+"=="
+
+)  
+
+# Ensure proper padding
+
+expected_hash_hex = expected_hash_bytes.
+
+hex
+
+()
+
+# Compare with computed hash
+
+match
+
+ = computed_hash == expected_hash_hex
+
+expected_hash_hex, 
+
+match
+
+Result
+
+('e392de84e17dd87b2ecaacff82ecb42c9e57ee933e3620225819ba6d4c73d474', False)
+
+The 
+Base64-decoded expected hash
+ is:
+
+e392de84e17dd87b2ecaacff82ecb42c9e57ee933e3620225819ba6d4c73d474
+
+The 
+computed SHA-256 hash
+ of your file is:
+
+b29af10c62218f948eb299e0c68b176ab1c5ecdfe9813bd957bf2c434e90813e
+
+These do 
+not
+ match, meaning the file is 
+not identical
+ to the expected version.
+
+Possible Reasons:
+
+File modification
+ – The contents of 
+english_wikipedia.txt
+ might have changed.
+
+Encoding differences
+ – If the expected file used different line endings (
+\n
+ vs. 
+\r\n
+) or character encodings, this could cause hash mismatches.
+
+Truncation or corruption
+ – The uploaded file might be incomplete.
+
+Next Steps:
+
+If you have another source of the file, try comparing it.
+
+I can check for 
+differences
+ in structure (e.g., line endings, encoding).
+
+Do you want me to analyze the file further to see what might have changed? 🔍 
+
+You said:
+
+yes
+
+ChatGPT said:
+
+I'll analyze the file further by checking:
+
+File size
+ – To see if truncation occurred.
+
+Encoding
+ – To ensure it's not affecting the hash.
+
+Line endings
+ – To check if 
+\r\n
+ vs. 
+\n
+ is causing the mismatch.
+
+Differences
+ – Comparing against the expected hash to detect possible modifications.
+
+Let me start with these checks.
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ os
+
+# Get file size
+
+file_size = os.path.getsize(file_path)
+
+# Check encoding by reading a small portion
+
+try
+
+:
+
+with
+
+open
+
+(file_path, 
+
+"rb"
+
+) 
+
+as
+
+ f:
+        sample_bytes = f.read(
+
+1000
+
+)  
+
+# Read first 1000 bytes to check encoding
+
+except
+
+ FileNotFoundError:
+    sample_bytes = 
+
+None
+
+# Check line endings
+
+with
+
+open
+
+(file_path, 
+
+"r

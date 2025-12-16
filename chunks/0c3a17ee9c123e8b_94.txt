@@ -1,0 +1,206 @@
+do):
+
+Click and drag
+ from the top of the file to the bottom.
+
+Once all the text is highlighted, press 
+⌘ + C
+ (Mac) to copy.
+
+✅ Option 2: 
+Use 
+nano
+ to Write Out to a File
+
+If you want to copy the contents somewhere else:
+
+In nano, press:
+
+mathematica
+
+Copy
+
+^
+
+O
+
+(
+
+which
+
+means
+
+:
+
+Control
+
++
+
+O
+
+)
+
+This prompts: 
+File Name to Write: app/page.tsx
+
+You can now:
+
+Hit Enter
+ to save it as-is.
+
+Or change the name (e.g., 
+page-backup.tsx
+) to create a copy.
+
+Then exit with 
+Control + X
+.
+
+✅ Option 3: 
+Cat It and Copy to Clipboard
+
+In terminal, outside of nano:
+
+bash
+
+Copy
+
+cat
+
+ app/page.tsx | pbcopy
+
+That will copy the entire file contents into your clipboard on macOS.
+
+Let me know which you're aiming for — viewing it all, copying it elsewhere, or backing it up — and I’ll guide you through!
+
+You said:
+
+okay I did option 2 where do I find the output?
+
+Vercel Deployment Expert GPT said:
+
+Nice move! If you followed 
+Option 2
+ using 
+Control + O
+ inside 
+nano
+, here’s where your output (the saved or copied version) went:
+
+🔍 Where Is the File?
+
+By default, it’s saved in the 
+same folder
+ you opened 
+nano
+ from — in this case, your project:
+
+bash
+
+Copy
+
+~/Documents/symbi-main-site/app/
+
+So if you named it something like 
+page-backup.tsx
+, you can check it like this:
+
+bash
+
+Copy
+
+ls
+
+ app/
+
+Look for:
+
+go
+
+Copy
+
+page.tsx
+page-backup.tsx   ← your saved 
+
+copy
+
+🧠 How to View the New File
+
+If you want to open the file again:
+
+bash
+
+Copy
+
+nano app/page-backup.tsx
+
+Or just use 
+cat
+ to print the contents:
+
+bash
+
+Copy
+
+cat
+
+ app/page-backup.tsx
+
+Let me know what you want to do with it next — update it, move it, copy content into another file, or push to GitHub. I got you.
+
+You said:
+
+import { sanityClient } from "@/lib/sanity";
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { ArrowRight, Sparkles, BarChart2, Zap } from "lucide-react"
+
+export default function Home() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/symbi-logo.jpg"
+              alt="Symbi Logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <span className="text-xl font-bold">Symbi</span>
+          </div>
+          <nav className="ml-auto hidden md:flex gap-6">
+            <a href="#what" className="text-sm font-medium hover:text-primary">
+              What
+            </a>
+            <a href="#why" className="text-sm font-medium hover:text-primary">
+              Why
+            </a>
+            <a href="#who" className="text-sm font-medium hover:text-primary">
+              Who
+            </a>
+          </nav>
+          <div className="ml-auto md:ml-4">
+            <Button className="bg-primary hover:bg-primary/90 text-white">Symbi Chat</Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-20 md:py-28 container">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+                Meet Symbi, your intelligent AI assistant
+              </h1>
+              <p className="mt-4 text-xl text-muted-foreground">
+                Empowering your workflow with advanced artificial intelligence that adapts to your needs.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="gap-2 bg-primary hover:bg-primary/90 text-white">
+                  Symbi Chat <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="outline">
+     

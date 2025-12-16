@@ -1,0 +1,286 @@
+00 are finally closed!
+ 🔒🔥
+
+You said:
+
+actually before we do that - can we run a quick report for see what accessibility options have been changed in the last 24 hours?
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛠 Check Recent Changes to Accessibility Settings in macOS
+
+Since accessibility settings 
+can be abused for remote access (e.g., keyloggers, remote control software, malware injections)
+, let’s check if 
+anything was changed in the last 24 hours.
+
+🚀 Step 1: Check Accessibility Apps with Full Control
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+tccutil dump Accessibility
+
+📌 This will list all apps with 
+Accessibility permissions (which can control your system).
+
+📌 
+If anything looks suspicious, we can remove it.
+
+🚀 Step 2: Check Recent Security & Privacy Changes
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.TCC"'
+
+ --last 24h
+
+📌 
+This lists all permission changes in the last 24 hours.
+
+📌 Look for 
+any app gaining Accessibility, Screen Recording, or Input Monitoring access.
+
+🚀 Step 3: Check for Recently Granted Accessibility Permissions
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db 
+
+"SELECT service, client, allowed, prompt_count FROM access WHERE service='kTCCServiceAccessibility';"
+
+📌 This will show 
+which apps have Accessibility permissions
+ and if they were recently added.
+
+🚀 Step 4: Check If System Logs Show Accessibility Changes
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --info --last 24h | grep -i accessibility
+
+📌 This looks for 
+any system logs mentioning Accessibility changes.
+
+🚀 Step 5: Check If Any Unknown App Has Gained Full Control
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo defaults 
+
+read
+
+ /Library/Preferences/com.apple.universalaccessAuthWarning
+
+📌 
+If anything unexpected shows up, we can remove it!
+
+🚀 What’s Next?
+
+✅ 
+Run these commands
+ and send me the output if 
+anything suspicious appears.
+
+🚨 If 
+an unknown app has gained Accessibility access
+, we will 
+revoke its permissions immediately.
+ 🔒
+
+You said:
+
+okay so that first command produced 23mb of text file
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+That's a 
+huge amount of data
+ for 
+tccutil dump Accessibility
+, which means 
+a lot of apps or processes have requested accessibility permissions.
+
+🚀 
+Upload the text file here
+, and I’ll analyze it for 
+suspicious or unauthorized entries
+.
+
+🔍 We’ll specifically look for:
+
+New apps that gained Accessibility access recently
+
+Any suspicious processes running with full control
+
+Possible malware using Accessibility to inject keystrokes or control the system
+
+Once I analyze the file, we’ll 
+remove anything suspicious
+ and ensure no unauthorized access is happening. 🔒🚀
+
+You said:
+
+Terminal Saved Output.txt.zip
+
+Zip Archive
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+I'll extract and analyze the 
+Accessibility permissions data
+ from the uploaded file now. Let me check for any 
+suspicious or unauthorized entries
+ and report back with findings. 🔍
+
+Give me a moment while I process the file. ⏳
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ zipfile
+
+import
+
+ os
+
+# Define file paths
+
+zip_path = 
+
+"/mnt/data/Terminal Saved Output.txt.zip"
+
+extract_folder = 
+
+"/mnt/data/accessibility_dump"
+
+# Extract the ZIP file
+
+with
+
+ zipfile.ZipFile(zip_path, 
+
+'r'
+
+) 
+
+as
+
+ zip_ref:
+    zip_ref.extractall(extract_folder)
+
+# List extracted files
+
+extracted_files = os.listdir(extract_folder)
+extracted_files
+
+Result
+
+['Terminal Saved Output.txt', '__MACOSX']
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Define the path of the extracted text file
+
+accessibility_log_path = os.path.join(extract_folder, 
+
+"Terminal Saved Output.txt"
+
+)
+
+# Read and analyze the first few lines of the file to understand its structure
+
+with
+
+open
+
+(accessibility_log_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ file:
+    accessibility_log_sample = [
+
+next
+
+(file) 
+
+for
+
+ _ 
+
+in
+
+range
+
+(
+
+50
+
+)]  
+
+# Read first 50 lines
+
+# Display a preview of the extracted content
+
+accessibility_log_

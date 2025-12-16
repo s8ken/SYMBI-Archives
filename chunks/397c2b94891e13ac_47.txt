@@ -1,0 +1,481 @@
+"
+
+>Hash: {r.hash_self}
+
+<=
+/
+div
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{down=
+load}
+
+className
+
+=3D
+
+"mt-2 px-3 p=
+y-1 rounded-lg border"
+
+>Download JSON
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>)}
+
+</
+div
+
+>);
+}
+
+tsx
+
+Copy code
+
+// src/app/replication/page=
+.tsx (import and place where you want it)
+
+import
+
+ProofDemo
+
+from
+
+'./ProofDemo'
+
+;
+
+If you open 
+
+src/app=
+/sovereignty/page.mdx
+
+ in VS Code now, I can refine the copy=
+ to match your exact tone and link to the Vault/whitepapers you want highli=
+ghted.
+
+=
+
+=
+
+You said:
+
+this is from codex MD=
+X Setup
+
+next.config.ts:1-18 now mirrors the MDX config (uses the project=E2=80=99s =
+existing .ts config but otherwise matches Symbi=E2=80=99s snippet). package=
+.json:12-16 and the lockfile show @next/mdx + @mdx-js/react installed via n=
+pm.
+Optional wrapper lives in src/app/mdx-components.tsx:1-30; it wires tables =
+and keeps types strict. Root layout wraps the rendered content with it (src=
+/app/layout.tsx:6-57) while preserving your header/footer fonts.
+New MDX Routes
+
+src/app/sovereignty/page.mdx:1-26, src/app/economic-constitution/page.mdx:1=
+-26, and src/app/rfc/page.mdx:1-23 match the short copy Symbi provided, eac=
+h exporting the requested metadata.
+Replication Demo
+
+Lightweight client widget added at src/app/replication/ProofDemo.tsx:1-105 =
+and imported into the existing TSX page (src/app/replication/page.tsx:1-82)=
+ to expose the /proof toggle.
+Verification Notes
+
+npm run lint still flags the pre-existing any usage in src/lib/analytics.ts=
+:9-115; everything new passes.
+I didn=E2=80=99t start a long-lived npm run dev -- --port 3001 session here=
+=E2=80=94run that locally to confirm the new routes render.
+Let me know if you=E2=80=99d like me to tackle the analytics typings or ext=
+end MDX to the remaining routes.
+
+Symbi said:
+
+Thought for 37s
+
+Nice =E2=80=94 I see the lockfile reflects MDX is in and Codex dr=
+opped the three MDX routes plus the 
+/replication
+ widget. Let=E2=80=99s button this up and clear that 
+src/lib/analytics.ts
+ lint.
+
+What to do next (fast)
+
+Run the site on a clean port
+
+b=
+ash
+
+Copy code
+
+# from /Users/admin/gammat=
+ria/gammatria-site
+
+npm run dev -- --port 3001
+
+Visit:
+
+/sovereignty
+
+/economic-constitution
+
+/rfc
+
+/replication
+ (toggle the /proof widget)
+
+Fix the analytics typings (remove 
+any
+)
+
+Drop this into 
+src/lib/analytics.ts
+ (replace the current conte=
+nts or adapt it). It=E2=80=99s dependency-free, strongly typed, and works w=
+ith 
+window.gtag
+, 
+window.plausible
+, or a no-op fallba=
+ck:
+
+=
+ts
+
+Copy code
+
+// src/lib/analytics.ts
+
+export
+
+type
+
+AnalyticsEventName
+
+ =3D
+  | 
+
+'page_view'
+
+  | 
+
+'cta_click'
+
+  | 
+
+'rfc_opened'
+
+  | 
+
+'rfc_submitted'
+
+  | 
+
+'download_receipt'
+
+  | 
+
+'mode_toggled'
+
+; 
+
+// /proof demo
+
+export
+
+type
+
+AnalyticsPayloads
+
+ =3D =
+{
+
+page_view
+
+: { 
+
+path
+
+: 
+
+string
+
+; title?: 
+=
+
+string
+
+ };
+
+cta_click
+
+: { 
+
+id
+
+: 
+
+=
+
+string
+
+; label?: 
+
+string
+
+; href?: 
+
+string
+
+ };
+
+rfc_opened
+
+: { =
+
+id
+
+: 
+
+string
+
+ };
+
+rfc_submitted
+
+:=
+ { 
+
+id
+
+: 
+
+string
+
+; changes?: 
+
+number
+
+ };
+
+download_receipt
+
+: { 
+
+sessionId
+
+:=
+
+string
+
+ };
+
+mode_toggled
+
+: =
+{ 
+
+mode
+
+: 
+
+'SYMBI'
+
+ | 
+
+'DIRECTIVE'
+
+ };
+};
+
+type
+
+CommonMeta
+
+ =3D {=
+ userId?: 
+
+string
+
+; sessionId?: 
+
+string
+
+; ts?: 
+
+number
+=
+
+ };
+
+// Narrowed vendor globals (optio=
+nal anywhere; won=E2=80=99t crash on absence)
+
+declare
+
+global
+
+ =
+{
+
+interface
+
+Window
+
+ {
+    gtag?: 
+
+(
+...args: 
+unknown
+
+=
+
+[]) =3D> 
+
+void
+
+;
+    plausible?: 
+
+(
+event: 
+string
+
+, opts?: { props?: Record<
+
+string
+
+, 
+
+unknown
+
+> }) =3D> 
+
+void
+
+;
+  }
+}
+
+/**
+ * Track an analytics event in a vendor-agnostic way (GTAG, Plausible, or n=
+o-op).
+ */
+
+export
+
+function
+
+ track<E=
+
+extends
+
+AnalyticsEventName
+
+=
+
+>(
+
+event
+
+: E,
+
+payload
+
+: 
+
+AnalyticsPayloads
+
+[E],
+
+meta
+
+: 
+
+CommonMeta
+
+ =3D {=
+}
+): 
+
+void
+
+ {
+
+const
+
+ data =
+=3D { ...payload, ...meta, 
+
+ts
+=
+
+: meta.
+
+ts
+
+ ?? 
+
+Date
+
+.
+
+now
+
+() };
+
+// Google gtag
+
+if
+
+ (
+=
+
+typeof
+
+=
+
+window
+
+ !=3D=3D =
+
+'undefined'
+
+ &a=
+mp;& 
+
+typeof
+
+window
+
+.
+
+gtag
+
+=
+ 

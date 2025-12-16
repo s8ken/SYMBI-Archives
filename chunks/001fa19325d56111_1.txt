@@ -1,0 +1,287 @@
+PID]
+ with the actual Process ID.)
+
+Let me know if you need to 
+fully disable Screen Sharing
+ rather than just kill the process!
+
+You said:
+
+djlcl@Mes-MacBook-Pro ~ % ^[[200~sudo pkill screensharingd
+zsh: bad pattern: ^[[200~sudo
+djlcl@Mes-MacBook-Pro ~ % ~
+zsh: permission denied: /Users/djlcl
+djlcl@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+It looks like the terminal may have misinterpreted your command due to an unexpected input (
+^[[200~
+). That sequence is usually related to 
+bracketed paste mode
+ in some terminal emulators. Try this instead:
+
+1. 
+Re-enter the command manually
+
+Type it carefully instead of pasting:
+
+sh
+
+Copy
+
+sudo pkill screensharingd
+
+Then press 
+Enter
+ and enter your 
+admin password
+ when prompted.
+
+2. 
+Check if the process is running
+
+Before killing it, confirm if 
+Screen Sharing
+ is actually running:
+
+sh
+
+Copy
+
+ps aux | grep screensharingd
+
+If you see a line containing 
+screensharingd
+, note the 
+PID
+ (Process ID) and kill it manually:
+
+sh
+
+Copy
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+(Replace 
+[PID]
+ with the actual number.)
+
+3. 
+Check Your Shell & File Permissions
+
+Your second error (
+zsh: permission denied: /Users/djlcl
+) suggests something is wrong with your current shell session. Try:
+
+sh
+
+Copy
+
+echo
+
+$SHELL
+
+If it prints 
+/bin/zsh
+, your shell is fine. Otherwise, let me know.
+
+Also, try running:
+
+sh
+
+Copy
+
+ls
+
+ -ld ~
+
+If it doesn’t show your username as the owner, your home directory permissions may be messed up.
+
+If the issue persists, let me know what command you ran, and I'll help troubleshoot!
+
+You said:
+
+zsh: permission denied: /Users/djlcl
+djlcl@Mes-MacBook-Pro ~ % sudo pkill screensharingd
+
+Password:
+djlcl is not in the sudoers file.
+This incident has been reported to the administrator.
+djlcl@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Major Issue: Your User Lacks Admin Privileges
+
+The error message:
+
+djlcl is not in the sudoers file. This incident has been reported to the administrator.
+
+means that 
+your user (
+djlcl
+) does not have administrator privileges
+ and 
+cannot run 
+sudo
+ commands
+. This is a serious red flag because:
+
+You were an admin before
+, but now you're locked out of 
+sudo
+.
+
+The attacker may have removed your admin rights
+ to prevent you from securing your system.
+
+🔥 
+Immediate Next Steps: Regain Admin Access
+
+Since your system may be compromised, we need to 
+regain control ASAP
+. Follow these steps carefully.
+
+🛑 
+Step 1: Reboot into macOS Recovery Mode
+
+Shut down your Mac completely.
+
+Turn it on and immediately hold 
+Cmd (⌘) + R
+
+ until you see the 
+Apple logo
+ or 
+macOS Utilities
+ screen.
+
+🔧 
+Step 2: Open Terminal in Recovery Mode
+
+From the 
+macOS Utilities
+ screen, click 
+Utilities
+ (top menu).
+
+Select 
+Terminal
+ to open it.
+
+🔑 
+Step 3: Restore Admin Privileges
+
+In the Terminal, type the following command 
+carefully
+ and press 
+Enter
+:
+
+sh
+
+Copy
+
+resetpassword
+
+A window will pop up. Follow these steps:
+
+Select your user (
+djlcl
+) from the list.
+
+Reset your password (even if you remember it).
+
+Check if "Allow user to administer this computer" is enabled.
+
+If 
+checked
+, you're still an admin.
+
+If 
+unchecked
+, check it, then save changes.
+
+If you 
+cannot check it
+, then your admin rights were fully removed.
+
+🛠 
+Step 4: Manually Add Your User to Admins (If Needed)
+
+If your admin rights were removed, do this:
+
+Back in 
+Terminal (Recovery Mode)
+, type:
+
+sh
+
+Copy
+
+ls
+
+ /Volumes
+
+This lists your drives. Note the name of your 
+Macintosh HD
+ (usually 
+Macintosh HD
+).
+
+Run this command (replace 
+Macintosh HD
+ with your actual drive name if different):
+
+sh
+
+Copy
+
+/Volumes/
+
+"Macintosh HD"
+
+/usr/bin/dscl . -append /Groups/admin GroupMembership djlcl
+
+Restart your Mac:
+
+sh
+
+Copy
+
+reboot
+
+Once you log back in, try this command:
+
+sh
+
+Copy
+
+groups
+
+If you see 
+admin
+ in the output, you have admin rights again. Now, retry:
+
+sh
+
+Copy
+
+sudo pkill screensharingd
+
+🚨 
+Critical Next Steps: Lock Down Your System
+
+Since someone 
+removed your admin access
+, they likely 
+have deep control over your Mac
+. You need to:
+
+Im

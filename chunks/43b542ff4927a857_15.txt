@@ -1,0 +1,299 @@
+lugins
+
+Restricted imports
+
+Full freedom (plugins, MCP, RAG)
+
+Pretty domains
+
+Built-in domain registration
+
+Use your DNS / ingress
+
+Multi-agent orchestration
+
+Framework + =E2=80=9CAlmanac=E2=
+=80=9D patterns
+
+Built-in; multiple agents per project 
+
+ElizaOS Documen=
+tation
+
+Fastest to live
+
+=E2=9C=85
+
+=E2=9A=AA
+
+Deep t=
+rust hooks (sign/verify)
+
+Possible, but sandboxed
+
+=E2=9C=85 first-class via middleware
+
+My take:
+ If speed is paramount, start on 
+AgentVerse
+ for the 3 site agents =
++ 3 repo agents. If you need 
+=
+deep trust plumbing + custom plugins
+, ElizaOS wins (or do a hybrid=
+: site agents on AV, repo agents on ElizaOS).
+
+Reference architecture (works for=
+ either)
+
+Per site (ycq / gammatria / symbi.world)
+
+Crawler/ingestor
+ (scheduled): pulls HTML/sitemaps =E2=
+=86=92 extracts text/metadata
+
+Embedder
+: writes vectors to your store (Weaviate/Snowf=
+lake/pgvector)
+
+RAG Agent
+ (hosted):
+
+Tools: 
+web_search
+, 
+rag.retrieve(site=3Dxxx)
+, 
+summarize
+, 
+cite
+
+Policies: model allow-list, max to=
+kens, source domain allow-list
+
+Trust receipts
+: sign 
+{inputs_hash, outputs_hash, model, sdk_version, tool_ids}
+=
+
+Public endpoint or domain
+ =E2=86=92 for user Q&A
+
+Per repo
+
+Webhook listener
+ (PR, commit, issue) =E2=86=92 enqueue=
+ events
+
+Repo Agent
+:
+
+Tools: 
+gh.list_prs
+, 
+gh.diff
+, 
+lint
+, 
+risk.score
+, 
+propose_patch
+, 
+write.comment
+ (guarded)
+
+Outputs: PR digest, risk notes, su=
+ggested changes
+
+Trust receipts
+ on every action
+
+Shared
+
+Policy engine
+ (JSON/YAML) for model/tools budgets, egr=
+ess allow-lists
+
+Audit stream
+ =E2=86=92 Prometheus/Grafana views + sign=
+ed receipts (your current trust layer)
+
+Concrete rollout plan (AgentVerse=
+ path)
+
+Phase 0 =E2=80=94 Prep (1 day)
+
+Create 
+three projects
+: 
+ycq-agent
+, 
+=
+gammatria-agent
+, 
+symbiwo=
+rld-agent
+
+Create 
+three repo agents
+ likewise
+
+Provision 
+Agent Storage
+ buckets and connection strings=
+ (for memory/state) 
+
+Agentverse Documentation
+
+Phase 1 =E2=80=94 First hosted ag=
+ent (template)
+
+In AV UI: 
+My Agents =E2=86=92 Create Hosted Agent
+ (bla=
+nk script). 
+
+Agentverse Documentation
+
+In 
+agent.py
+, wire minimal tools:
+
+crawl(url)
+, 
+ch=
+unk()
+, 
+embed()
+, 
+retrieve(query, k)
+
+answer_with_citations
+
+Add 
+storage
+ calls for conversation history & last =
+crawl time. 
+
+Agentverse Documentation
+
+Add your 
+trust receipt
+ function (Ed25519 sign) and emi=
+t receipt per call.
+
+Configure 
+domain
+ in the UI (optional vanity). 
+
+Agentverse D=
+ocumentation
+
+Phase 2 =E2=80=94 RAG & gover=
+nance
+
+Nightly 
+crawler job
+ (within allowed imports; otherwise=
+ host crawler elsewhere and only do retrieval in AV). 
+
+Agentverse Documentation
+
+Policy JSON: model allow-list, tok=
+en caps, max context, allowed domains.
+
+Receipt schema: include 
+sdk_version
+, 
+model
+, 
+policy_id
+, 
+tool_id=
+s
+, 
+input_hash
+, 
+output_hash
+.
+
+Phase 3 =E2=80=94 Repo agent
+
+If staying inside AV, use Hosted A=
+gent with GitHub 
+webhooks =E2=
+=86=92 Mailbox
+ style (queue and process). 
+
+AgentVerse
+
+If you hit import limits, host rep=
+o agents with 
+ElizaOS
+ instead (plugins for GitHub + MCP tools). 
+
+GitHub
+
++1
+
+Phase 4 =E2=80=94 Observability &=
+amp; SLOs
+
+Push signed event summaries =E2=86=
+=92 Prometheus; dashboards in Grafana.
+
+Alerting on model cost, error rate=
+, and crawl freshness.
+
+Concrete rollout plan (ElizaOS pa=
+th)
+
+Project
+: define 
+6 agents
+ in one ElizaOS project (multi-agent supported).=
+
+ElizaOS Documentation
+
+Plugins
+:
+
+Site agents: RAG plugin (your embe=
+dder), basic web fetcher, cite responder
+
+Repo agents: GitHub plugin (read-o=
+nly + comment-suggest), LLM coder, risk scorer
+
+Trust receipts
+: add middleware that signs every tool i=
+nvocation + final answer
+
+Hosting
+: one Bun/Elysia service with WebSocket support=
+ (Railway/Fly/Render/VM)
+
+Optional
+: MCP plugin to expose internal tools cleanly =
+to agents. 
+
+MCP.so
+
+Minimal =E2=80=9Cagent spec=E2=80=
+=9D (works on either)
+
+Site agent manifest (YAML)
+
+yaml
+
+Copy code
+
+name:
+
+ycq-agent
+
+purpose:
+
+=
+
+"Answer questions using ycq content with =
+citati

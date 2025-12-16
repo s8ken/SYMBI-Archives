@@ -1,0 +1,184 @@
+ot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-modules.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-lookup.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-ui.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util.jar" -Dnetbeans.dirs="/Users/sja/Downloads/autopsy-4.21.0/autopsy:/Users/sja/Downloads/autopsy-4.21.0/CoreTestLibs:/Users/sja/Downloads/autopsy-4.21.0/harness:/Users/sja/Downloads/autopsy-4.21.0/java:" -Dnetbeans.home="/Users/sja/Downloads/autopsy-4.21.0/platform" '-Xdock:name=autopsy' '-Xdock:icon=./../../autopsy.icns' '-Xms24m' '-Xmx4G' '-XX:+UseStringDeduplication' '-Dprism.order=sw' '--add-opens=java.base/java.lang=ALL-UNNAMED' '--add-opens=java.base/java.net=ALL-UNNAMED' '--add-opens=java.desktop/javax.swing=ALL-UNNAMED' '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED' '--add-exports=java.desktop/sun.awt=ALL-UNNAMED' '--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED' '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED' -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/Users/sja/Library/Application Support/autopsy/dev/var/log/heapdump.hprof" -Djava.security.manager=allow org.netbeans.Main --cachedir "/Users/sja/Library/Caches/autopsy/dev" --userdir "/Users/sja/Library/Application Support/autopsy/dev" "--branding" "autopsy" 0<&0
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Alright, we're getting closer! The 
+SIGBUS error
+ and 
+JavaFX warnings
+ suggest that 
+Autopsy isn’t fully compatible with OpenJDK 23
+ on macOS 
+(especially on Apple Silicon - ARM64)
+. This crash happens when Java tries to access an invalid memory address, often due to 
+library mismatches or architecture issues.
+
+🔥 Step 1: Install OpenJDK 11 (Autopsy’s Recommended Java Version)
+
+Autopsy 
+officially supports Java 11
+, not Java 23. Let’s install 
+AdoptOpenJDK 11
+ and switch to it:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjdk@11
+
+Now, 
+set Java 11 as the default
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Confirm it’s switched correctly:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+You should see 
+Java 11
+ (not Java 23).
+
+🔥 Step 2: Fix JavaFX Issues
+
+Autopsy 
+needs JavaFX
+, which isn’t bundled with OpenJDK on macOS. Install it:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjfx
+
+Now, 
+tell Autopsy where JavaFX is:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/homebrew/libexec/openjfx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+If you want to make this permanent, add these lines to your 
+~/.zshrc
+ file:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/homebrew/libexec/openjfx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+🔥 Step 3: Run Autopsy Again
+
+Now, try launching it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+If it still 
+crashes
+, 
+send me the error log file
+ it mentions:
+
+bash
+
+Copy
+
+Edit
+
+/Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid8287.
+
+log
+
+That log will tell us exactly what’s wrong next! 🚀
+
+You said:
+
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+openjdk@11 is keg-only, which means it was not symlinked into /opt/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have openjdk@11 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk@11 you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
+==> Summary
+🍺  /opt/homebrew/Cellar/openjdk@11/11.0.26: 667 files, 295.3MB
+==> Running 
+brew cleanup openjdk@11
+...
+Disable this behaviour by setting HOMEBREW_N

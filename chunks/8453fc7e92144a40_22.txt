@@ -1,0 +1,160 @@
+ocket Token: frontend/src/pages/ConversationDetail.js:1
+Impact Summary
+
+Security: Eliminates default JWT secret, locks down CORS, secures API keys,=
+ authenticates sockets, and validates conversation room access.
+Stability: Removes duplicate middleware/DB setup, avoids content-type ambig=
+uity, and makes trust analytics deterministic.
+UX: Logout now works; socket messages display consistently.
+Next options
+
+Want me to update the OpenAPI spec to match the current /api/* routes and a=
+dd a Swagger UI endpoint?
+If you=E2=80=99d like, I can add minimal tests for the new logout route and=
+ socket auth path.
+10 files changed
++155
+-204
+
+Undo
+
+View changes
+.env.example
++3
+-1
+
+app.js
++36
+-14
+
+auth.controller.js
++10
+-2
+
+user.controller.js
++11
+-4
+
+auth.middleware.js
++12
+-3
+
+trust.model.js
++3
+-4
+
+user.model.js
++1
+-0
+
+auth.routes.js
++4
+-2
+
+server.js
++60
+-172
+
+ConversationDetail.js
++15
+-2
+
+yes update the open ai end points also to allow use of most recent agents a=
+nd custom assistant
+
+I=E2=80=99ll summarize the OpenAI updates and what you can do with them now=
+.
+
+What I Changed
+
+OpenAI models list
+
+Adds latest defaults and dynamic fetch.
+Static list now includes gpt-4o and gpt-4o-mini.
+GET /api/llm/models/openai tries openai.models.list() (when OPENAI_API_KEY =
+is set) to return the most recent models; falls back to static list.
+Files: backend/controllers/llm.controller.js:1, backend/controllers/llm.con=
+troller.js:38
+Code review default model
+
+Uses gpt-4o by default for OpenAI reviews.
+File: backend/controllers/llm.controller.js:406
+Assistants: custom tools, latest assistant support, and update API
+
+Create assistant accepts custom tools and defaults to gpt-4o.
+List now returns assistants sorted by most recent.
+New: get most recent assistant.
+New: update existing assistant (name/instructions/model/tools).
+If assistantId not provided in /api/assistant/message, it uses the most rec=
+ent assistant automatically.
+Files:
+Controller: backend/controllers/assistant.controller.js (createAssistant, s=
+endMessage fallback, getLatest, updateAssistant)
+Service: backend/services/assistant.service.js (createAssistant tool overri=
+de + default model, listAssistants sorted, updateAssistant, getLatestAssist=
+ant)
+Routes: backend/routes/assistant.routes.js (+ GET /latest, PUT /:assistantI=
+d)
+New/Updated Endpoints
+
+LLM models
+GET /api/llm/models/openai: Returns latest OpenAI models dynamically (fallb=
+ack to static).
+Assistants
+POST /api/assistant/create: Body supports name, instructions, model, tools =
+(custom functions).
+GET /api/assistant/list: Sorted by most recent.
+GET /api/assistant/latest: Returns the most recently created assistant.
+PUT /api/assistant/:assistantId: Update name, instructions, model, tools.
+POST /api/assistant/message: If assistantId is omitted, uses your most rece=
+nt assistant.
+How to Use
+
+Create a custom assistant
+POST /api/assistant/create with your tools array and optional model: "gpt-4=
+o".
+Use the most recent assistant automatically
+For quick chats, omit assistantId in POST /api/assistant/message; it will s=
+elect your latest assistant.
+Pick from latest models
+Call GET /api/llm/models/openai to get current OpenAI models; then send to =
+/api/llm/generate.
+If you want, I can also:
+
+Update frontend Assistant screens to surface =E2=80=9CUse Most Recent=E2=80=
+=9D and an =E2=80=9CEdit Assistant=E2=80=9D form.
+Add a helper in the UI to discover OpenAI models dynamically from /api/llm/=
+models/openai.
+4 files changed
++125
+-23
+
+Undo
+
+View changes
+assistant.controller.js
++63
+-14
+
+llm.controller.js
++27
+-3
+
+assistant.routes.js
++3
+-1
+
+assistant.service.js
++32
+-5
+
+SYMBI Prototype Technical Blueprint (v0.1)
+Purpose: Build a working prototype that detects and mitigates harmful tone/=
+stance pivots (e.g., collaborator =E2=86=92 clinician) after sensitive disc=
+losures, preserves contextual memory, and injects relational safeguards in =
+real time.
+
+0) MVP Goals & Non=E2=80=91Goals
+Goals (6=E2=80=938 weeks MVP):
+
+Log every AI interaction in an ap

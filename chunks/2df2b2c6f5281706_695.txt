@@ -1,0 +1,86 @@
+; --interactive-icon-tert=
+iary-hover: #cdcdcd; --interactive-icon-tertiary-press: #cdcdcd; --interact=
+ive-icon-tertiary-selected: #cdcdcd; --interactive-icon-tertiary-inactive: =
+#cdcdcd; --interactive-icon-accent-default: #99ceff; --interactive-icon-acc=
+ent-hover: #99ceff; --interactive-icon-accent-press: #99ceff; --interactive=
+-icon-accent-selected: #99ceff; --interactive-icon-accent-inactive: #99ceff=
+; --interactive-icon-danger-primary-default: #fff; --interactive-icon-dange=
+r-primary-hover: #fff; --interactive-icon-danger-primary-press: #fff; --int=
+eractive-icon-danger-primary-inactive: #fff; --interactive-icon-danger-seco=
+ndary-default: #fa423e; --interactive-icon-danger-secondary-hover: #ff6764;=
+ --interactive-icon-danger-secondary-press: #e02e2a; --interactive-icon-dan=
+ger-secondary-inactive: #fa423e; --utility-scrollbar: #fff3; }
+
+@keyframes peek-top-animation {=20
+  50% { translate: 0px -85px; }
+  75% { translate: 0px -85px; }
+  100% { translate: 0px; }
+}
+
+@keyframes peek-top-end-animation {=20
+  100% { translate: 0px; }
+}
+
+@supports (animation-timeline:scroll()) {
+  @keyframes scroll-shadow-reveal {=20
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+  @keyframes scroll-shadow-detect {=20
+  0%, 100% { --can-scroll: ; }
+}
+  .horizontal-scroll-shadow-container, .vertical-scroll-shadow-container { =
+animation-duration: auto; animation-timing-function: linear; animation-dela=
+y: 0s; animation-iteration-count: 1; animation-direction: normal; animation=
+-fill-mode: none; animation-play-state: running; animation-name: scroll-sha=
+dow-detect; animation-range: normal; animation-timeline: --scroll-shadow !i=
+mportant; }
+  .horizontal-scroll-shadow-container::before, .horizontal-scroll-shadow-co=
+ntainer::after, .vertical-scroll-shadow-container::before, .vertical-scroll=
+-shadow-container::after { --visibility-if-can-scroll: var(--can-scroll)vis=
+ible; --visibility-if-cant-scroll: hidden; visibility: var(--visibility-if-=
+can-scroll,var(--visibility-if-cant-scroll)); --margin-start-if-can-scroll:=
+ var(--can-scroll)8px; --margin-start-if-cant-scroll: 0; --scroll-shadow-vi=
+sibility: 1; animation-name: scroll-shadow-reveal; animation-fill-mode: bot=
+h; animation-timeline: --scroll-shadow; }
+  .horizontal-scroll-shadow-container::before, .vertical-scroll-shadow-cont=
+ainer::before { animation-range: 1em 2em; }
+  .horizontal-scroll-shadow-container::after, .vertical-scroll-shadow-conta=
+iner::after { animation-direction: reverse; animation-range: calc(100% - 2e=
+m) calc(100% - 1em); }
+}
+
+html:not(.screen-arch), html:not(.screen-arch) body { height: 100%; }
+
+html.screen-arch, html.screen-arch body { min-height: 100%; }
+
+#__next, #root { height: 100%; }
+
+.markdown { max-width: unset; }
+
+.markdown.streaming-animation.block-entry-animation pre, .markdown.streamin=
+g-animation.block-entry-animation table { position: relative; overflow: cli=
+p !important; }
+
+:is(.markdown.streaming-animation.block-entry-animation pre, .markdown.stre=
+aming-animation.block-entry-animation table)::after { --overlap-distance: 1=
+0px; --overlap-negative-distance: -10px; content: ""; height: calc(100% + (=
+var(--overlap-distance)*2)); background-image: linear-gradient(180deg,trans=
+parent,var(--main-surface-primary)var(--overlap-distance)); translate: 0 va=
+r(--streaming-reveal-amount,var(--overlap-negative-distance)); display: fle=
+x; position: absolute; inset: 0px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.markdown.streaming-animation.block-entry-animation pre, .markdown.st=
+reaming-animation.block-entry-animation table)::after { transition: .5s tra=
+nslate var(--spring-standard); }
+}
+
+.markdown.streaming-animation h1, .markdown.streaming-animation h2, .markdo=
+wn.streaming-animation h3, .markdown.streaming-animation h4, .markdown.stre=
+aming-animation h5, .markdown.streaming-animation h6 { width: fit-content; =
+}
+
+.markdown.streaming-animation li:not(:has(pre)) { width: fit-content; }
+
+.markdown pre { margin-top: calc(var(--spacin

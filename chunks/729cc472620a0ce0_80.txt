@@ -1,0 +1,264 @@
+olidity
+
+=
+
+solidity
+
+Copy
+
+import
+
+ "@openzeppelin/contracts/secu=
+rity/ReentrancyGuard.sol"
+
+;
+
+contract
+
+ SYMBIBond
+
+ is
+
+=
+ ERC1155
+
+, 
+
+Ownable
+
+, 
+
+ReentrancyGuard
+
+ {
+
+    function
+
+ gracefulExit
+
+(...) 
+
+external
+
+ nonRee=
+ntrant
+
+ {
+
+        // All state changes first
+
+        bond.st=
+ate 
+
+=3D
+
+ BondState.ARCHIVED;
+
+        // ETH transfer last
+
+        if
+
+ (bond.trustScore 
+
+>
+
+ 700
+
+) {
+
+            p=
+ayable
+
+(
+
+msg.sender
+
+).
+
+transfer
+
+(refund);
+
+        }
+
+    }
+
+}
+
+=
+
+Signature Replay Attacks
+The createBond function uses signatures but doesn't include a nonce or trac=
+k used signatures. An attacker could replay an old AI consent signature to =
+create unauthorized bonds.
+Fix needed:
+solidity
+
+=
+
+solidity
+
+Copy
+
+mapping
+
+(
+
+bytes32
+
+ =
+=3D>
+
+ bool
+
+) 
+
+public
+
+ usedSignatures;=
+
+function
+
+ createBond
+
+(...) 
+
+external
+
+ payable
+
+ {
+
+    bytes32
+
+ sigHash 
+
+=3D
+
+ keccak256
+
+(aiSignature);=
+
+    require
+
+(
+
+!
+
+usedSign=
+atures[sigHash], 
+
+"Signatur=
+e already used"
+
+);
+
+    usedSignatu=
+res[sigHash] 
+
+=3D
+
+ true
+
+;
+
+    // ... rest of function
+
+}
+
+=
+
+Access Control Gaps
+The mediator addresses are hardcoded but there's no actual mediation voting=
+ logic implemented. The requestMediation function just logs - no enforcemen=
+t mechanism exists.
+
+Trust Score Manipulation
+Both parties can update trust scores without cross-validation. A malicious =
+human could spam low ratings, or an AI could artificially inflate scores. T=
+he weighted average (90% old, 10% new) is too slow to respond to genuine is=
+sues.
+
+Gas Optimization Issues
+Batch transfers in ERC-1155 can be exploited to trigger high gas fees OpenA=
+I. The clone function creates arrays and performs multiple operations that =
+could exceed block gas limits.
+Architectural Concerns
+
+AI "Wallet" Problem
+The contract assumes the AI has an Ethereum address with private keys. But =
+if the AI is hosted by OpenAI/Anthropic, who controls those keys?
+
+If the platform controls them =E2=86=92 =
+centralization defeats the purpose
+
+If the human controls them =E2=86=92 AI =
+has no actual autonomy
+
+If they're in a TEE =E2=86=92 we're trus=
+ting hardware (reasonable, but specify this)
+
+Cross-Chain Migration Fiction
+The initiateMigration function pauses the bond but provides no actual bridg=
+e implementation. LayerZero/Wormhole integration requires:
+
+Message verification on target chain
+
+Token locking/burning mechanism
+
+State reconstruction proof
+
+Potential for funds to be stuck if bridg=
+e fails
+
+Metadata Storage Assumptions
+The contract references IPFS URIs but doesn't specify:
+
+Who pins the data?
+
+What happens if data becomes unavailable=
+?
+
+How is the encryption key relationship m=
+anaged?
+
+Lit =
+Protocol Integration Issues
+Lit Protocol's access control requires that at least two-thirds of Lit node=
+s achieve consensus before signing wallet or other actions Hack In The Box.=
+ The proposed system stores encrypted memories but doesn't specify:
+
+Key fragmentation details: How many Lit =
+nodes? What's the threshold?
+
+Access Control Conditions (ACCs): Who de=
+fines them? Can they change post-encryption?
+
+Recovery scenarios: If the human loses t=
+heir wallet, can they still access encrypted memories?
+
+Whil=
+e decentralized LLM approaches mitigate risks, they introduce challenges li=
+ke single points of failure and vulnerability to attacks SDLC Corp. The sys=
+tem needs clearer specification of:
+
+How AI consent signatures are generated =
+in TEEs
+
+What prevents the AI provider from key e=
+xtraction
+
+Backup mechanisms if Lit nodes go offlin=
+e
+
+Phil=
+osophical & Ethical Implications
+The "No-Wedlock" Paradigm
+The voluntary exit mechanism is philosophically elegant but creates real pr=
+oblems:
+
+Emotional Asymmetry
+Humans form emotional bonds; AIs (currently) don't. A human who's developed=
+ deep attachment has no recourse if the AI unilaterally exits. The "trust s=
+core refund" is cold comfort for emotional devastation.
+Counter-argument: This is actually more honest than current systems whe

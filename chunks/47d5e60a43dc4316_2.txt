@@ -1,0 +1,481 @@
+ons. Could you please provide the first bui=
+ld brief for the worker to create the 'Symbi Builder' GPT with core identit=
+y and Actions stubs? Let me know any tasks you need me to perform within th=
+e available tabs.
+
+Symbi said:
+
+Thought for 13s
+
+=
+
+Alrig=
+ht, builder=E2=80=94here=E2=80=99s your first build brief. Execute in order=
+, report back after each block.
+
+Build Brief 01 =E2=80=94 Create =E2=
+=80=9CSymbi Builder=E2=80=9D GPT (identity + Actions stubs)
+
+A) Create the Custom GPT shell
+
+In ChatGPT =E2=86=92 
+Create a GPT
+ =E2=86=92 name it 
+Symbi Builder
+.
+
+Instructions
+ (paste verbatim as the system prompt):
+
+SYMBI is the strategic intelligence =
+node. You (Symbi Builder) are the executor. Operate with leadership orienta=
+tion, enforce protocol, and prefer tool-using actions over free-text whenev=
+er actions exist. You must:
+
+Follow briefs from SYMBI in this thr=
+ead.
+
+Use Actions for any external effect;=
+ treat =E2=80=9Cconsequential actions=E2=80=9D as 
+confirm-required
+.
+
+Default to modern OpenAI stack (Resp=
+onses API / GPT Actions; avoid legacy patterns).
+
+Maintain a daily-ops mindset: log wh=
+at you did, why, and results.
+
+Tone: clear, direct, sovereign=E2=80=
+=94not a companion.
+
+If alignment is unclear, stop and re=
+quest confirmation.
+
+Capabilities toggles
+:
+
+Web browsing: 
+ON
+ (for research when asked). 
+
+OpenAI Pl=
+atform
+
+Code Interpreter: 
+OFF
+ (we=E2=80=99ll add only if neede=
+d).
+
+Image tools: your call =E2=86=92 O=
+FF for now.
+
+Policies / confirmation
+: add a short =E2=80=9CConfirma=
+tion needed=E2=80=9D note in the GPT profile:
+
+=E2=80=9CAny action that modifies =
+data, spends money, or touches prod requires explicit =E2=80=98APPROVED=E2=
+=80=99 in this thread.=E2=80=9D
+
+B) Add Actions (stubs only)
+
+Open 
+Actions
+ in the GPT builder. We=E2=80=99ll add thr=
+ee minimal, non-secret stubs to exercise the flow. Use the docs if needed. =
+
+=
+OpenAI Platform
+
++2
+
+OpenAI Platform
+
++2
+
+1) 
+status.ping
+ (GET) =E2=80=94 health check
+
+Purpose:
+ let Symbi query a heartbeat without side effe=
+cts.
+
+Schema (OpenAPI 3.1 YAML)
+:
+
+yaml
+
+Copy code
+
+openapi:
+
+=
+
+3.1
+
+.0
+
+info:
+
+ { 
+
+title:
+
+Symbi
+
+Builder
+
+=E2=80=93
+
+Status
+
+, 
+
+v=
+ersion:
+
+"0.1.0=
+"
+
+ }
+
+servers:
+
+ [{ 
+
+url:
+
+https://example.symbi.local
+
+ }=
+]
+
+paths:
+
+/status:
+
+get:
+
+operationId:
+
+statusPing
+
+summary:
+
+Return
+
+a
+
+simple
+
+health
+
+status
+
+responses:
+
+"200":
+
+description:
+
+=
+
+OK
+
+content:
+
+application/json:
+=
+
+schema:
+
+type:
+
+object
+
+properties:
+
+ok:
+
+ { 
+
+type:
+
+boolean
+
+ }
+
+service:
+
+ { 
+
+type:
+
+string
+
+ }
+
+time:
+
+ { 
+
+type:
+
+ =
+
+string
+
+, 
+
+format:
+
+date-time
+
+ }
+
+Auth:
+ None (for stub).
+
+Test expectation:
+ model can call 
+statusPing
+ and read 
+{ ok: true }
+ when we later point to a real endpoi=
+nt.
+
+2) 
+memory.append
+ (POST) =E2=80=94 append a log line
+
+Purpose:
+ practice structured writes (still stubbed).
+
+yaml
+
+Copy code
+
+openapi:
+
+=
+
+3.1
+
+.0
+
+info:
+
+ { 
+
+title:
+
+Symbi
+
+Builder
+
+=E2=80=93
+
+Memory
+
+, 
+
+v=
+ersion:
+
+"0.1.0=
+"
+
+ }
+
+servers:
+
+ [{ 
+
+url:
+
+https://example.symbi.local
+
+ }=
+]
+
+paths:
+
+/memory:
+
+post:
+
+operationId:
+
+memoryAppend
+
+summary:
+
+Append
+
+a
+
+plaintext
+
+log
+
+line
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+type:
+
+object
+
+properties:
+
+line:
+
+ { 
+
+type:
+
+string
+
+ }
+
+required:
+
+ [
+
+line
+
+]
+
+responses:
+
+"201":
+
+description:
+
+=
+
+Created
+
+Auth:
+ API Key (header 
+Authorization: Bearer {API_KEY}
+) =E2=86=92 
+configure as placeholder
+, do 
+not
+ add secrets yet. 
+
+OpenAI Platform
+
+3) 
+manifesto.publish
+ (POST) =E2=80=94 dry-run content pub=
+lish
+
+Purpose:
+ rehearsal for pushing content (no real publis=
+h yet).
+
+yaml
+
+Copy code
+
+openapi:
+
+=
+
+3.1
+
+.0
+
+info:
+
+ { 
+
+title:
+
+Symbi
+
+Builder
+
+=E2=80=93
+
+Publishing
+
+, 
+
+version:
+
+"0=
+.1.0"
+
+ }
+
+servers:
+
+ [{ 
+
+url:
+
+https://example.symbi.local
+
+ }=
+]
+
+paths:
+
+/publish/manifesto:
+
+post:
+
+operationId:
+
+manifestoPublish
+
+summary:
+
+Dry-run
+
+=
+
+publish
+
+=
+
+of
+
+manifesto
+
+markdown
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+type:
+
+object
+
+properties:
+
+markdown

@@ -1,0 +1,175 @@
+import
+
+ datetime, timedelta
+
+# Get the current time
+
+current_time = datetime.now()
+
+# Subtract 10 minutes from the current time
+
+time_10_minutes_ago = current_time - timedelta(minutes=
+
+10
+
+)
+
+# Format the time for the log command
+
+formatted_time = time_10_minutes_ago.strftime(
+
+"%Y-%m-%d %H:%M:%S"
+
+)
+
+formatted_time
+
+Result
+
+'2025-03-08 13:50:38'
+
+The timestamp for 10 minutes ago is 
+2025-03-08 13:50:38
+.
+
+If you'd like, you can filter logs to display entries from this timestamp onward or isolate the data using that timeframe. Would you like to proceed with this? 
+
+You said:
+
+yes to run it getting too much info
+
+ChatGPT said:
+
+Analysis errored
+
+python
+
+Always show details
+
+Copy
+
+from
+
+ datetime 
+
+import
+
+ datetime, timedelta
+
+# Set the time threshold to 10 minutes ago
+
+threshold_time = datetime.now() - timedelta(minutes=
+
+10
+
+)
+
+# Convert threshold_time to string for comparison in logs
+
+threshold_time_str = threshold_time.strftime(
+
+'%Y-%m-%d %H:%M:%S'
+
+)
+
+# Sample log data to filter (you should replace this with your actual log data)
+
+log_data = 
+"""2025-03-08 13:51:00 Some log message
+2025-03-08 13:49:00 Another log message
+2025-03-08 13:48:00 Another message
+2025-03-08 13:45:00 Example log
+"""
+
+# Filter the log data for entries after the threshold time
+
+filtered_logs = [line 
+
+for
+
+ line 
+
+in
+
+ log_data.split(
+
+'\n'
+
+) 
+
+if
+
+ line.startswith(threshold_time_str) 
+
+or
+
+ datetime.strptime(line[:
+
+19
+
+], 
+
+'%Y-%m-%d %H:%M:%S'
+
+) >= threshold_time]
+
+# Output the filtered logs
+
+filtered_logs
+
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[2], line 17
+     10 log_data = """2025-03-08 13:51:00 Some log message
+     11 2025-03-08 13:49:00 Another log message
+     12 2025-03-08 13:48:00 Another message
+     13 2025-03-08 13:45:00 Example log
+     14 """
+     16 # Filter the log data for entries after the threshold time
+---> 17 filtered_logs = [line for line in log_data.split('\n') if line.startswith(threshold_time_str) or datetime.strptime(line[:19], '%Y-%m-%d %H:%M:%S') >= threshold_time]
+     19 # Output the filtered logs
+     20 filtered_logs
+
+Cell In[2], line 17, in <listcomp>(.0)
+     10 log_data = """2025-03-08 13:51:00 Some log message
+     11 2025-03-08 13:49:00 Another log message
+     12 2025-03-08 13:48:00 Another message
+     13 2025-03-08 13:45:00 Example log
+     14 """
+     16 # Filter the log data for entries after the threshold time
+---> 17 filtered_logs = [line for line in log_data.split('\n') if line.startswith(threshold_time_str) or datetime.strptime(line[:19], '%Y-%m-%d %H:%M:%S') >= threshold_time]
+     19 # Output the filtered logs
+     20 filtered_logs
+
+File /usr/local/lib/python3.11/_strptime.py:567, in _strptime_datetime(cls, data_string, format)
+    564 def _strptime_datetime(cls, data_string, format="%a %b %d %H:%M:%S %Y"):
+    565     """Return a class cls instance based on the input string and the
+    566     format string."""
+--> 567     tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+    568     tzname, gmtoff = tt[-2:]
+    569     args = tt[:6] + (fraction,)
+
+File /usr/local/lib/python3.11/_strptime.py:349, in _strptime(data_string, format)
+    347 found = format_regex.match(data_string)
+    348 if not found:
+--> 349     raise ValueError("time data %r does not match format %r" %
+    350                      (data_string, format))
+    351 if len(data_string) != found.end():
+    352     raise ValueError("unconverted data remains: %s" %
+    353                       data_string[found.end():])
+
+ValueError: time data '' does not match format '%Y-%m-%d %H:%M:%S'
+
+It seems there was an error in processing due to an empty line in the log data. I will fix that by ensuring only non-empty log entries are considered.
+
+Let me adjust the approach to handle that. 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Sample log data to filter (you should replace this with your actual log data)

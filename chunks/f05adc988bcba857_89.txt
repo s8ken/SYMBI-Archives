@@ -1,0 +1,419 @@
+ty Studio to Your Vercel Deployment
+
+Eventually, we can:
+
+Deploy the Studio to something like 
+studio.symbi.world
+
+Protect it with login
+
+Let collaborators edit content easily
+
+Just say the word on what you want to do next â edit schema, build dynamic frontend, or go live â Iâve got your back all the way. ð¥
+
+You said:
+
+lets check - what should I be seeing in there now?
+
+ChatGPT said:
+
+Great question â letâs check what you 
+should
+ be seeing now that your 
+Sanity Studio is running
+:
+
+â 
+Expected Dashboard at 
+http://localhost:3001/studio
+
+Your Studio should show:
+
+ð§­ Left Sidebar Navigation:
+
+ð 
+âPageâ
+ â because of the 
+page
+ schema you added
+
+âï¸ 
+âSite Settingsâ
+ â if youâve also included 
+siteSettings.ts
+ in the schema config
+
+Each of these links lets you create and manage documents of that type.
+
+ð 
+When You Click on âPageâ
+
+You should be able to:
+
+Click 
+âCreate newâ
+
+See a form with:
+
+Title
+ field (text input)
+
+Content
+ field (rich text editor)
+
+If that's there â it means the schema is wired up correctly.
+
+ð 
+Optional: Check Your Schema Config
+
+Open 
+sanity.config.ts
+ and ensure it has this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+import
+
+ siteSettings 
+
+from
+
+"./schemas/siteSettings"
+
+; 
+
+// â only if this file exists
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+"default"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+projectId
+
+: 
+
+"wryptr7v"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+basePath
+
+: 
+
+"/studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page, siteSettings], 
+
+// â include both if needed
+
+  },
+});
+
+â Confirm for Me:
+
+Do you see âPageâ (and optionally âSite Settingsâ) in the sidebar?
+
+Can you create a new entry and fill in title + content?
+
+Letâs verify itâs all good â or Iâll patch up anything missing!
+
+You said:
+
+ChatGPT said:
+
+This looks perfect! ð
+
+â 
+What You Have:
+
+Sanity Studio is running.
+
+Sidebar:
+
+âPageâ
+ is visible â
+
+âSite Settingsâ
+ is visible â
+
+Main Content Area:
+
+Search bar â
+
+No documents yet (thatâs expected) ð
+
+ð¥ 
+Next Steps:
+
+1ï¸â£ 
+Create a New Page
+
+Click 
+â (plus sign)
+
+Fill in the 
+Title
+ and other fields
+
+Click 
+Publish
+
+2ï¸â£ 
+Check if the data appears in API
+
+Open 
+Sanity Vision
+ (top-right)
+
+Run:
+
+js
+
+Copy
+
+Edit
+
+*[_type == 
+
+"page"
+
+]
+
+If you see results, that means the CMS is working! ð
+
+3ï¸â£ 
+Fetch Sanity Data in Next.js
+
+Now we can make sure your 
+Next.js frontend
+ fetches this data dynamically.
+
+Let me know if we should 
+connect the frontend to Sanity next!
+ ð
+
+You said:
+
+so do I add that command to 'query'
+
+ChatGPT said:
+
+Yes! To check if your data is stored correctly in Sanity, follow these steps:
+
+ð How to Run a Query in Sanity Vision
+
+1ï¸â£ 
+Go to "Vision" Tab
+ (top-right in your Sanity Studio).
+
+2ï¸â£ 
+Enter the Query:
+
+js
+
+Copy
+
+Edit
+
+*[_type == 
+
+"page"
+
+]
+
+3ï¸â£ 
+Click "Run Query"
+
+â Expected Output
+
+If you have created a page entry, you should see JSON data like this:
+
+json
+
+Copy
+
+Edit
+
+[
+
+{
+
+"_id"
+
+:
+
+"abc123"
+
+,
+
+"_type"
+
+:
+
+"page"
+
+,
+
+"title"
+
+:
+
+"Home"
+
+,
+
+"slug"
+
+:
+
+{
+
+"current"
+
+:
+
+"home"
+
+}
+
+,
+
+"content"
+
+:
+
+"This is my home page content"
+
+}
+
+]
+
+If you see 
+an empty array 
+[]
+
+, it means you havenât added a page yet.
+
+ð¥ Next Steps
+
+If you see results
+: Your data is stored correctly. We can now 
+fetch it in Next.js
+.
+
+If no results
+: Try creating a 
+new page
+ in the "Page" section and re-run the query.
+
+Let me know what you see! ð
+
+You said:
+
+[â¦] 1 item
+0:{â¦} 7 properties
+title:test page title
+_updatedAt:2025-03-21T01:42:09Z
+content:[â¦] 1 item
+0:{â¦} 5 properties
+children:[â¦] 1 item
+_type:block
+style:normal
+_key:e2dfb7e0b142
+markDefs:[] 0 items
+_createdAt:2025-03-21T01:41:47Z
+_rev:PdNiUcV47PE0jEAR6ausIl
+_type:page
+_id:6e29ae65-080c-410b-9bcb-

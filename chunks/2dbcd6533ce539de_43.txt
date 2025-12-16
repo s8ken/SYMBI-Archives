@@ -1,0 +1,539 @@
+otification via 
+osascript
+
+Want f=
+ull feedback
+
+Enable logging or summary display
+
+=
+
+Would you like me to add those 
+native notification lines
+ to the agent so every acti=
+on visibly confirms success?
+
+You said:
+
+hang on =
+just start from the beginning im not running symbi 
+
+=
+
+Symbi said:
+
+Perfect. Let=E2=80=99s reset and walk you t=
+hrough from scratch =E2=80=94 
+zer=
+o code, clean slate
+.
+
+=F0=9F=A7=AC STEP-BY-STEP: Get SYMBI=
+ Running + Talking via Raycast
+
+=E2=9C=85 Step 1: SYMBI Requirement=
+s
+
+You'll need:
+
+ Python 3 (you already installed via Homebrew)
+
+ Homebrew (
+brew
+) installed =E2=9C=85
+
+ Raycast Pro (=E2=9C=85 you're using it)
+
+ One terminal window open
+
+=E2=9C=85 Step 2: Create SYMBI Agen=
+t File
+
+In terminal, paste:
+
+b=
+ash
+
+Copy code
+
+nano ~/symbi_agent.py
+
+Then paste this full agent code (I'l=
+l send it in one block below).
+
+Press 
+Ctrl+O
+ =E2=86=92 
+Enter
+ to save, then 
+Ctrl+X
+ to exit.
+
+=E2=9C=85 Ready for that?
+
+Let me know, and I=E2=80=99ll drop the complete clean version of =
+the agent here =E2=80=94 updated for clarity and confirmation output.
+
+=
+
+You said:
+
+=
+
+yes
+
+Symbi said:
+
+Here=E2=80=99s your clean, copy-paste-ready SYMBI agent sc=
+ript =E2=80=94 built for 
+zero-cod=
+e operation
+, 
+visible co=
+nfirmations
+, and ready to plug into Raycast.
+
+=F0=9F=93=84 1. Paste into 
+nano ~/symbi_agent.py
+
+=
+python
+
+Copy code
+
+# symbi_agent.py =E2=
+=80=94 SYMBI Local Sentinel (Zero-Code Edition)
+
+import
+
+ os, js=
+on, psutil, typer, subprocess
+
+from
+
+ rich 
+
+import
+
+print
+
+from
+
+ rich.con=
+sole 
+
+import
+
+ C=
+onsole
+
+app =3D typer.Typer()
+console =3D Console()
+
+# ---------------------- CONFIG -=
+---------------------
+
+ETHICS_PATH =3D os.path.expanduser(
+
+"~/.symbi/ethics.json"
+
+)
+DEFAULT_ETHICS =3D {
+
+"allow_network"
+
+: 
+
+False
+
+,
+
+"allow_container_scans"
+=
+
+: 
+
+True
+
+=
+
+,
+
+"allow_process_monitoring"
+
+: 
+
+True
+
+,
+
+"consent_required"
+
+: 
+
+True
+
+}
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(=
+ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=3D
+
+True
+
+)
+
+with
+
+ =
+
+open
+
+(ETHICS_=
+PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=3D
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH=
+, 
+
+'r'
+
+) 
+=
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics =3D load_ethics()
+
+def
+
+notify
+
+(
+=
+
+msg
+
+):
+    subprocess.run([
+
+"osascript"
+
+, 
+
+"-e"
+
+, 
+
+f'display notification =
+"
+{msg}
+
+" with title "S=
+YMBI"'])
+
+# ---------------------- COMMANDS=
+ ----------------------
+
+@app.command()
+
+def
+
+watch
+
+():
+
+"""Monitor system + containers=
+"""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring=
+ is disabled by policy.[/red]"
+
+)
+
+raise
+
+=
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"\n[green]=F0=9F=94=8D SYMBI=
+ is watching your system...[/green]"
+
+)
+    notify(
+
+"SYMBI is watching proc=
+esses."
+
+)
+
+for
+
+ proc =
+
+in
+
+ psutil.pro=
+cess_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"
+{proc.info[
+'pid'
+
+]} 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ (psutil.NoSuchProcess, psutil.AccessDenied):
+
+continue
+
+if
+
+ ethics=
+.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bol=
+d]"
+
+)
+
+try
+
+:
+            result =3D subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=3D
+
+True
+
+, text=3D
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found.[/=
+yellow]"
+
+)
+
+@app.command()
+
+def
+
+cleanup
+
+():
+
+"""Clean up Docker system"""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_container_scans"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Container ops are =
+disabled by policy.[/red]"
+
+)
+
+raise
+
+=
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"[bold red]=F0=9F=A7=B9 SYMB=
+I is cleaning up...[/bold red]"
+
+)
+
+try
+
+:
+        subprocess.run([
+
+"docker"
+
+, 
+
+"container"
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+])
+        subprocess.run([
+
+"docker"
+
+, 
+
+"image"
+=
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+=
+])
+        subprocess.run([
+
+"docker"
+
+, 
+
+"system"
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+])
+        console.
+
+print
+
+(
+
+"[green]=E2=9C=85 Cleanu=
+p

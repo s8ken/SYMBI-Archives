@@ -1,0 +1,167 @@
+.
+
+â 
+Check for hidden system restrictions (MDM profiles, security policies)
+
+sh
+
+Copy
+
+sudo profiles list
+
+If a profile is installed, it might be enforcing a security policy that blocks the camera.
+
+â 
+Check for restricted kernel extensions
+
+Run:
+
+sh
+
+Copy
+
+kmutil inspect --list-loaded | grep -i camera
+
+If anything related to the camera appears, it means a kernel extension (kext) is handling it.
+
+â 
+Try an SMC reset (for hardware-related issues)
+
+If the camera still doesn't show up, resetting the 
+System Management Controller (SMC)
+ could help:
+
+Shut down
+ your Mac.
+
+Press and hold Shift + Control + Option + Power for 10 seconds.
+
+Release the keys, then turn your Mac back on.
+
+Run 
+system_profiler SPCameraDataType
+ again to check.
+
+â 
+Do you want to keep the camera disabled or restore it?
+
+If you want it permanently disabled for security, this means 
+it's completely blocked and no further action is needed
+. But if you want it back, we can try more advanced recovery steps.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % nvram -p | grep -i camera
+
+user@Mes-MacBook-Pro ~ % system_profiler SPUSBDataType
+
+USB:
+
+    USB 3.1 Bus:
+
+      Host Controller Driver: AppleT6000USBXHCI
+
+        USB3.1 Hub:
+
+          Product ID: 0x0626
+          Vendor ID: 0x05e3  (Genesys Logic, Inc.)
+          Version: 6.63
+          Speed: Up to 5 Gb/s
+          Manufacturer: GenesysLogic
+          Location ID: 0x02200000 / 1
+          Current Available (mA): 900
+          Current Required (mA): 0
+          Extra Operating Current (mA): 0
+
+            USB 10/100/1000 LAN:
+
+              Product ID: 0x8153
+              Vendor ID: 0x0bda  (Realtek Semiconductor Corp.)
+              Version: 31.00
+              Serial Number: 001000000
+              Speed: Up to 5 Gb/s
+              Manufacturer: Realtek
+              Location ID: 0x02230000 / 4
+              Current Available (mA): 900
+              Current Required (mA): 288
+              Extra Operating Current (mA): 0
+
+        USB2.1 Hub:
+
+          Product ID: 0x0610
+          Vendor ID: 0x05e3  (Genesys Logic, Inc.)
+          Version: 6.63
+          Speed: Up to 480 Mb/s
+          Manufacturer: GenesysLogic
+          Location ID: 0x02100000 / 2
+          Current Available (mA): 500
+          Current Required (mA): 100
+          Extra Operating Current (mA): 0
+
+            USB2.0 HUB:
+
+              Product ID: 0x0101
+              Vendor ID: 0x1a40  (TERMINUS TECHNOLOGY INC.)
+              Version: 1.00
+              Speed: Up to 480 Mb/s
+              Location ID: 0x02140000 / 3
+              Current Available (mA): 500
+              Current Required (mA): 100
+              Extra Operating Current (mA): 0
+
+                USB Type-C Digital AV Adapter:
+
+                  Vendor ID: 0x343c
+                  Version: 0.00
+                  Serial Number: 000000000000
+                  Speed: Up to 1.5 Mb/s
+                  Manufacturer: xxxxxxxx
+                  Location ID: 0x02141000 / 5
+                  Current Available (mA): 500
+                  Current Required (mA): 496
+                  Extra Operating Current (mA): 0
+
+    USB 3.1 Bus:
+
+      Host Controller Driver: AppleT6000USBXHCI
+
+    USB 3.1 Bus:
+
+      Host Controller Driver: AppleT6000USBXHCI
+
+        EMEET SmartCam S600:
+
+          Product ID: 0x00ad
+          Vendor ID: 0x328f
+          Version: 1.14
+          Serial Number: A240517000801119
+          Speed: Up to 480 Mb/s
+          Manufacturer: EMEET
+          Location ID: 0x00100000 / 1
+          Current Available (mA): 500
+          Current Required (mA): 500
+          Extra Operating Current (mA): 0
+
+ChatGPT said:
+
+ð 
+Findings from Your USB Scan
+
+Your built-in MacBook camera is missing.
+
+Normally, a MacBook's internal camera would show up as something like 
+"FaceTime HD Camera"
+ under USB.
+
+It is 
+not detected at all
+, meaning macOS doesnât see it at the hardware level.
+
+An external camera is detected:
+
+EMEET SmartCam S600
+
+Location ID:
+ 0x00100000 / 1
+
+This is a USB-connec

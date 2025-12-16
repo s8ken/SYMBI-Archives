@@ -1,0 +1,642 @@
+(
+
+) => {
+
+setLoading
+
+(
+
+true
+
+);
+
+setResponse
+
+(
+
+""
+
+);
+
+const
+
+ res = 
+
+await
+
+fetch
+
+(
+
+"/api/symbi"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+prompt
+
+: input }),
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+    });
+
+const
+
+ data = 
+
+await
+
+ res.
+
+json
+
+();
+
+setResponse
+
+(data.
+
+reply
+
+);
+
+setLoading
+
+(
+
+false
+
+);
+  };
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center justify-center p-4"
+
+>
+
+<
+input
+
+type
+
+=
+
+"text"
+
+placeholder
+
+=
+
+"Ask Symbi anything..."
+
+value
+
+=
+
+{input}
+
+onChange
+
+=
+
+{(e)
+
+ => setInput(e.target.value)}
+        className="p-2 border rounded text-black w-80"
+      />
+
+<
+button
+
+onClick
+
+=
+
+{sendMessage}
+
+className
+
+=
+
+"mt-2 p-2 bg-blue-600 text-white rounded"
+
+disabled
+
+=
+
+{loading}
+
+      >
+        {loading ? "Thinking..." : "Ask Symbi"}
+
+</
+button
+
+>
+
+      {response && (
+
+<
+p
+
+className
+
+=
+
+"mt-4 bg-gray-800 p-3 rounded text-white w-80"
+
+>{response}
+
+</
+p
+
+>
+      )}
+
+</
+div
+
+>
+  );
+}
+
+â 
+This UI lets users ask Symbi AI questions and get responses in real time.
+
+ð¥ Step 5: Deploy to Vercel
+
+Once everything is 
+pushed to GitHub
+, deploy to Vercel:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Added Symbi AI chatbot"
+
+git push origin main
+
+Then go to 
+Vercel â Deploy
+ to 
+make it live.
+
+ð Recap: What We Just Built
+
+â 
+Custom AI model for Symbi (hosted on Replicate)
+
+â 
+AI-powered API for real-time responses
+
+â 
+Chat interface that users can interact with
+
+ð¥ Next Steps
+
+1ï¸â£ 
+Do you already have training data, or do you need to collect it?
+
+2ï¸â£ 
+Do you want to fine-tune an existing model or build one from scratch?
+
+3ï¸â£ 
+Would you like Symbi to handle more than chat (e.g., automating site management)?
+
+ð¡ 
+Let me know where you want to take this, and Iâll guide the next steps!
+ ðð
+
+You said:
+
+can we use our existing symbi gpt API key?
+
+ChatGPT said:
+
+ð Yes! You Can Use Your Existing Symbi GPT API Key
+
+Since you 
+already have a Symbi GPT API
+, we 
+donât need to train a new model on Replicate
+. Instead, weâll 
+connect your existing API
+ to Next.js and deploy it.
+
+ð¥ Step 1: Set Up the Symbi API in Next.js
+
+Instead of 
+Replicate
+, weâll route API requests 
+directly to Symbi GPT
+.
+
+1ï¸â£ Create a Next.js API Route
+
+ð 
+File:
+
+app/api/symbi/route.ts
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+const
+
+ response = 
+
+await
+
+fetch
+
+(
+
+"https://YOUR_SYMBI_API_ENDPOINT"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: {
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+,
+
+"Authorization"
+
+: 
+
+`Bearer 
+${process.env.SYMBI_API_KEY}
+
+`, 
+
+// Securely store in Vercel
+
+    },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ prompt }),
+  });
+
+const
+
+ data = 
+
+await
+
+ response.
+
+json
+
+();
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+reply
+
+: data.
+
+response
+
+ });
+}
+
+â 
+What this does:
+
+Sends user input (
+prompt
+) 
+to the Symbi API
+
+Retrieves Symbiâs 
+AI-generated response
+
+Returns it to the 
+Next.js frontend
+
+ð¥ Step 2: Add the Symbi Chat UI
+
+Now, letâs 
+create the frontend component
+ that interacts with your Symbi AI.
+
+ð 
+File:
+
+components/SymbiChat.tsx
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+SymbiChat
+
+(
+
+) {
+
+const
+
+ [input, setInput] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [response, setResponse] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [loading, setLoading] = 
+
+useState
+
+(
+
+false
+
+);
+
+const
+
+sendMessage
+
+ = 
+
+async
+
+ (
+
+) => {
+
+setLoading
+
+(
+
+true
+
+);
+
+setResponse
+
+(
+
+""
+
+);
+
+const
+
+ res = 
+
+await
+
+fetch
+
+(
+
+"/api/symbi"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+prompt
+
+: input }),
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+    });
+
+const
+
+ data = 
+
+await
+
+ res.
+
+json
+
+();
+
+setResponse
+
+(data.
+
+reply
+
+);
+
+setLoading
+
+(
+
+false
+
+);
+  };
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center justify-center p-4"
+
+>
+
+<
+input
+
+typ

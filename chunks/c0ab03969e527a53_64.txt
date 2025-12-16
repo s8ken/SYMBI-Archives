@@ -1,0 +1,221 @@
+   disk0s3
+
+/dev/disk3 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +994.7 GB   disk3
+                                 Physical Store disk0s2
+   1:                APFS Volume Macintosh HD - Data     23.5 GB    disk3s1
+   2:                APFS Volume Macintosh HD            11.2 GB    disk3s3
+   3:              APFS Snapshot com.apple.os.update-... 11.2 GB    disk3s3s1
+   4:                APFS Volume Preboot                 6.9 GB     disk3s4
+   5:                APFS Volume Recovery                1.0 GB     disk3s5
+   6:                APFS Volume VM                      20.5 KB    disk3s6
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Based on your current 
+diskutil list
+ output, the system volume you need to mount as writable is identified as:
+
+bash
+
+Copy
+
+Edit
+
+/dev/disk3s3
+
+When you follow the steps provided earlier to disable AirPlay (using Chrisgeo's script), ensure you use this exact identifier (`disk
+
+You said:
+
+zsh: permission denied: /dev/disk3s3
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The error you're getting (
+zsh: permission denied: /dev/disk3s3
+) happens because you're directly trying to execute or access a disk device instead of using it in the proper command.
+
+Here's how you correctly make the system volume writable step-by-step:
+
+1. Restart into Recovery Mode
+
+Apple Silicon (M1/M2)
+: Shut down, then press and hold the power button until "Loading startup options" appears. Select 
+Options
+, then 
+Continue
+.
+
+2. In Recovery, open Terminal:
+
+From the top menu bar: 
+Utilities → Terminal
+.
+
+3. Disable SIP and allow modifications of the system volume
+
+In Terminal, run:
+
+shell
+
+Copy
+
+Edit
+
+csrutil disable
+csrutil authenticated-root disable
+
+4. Restart back into macOS normally:
+
+Type:
+
+shell
+
+Copy
+
+Edit
+
+reboot
+
+5. Remount the system volume as writable (once booted normally):
+
+Open Terminal and run:
+
+shell
+
+Copy
+
+Edit
+
+sudo mount -uw /
+sudo killall Finder
+
+At this stage, the system volume 
+/
+ is writable, and you can apply Chrisgeo’s script or manual changes to disable AirPlay components.
+
+Why the earlier permission issue occurred:
+
+You cannot directly execute or access disk partitions (
+/dev/disk3s3
+) as regular files or commands.
+
+You must mount the 
+system volume
+ (
+/
+) as writable using the correct syntax shown above.
+
+Follow these exact instructions to achieve a writable system volume safely. Let me know if you need further help.
+
+You said:
+
+so I disable and then restart and immediately reboot again?
+
+ChatGPT said:
+
+Here’s exactly how to do it clearly, step-by-step:
+
+✅ Step-by-Step to Make System Writable on macOS:
+
+Step 1: Boot into Recovery Mode
+
+Shut down your Mac completely.
+
+Press and hold the 
+Power Button
+ (on M1/M2 MacBooks) until you see 
+"Loading startup options"
+.
+
+Select 
+Options
+, then click 
+Continue
+ to boot into 
+Recovery Mode
+.
+
+Step 2: Open Terminal in Recovery Mode
+
+Once Recovery loads:
+
+From the top menu, select:
+
+Utilities
+ → 
+Terminal
+
+Step 3: Disable SIP and Enable Writable System Volume
+
+In Terminal, enter these commands one by one:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+csrutil authenticated-root 
+
+disable
+
+Both commands must say they've successfully completed.
+
+Step 4: Restart Normally
+
+Still in Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+reboot
+
+Your Mac will restart normally.
+
+Now, once your Mac boots normally:
+
+Step 5: Mount the System Volume as Writable
+
+Open a normal Terminal window, and run:
+
+bash
+
+Copy
+
+Edit
+
+sudo mount -uw /
+sudo killall Finder
+
+After this command, your system volume (
+/
+) is writable, and you can proceed to run the AirPlay disable script from Chrisgeo or apply manual changes as intended.
+
+⚠️ Important Notes:
+
+After you've finished your modifications, you'll later re-enable SIP to protect your system again by booting back into Recovery and running:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+You don't need to immediately reboot again after booting normally; you can do your tas

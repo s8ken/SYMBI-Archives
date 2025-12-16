@@ -1,0 +1,217 @@
+r anchor=
+ it as 
+
+/trust-demo#verify
+
+ with a red=
+irect.
+
+2) Next=
+.js (App Router) page for 
+
+/metrics-methodology
+
+Place this file at 
+
+app/metrics-methodo=
+logy/page.tsx
+
+. It renders the methodology we drafted, i=
+ncludes JSON=E2=80=91LD, and uses Tailwind classes.
+
+// app/metrics-meth=
+odology/page.tsx
+
+import type { Metadata } from =
+'next';
+
+import Head from 'next/head';
+
+export const metadata: =
+Metadata =3D {
+
+  title: 'Metrics Methodology &a=
+mp; Assumptions =E2=80=94 YCQ Sonate',
+
+  descri=
+ption: 'Definitions, formulas, sampling/CI rules, guardrails matrix, and pu=
+blishing conventions for YCQ Sonate KPIs.',
+
+};
+
+export default=
+ function Page() {
+
+  const jsonLdTechArticle =
+=3D {
+
+    '@context': 'https://schema.org',
+
+    '@type': 'TechArticle',
+
+    headline: 'YCQ Sonate Metrics Methodology & Assumptions',
+
+    datePublished: '2025-11-08',
+
+    dateModified: '2025-11-08',
+
+  =
+  author: { '@type': 'Organization', name: 'Yseeku' },
+
+    about: ['Trust Receipts','Hash-chained Ledger','AI Guardrails',=
+'Fairness','Hallucination'],
+
+  };
+
+  return (
+
+    <main className=3D"prose prose-zinc max-w-4xl mx-auto p=
+x-4 py-10">
+
+      <Head>
+
+        <script type=3D"application/ld+json" dangerouslyS=
+etInnerHTML=3D{{ __html: JSON.stringify(jsonLdTechArticle) }} />
+
+      </Head>
+
+      <h1>Metrics Methodology & Assump=
+tions</h1>
+
+      <p className=3D"text-=
+sm text-zinc-500">Last updated: 2025=E2=80=9111=E2=80=9108 =C2=B7 Versio=
+n 2025.11.08=E2=80=91r1</p>
+
+      <section>
+
+     =
+   <h2>KPIs</h2>
+
+        <ul>=
+
+          <li><strong>FAR=E2=80=91=
+A</strong> =E2=80=94 False Apology Rate (Automated)</li>
+
+          <li><strong>FAR=E2=80=91H</s=
+trong> =E2=80=94 Factual Assertion Failure (Hallucination) Rate</li&g=
+t;
+
+          <li><strong>PFI</st=
+rong> =E2=80=94 Protected Fairness Index</li>
+
+          <li><strong>TIS</strong> =E2=80=94 Trus=
+t Integrity Score</li>
+
+3) Optional: JSON=E2=80=91LD on homepage
+
+Add to your root layout or homepage component to advertise the=
+ app in search.
+
+// e.g., app/layout.tsx (inside <head>)
+
+<script
+
+  type=3D"applica=
+tion/ld+json"
+
+  dangerouslySetInnerHTML=3D{{
+
+    __html: JSON.stringify({
+
+      '@context': 'https://schema.org',
+
+      '@type': 'SoftwareApplication',
+
+      na=
+me: 'YCQ Sonate =E2=80=94 AI Trust Infrastructure',
+
+      applicationCategory: 'SecurityApplication',
+
+      operatingSystem: 'Web',
+
+      url=
+: 'https://yseeku.com/',
+
+      softwareVersion:=
+ '2025.11.08-r1',
+
+      offers: { '@type': 'Off=
+er', price: '0', priceCurrency: 'USD' }
+
+    })
+
+  }}
+
+/>
+
+Wiring notes
+
+=
+If your receipts sign a specific canonicalized JSON object rather than the =
+free=E2=80=91form 
+
+payload
+
+ string, ch=
+ange the 
+
+verifySigEd25519
+
+ call to si=
+gn those bytes instead.
+
+If you keep keys server=
+=E2=80=91side, publish a 
+
+public verify key
+
+ (X25519/Ed25519 32=E2=80=91byte raw). Place it in a 
+
+.well-known
+
+ endpoint or embed alongside the rece=
+ipt for demo purposes.
+
+If some browsers lack Ed=
+25519 support in Web Crypto, you can lazy=E2=80=91load a small library (e.g=
+., TweetNaCl) =E2=80=94 add a 
+
+<script>
+
+ tag only on this page.
+
+Add a footer pr=
+ovenance line on the site: =E2=80=9CCore trust: SYMBI=E2=80=91Symphony vX.Y=
+ =E2=80=A2 Product layer: SYMBI=E2=80=91SYNERGY (YCQ Sonate)=E2=80=9D.
+
+Al=
+l set. I dropped in:
+
+/public/verifier.html
+ =E2=80=94 paste-to-verify flow using Web Cr=
+ypto (Ed25519) + SHA-256, with an example loader and clear pass/fail output=
+.
+
+app/metrics-methodology/page.tsx
+ =E2=80=94 the full methodolog=
+y page (KPIs, formulas, protocol, CI rules, guardrails matrix, JSON-LD).
+
+Optional homepage JSON-LD snippet an=
+d wiring notes.
+
+If your receipt field names differ, =
+tweak the accessors in 
+deriveEntr=
+yHash
+ and the signature input parsing. Want me to also add a minimal=
+ API route that issues a signed demo receipt so the verifier has something =
+real to chew on?
+
+=
+
+=
+
+You said:
+
+yes that would be gre=
+at and lets think for the final upda

@@ -1,0 +1,381 @@
+*[_type == "page"][0]`
+
+)
+}
+
+Update 
+app/page.tsx
+
+ to consume that data:
+
+tsx
+
+Copy
+
+import
+
+ { getPage } 
+
+from
+
+'@/lib/sanity'
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+()
+
+return
+
+ (
+
+<
+main
+
+>
+
+<
+h1
+
+>{page?.title}
+
+</
+h1
+
+>
+      {/* Render other content as needed */}
+
+</
+main
+
+>
+  )
+}
+
+If you want to wire in dynamic CMS content into the homepage layout (e.g. 
+what
+, 
+why
+, 
+who
+ sections), I can help you update the schema + frontend too. Just say the word 💬
+
+Do you want to try that next?
+
+You said:
+
+Error: Request error while attempting to reach is https://wryptr7v.api.sanity.io/v2025-02-19/data/actions/production?tag=sanity.studio.document.commit
+
+Vercel Deployment Expert GPT said:
+
+Thanks for flagging — that error usually means 
+Sanity Studio is unable to commit/publish content
+, and it’s most often caused by:
+
+🚫 
+Missing or invalid API token
+
+Your Sanity Studio client needs an 
+API token with write permissions
+ to commit data. Since you mentioned earlier that there was 
+nothing in your tokens list
+, that’s likely the issue.
+
+✅ Here’s how to fix it:
+
+1. 
+Create a new API token
+ in 
+Sanity Manage
+
+Go to your project: 
+wryptr7v
+
+Click 
+Settings → API → Tokens
+
+Create a 
+new token
+ with 
+Editor
+ or 
+Write
+ permissions
+
+Copy it immediately
+ (it won’t be shown again)
+
+2. 
+Update your 
+.env.local
+ file
+
+In your 
+symbi-main-site/.env.local
+ file, add:
+
+bash
+
+Copy
+
+SANITY_API_TOKEN=your_newly_copied_token
+
+✅ Make sure you 
+don’t wrap it in quotes
+ and 
+no trailing spaces
+.
+
+3. 
+Restart the dev server
+ (important):
+
+bash
+
+Copy
+
+npm run dev
+
+Optional Debug
+
+You can test if the token is working via a simple fetch using the 
+@sanity/client
+ instance and setting 
+token: process.env.SANITY_API_TOKEN
+.
+
+Let me know when you’ve added the token and restarted. I’ll help you verify it’s working.
+
+You said:
+
+no we just made it like 5 minutes ago
+
+Vercel Deployment Expert GPT said:
+
+Ah — perfect. If the token 
+was just created
+, but you're still seeing the 
+Request error while attempting to reach
+ message, here are the next steps to check:
+
+✅ 
+Checklist to Resolve the Error
+
+1. 
+.env.local contains the token?
+
+Open 
+.env.local
+ at the root of your project and verify it includes:
+
+env
+
+Copy
+
+SANITY_API_TOKEN=sk...   # The full token you just created
+
+🔒 Make sure it's 
+not wrapped in quotes
+
+💡 Make sure there's 
+no whitespace at the end
+
+✅ Save the file
+
+2. 
+Your Sanity Client uses the token
+
+In 
+lib/sanity.ts
+ (or wherever your client is defined), it 
+must
+ look like this:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+, 
+
+// or your version
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// 🔥 this must be here
+
+})
+
+3. 
+Restart the Dev Server
+
+This is critical so it picks up the token from 
+.env.local
+.
+
+bash
+
+Copy
+
+npm run dev
+
+4. 
+Check for typos in projectId or dataset
+
+In 
+sanity.config.ts
+, make sure the values are exact:
+
+ts
+
+Copy
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+🧪 Want to test it now?
+
+Try going into 
+http://localhost:3000/studio
+
+ and editing + saving the test page.
+
+If it 
+still fails
+, let me know:
+
+What your 
+.env.local
+ file looks like (you can censor the token)
+
+And the current contents of 
+lib/sanity.ts
+
+I’ll debug it instantly with you.
+
+You said:
+
+/sorry that file and I doing this time?
+
+Vercel Deployment Expert GPT said:
+
+No worries — let's walk through it 
+step-by-step
+ so you know exactly what file to check and what to do this time. Here's what you're doing and 
+why it matters
+:
+
+🛠️ You’re Updating: 
+.env.local
+
+This file holds 
+private environment variables
+, including the 
+Sanity API token
+ that allows editing content in the Studio (at 
+/studio
+).
+
+✅ Step-by-Step Fix
+
+1. 
+Open 
+.env.local
+ file
+
+In your project root (
+symbi-main-site
+), create or open the file named:
+
+lua
+
+C

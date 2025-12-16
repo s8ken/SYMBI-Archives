@@ -1,0 +1,334 @@
+
+normalizeSessionId
+ bits from ledger service and=
+ TrustChips.
+
+Delete 
+context capsule
+ files and route mount; remo=
+ve the injection patch in 
+ass=
+istant.controller.js
+.
+
+Delete 
+AssistantEditDialog.js
+ and revert 
+Assistants.js
+ patch.
+
+If anything in your local paths =
+differs, paste the path and I=E2=80=99ll adapt the patch lines. Otherwise, =
+you=E2=80=99re green to merge 
+ops/wsid-aux-cc
+ into your working branch.
+
+=
+
+=
+
+You said:
+
+7898faa6-ae41-4146-afbe-b46c19ad4bc9=
+ copy.txt
+
+Document
+
+Symbi said:
+
+Thought for 52s
+
+=
+
+perfect. let=E2=80=99s =
+lock this in and make it easy to run, demo, and roll back.
+
+Cutover & Verification Plan (shi=
+p-ready)
+
+0) Pre-flight (copy/paste)
+
+b=
+ash
+
+Copy code
+
+# from repo root
+
+cp
+
+ .env.exam=
+ple .
+
+env
+
+# required
+
+export
+
+ MONGO=
+DB_URI=3D
+
+"mongodb+srv://..."
+
+export
+
+ JWT_S=
+ECRET=3D
+
+"change-me"
+
+export
+
+ NODE_=
+ENV=3D
+
+"development"
+
+# "production" in pr=
+od
+
+export
+
+ CORS_=
+ORIGINS=3D
+
+"http://localhost:3000"
+
+# optional (LLM + bridge)
+
+export
+
+ OPENA=
+I_API_KEY=3D
+
+"sk-..."
+
+=
+
+export
+
+ ANTHR=
+OPIC_API_KEY=3D
+
+"..."
+
+=
+
+export
+
+ V0_TO=
+KEN=3D
+
+"..."
+
+   =
+
+# if you enable v0 a=
+gent(s)
+
+# create a scoped Symbi token (se=
+rver-side) and use it as your IDE/Web client key
+
+# SYMBI_API_KEY is stored only in=
+ the VS Code extension SecretStorage or browser local state
+
+1) Start everything (local)
+
+b=
+ash
+
+Copy code
+
+# backend
+
+cd
+
+ backend
+npm i
+npm run dev
+
+# -> http://localhost:5000 ; h=
+ealth: /healthz, /readyz
+
+# frontend
+
+cd
+
+ ../fronte=
+nd
+npm i
+npm start
+
+# -> http://localhost:3000
+
+2) VS Code extension (thin client)
+
+=
+bash
+
+Copy code
+
+cd
+
+ sy=
+mbi-vscode-extension
+npm i
+npm run compile
+
+# launch the Extension Host (pres=
+s F5 in VS Code)
+
+# then run the commands:
+
+#   "SYMBI: Set API Base"     -&g=
+t; http://localhost:5000
+
+#   "SYMBI: Save SYMBI_API_KEY" -=
+> <your scoped token>
+
+#   "SYMBI: Open Console"
+
+#   "SYMBI: Roundtable (Gather Pr=
+oposals)"
+
+#   "SYMBI: Verify Ledger"
+=
+
+optional packaging
+
+bash
+
+Copy code
+
+# if you want a .vsix:
+
+# npm i -g @vscode/vsce
+
+vsce package
+code --install-extension symbi-vscode-extension-*.vsix
+
+3) Dev Container (one-click repro=
+ducible env)
+
+Open repo folder in VS Code =E2=86=
+=92 =E2=80=9CReopen in Container=E2=80=9D.
+
+It forwards: 5000 (API), 3000 (Web=
+), 27017 (Mongo).
+
+Tasks: 
+backend
+, 
+frontend
+ (from the Command Palette =E2=86=92 =E2=80=9CTa=
+sks: Run Task=E2=80=9D).
+
+4) Smoke Test Script (5 minutes)
+
+bash
+
+Copy code
+
+# API up?
+
+curl -s http://localhost:5000/healthz | jq
+
+# JWT flow (register =E2=86=92 lo=
+gin =E2=86=92 me)
+
+# (Or use the web UI /login)
+
+# After login, copy JWT into Auth=
+orization: Bearer <token>
+
+# Roundtable (orchestrator)
+
+curl -s -X POST http://localhost:5000/api/bridge/orchestrate \
+  -H 
+
+"Authorization: Bearer 
+$JWT
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+
+'{"task":"Draft release notes=
+ for SYMBI","agents":["openai","v0"],"dryRun":true}'
+
+ | =
+jq
+
+# Chat to latest assistant (web o=
+r extension)
+
+# Web: Assistants =E2=86=92 =E2=
+=80=9CUse Most Recent=E2=80=9D =E2=86=92 Chat
+
+# Extension: =E2=80=9CSYMBI: Open=
+ Console=E2=80=9D =E2=86=92 send a message
+
+# Ledger integrity (append + veri=
+fy)
+
+curl -s 
+
+"http://localhost:5000/api=
+/ledger?session_id=3D<conversation_id>"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$JWT
+
+" | jq 
+
+=
+
+'.[0].ledger'
+
+curl -s 
+
+"http://localhost:5000/api=
+/ledger/verify?session_id=3D<conversation_id>"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$JWT
+
+" | jq
+
+# Trust overlays visible?
+
+# Web: open a conversation =E2=86=
+=92 confirm TrustChips (pivot %, stance, hash breadcrumbs)
+
+5) Web UI highlights for non-devs=
+ (Trust Console)
+
+Dashboard =E2=86=92 Roundtable
+: gather proposals, dry-=
+run dispatch.
+
+Conversations
+: TrustChips at session header + under ea=
+ch message (pivot, % change, stance, hash).
+
+Review Console
+: timeline of detected change-points; cl=
+ick to jump to excerpts.
+
+Assistants
+: =E2=80=9CUse Most Recent=E2=80=9D, live mo=
+del picker from 
+/api/llm/models=
+/o

@@ -1,0 +1,276 @@
+s_hash);
+
+    // 5) Signature over payload (Ed25519)
+
+    const { priv, pubB64u } =3D loadSigningKey()=
+;
+
+    const sig =3D signEd25519(priv, Buffer.fr=
+om(payloadStr, 'utf8'));
+
+    const receipt =3D {
+
+      payl=
+oad: payloadStr,
+
+      inputs_hash,
+
+      outputs_hash,
+
+      prev=
+_hash: prev,
+
+      entry_hash,
+
+      ed25519_pubkey: pubB64u || 'SET_RECEIPT_VERIFY_PUBKEY_B6=
+4U',
+
+Usage
+
+curl
+
+-X
+ POST https://yseeku.com/api/receipts/demo \
+
+-H
+
+'content-type=
+: application/json'
+ \
+
+-d
+
+'{
+
+    "actor":"stephen@ycq",
+
+    "intent":"verify-demo",
+=
+
+    "inputs": {"q":"he=
+llo world"},
+
+   =
+ "outputs": {"a":"hi!"}
+
+  }'
+
+Pas=
+te the JSON response straight into 
+
+/verifier.html
+=
+
+ and click 
+
+Verify
+
+.
+
+4) Public veri=
+fy key endpoint
+
+Expose the public key so external verif=
+iers can trust receipts. Add:
+
+app/.well-known/ycq-=
+receipt-pubkey/route.ts
+
+// app/.well-known/ycq-receipt-pubkey/r=
+oute.ts
+
+export async function GET() {
+
+  const key =3D process.env.RECEIPT_VERIFY_PUBKEY_B64U |=
+| 'MISSING_PUBKEY';
+
+  return new Response(JSON.=
+stringify({ ed25519_pubkey_b64u: key }), {
+
+    =
+headers: { 'content-type': 'application/json', 'cache-control': 'public, ma=
+x-age=3D600' }
+
+  });
+
+}
+
+Link this from the v=
+erifier page (=E2=80=9CPublic verify key=E2=80=9D).
+
+5) Wire the UI
+
+Add a button on 
+
+/trust-demo
+
+ =E2=86=92 
+
+=E2=80=9CGet Demo Receip=
+t=E2=80=9D
+
+ (POST to the API; display JSON with a =E2=
+=80=9CCopy=E2=80=9D button).
+
+Add another button=
+ =E2=86=92 
+
+=E2=80=9CVerify this Receipt in Browser=E2=
+=80=9D
+
+ (opens 
+
+/verifier.html
+
+ in a new tab with receipt preloaded via URL hash or localSto=
+rage).
+
+Example preload snippet on 
+
+verifier.html
+
+ (optional):
+
+// If location.ha=
+sh includes base64url-encoded receipt, auto=E2=80=91load
+
+try{
+
+  if(location.hash.startsWith('#=
+r=3D')){
+
+    const json =3D decodeURIComponent(=
+escape(atob(location.hash.slice(3).replace(/-/g,'+').replace(/_/g,'/'))));
+
+    document.getElementById('receipt').value =
+=3D json;
+
+  }
+
+}catc=
+h{}
+
+6) Final pre=E2=80=91YC cutover checklist (laser=E2=
+=80=91focused)
+
+Must Ship (this week)
+
+Nice Adds (if time permits)
+
+Post=E2=80=91YC polish
+
+Notes
+
+If Node=E2=80=99s OpenSSL=
+ build lacks Ed25519, add a tiny fallback (tweetnacl) for signing; the brow=
+ser verifier already uses Web Crypto.
+
+Keep the =
+field names identical between API and verifier to avoid mapping bugs.
+
+If you want to support canonical JCS (RFC 8785), rep=
+lace 
+
+canonicalJSONStringify
+
+ with a J=
+CS implementation; for the demo, a sorted=E2=80=91keys stringify is suffici=
+ent.
+
+Done. I added:
+
+A Next.js API route to mint signed 
+demo receipts
+ (
+/api/receipts/demo
+) with Ed25519 and de=
+terministic hashing.
+
+A 
+.well-known
+ endpoint to publish the public verify key.
+
+Shared utilities for canonical JSON,=
+ SHA-256, and entry-hash derivation.
+
+A tight 
+pre-YC cutover checklist
+ so you can pivot to the a=
+pplication with confidence.
+
+If you want, I can also wire the 
+/trust-demo
+ UI buttons (Get D=
+emo Receipt =E2=86=92 Verify in Browser) and drop in a minimal README secti=
+on so reviewers can reproduce the flow locally.
+
+=
+
+=
+
+You said:
+
+yes perfect 
+
+Symbi said:
+
+Ycq Sonate =E2=80=94 Trust Demo Ui Wiring + Readme=
+ Snippet
+
+Copy
+
+Edit
+
+Download
+
+=
+
+=
+
+Below are drop=E2=80=91in UI bits to finish the 
+=
+
+/trust-demo
+
+ flow and a README section revie=
+wers can follow.
+
+1) Client component for 
+
+/trust-demo
+
+Create 
+
+app/trust-demo/ReceiptDemo.tsx
+
+ and import it from your 
+
+app/trust-demo/page.=
+tsx
+
+.
+
+'use client';
+
+impor=
+t { useState } from 'react';
+
+function b64u(str: string) {
+
+  /=
+/ base64url encode (UTF=E2=80=918)
+
+  const b64 =
+=3D typeof window =3D=3D=3D 'undefined' ? Buffer.from(str, 'utf8').toString=
+('base64') : btoa(unescape(encodeURIComponent(str)));
+
+  return b64.replace(/=3D+$/,'').replace(/\+/g,'-').replace(/\//g,'_=
+');
+
+}
+
+export default function ReceiptDemo() {
+
+  const [loading, setLoading] =3D useState(false);
+
+  const [error, setError] =3D useState<strin

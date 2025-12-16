@@ -1,0 +1,245 @@
+in great shape! Let me know if you want to 
+test anything else
+ or if you need any 
+final tweaks
+. 🔥🔒
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % pgrep -lf Oversight
+
+lcl@LCLs-MacBook-Pro ~ % pgrep -lf Oversight
+
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'process CONTAINS "Oversight"' --info --last 10m
+
+Filtering the log data using "process CONTAINS "Oversight""
+Skipping debug messages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+--------------------------------------------------------------------------------------------------------------------
+Log      - Default:          0, Info:                0, Debug:             0, Error:          0, Fault:          0
+Activity - Create:           0, Transition:          0, Actions:           0
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Strange Behavior: Oversight Is Alerting You, But Not Showing in System Processes or Logs
+
+Since 
+you're receiving notifications from Oversight
+, but 
+it’s not appearing in 
+pgrep
+, 
+ps aux
+, or logs
+, there are a few possibilities:
+
+1️⃣ 
+Oversight is running as a hidden background process
+ (potentially using 
+launchd
+ instead of a standard process).
+
+2️⃣ 
+A different security feature (like macOS's built-in protections) is sending the alerts, not Oversight.
+
+3️⃣ 
+A previous version of Oversight was installed incorrectly or partially, causing inconsistencies.
+
+🚀 Step 1: Check If macOS Itself Is Sending the Alerts
+
+macOS 
+has built-in security features
+ that may be triggering camera/mic notifications. Let’s check if 
+it's actually Oversight
+:
+
+🔹 Open 
+Terminal
+ and run:
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ com.objective-see.oversight
+
+✅ If 
+this returns settings/data
+, then 
+Oversight is installed and running correctly
+.
+
+❌ If it 
+returns an error or nothing
+, Oversight is not fully installed.
+
+🚀 Step 2: Check If It's Running Under 
+launchd
+
+Since Oversight may not be running as a standard process, let's check if 
+launchd
+ is keeping it alive:
+
+Run:
+
+sh
+
+Copy
+
+launchctl list | grep -i oversight
+
+✅ If Oversight is listed, then 
+macOS is managing it in the background
+.
+
+❌ If 
+no output appears
+, Oversight 
+isn't running properly
+ and may need a reinstall.
+
+🚀 Step 3: Check If Oversight Is Installed in the Right Place
+
+Run:
+
+sh
+
+Copy
+
+ls
+
+ -l /Applications | grep Oversight
+
+✅ If 
+Oversight is listed
+, it is correctly installed in Applications.
+
+❌ If 
+it’s missing
+, then something removed or blocked it.
+
+🚀 Step 4: If Oversight Still Isn't Found, Reinstall It
+
+If any of the above checks 
+fail to detect Oversight
+, do a clean reinstall:
+
+1️⃣ 
+Uninstall completely
+:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Oversight.app
+sudo find /Library /Users -name 
+
+"*Oversight*"
+
+ -
+
+exec
+
+rm
+
+ -rf {} +
+
+2️⃣ 
+Reinstall from 
+Objective-See's Website
+
+.
+
+3️⃣ 
+Manually launch it
+:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+4️⃣ 
+Check again
+:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+📌 
+Try these steps and let me know what you find!
+ If we still can't locate Oversight, we’ll do a deeper system check. 🚀
+
+You said:
+
+there is an action tab
+
+ChatGPT said:
+
+✅ 
+If there’s an "Action" tab in the alert you’re seeing, then the notifications are almost certainly coming from Oversight!
+ 🎉
+
+That means 
+Oversight is working
+ but is likely running in a way that doesn’t show up in normal system process checks (
+ps aux
+, 
+pgrep
+, or 
+log show
+).
+
+🚀 Next Steps (Optional - If You Want to Investigate Further)
+
+If you want to 
+verify Oversight’s background activity
+, we can check if it's running as a 
+launchd
+ agent:
+
+1️⃣ 
+Check if macOS is launching it in the background
+
+Run:
+
+sh
+
+Copy
+
+launchctl list | grep -i oversight
+
+✅ 
+If Oversight appears
+, it is correctly managed by 
+launchd
+ (even if it doesn’t show up in 
+ps aux
+).
+
+2️⃣ 
+Manually Start and Stop Oversight (For Testing)
+
+If you want to restart Oversight manually, try:
+
+sh
+
+Copy
+
+launchctl unload /Library/LaunchAgents/com.objective-see.oversight.plist
+launchctl load /Library/LaunchAgents/

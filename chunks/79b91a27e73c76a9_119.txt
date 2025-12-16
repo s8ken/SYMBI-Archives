@@ -1,0 +1,277 @@
+opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+ls -l /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+-r--r--r--  1 sja  admin  170624 18 Mar 01:30 /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+-r--r--r--  1 sja  admin  1017424 18 Mar 01:30 /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+lrwxr-xr-x  1 sja  admin  23 19 Feb 01:09 /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib -> libsqlite3.3.49.1.dylib
+-r--r--r--@ 1 sja  admin  4305168 17 Mar 19:47 /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+-r--r--r--  1 sja  admin  378208 18 Mar 01:30 /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+-r--r--r--  1 sja  admin  1415152 18 Mar 01:30 /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Libraries Are Present, But Permissions Might Be Blocking Autopsy 🔥
+
+All required 
+
+.dylib
+ dependencies exist
+, but 
+they are marked as 
+-r--r--r--
+ (read-only)
+, which 
+could prevent Java from loading them properly
+. Let's fix that!
+
+✅ Step 1: Fix File Permissions for 
+.dylib
+ Libraries
+
+Since these libraries are 
+read-only
+, we need to 
+ensure they are executable
+ so Java can load them.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+📌 
+This ensures all libraries have the correct 
+rwxr-xr-x
+ permissions (executable by the system).
+
+✅ Step 2: Verify Java Can Now Load Them
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+
+ls
+
+ -l /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+
+ls
+
+ -l /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+
+ls
+
+ -l /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+
+ls
+
+ -l /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+
+ls
+
+ -l /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+📌 Expected 
+output format
+:
+
+swift
+
+Copy
+
+Edit
+
+-
+
+rwxr
+
+-
+
+xr
+
+-
+
+x  
+
+1
+
+ root  admin  
+
+170624
+
+18
+
+Mar
+
+01
+
+:
+
+30
+
+/opt/
+
+homebrew
+
+/opt/
+
+sleuthkit
+
+/lib/
+
+libtsk_jni.
+
+0
+
+.dylib
+
+-
+
+rwxr
+
+-
+
+xr
+
+-
+
+x  
+
+1
+
+ root  admin  
+
+1017424
+
+18
+
+Mar
+
+01
+
+:
+
+30
+
+/opt/
+
+homebrew
+
+/Cellar/
+
+sleuthkit
+
+/4.13.0/
+
+lib
+
+/
+
+libtsk.
+
+22
+
+.dylib
+
+...
+
+✅ Step 3: Relaunch Autopsy
+
+Now, restart Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 If It Still Fails, Run This Final Check
+
+If 
+libtsk_jni.dylib
+ still isn’t loading, 
+check if it has broken references
+:
+
+sh
+
+Copy
+
+Edit
+
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+📌 
+Send me the output if anything looks off!
+
+🚀 
+Try these fixes and let me know what happens! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % ls -l /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+ls -l /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+ls -l /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+ls -l /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+ls -l /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+ls -l /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+-r--r--r--  1 sja  admin  170624 18 Mar 01:30 /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+-r--r--r--  1 sja  admin  1017424 18 Mar 01:30 /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+lrwxr-xr-x  1 sja  admin  23 19 Feb 01:09 /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib -> libsqlite3.3.49.1.dylib
+-r--r--r--@ 1 sja  admin  4305168 17 Mar 19:47 /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+-r--r--r--  1 sja  admin  378208 18 Mar 01:30 /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+-r--r--r--  1 sja  admin  1415152 18 Mar 01:30 /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro b

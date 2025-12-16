@@ -1,0 +1,378 @@
+ leave Remote Port blank?
+
+Leaving it blank 
+blocks ALL outgoing connections
+ instead of just specific ports.
+
+This means 
+rapportd
+
+cannot communicate over any port
+âeven if it tries different ones. ð
+
+ð¥ Want to See What Ports 
+rapportd
+ Uses?
+
+Before blocking, you can 
+check what ports 
+rapportd
+ is trying to connect to
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+This will show lines like:
+
+markdown
+
+Copy
+
+Edit
+
+rapportd  588   sja    8u  IPv4 0x...      0t0  TCP 
+*:49152 (LISTEN)
+rapportd  588   sja    9u  IPv6 0x...      0t0  TCP *
+:443 (ESTABLISHED)
+
+ð The 
+remote ports
+ (
+443
+, 
+49152
+, etc.) are the ones 
+rapportd
+ is using.
+
+â Best Practice: Block Everything
+
+If you 
+leave "Remote Port" blank
+, Lulu 
+blocks 
+rapportd
+ from all network traffic
+, no matter what port it tries. 
+This is the best option.
+ ð¥
+
+ð 
+Let me know if you see 
+rapportd
+ still trying to sneak past Lulu!
+ ð
+
+You said:
+
+ok rule added
+
+ChatGPT said:
+
+ð¥ 
+Awesome! 
+rapportd
+ is now BLOCKED at the firewall level!
+ ð¥
+
+Now, letâs 
+verify that itâs completely cut off from the network
+ and 
+make sure it doesnât restart itself.
+ ð
+
+â Step 1: Confirm 
+rapportd
+ is Fully Blocked
+
+Run this command to check if itâs still making network connections:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep rapportd
+
+ð 
+Expected result:
+
+No output
+ (which means itâs NOT talking to any remote server).
+
+ð If it 
+still shows connections
+, Lulu is blocking them, but the process is still trying.
+
+â Step 2: Stop & Prevent 
+rapportd
+ from Running
+
+Letâs 
+kill 
+rapportd
+ manually
+ to see if it tries to restart:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall rapportd
+
+Then, check if it restarted:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+launchctl list | grep rapportd
+
+ð If 
+no output appears
+, itâs 
+gone!
+ ð
+
+â Step 3: Add Extra Protection (Optional)
+
+If 
+rapportd
+ keeps coming back, 
+take these extra steps
+:
+
+ð 
+Disable 
+rapportd
+ Completely
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.rapportd
+sudo launchctl 
+
+disable
+
+ system/com.apple.rapportd
+
+ð 
+Make a Fake 
+rapportd
+ File
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /usr/libexec/rapportd
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+sudo chflags uchg /usr/libexec/rapportd
+
+ð 
+This blocks macOS from restoring it!
+
+â Final Check: Reboot & Verify
+
+Restart your Mac
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After rebooting, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+launchctl list | grep rapportd
+sudo lsof -i -P | grep rapportd
+
+ð **If 
+rapportd
+ is gone and Lulu shows
+
+ð¨ 
+rapportd
+ is STILL Running & Listening! Letâs Shut It Down for Good ð¥
+
+Even though 
+Lulu is blocking
+
+rapportd
+ from making 
+outgoing
+ connections, itâs 
+still running
+ and 
+listening on port 49164
+. Letâs 
+fully disable and remove it
+ so it canât restart. ð
+
+ð Step 1: Kill 
+rapportd
+ Again
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 1028
+
+ð 
+This force-kills 
+rapportd
+ immediately.
+
+ð Step 2: Stop It from Restarting
+
+Disable 
+rapportd
+ at the system level:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.rapportd
+sudo launchctl 
+
+disable
+
+ system/com.apple.rapportd
+
+ð 
+Now, macOS will NOT restart 
+rapportd
+.
+
+ð Step 3: Delete 
+rapportd
+ from System Locations
+
+Since macOS 
+restores system files
+, delete all traces:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/Caches/com.apple.rapportd*
+sudo 
+
+rm
+
+ -rf /private/var/db/dyld/*
+sudo 
+
+rm
+
+ -rf /private/var/run/com.apple.rapportd*
+sudo 
+
+rm
+
+ -rf /Library/Caches/com.apple.rapportd*
+
+ð 
+Now, no cache files can restore it.
+
+ð Step 4: Make a Fake 
+rapportd
+ File
+
+This 
+prevents macOS from re-creating 
+rapportd
+
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+touch
+
+ /usr/libexec/rapportd
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+sudo chflags uchg /usr/libexec/rapportd
+
+ð 
+Now, even if macOS tries to restore 
+rapportd
+, it CANâT!
+ ð
+
+ð Step 5: Reboot & Verify
+
+Restart your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After reboot, 
+check if 

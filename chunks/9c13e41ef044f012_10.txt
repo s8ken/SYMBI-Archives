@@ -1,0 +1,215 @@
+6) public trustScore;
+    mapping(address =3D> bool) public revoked;
+
+    event TokenIssued(address indexed contributor, uint256 trustScore);
+    event TokenRevoked(address indexed contributor, string reason);
+
+    constructor() ERC721("SYMBI Governance Token", "SGT") {}
+
+    modifier onlyVerified(address contributor) {
+        require(verifiedContributors[contributor], "Not verified");
+        _;
+    }
+
+    function issueToken(address contributor, uint256 score) external onlyOw=
+ner {
+        require(!revoked[contributor], "Revoked contributor");
+        verifiedContributors[contributor] =3D true;
+        trustScore[contributor] =3D score;
+        _mint(contributor, uint256(uint160(contributor)));
+        emit TokenIssued(contributor, score);
+    }
+
+    function revokeToken(address contributor, string calldata reason) exter=
+nal onlyOwner {
+        revoked[contributor] =3D true;
+        _burn(uint256(uint160(contributor)));
+        emit TokenRevoked(contributor, reason);
+    }
+
+    // Prevent transferability (Soulbound)
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal pure override {
+        require(from =3D=3D address(0) || to =3D=3D address(0), "Non-transf=
+erable token");
+    }
+}
+
+Notes:
+
+Token non-transferability enforces=
+ anti-speculation.
+
+Future compatibility with ERC-6551=
+ for token-bound identity accounts.
+
+=E2=80=9CTrustScore=E2=80=9D logic=
+ will link directly to SYMBI Trust Protocol VC registry.
+
+SECTION III =E2=80=94 PROPOSED LE=
+GAL DISCLOSURE STATEMENT
+
+To be displayed on 
+gammatria.com/dao
+ and all public DA=
+O documents.
+
+=E2=9A=96=EF=B8=8F SYMBI DAO Gove=
+rnance Disclaimer (Proposed)
+
+Legal Notice =E2=80=94 Proposed Framework
+
+The SYMBI DAO is a proposed govern=
+ance structure for the SYMBI Trust Protocol.
+
+Participation in the DAO does 
+not
+ constitute investment, purchase, or acquisition of financial =
+instruments.
+
+SYMBI Governance Tokens (SGT)
+ are:
+
+Non-transferable
+
+Non-financial
+
+Issued solely for governance parti=
+cipation
+
+Earned through verifiable, credent=
+ialed contributions
+
+DAO participation provides 
+no rights to profits, assets, or rev=
+enue
+.
+
+The DAO operates under a 
+research and governance charter
+, managed by the SYMBI Foundation and academic partners.
+
+This framework is 
+proposed
+, pending review and regulat=
+ory confirmation.
+
+All implementation updates will be published transparently on 
+gammatria.com
+
+ and the SYMBI Dune dashboards.
+
+SECTION IV =E2=80=94 PROPOSED DAO=
+ TRANSPARENCY DASHBOARD (DUNE)
+
+Dashboard Modules
+
+Dashboard
+
+Descripti=
+on
+
+Data =
+Source
+
+Gover=
+nance Flow
+
+Proposals, votes, quorum, outcomes
+
+On-chain contract events
+
+C=
+redential Registry
+
+Issued & revoked VCs
+
+Trust Protocol verifiable credential r=
+egistry
+
+Trust Metrics
+
+Aggregate TrustScore by contributor type=
+
+Off-cha=
+in + on-chain aggregation
+
+Ethical Integrity Index
+
+Proposals alig=
+ned with 6-pillar ethics
+
+DAO audit trail
+
+Grant Activity
+
+Research fund a=
+llocation (non-financial)
+
+Treasury multisig logs
+
+SECTION V =E2=80=94 PROPOSED ROAD=
+MAP (Implementation Placeholder)
+
+Phase
+
+Date
+
+Description
+=
+
+Phase 1: Governa=
+nce Specification
+
+Oct=E2=80=93Nov 2025
+
+Finalize constitution, legal wrapper, contr=
+act audit
+
+Phase 2: Pilot Activation
+
+Dec 2025=E2=80=93Jan 2026
+
+Deploy n=
+on-transferable SGT contract (testnet)
+
+Phase 3: Public Transparen=
+cy
+
+Q1 2026
+
+Launch Dune dashboards + governance documentation
+
+Phase 4: Co=
+nstitution Ratification
+
+Q2 2026
+
+Ratify final governance constitution
+
+Pha=
+se 5: Mainnet Deployment
+
+Post-ratification
+
+Transition DAO governance on-chain full=
+y
+
+SECTION VI =E2=80=94 ATTRIBUTION =
+& COPYRIGHT (Proposed)
+
+All works under this governance fr=
+amework, including this document, are:
+
+=C2=A9 2025 
+SYMBI Foundation (Proposed Entity)
+
+Licensed under 
+Creative Commons Attribution=E2=80=93NonCommerc=
+ial=E2=80=93NoDerivatives 4.0 (CC BY-NC-ND 4.0)
+
+Author contributions to be preserv=

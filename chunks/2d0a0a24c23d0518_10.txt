@@ -1,0 +1,233 @@
+reen Recording or Camera Access
+
+Even if the livestream logs are missing, 
+camera/microphone access
+ may still be logged.
+
+A. Check for Webcam & Mic Use
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 7d
+
+If you see 
+FaceTime Camera
+ or 
+Microphone activation
+, your device was streaming video/audio.
+
+B. Check If Screen Recording Was Running
+
+sh
+
+Copy
+
+ps aux | grep -i 
+
+"screencapture"
+
+If 
+screencapture, QuickTime, OBS, or ffmpeg
+ appears, something was 
+actively recording your screen.
+
+4️⃣ (Advanced) Capture Live Network Traffic
+
+If streaming is 
+still happening
+, you can 
+monitor live data flow
+.
+
+A. Use tcpdump to Watch Outbound Traffic
+
+sh
+
+Copy
+
+sudo tcpdump -i en0
+
+If large data transfers are happening 
+right now
+, this will show the IP addresses involved.
+
+B. Use Wireshark to Look for Streaming Protocols
+
+Install 
+Wireshark
+, then filter for:
+
+rtmp
+ (Real-Time Messaging Protocol)
+
+webrtc
+
+udp
+ (often used for video streaming)
+
+hls
+ (HTTP Live Streaming)
+
+🚨 Next Steps
+
+1️⃣ 
+Check network traffic for large outbound connections (
+nettop
+, 
+netstat
+, 
+DNS logs
+).
+
+2️⃣ 
+Look at browser history for livestream sites (
+grep
+, 
+sqlite3
+).
+
+3️⃣ 
+Check camera/mic activity logs (
+log show --predicate 'eventMessage contains "AVCapture"'
+).
+
+4️⃣ 
+Monitor network traffic live with 
+tcpdump
+ or Wireshark.
+
+Since 
+RTMP and WebRTC logs are missing
+, the attacker may have used 
+a hidden method, cleared logs, or used browser-based streaming.
+ Run the steps above, and let me know what you find! 🚨
+
+You said:
+
+user@Mes-MacBook-Pro ~ % netstat -an | grep ESTABLISHED
+
+tcp4       0      0  192.168.1.3.58348      3.233.158.26.443       ESTABLISHED
+tcp4       0      0  192.168.1.3.58345      104.18.43.204.443      ESTABLISHED
+tcp4       0      0  192.168.1.3.58329      104.18.32.47.443       ESTABLISHED
+tcp4       0      0  192.168.1.3.58324      104.18.32.47.443       ESTABLISHED
+tcp4       0      0  192.168.1.3.57791      17.57.145.39.5223      ESTABLISHED
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Your 
+netstat output
+ shows 
+active network connections
+, which could be linked to livestreaming or unauthorized data transmission. Let’s analyze these IPs and what they might be doing.
+
+🚨 1️⃣ Investigate These IP Addresses
+
+Here’s what these connections mean:
+
+(A) 3.233.158.26 (AWS - Amazon Web Services, Virginia, USA)
+
+Amazon hosts 
+thousands of services
+, including 
+livestreaming, proxies, and cloud storage
+.
+
+This could be connected to 
+OBS Studio
+, 
+YouStream
+, or another service used for broadcasting.
+
+(B) 104.18.43.204 / 104.18.32.47 (Cloudflare)
+
+Cloudflare protects many websites
+, including streaming platforms.
+
+These IPs suggest a connection to 
+a website protected by Cloudflare
+, which could be YouStream, Twitch, or another service.
+
+(C) 17.57.145.39 (Apple Server - Used for iCloud, iMessage, FaceTime)
+
+This Apple server is used for 
+iCloud syncing, FaceTime calls, or push notifications
+.
+
+If 
+iCloud Photos
+ was backing up videos, this could explain the connection.
+
+2️⃣ Check What Process is Using These Connections
+
+To find 
+which app is making these connections
+, run:
+
+sh
+
+Copy
+
+sudo lsof -i -n | grep ESTABLISHED
+
+This will show 
+which apps/processes
+ are responsible for each active connection.
+
+Look for anything suspicious (
+Chrome, Safari, OBS, VLC, ffmpeg, unknown processes
+).
+
+3️⃣ Reverse Lookup: Find Out Which Websites These IPs Belong To
+
+To check if these IPs are related to a 
+streaming service
+, run:
+
+sh
+
+Copy
+
+nslookup 3.233.158.26
+nslookup 104.18.43.204
+nslookup 104.18.32.47
+nslookup 17.57.145.39
+
+This will show the 
+domain names
+ associated with each IP. If you see 
+Twitch, YouStream, YouTube Live, etc.,
+ that confirms a 
+livestream connection.
+
+4️⃣ Check Your Browser History for a Match
+
+Since 
+Cloudflare is involved
+, it’s possible 
+streaming was done via a website
+.
+
+Run this to check 
+browser history for recent connections
+:
+
+sh
+
+Copy
+
+grep -i 
+
+"youstream\|twitch\|live"
+
+ ~/Library/Ap

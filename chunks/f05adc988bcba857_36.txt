@@ -1,0 +1,235 @@
+all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+
+added 9 packages, and audited 1458 packages in 7s
+
+256 packages are looking for funding
+  run 
+npm fund
+ for details
+
+11 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+
+Success! Your Sanity configuration files has been added to this project
+sja@SJAs-MacBook-Pro symbi % 
+
+ChatGPT said:
+
+ð Sanity Installed Successfully! Next Steps
+
+Your 
+Sanity configuration is now complete
+ inside your Next.js project. ð
+
+However, you have:
+
+11 moderate security vulnerabilities
+ â These can be fixed with 
+npm audit fix
+.
+
+Sanity Studio is ready to launch!
+
+ð¹ Step 1: Fix Security Issues (Optional)
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm audit fix
+
+If that doesnât resolve all issues, run:
+
+bash
+
+Copy
+
+Edit
+
+npm audit fix --force
+
+â ï¸ 
+Note:
+ The 
+--force
+ option may update packages to breaking versions, so 
+test your project afterward
+.
+
+ð¹ Step 2: Start Your Project
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Visit your website:
+
+http://localhost:3000
+
+â 
+Open Sanity Studio:
+
+http://localhost:3000/studio
+
+ð¹ Step 3: Confirm What Works
+
+1ï¸â£ 
+Can you access Sanity Studio at 
+/studio
+?
+
+2ï¸â£ 
+Is the website displaying correctly at 
+/
+?
+
+3ï¸â£ 
+Do you see the correct pages (Homepage, About, Blog, etc.)?
+
+Let me know what works and what needs adjusting! ðð¥
+
+You said:
+
+so its making me use localhost:3001 and retuned the following: BuildError@http://localhost:3001/_next/static/chunks/%5Broot%20of%20the%20server%5D__3a40d6d2._.js:17247:50
+react-stack-bottom-frame@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:12388:33
+renderWithHooks@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:3402:42
+updateFunctionComponent@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:4726:36
+beginWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:5358:47
+runWithFiberInDEV@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:631:28
+performUnitOfWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7947:114
+workLoopSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7840:57
+renderRootSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7823:25
+performWorkOnRoot@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7558:225
+performWorkOnRootViaSchedulerTask@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:8386:26
+performWorkUntilDeadline@http://localhost:3001/_next/static/chunks/node_modules_beb00741._.js:1462:72
+
+ChatGPT said:
+
+ð¨ Build Error on 
+localhost:3001
+
+Your Next.js app is 
+crashing during build time
+ because of a 
+server-side rendering (SSR) issue
+. Since 
+Sanity Studio is running on port 
+3001
+
+, the error may be related to:
+
+A Next.js component failing during SSR
+ (likely in 
+layout.tsx
+ or 
+page.tsx
+).
+
+Sanity setup conflicting with React 19 or Next.js 15
+.
+
+A missing environment variable or misconfigured fetch request
+.
+
+ð¹ Step 1: Run a Clean Build
+
+Before debugging, 
+force a clean build
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .next
+npm run dev
+
+Then try accessing:
+
+Website:
+
+http://localhost:3000
+
+Sanity Studio:
+
+http://localhost:3001
+
+If the error 
+persists
+, move to 
+Step 2
+.
+
+ð¹ Step 2: Check the Actual Error
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+In the 
+terminal logs
+, check 
+what error appears
+. Look for:
+
+A specific component breaking.
+
+Missing imports or API calls.
+
+Next.js failing during SSR.
+
+ð¹ Step 3: Debug 
+layout.tsx
+ & 
+page.tsx
+
+If you see 
+an error in 
+layout.tsx
+ or 
+page.tsx
+
+, open those files and:
+
+Ensure 
+use client
+ is present if using hooks.
+
+Wrap 
+fetch()
+ 

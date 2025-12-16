@@ -1,0 +1,931 @@
+odel_vendor || "vendor"} / {model_name || "model=
+"} =E2=80=A2 row {ledger.row_hash?.slice(0, 8) || "=E2=80=94"}
+
+</
+Typography
+
+>
+
+<
+Divider
+
+=
+sx
+
+=3D
+
+{{
+=
+
+my:
+
+1
+
+ }} />
+
+        {prompt && (
+
+<
+Tooltip
+
+title
+
+=3D
+
+"Pro=
+mpt"
+
+>
+
+<
+Typography
+
+variant
+
+=3D
+
+"body2"
+
+sx
+
+=3D
+
+{{
+
+whiteSpace:
+
+ "
+
+pre-wrap
+
+",=
+
+mb:
+
+1
+
+ }}>
+
+<
+strong
+
+>=E2=9E=A4 Prompt:
+
+</
+strong
+
+=
+
+> {prompt}
+
+</
+Typography
+
+>
+
+</
+Tooltip
+
+>
+        )}
+
+        {response && (
+
+<
+Tooltip
+
+title
+
+=3D
+
+"Res=
+ponse"
+
+>
+
+<
+Typography
+
+variant
+
+=3D
+
+"body2"
+
+sx
+
+=3D
+
+{{
+
+whiteSpace:
+
+ "
+
+pre-wrap
+
+" =
+}}>
+
+<
+strong
+
+>=E2=86=B3 Response:
+
+</
+strong
+
+> {response}
+
+</
+Typography
+
+>
+
+</
+Tooltip
+
+>
+        )}
+
+</
+=
+CardContent
+
+>
+
+</
+Ca=
+rd
+
+>
+  );
+}
+
+frontend/src/pages/=
+ReviewConsole.js
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+ {
+
+Box
+
+, 
+
+Button
+
+, 
+
+CircularProgress
+
+, 
+
+Container
+
+, 
+
+Divider
+
+, 
+
+Stack
+
+, 
+
+TextField
+=
+
+, 
+
+Typography
+
+, 
+
+Alert
+
+, 
+
+ToggleButt=
+on
+
+, 
+
+Togg=
+leButtonGroup
+
+} 
+
+from
+
+"@mui/material"
+
+;
+
+import
+
+LedgerEventCard
+
+from
+
+"../components/LedgerEventCard"
+
+;
+
+import
+
+ { fetc=
+hTimeline, fetchLedger } 
+
+from
+
+"../lib/api"
+
+;
+
+import
+
+ { useP=
+arams, useNavigate } 
+
+from
+
+"react-router-dom"
+
+;
+
+export
+
+default
+
+function
+
+ReviewConsole
+
+(
+
+) {
+
+const
+
+ param=
+s =3D 
+
+useParams
+
+();
+
+const
+
+ navig=
+ate =3D 
+
+useNavigate
+
+();
+
+const
+
+ [sess=
+ionId, setSessionId] =3D 
+
+Rea=
+ct
+
+.
+
+us=
+eState
+
+(params.
+
+sessionId
+
+ || 
+
+""
+
+);
+
+const
+
+ [view=
+, setView] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+"timeline"
+=
+
+); 
+
+// 'timeline' | '=
+ledger'
+
+const
+
+ [load=
+ing, setLoading] =3D 
+
+React
+
+.
+
+useSta=
+te
+
+(
+
+false
+
+);
+
+const
+
+ [erro=
+r, setError] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [item=
+s, setItems] =3D 
+
+React
+
+.
+
+useState
+
+([]);
+
+const
+
+ ctrl =
+=3D 
+
+React
+
+.
+
+useRef
+
+(
+
+null
+
+);
+
+const
+
+onFetch
+
+ =
+=3D 
+
+async
+
+ (
+
+) =3D> {
+
+if
+
+ (!sess=
+ionId) 
+
+return
+
+=
+
+setError
+
+(
+
+"Enter session_id"
+
+);
+
+setError
+
+(
+
+""
+
+); 
+
+setLoading
+
+(
+
+true
+
+); 
+
+setItems
+
+([]);
+
+if
+
+ (ctrl.=
+
+current
+
+) ctr=
+l.
+
+current
+
+.
+
+abort
+
+()=
+;
+    ctrl.
+
+current
+
+ =3D 
+
+new
+
+ =
+
+AbortController
+
+();
+
+try
+
+ {
+
+if
+
+ (vie=
+w =3D=3D=3D 
+
+"timeline"
+
+) {
+
+const
+
+=
+ data =3D 
+
+await
+
+fetchTimeline
+
+(sessionId, { 
+
+signal
+
+: ctrl.
+
+current
+
+.
+
+signal
+
+ });
+
+// normalize expected sha=
+pe to an array of events with analysis.pivot mark
+
+const
+
+=
+ arr =3D 
+
+Array
+
+=
+
+.
+
+isArray
+
+(data?.
+
+items
+
+) ? data.
+
+items
+
+ : data;
+
+setItems
+
+(arr || []);
+      } 
+
+else
+
+ =
+{
+
+const
+
+=
+ data =3D 
+
+await
+
+fetchLedger
+
+(sessionId, { 
+
+page
+
+: 
+
+1
+
+=
+, 
+
+limit
+
+: 
+=
+
+100
+
+ }, { 
+
+signal
+
+: ctrl.
+
+current
+
+.
+
+signal
+
+ });
+
+const
+
+=
+ arr =3D 
+
+Array
+
+=
+
+.
+
+isArray
+
+(data?.
+
+items
+
+) ? data.
+
+items
+
+ : data;
+
+setItems
+
+(arr || []);
+      }
+
+// sync route
+
+=
+
+if
+
+ (par=
+ams.
+
+sessionId
+
+ !=3D=3D sessionId) 
+
+navi=
+gate
+
+(
+
+`/review/=
+
+${
+encodeURICompone=
+nt
+
+(sessionId)}`, { 
+
+replace
+
+: 
+
+false
+
+ });
+    } 
+
+catch
+
+ (=
+e) {
+
+setError
+
+(
+
+String
+
+(e?.
+
+message
+
+ || e));
+    } 
+
+finally
+
+=
+ {
+
+setLoading
+
+(
+
+false
+
+);
+    }
+  };
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (param=
+s.
+
+sessionId
+
+ =
+&& !sessionId) 
+
+se=
+tSessionId
+
+(params.
+
+sessionId
+
+);
+
+// auto-fetch when route has =
+sessionId
+
+if
+
+ (param=
+s.
+
+sessionId
+
+)=
+
+onFetch
+
+();
+
+// eslint-disable-next-line r=
+eact-hooks/exhaustive-deps
+
+  }, [params.
+
+sessionId
+
+, view]);
+
+return
+
+ (
+
+<=
+
+Container
+
+maxWidth
+
+=3D
+
+"lg"
+
+sx
+
+=3D
+
+{{
+
+py=
+:
+
+3
+
+ }}>
+
+<
+S=
+tack
+
+dire=
+ction
+
+=3D
+
+"row"
+
+alignItems
+
+=3D
+
+"center"
+
+justifyContent
+
+=3D
+
+"space-between"
+
+sx
+
+=3D
+
+{{
+
+=
+
+mb:
+
+2
+
+ }}>
+
+<
+Typography
+
+variant
+
+=3D
+
+"=
+h5"
+
+>Review Console
+
+</
+Typography
+
+>=
+;
+
+<
+ToggleButtonGroup
+
+size
+
+=
+=3D
+
+"small"
+
+value
+
+=
+=3D
+
+{view}
+
+exclusive
+
+onChange
+
+=3D
+
+{(_,
+
+v
+
+) =3D> v &&a=
+mp; setView(v)}
+        >
+
+<
+ToggleButton
+
+value
+
+=3D
+
+"timeline"
+
+>Timeline (pivots)
+
+</
+ToggleButton
+
+>
+
+<
+ToggleButton
+
+value
+
+=3D
+
+"ledger"
+
+>Ledger (raw)
+
+</
+ToggleButton
+
+>
+
+</
+ToggleButtonGroup
+
+>
+
+</
+=
+Stack
+
+>
+
+<
+B=
+ox
+
+sx
+
+=3D
+
+{{
+
+mb:
+
+2
+
+ }}>
+

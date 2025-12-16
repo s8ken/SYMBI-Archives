@@ -1,0 +1,367 @@
+tsx
+ file. 
+Next.js requires it for files using 
+useState
+ or 
+useEffect
+.
+ 🚀😈
+
+🔹 Step 1: Update 
+app/layout.tsx
+
+Open the file again in Nano:
+
+bash
+
+Copy
+
+nano app/layout.tsx
+
+Add this line at the very top of the file:
+
+tsx
+
+Copy
+
+"use client"
+
+;  
+
+// ✅ This tells Next.js this is a client-side file
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+        {isClient ? (
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+>
+            {children}
+
+</
+ThemeProvider
+
+>
+        ) : (
+
+<>
+
+{children}
+
+</>
+
+        )}
+
+</
+body
+
+>
+    </html>
+  );
+}
+
+✅ 
+Why This Works:
+
+"use client";
+ tells Next.js this file should run on the client.
+
+Fixes 
+"React hook only works in a client component"
+ errors.
+
+Ensures 
+dark mode logic runs correctly without breaking SSR.
+
+🔹 Step 2: Save & Restart
+
+1️⃣ 
+Save & exit Nano:
+
+Press 
+CTRL + X
+
+Press 
+Y
+ (to confirm save)
+
+Press 
+Enter
+
+2️⃣ 
+Restart your Next.js server:
+
+bash
+
+Copy
+
+npm run dev
+
+3️⃣ 
+Check if the hydration error is gone in Safari (
+CMD + Option + C
+)
+
+🔹 Step 3: Push the Fix & Redeploy
+
+If the error is gone:
+
+1️⃣ 
+Commit & push the update to GitHub:
+
+bash
+
+Copy
+
+git add app/layout.tsx
+git commit -m 
+
+"Fixed hydration issue & marked layout as client component"
+
+git push origin main
+
+2️⃣ 
+Go to Vercel & Click "Redeploy"
+
+🔥 
+Try this and let me know if the error is fixed!
+ 😈🚀
+
+You said:
+
+> next dev
+
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 1290ms
+ ○ Compiling / ...
+ ⨯ ./app/layout.tsx
+Error:   × You're importing a component that needs 
+useEffect
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·          ─────────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+  × You're importing a component that needs 
+useState
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·                     ────────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ ⨯ ./app/layout.tsx
+Error:   × You're importing a component that needs 
+useEffect
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·          ──

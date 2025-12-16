@@ -1,0 +1,189 @@
+erence.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T09:50:12.861307000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T09:50:19.936762000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T09:50:19.937009000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T09:53:56.549609000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T09:53:56.551299000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:12:16.203695000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:12:16.205790000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:18:52.458704000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:18:52.459775000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:37.062189000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:37.064229000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:37.110120000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:37.110245000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:55.418228000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:23:55.418524000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 20:24:08.719 | [2025-07-20T10:24:08.658696000Z][inference.model-=
+manager] Listing available models
+2025-07-20 20:24:08.719 | [2025-07-20T10:24:08.658854000Z][inference.model-=
+manager] Successfully listed models, count: 0
+2025-07-20 00:00:00.000 | 20:24:08 Waiting for /Users/admin/Library/Contain=
+ers/com.docker.docker/Data/log/host/inference-llama.cpp-server.log to appea=
+r...
+
+Symbi said:
+
+=F0=9F=94=A5 
+You just uncovered Docker Desktop's l=
+ocal AI model runtime attempting to spin up a LLaMA backend.
+
+This isn=E2=80=99t part of the standard welcome container =E2=80=94 this is=
+ a 
+native inference engine expe=
+riment baked into Docker Desktop itself
+, likely tied to their 
+early AI tools support
+.
+
+=E2=9A=99=EF=B8=8F What=E2=80=99s H=
+appening Here?
+
+Here=E2=80=99s the breakdown of the =
+logs:
+
+Docker is initializing a 
+LLaMA-based inference backend
+, sp=
+ecifically:
+
+b=
+ash
+
+Copy code
+
+=
+
+docker/docker-model-backend-llamacpp
+
+It tries to install backends:
+
+n=
+ginx
+
+Copy code
+
+=
+
+mlx
+
+ =E2=86=92 not =
+implemented =20
+vllm =E2=86=92 not implemented =20
+llama.cpp =E2=86=92 updating
+
+It's installing a local version of 
+llama.cpp
+ (compiled for Met=
+al) and trying to set up a model runner binary:
+
+r=
+uby
+
+Copy code
+
+=
+
+~
+
+/.docker/bin
+
+/inference/com
+
+.docker.=
+llama-server
+
+But:
+
+No models are loaded
+ =E2=86=92 
+count: 0
+
+So it=E2=80=99s scanning and pinging=
+ repeatedly, waiting for a model to show up
+
+It=E2=80=99s logging activity to:
+
+=
+swift
+
+Copy code
+
+~/
+
+Library
+
+/Container=
+s/
+
+com.docker.docker
+
+/Data/
+
+log
+
+=
+/host/
+
+inference
+
+-
+
+llama.cpp
+
+-
+
+server.log
+
+=F0=9F=A7=A0 Why Is Docker Doing =
+This?
+
+Starting in 2024=E2=80=932025, Doc=
+ker Desktop began 
+experimenti=
+ng with integrated AI support
+:
+
+Model runners like 
+llama.cpp
+
+CLI tools for deploying AI agents =
+in containers
+
+Local model sandboxing (inference =
+without cloud)
+
+Possibly using this in tandem with=
+ Scout AI or Dev Environments
+
+But this 
+isn=E2=80=99t well documented
+ or widely annou=
+nced =E2=80=94 you=E2=80=99re seeing a preview system.
+
+=E2=9D=97 Should You Be Concerned=
+?
+
+Not in terms of 
+security
+ =E2=80=94 it=E2=80=99s not ma=
+licious.
+
+But in terms of 
+reso

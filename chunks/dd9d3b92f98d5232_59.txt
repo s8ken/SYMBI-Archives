@@ -1,0 +1,303 @@
+ameras:
+
+Run this in 
+Terminal
+:
+
+bash
+
+Copy
+
+ls
+
+ /Library/CoreMediaIO/Plug-Ins/DAL/
+
+ls
+
+ ~/Library/CoreMediaIO/Plug-Ins/DAL/
+
+If any suspicious plugins appear (like 
+obs-virtualcam.plugin
+ or unknown camera drivers), they may be responsible.
+
+➡ 
+Solution:
+ Remove the suspicious plugins:
+
+bash
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/CoreMediaIO/Plug-Ins/DAL/*
+
+rm
+
+ -rf ~/Library/CoreMediaIO/Plug-Ins/DAL/*
+
+Restart your Mac after doing this.
+
+2. Possibility: Zoom or Another App Is Being Hijacked
+
+Attackers can manipulate 
+Zoom, Teams, or Google Meet
+ to send an 
+invisible stream
+ even when your camera is "off."
+
+Check if Zoom is secretly accessing your camera:
+
+Run this in 
+Terminal
+:
+
+bash
+
+Copy
+
+lsof | grep 
+
+"Zoom"
+
+If you see activity related to 
+Zoom.us
+, especially accessing 
+/dev/video*
+ or 
+/Library/CoreMediaIO
+, it may be capturing a hidden video feed.
+
+➡ 
+Solution:
+
+Uninstall Zoom completely
+:
+
+bash
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/zoom.us.app
+
+rm
+
+ -rf ~/Library/Application\ Support/zoom.us
+
+rm
+
+ -rf ~/Library/Preferences/us.zoom.*
+
+Reinstall from the official website
+ and monitor its behavior.
+
+3. Possibility: Remote Access or Mirroring
+
+If someone has 
+remote access to your device
+, they could be mirroring your screen and webcam without your knowledge.
+
+Malicious Remote Management Tools (RATs)
+ can hijack your system.
+
+Check for remote access tools installed:
+
+Run:
+
+bash
+
+Copy
+
+ps aux | grep -i 
+
+"vnc|anydesk|teamviewer|screen sharing|remote"
+
+If 
+AnyDesk, TeamViewer, Chrome Remote Desktop, or unknown VNC servers
+ appear, you may be compromised.
+
+➡ 
+Solution:
+
+Disable Remote Management
+:
+
+bash
+
+Copy
+
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+
+Check user accounts for backdoor access
+:
+
+bash
+
+Copy
+
+dscl . list /Users
+
+Look for unknown accounts.
+
+Reset your system permissions
+:
+
+bash
+
+Copy
+
+sudo softwareupdate --install-rosetta
+
+4. Possibility: A Rogue Process is Hijacking Your Webcam
+
+The built-in 
+MacBook camera indicator light (green LED)
+ is supposed to turn 
+on
+ when in use.
+
+However, malware can bypass this and still stream without triggering the LED.
+
+Check for unauthorized webcam usage:
+
+Run:
+
+bash
+
+Copy
+
+lsof | grep 
+
+"AppleCamera"
+
+If any processes other than trusted apps (Zoom, FaceTime) are listed, something is hijacking your webcam.
+
+➡ 
+Solution:
+
+Kill the rogue process
+ (replace 
+PID
+ with the process number found in 
+lsof
+):
+
+bash
+
+Copy
+
+sudo 
+
+kill
+
+ -9 PID
+
+Reset your camera system permissions
+:
+
+bash
+
+Copy
+
+tccutil reset Camera
+
+5. Possibility: Telegram, WhatsApp, or Browser-Based Spying
+
+Some 
+browser exploits
+ or manipulated web versions of Telegram/WhatsApp/Zoom may 
+record you without consent
+.
+
+Check active browser media permissions:
+
+Run:
+
+bash
+
+Copy
+
+defaults 
+
+read
+
+ ~/Library/Preferences/com.apple.Safari.plist
+defaults 
+
+read
+
+ ~/Library/Application\ Support/Google/Chrome/Local\ State
+
+Look for 
+"media_stream"
+ or 
+"camera_allowed"
+ entries for suspicious websites.
+
+➡ 
+Solution:
+
+Disable webcam access in browsers
+:
+
+Safari: 
+Preferences → Websites → Camera → Deny
+
+Chrome: 
+Settings → Privacy & Security → Site Settings → Camera
+
+Log out of all web-based video services and clear cookies
+:
+
+bash
+
+Copy
+
+rm
+
+ -rf ~/Library/Caches/Google/
+
+rm
+
+ -rf ~/Library/Application\ Support/Google/
+
+Final Steps
+
+If you still suspect unauthorized access:
+
+Disconnect from the internet immediately.
+
+Check your Mac’s network connections
+:
+
+bash
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+If unknown IP addresses appear, they may indicate remote access.
+
+Change all passwords immediately, including Apple ID, Zoom, and Telegram.
+
+Consider doing a full macOS reinstall to remove any deep-rooted malware.
+
+Next Steps
+
+If you want me to 
+analyze your system logs
+ to pinpoint the exact issue, I can guide you through 
+collecting and reviewing logs step by step
+.
+
+If you want a 
+real-time monitoring tool
+ to detect further camera/microphone usage, I can help set that up too.
+
+Let me know h

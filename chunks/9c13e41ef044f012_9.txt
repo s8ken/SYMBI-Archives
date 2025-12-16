@@ -1,0 +1,227 @@
+ge (Proposed v1.0)
+
+Date:
+ October 2025
+
+Status:
+
+Proposed draft =E2=80=94 implementation pending c=
+ommunity review and legal validation
+
+Purpose:
+ To define the=
+ governance and token structure for the SYMBI Trust Protocol DAO under the =
+principle of 
+=E2=80=9CSovereign=
+ty Without Speculation.=E2=80=9D
+
+SECTION I =E2=80=94 PROPOSED CONSTI=
+TUTION (DRAFT)
+
+1. Preamble
+
+We, the contributors to the SYMBI Tr=
+ust Protocol, establish this governance framework to ensure that the protoc=
+ol=E2=80=99s evolution remains open, ethical, transparent, and free from sp=
+eculation.
+
+Our guiding belief:
+
+=E2=80=9CSovereignty through stewardship =E2=80=94 verifiable t=
+hrough infrastructure.=E2=80=9D
+
+2. Purpose
+
+SYMBI DAO governs the 
+SYMBI Trust Protocol
+, an open st=
+andard for verifiable AI agent identity and integrity.
+
+The DAO exists solely to:
+
+Maintain the technical and ethical=
+ integrity of the protocol
+
+Approve modifications, extensions,=
+ or standards proposals
+
+Coordinate the community of verifi=
+ed contributors
+
+Distribute non-financial grants fo=
+r open research or development
+
+3. Non-Financial Nature
+
+SYMBI DAO does 
+not
+ distribute profits, dividends, or =
+speculative assets.
+
+All tokens are 
+non-transferab=
+le governance instruments
+ used for participation only.
+
+No purchase, sale, or exchange of tokens shall ever occur under this consti=
+tution.
+
+4. Governance Token: SYMBI Govern=
+ance Token (SGT)
+
+Type:
+ Non-transferable ERC-721/1155 (Soulbound)
+
+Purpose:
+ Represent verifiable participation rights
+
+Acquisition:
+ Earned through W3C Verifiable Credentials=
+ linked to trust-based contributions
+
+Revocation:
+ Through the Trust Protocol=E2=80=99s statu=
+s list mechanism
+
+Rights:
+ Proposal submission, voting, constitutional re=
+view participation
+
+No Financial Value:
+ Tokens do not represent property, =
+securities, or investments
+
+5. Governance Bodies (=E2=80=9CCo=
+nstitution Nodes=E2=80=9D)
+
+Node
+
+Function
+
+Composition
+
+Foundation No=
+de
+
+Custodial oversight & legal interface
+
+Academic + Research institutions
+=
+
+Symphony Node
+
+Technical decision-making (codebase, protocol)
+
+Verified develo=
+pers
+
+DAO Node
+
+Community governance, proposals, ethics
+
+Contributors &=
+ credentialed members
+
+Constitution Node
+
+Ethical & procedural=
+ arbitration
+
+3=E2=80=935 rotating multi-domain members
+
+6. Decision Process
+
+Proposal Submission:
+
+Verified contributor submits via DID-authenticated interface.
+
+Community Review:
+
+Open comment window (7=E2=80=9314 days).
+
+Quadratic Vote:
+
+Voting power =3D =E2=88=9A(TrustScore =C3=97 ContributionWeight).
+
+Approval & Audit:
+
+Proposal executes automatically; audit log stored on-chain.
+
+Transparency:
+
+All actions mirrored to Dune dashboards.
+
+7. Ethical Anchors
+
+Every governance action must align=
+ with SYMBI=E2=80=99s 6 ethical pillars:
+
+Integrity
+
+Transparency
+
+Decentralization
+
+Accountability
+
+Collective Benefit
+
+Respect for Autonomy
+
+Any violation triggers Constitutio=
+n Node review.
+
+8. Transparency & Reporting
+
+All governance actions and audits =
+published on 
+Dune dashboards
+
+Code changes mirrored in 
+GitHub (SYMBI Symphony repository)
+
+Annual 
+public integrity report
+ co-authored by Foundati=
+on Node
+
+9. Amendment Process
+
+Amendments require =E2=85=94 super=
+majority vote
+
+Constitution Node validates ethica=
+l compliance
+
+All amendments are versioned, time=
+stamped, and cryptographically sealed
+
+SECTION II =E2=80=94 PROPOSED SMA=
+RT CONTRACT (ERC-721 Soulbound Governance Token)
+
+File:
+
+SYMB=
+I_GovernanceToken.sol
+
+Status:
+
+Proposed Reference Contract for Review =E2=80=
+=94 not deployed
+
+solidity
+
+Copy code
+
+// SPDX-License-Identifier: CC-BY-NC-ND-4.0
+// SYMBI Governance Token (Proposed Draft)
+// Version: 1.0 - October 2025
+
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract SymbiGovernanceToken is ERC721, Ownable {
+    mapping(address =3D> bool) public verifiedContributors;
+    mapping(address =3D> uint25

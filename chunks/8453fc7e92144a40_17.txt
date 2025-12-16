@@ -1,0 +1,57 @@
+dy size limits=
+, and strict CORS tied to CORS_ORIGIN are enforced in <mcfile name=3D"se=
+curity.middleware.js" path=3D"backend/middleware/security.middleware.js">=
+;.\n4) Health/readiness & timeouts (High)\n   - Ensure /healthz and /re=
+adyz endpoints exist in <mcfile name=3D"server.js" path=3D"backend/serve=
+r.js"> and that server timeouts are sane.\n5) Supply chain (High)\n   - =
+Validate lockfile hygiene and npm audit gating; ensure minimal, patched bas=
+e image in <mcfile name=3D"Dockerfile" path=3D"Dockerfile">.\n6) CI/C=
+D guardrails (Med)\n   - Make CI run lint/test/build/audit/SCA; ensure bran=
+ch protection and required checks via <mcfile name=3D"ci.yml" path=3D".g=
+ithub/workflows/ci.yml">.\n7) Observability (Med)\n   - Confirm log reda=
+ction, trace IDs propagation, and optional /metrics exposure.\n8) API contr=
+act integrity (Med)\n   - Validate <mcfile name=3D"openapi.yaml" path=3D=
+"openapi.yaml"> vs implemented routes; prepare contract test scaffold.\n=
+9) Frontend hardening (Med)\n   - Review CSP headers/meta, dependency audit=
+, and sanitize any dynamic HTML.\n10) Docs & runbooks (Low)\n   - Refre=
+sh <mcfile name=3D"SECURITY.md" path=3D"SECURITY.md"> / <mcfile na=
+me=3D"PRIVACY.md" path=3D"PRIVACY.md">; add incident + key-rotation runb=
+ooks.\n\nRollback: All changes (once approved) will ship on a branch with a=
+ PR; revertible via git revert or PR close. No writes in this preview.\n\n#=
+## DRY-RUN / DIFF (read-only commands to execute on approval)\n bash\n# rep=
+o & CI status\ncd \"/Users/admin/Symbi Synergy\"\ngit status -s\nsed -n=
+ '1,200p' \".github/workflows/ci.yml\" || true\nsed -n '1,200p' \".github/w=
+orkflows/codeql.yml\" || true\n\n# backend surface\nls -la \"backend/middle=
+ware\"\nsed -n '1,200p' \"backend/server.js\" || true\nsed -n '1,200p' \"ba=
+ckend/middleware/security.middleware.js\" || true\nsed -n '1,200p' \"backen=
+d/middleware/auth.middleware.js\" || true\n\n# deps & vulns (names/coun=
+ts only; no secrets)\nnode -v && npm -v\nnpm audit --audit-level=3D=
+high --json | jq '.metadata.vulnerabilities' || true\n( cd frontend &&a=
+mp; npm audit --audit-level=3Dhigh --json | jq '.metadata.vulnerabilities' =
+) || true\n\n# observability config\nls -la \"observability\" || true\nsed =
+-n '1,200p' \"observability/otel/config.yaml\" 2>/dev/null || true\n\n# =
+API contract\nhead -n 120 \"openapi.yaml\" || true\n\n# env template (names=
+ only)\nsed -n '1,200p' \".env.example\" || true\n \nNo files will be modif=
+ied; this is an inspection plan.\n\n### ON APPROVAL (exact, reversible acti=
+ons)\n bash\n# 1) Branch baseline\ncd \"/Users/admin/Symbi Synergy\"\ngit c=
+heckout -b \"ops/remediate-baseline\"\n\n# 2) Secrets & config hygiene =
+(edit .env.example placeholders only)\n# - Ensure required names exist; do =
+NOT add real values.\n\n# 3) Security middleware hardening\n# - Apply Helme=
+t, rate limit, json/body limits, strict CORS in backend/middleware/security=
+.middleware.js\n\n# 4) Health/readiness & timeouts\n# - Add /healthz an=
+d /readyz in backend/server.js\n# - Set server timeouts (header/body/idle)\=
+n\n# 5) CI enforcement\n# - Update .github/workflows/ci.yml to run lint/tes=
+t/build/audit; fail on high/critical vulns\n\n# 6) Dependency audit (prod o=
+nly)\nnpm ci\nnpm audit fix --only=3Dprod || true\n( cd frontend &&=
+ npm ci && npm audit fix --only=3Dprod || true )\n\n# 7) Observabil=
+ity wiring (redaction, trace IDs, optional /metrics endpoint)\n\n# 8) Contr=
+act tests scaffold (ensure routes align with openapi.yaml)\n\n# 9) Commit &=
+amp; push\ngit add -A\ngit diff --staged --patch | sed -n '1,400p'   # prev=
+iew for you\ngit commit -m \"ops: baseline remediation (security headers, h=
+ealth/readiness, CI guardrails, audit wiring)\"\ngit push -u origin ops/rem=
+ediate-baseline\n\n# 10) Open PR\n# If 
+gh
+ is not allowlisted, =
+I will output the PR URL template and you can open it manually.\n \n\n### P=
+OST-EXEC REPORT\n- I will return a concise summary of changes, any warnings=
+, and roll

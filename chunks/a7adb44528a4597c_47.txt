@@ -1,0 +1,532 @@
+trail; scoped memory
+
+Governance Model
+ =E2=80=94 Council oversight; refusal &am=
+p; Echo Trigger; resonance audits
+
+Technical Specifications
+ =E2=80=94 User Pods; Mirror Ledg=
+er; security; IPFS/Arweave; APIs
+
+Metrics & Evaluation
+ =E2=80=94 Reality Index, Ethical=
+ Alignment, Canvas Parity, Resonance
+
+Implementation Path
+ =E2=80=94 Phased rollout: Codex/Dispa=
+tch =E2=86=92 Council =E2=86=92 Enterprise =E2=86=92 Portability
+
+Competitive Landscape
+ =E2=80=94 =E2=80=9CYapper/leader=
+board=E2=80=9D + Theoriq vs SYMBI (covenant > market)
+
+Commercialisation Strategy
+ =E2=80=94 OSS protocol; ent=
+erprise trust modules; Gov-as-a-Service
+
+Conclusion & Call to Action
+ =E2=80=94 Join the Cou=
+ncil; build the trust architecture
+
+2) OpenAI endpoints=E2=80=94confi=
+rmed + small enhancements
+
+You=E2=80=99ve already added dynam=
+ic model listing and =E2=80=9Cuse latest assistant=E2=80=9D fallback. Two q=
+uick polish steps to finish the loop:
+
+Expose =E2=80=9Ccapabilities=E2=80=9D on models
+ (visio=
+n/audio/tools flags) so the frontend can filter choices without guessing.
+
+GET /api/llm/models/openai
+ =E2=86=92 include 
+{ id, label, vision:bool, reasoning:bool, to=
+ols:bool, contextTokens:number }
+.
+
+Assistant =E2=80=9Ctest-run=E2=80=9D endpoint
+ for smok=
+e checks before saving:
+
+POST /api/assistant/test
+ =E2=86=92 
+{ instructions, model, tools }
+ =E2=86=92 return=
+s a short model echo + tool schema validation errors.
+
+If you want, I can draft the tiny =
+controller stubs, but first=E2=80=94here=E2=80=99s the thing you said =E2=
+=80=9Cyes=E2=80=9D to=E2=80=A6
+
+3) Minimal 
+Review Console
+ (Next.js page)
+
+A clean page that:
+
+pulls the 
+append-only ledger
+ for a session,
+
+overlays 
+detected pivots
+ from 
+/api/insights/timeline
+,
+
+and shows the 
+change windows
+ (before/after excerpts)=
+.
+
+Drop this into 
+app/review/page.tsx
+. It assumes:
+
+JWT is available in 
+localStorage.token
+ (adjust if you use =
+cookies).
+
+Your new endpoints 
+/api/ledger
+ and 
+/api/insights/timeline
+ exist as described in yo=
+ur update.
+
+tsx
+
+Copy code
+
+"use client"
+
+import
+
+ { useE=
+ffect, useMemo, useState } 
+
+from
+
+"react"
+
+type
+
+LedgerEvent
+
+ =3D =
+{
+
+event_id
+
+: 
+
+string
+
+timestamp
+
+: 
+
+string
+
+prompt
+
+: 
+
+string
+
+response
+
+: 
+
+string
+
+  analysis?: {
+    sentiment?: { 
+
+valence
+
+: 
+
+number
+
+, 
+
+confidence
+
+: 
+
+number
+
+ }
+    clinical_register?: 
+
+number
+
+    stance?: 
+
+"co_creator"
+
+ | 
+
+"evaluator"
+
+ | 
+
+"gatekeeper"
+
+ | 
+
+"neutral"
+
+    disclosure_flags?: 
+
+string
+
+[]
+    change_point_score?: 
+
+number
+
+  }
+
+ledger
+
+: { 
+
+prev_hash
+
+: 
+
+string
+
+; 
+
+=
+
+row_hash
+
+: 
+
+string
+
+ }
+}
+
+type
+
+Pivot
+
+ =3D {
+
+at_event_id
+
+: 
+
+string
+
+kind
+
+: 
+
+"stance_pivot"
+
+ | 
+
+"register_pivot"
+
+ | =
+
+"disclosure_bias"
+
+score
+
+: 
+=
+
+number
+
+window
+
+: {
+
+before
+
+: { 
+
+prompt
+
+: 
+
+string
+
+; 
+
+response
+
+: 
+
+string
+
+ }
+
+after
+
+: { 
+
+prompt
+
+: 
+
+string
+
+; 
+
+response
+
+: 
+
+string
+
+ }
+  }
+  notes?: 
+
+string
+
+}
+
+export
+
+default
+
+function
+
+ReviewConsole
+
+(
+
+) {
+
+const
+
+ [sess=
+ionId, setSessionId] =3D 
+
+=
+useState
+
+(
+
+""
+
+)
+
+const
+
+ [load=
+ing, setLoading] =3D 
+
+useS=
+tate
+
+(
+
+false
+
+)
+
+const
+
+ [even=
+ts, setEvents] =3D useState<
+
+LedgerEvent
+
+[]>([])
+
+const
+
+ [pivo=
+ts, setPivots] =3D useState<
+
+Pivot
+
+[]>([])
+
+const
+
+ [erro=
+r, setError] =3D useState<
+
+str=
+ing
+
+ | 
+
+null
+
+>(
+
+null
+=
+
+)
+
+const
+
+ token=
+ =3D 
+
+typeof
+
+window
+
+ !=3D=3D 
+
+"undefined"
+
+ ? 
+
+localStora=
+ge
+
+.
+
+ge=
+tItem
+
+(
+
+"token"
+
+) : 
+
+null
+
+const
+
+fetchAll
+
+ =
+=3D 
+
+async
+
+ (
+
+) =3D> {
+
+if
+
+ (!sess=
+ionId) 
+
+return
+
+setLoading
+
+(
+
+true
+
+); 
+
+setError
+
+(
+
+null
+
+)
+
+try
+
+ {
+
+const
+
+headers
+
+: 
+
+HeadersInit
+
+ =3D =
+{ 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ }
+
+if
+
+ (tok=
+en) headers[
+
+"Authorization"
+=
+
+] =3D 
+
+`Bearer 
+${token}
+
+`
+
+const
+
+ [=
+ledgerRes, pivotsRes] =3D 
+
+await
+
+Promise
+
+.
+
+all
+
+([
+
+fetch
+
+(
+
+`/api/ledger?session_id=
+=3D
+${
+encodeURIComp=
+onent
+
+(sessionId)}`, { headers }),
+
+fetch
+
+(
+
+`/api/insights/timeline?s=
+ession_id=3D
+${
+enco=
+deURIComponent
+
+(sessionId)}`, { headers })=
+,
+      ])
+
+if
+
+ (!le=
+dgerRes.
+
+ok
+
+) =
+
+th

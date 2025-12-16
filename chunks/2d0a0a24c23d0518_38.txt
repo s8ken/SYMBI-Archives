@@ -1,0 +1,274 @@
+a Access Exploits)
+
+Open 
+Zoom → Settings → Background & Effects
+
+Set a 
+static image or blurred background
+
+🛠 Step 5: Block Zoom From Recording You
+
+To ensure 
+Zoom cannot secretly record
+:
+
+1️⃣ 
+Disable Local Recordings
+
+Open 
+Zoom → Settings → Recording
+
+Disable automatic recording
+
+2️⃣ 
+Check for Unapproved Cloud Recordings
+
+In Zoom Meeting: 
+Click “Participants” → Look for “Recording” indicator
+
+If recording is on & unauthorized, leave the meeting.
+
+🔍 Post-Meeting Cleanup
+
+After every meeting:
+
+✅ 
+Check macOS Console for Suspicious Zoom Activity
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "zoom"'
+
+ --last 1d
+
+✅ 
+Clear Zoom Logs (Prevents Data Tracking)
+
+sh
+
+Copy
+
+rm
+
+ -rf ~/Library/Logs/zoom*
+
+✅ 
+Check if Zoom is Still Running in Background
+
+sh
+
+Copy
+
+ps aux | grep zoom
+
+If it is, force quit it:
+
+sh
+
+Copy
+
+killall zoom.us
+
+📩 Next Steps
+
+1️⃣ 
+Download & install Zoom securely
+
+2️⃣ 
+Apply all security settings
+
+3️⃣ 
+Block auto-updates & background services
+
+4️⃣ 
+Check Zoom logs after meetings
+
+🚨 
+This setup gives you full control over Zoom’s access to your system.
+ Let me know if you need help applying any of these! 🔒
+
+You said:
+
+its asking if I should allow it to find local networks
+
+ChatGPT said:
+
+🚨 
+Deny Zoom from Accessing Local Networks!
+ 🚨
+
+When Zoom asks 
+"Allow Zoom to find and connect to devices on your local network?"
+, select:
+
+❌ 
+Deny
+ (Do Not Allow)
+
+Why?
+
+Prevent unauthorized device discovery
+ → Stops Zoom from scanning other devices on your network.
+
+Blocks unnecessary data collection
+ → Zoom doesn't need local network access to function properly.
+
+Reduces attack surface
+ → If an attacker exploited Zoom, they couldn’t scan your network for vulnerabilities.
+
+🛠 If You Already Allowed It, Disable It
+
+If you accidentally allowed it, disable it manually:
+
+1️⃣ 
+Go to macOS System Settings
+
+2️⃣ 
+Click "Privacy & Security" → "Local Network"
+
+3️⃣ 
+Find Zoom and toggle it OFF
+
+📩 
+Let me know if Zoom still behaves strangely after this!
+ 🔒
+
+You said:
+
+cool
+
+ChatGPT said:
+
+✅ Awesome! Zoom is now 
+locked down for maximum security.
+
+If you ever need to 
+double-check its behavior
+, run this after a meeting:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "zoom"'
+
+ --last 1d
+
+🔍 
+This will show if Zoom tried anything suspicious in the last 24 hours.
+
+Let me know if you ever need more tweaks or security checks! 🔒🚀
+
+You said:
+
+zoom1.rtf
+
+File
+
+um seems like a lot for a day
+
+ChatGPT said:
+
+🚨 Key Findings from Zoom Logs
+
+Your 
+Zoom logs show multiple suspicious activities
+ that indicate:
+
+1️⃣ 
+Zoom’s updater is still running persistently in the background.
+
+2️⃣ 
+OBS Virtual Camera was detected AFTER removal.
+
+3️⃣ 
+Zoom is trying to register scheduled background tasks.
+
+4️⃣ 
+Zoom’s updater has a "legacy agent" running hidden tasks.
+
+🛠 Immediate Actions: Disable Zoom’s Background Processes
+
+To stop Zoom from running background tasks, run these commands:
+
+✅ Step 1: Kill Active Zoom Processes
+
+sh
+
+Copy
+
+sudo pkill zoom
+sudo pkill ZoomOpener
+sudo pkill ZoomUpdater
+
+✅ 
+Ensures Zoom and its updater are fully stopped.
+
+✅ Step 2: Disable Zoom's Auto-Update & Background Agents
+
+sh
+
+Copy
+
+sudo launchctl unload -w /Library/LaunchAgents/us.zoom.ZoomAutoUpdater.plist
+sudo launchctl unload -w /Library/LaunchAgents/us.zoom.updater.plist
+sudo launchctl unload -w /Library/LaunchDaemons/us.zoom.ZoomAutoUpdater.plist
+
+✅ 
+Stops Zoom’s auto-update services from running.
+
+✅ Step 3: Permanently Delete Zoom’s Background Services
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/LaunchAgents/us.zoom.ZoomAutoUpdater.plist
+sudo 
+
+rm
+
+ -rf /Library/LaunchAgents/us.zoom.updater.plist
+sudo 
+
+rm
+
+ -rf /Library/LaunchDaemons/us.zoom.ZoomAutoUpdater.plist
+
+✅ 
+Completely removes Zoom’s hidden auto-update services.
+
+✅ Step 4: Confirm Everything is Gone
+
+Run this in 
+Terminal
+ to check if Zoom is still running:
+
+sh
+
+Copy
+
+ps aux | grep zoom
+launchctl list | grep -i zoom
+
+🔍 
+If anything related to Zoom still appears, let me know.
+
+📩 Next Steps
+
+1️⃣ 
+Kill al

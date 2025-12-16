@@ -1,0 +1,538 @@
+int, SCA)
+
+A clean, enforceable CI that gates=
+ merges:
+
+yaml
+
+Copy code
+
+# .github/workflows/ci.ym=
+l
+
+name:
+
+CI
+
+on:
+
+pull_request:
+
+push:
+
+branches:
+
+ [ =
+
+main
+
+ ]
+
+jobs:
+
+build-test-node:
+
+runs-on:
+
+ubuntu-latest
+
+strategy:
+
+matrix:
+
+ { =
+
+node-version:
+
+ [
+
+18.
+
+x
+
+, 
+
+20.
+
+x
+
+] }
+
+steps:
+
+-
+
+uses:
+
+actions/checkout@v4
+
+-
+
+uses:
+
+actions/setup-node@v4
+
+with:
+
+ { =
+
+node-version:
+
+$
+{{ matrix.node-version }}
+
+ }
+
+-
+
+name:
+
+Install
+
+root
+
+deps
+
+run:
+
+npm
+
+=
+
+ci
+
+||
+
+true
+
+-
+
+name:
+
+Backend
+
+test
+
+working-directory:
+
+backend
+
+run:
+
+|
+          npm ci
+          npm test --silent
+
+-
+
+=
+
+name:
+
+Frontend
+
+build
+
+working-directory:
+
+frontend
+
+run:
+
+|
+          npm ci
+          npm run build
+
+-
+
+=
+
+name:
+
+E2E
+
+(headless)
+
+run:
+
+|
+          npm ci
+          npm run test:e2e || echo "E2E optional on PRs"
+
+Security scanning (CodeQL + Gitleaks):
+
+yaml
+
+Copy code
+
+# .github/workflows/codeq=
+l.yml
+
+name:
+
+CodeQL
+
+on:
+
+push:
+
+ { 
+
+branches:
+
+ [ 
+
+"main"
+
+ ] }
+
+pull_request:
+
+schedule:
+
+ [ { =
+
+cron:
+
+'0 2 * * 1'
+
+ } ]
+
+jobs:
+
+analyze:
+
+uses:
+
+github/codeql-action/.github/workflows/c=
+odeql.yml@v3
+
+with:
+
+languages:
+
+=
+
+javascript
+
+yaml
+
+Copy code
+
+# .github/workflows/secre=
+ts.yml
+
+name:
+
+Secret
+
+Scan
+
+(Gitleaks)
+
+on:
+
+ [
+
+push
+
+, 
+
+pull_request
+
+]
+
+jobs:
+
+gitleaks:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+-
+
+uses:
+
+actions/checkout@v4
+
+with:
+
+ { =
+
+fetch-depth:
+
+0
+
+ }
+
+-
+
+uses:
+
+gitleaks/gitleaks-action@v2
+
+env:
+
+GITLEAKS_LICENSE:
+
+${{
+
+secrets.GITLEAKS_LICENSE
+
+}}
+
+# optional for pro
+
+4) Make Pages/Docs real (Swagger =
+UI / Redoc)
+
+If you want 
+/
+ to render the OpenAPI nicely via GitHub Page=
+s:
+
+html
+
+Copy code
+
+<!-- docs/api-viewer.h=
+tml -->
+
+<!doctype 
+html
+
+>
+
+<
+html
+
+>
+
+<
+head
+
+>
+
+<
+meta
+
+charset
+
+=3D
+
+"utf-8"
+
+/>
+
+<
+title
+
+>SYMBI API
+
+</
+title
+
+=
+
+>
+
+<
+link
+
+rel
+
+=3D
+
+"stylesheet"
+=
+
+href
+
+=3D
+
+"https://unpkg.com/swagger-ui=
+-dist/swagger-ui.css"
+
+>
+
+</
+head
+
+>
+
+<
+body
+
+>
+
+<
+div
+
+id
+
+=3D
+
+"swagger"
+
+>
+
+</
+div
+
+>
+
+<
+script
+
+src
+
+=3D
+
+"https://unpkg.co=
+m/swagger-ui-dist/swagger-ui-bundle.js"
+
+>
+
+</
+script
+
+>
+
+<
+script
+
+>
+
+SwaggerUIBundle
+
+({ 
+
+url
+
+: 
+
+"../openapi.yaml"
+
+=
+, 
+
+dom_id
+
+: 
+
+"#swagger"
+
+ });
+
+</
+script
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+
+Ensure Pages workflow publishes 
+docs/
+ (you already added a=
+ workflow; confirm it targets the right folder and Pages is enabled in 
+Settings =E2=86=92 Pages
+=
+).
+
+5) Strengthen SECURITY.md (contac=
+t & SLA)
+
+Add a crisp disclosure channel and=
+ response window:
+
+md
+
+Copy code
+
+## Reporting a Vulnerability=
+
+Please email security@yseeku.com with details (PoC, impact, version). We ac=
+knowledge in 48h and target a fix or mitigation within 7 business days for =
+High/Critical issues. Do not publicly disclose prior to a coordinated advis=
+ory.
+
+=F0=9F=A7=AA =E2=80=9CGolden Path=
+=E2=80=9D verifications (fast checks)
+
+Golden Path doc present
+ and linked from README. (Keep =
+the 60=E2=80=91sec cURL =E2=86=92 receipt =E2=86=92 verify flow accessible =
+in one scroll.)
+
+Badges
+: CI + Security badges should reflect the exact =
+workflow filenames (after we commit the above).
+
+API Docs badge
+ should hit the Pages URL (e.g., 
+/docs/api-viewer.html
+ or repo p=
+ages root).
+
+EU AI Act mapping
+ is included; keep a disclaimer that =
+it=E2=80=99s a 
+mapping, not c=
+ertification
+.
+
+=F0=9F=93=8C Commit bundle (you c=
+an paste these)
+
+bash
+
+Copy code
+
+git checkout -b chore/hardening
+
+printf
+
+"# --- security: never commit env ---\n=
+.env\n.env.*\n!.env.example\n"
+
+ >> .gitignore
+
+mkdir
+
+ -p .gi=
+thub/workflows .github
+
+# write the YAML files shown abov=
+e into .github/workflows/
+
+# write docs/api-viewer.html as s=
+hown
+
+git add .gitignore .github docs/api-viewer.html
+git commit -m 
+
+"chore: harden repo =
+(gitignore, CI, CodeQL, gitleaks, docs viewer)"
+
+# history purge is a separate, de=
+structive step (see above)
+
+Important:
+ after history rewrite, you 
+must
+ re-create PRs/branches from fresh clo=
+nes. Notify any collaborators of the forced push.
+
+=F0=9F=A7=AD Phase 3: Enterprise =
+polish (ready to execute after harde

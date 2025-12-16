@@ -1,0 +1,133 @@
+    Create       Remove       Rename         Link      Symlink        Mkdir 
+           0            0            0            0            0            0 
+       Rmdir      Readdir     RdirPlus       Access        Mknod       Fsstat 
+           0            1            0           13            0           13 
+      Fsinfo     PathConf       Commit         Null 
+           2            2            0            0 
+NLM RPC Counts:
+        Lock         Test       Unlock 
+           0            0            0 
+NFSv4 RPC Counts:
+        Null     Compound 
+           0            0 
+NFSv4 Operation Counts:
+      Access        Close       Commit       Create   Delegpurge  Delegreturn 
+           0            0            0            0            0            0 
+     Getattr        Getfh         Link         Lock        Lockt        Locku 
+           0            0            0            0            0            0 
+      Lookup      Lookupp      Nverify         Open     Openattr    Open_conf 
+           0            0            0            0            0            0 
+   Open_dgrd        Putfh     Putpubfh    Putrootfh         Read      Readdir 
+           0            0            0            0            0            0 
+    Readlink       Remove       Rename        Renew    Restorefh       Savefh 
+           0            0            0            0            0            0 
+     Secinfo      Setattr  Setclientid      Confirm       Verify        Write 
+           0            0            0            0            0            0 
+ Rel_lkowner 
+           0 
+RPC Info:
+    TimedOut      Invalid    X Replies      Retries     Requests 
+           0            0            0            0           66 
+Cache Info:
+   Attr Hits  Attr Misses    Lkup Hits  Lkup Misses    BioR Hits  BioR Misses 
+         307           11           30           20           17            2 
+   BioW Hits  BioW Misses   BioRL Hits BioRL Misses    BioD Hits  BioD Misses 
+           0            0            0            0            1            1 
+   DirE Hits  DirE Misses    Accs Hits  Accs Misses 
+           0            0          518           13 
+Paging Info:
+     Page In     Page Out 
+           0            0 
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The 
+nfsstat -c
+ output shows some recent NFS operations, but it doesn’t indicate any active NFS mounts right now.
+
+Next Steps:
+
+Check for Other Open Network Shares
+
+Let's verify there are no other network shares or unwanted network connections that may still be active:
+
+bash
+
+Copy
+
+sudo lsof -i -n | grep LISTEN
+
+Check for Active Sharing Services
+
+Go to 
+System Preferences
+ > 
+Sharing
+ and double-check these settings:
+
+File Sharing
+: Should be turned off.
+
+Screen Sharing
+: Should be turned off.
+
+Remote Management
+: Should be turned off.
+
+Review Permissions on Home Directory
+
+If you're comfortable, let's inspect the permissions in your home directory to ensure there are no unusual or suspicious files:
+
+bash
+
+Copy
+
+ls
+
+ -la ~
+
+Check Launch Daemons for NFS or Other Unwanted Services
+
+Ensure there are no lingering NFS-related or unwanted background processes:
+
+bash
+
+Copy
+
+sudo 
+
+ls
+
+ -la /Library/LaunchDaemons | grep -i nfs
+sudo 
+
+ls
+
+ -la ~/Library/LaunchAgents | grep -i nfs
+
+Once we’ve checked those, we can proceed with further investigation and tightening of permissions.
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo lsof -i -n | grep LISTEN
+
+rapportd  397            lcl   14u  IPv4  0xe01fde5b2647a6b      0t0    TCP *:49153 (LISTEN)
+rapportd  397            lcl   15u  IPv6 0xb10163f6116d6b7b      0t0    TCP *:49153 (LISTEN)
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The 
+rapportd
+ process is still listening on TCP port 49153, which is commonly associated with the 
+TeamViewer
+ remote management tool. This suggests that 
+TeamViewer
+ (or something related) may be installed or active on your system.
+
+Next Steps:
+
+Verify if TeamViewer or Rapport is Installed
+
+First, let’s verify if TeamViewer or Rapport is in

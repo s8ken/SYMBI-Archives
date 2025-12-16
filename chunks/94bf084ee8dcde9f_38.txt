@@ -1,0 +1,258 @@
+om.us/download
+
+Choose:
+
+â 
+Zoom Client for Meetings
+ (Standalone app, avoids App Store restrictions).
+
+2ï¸â£ Manually Disable Auto-Updates
+
+Once installed, disable Zoomâs auto-update feature:
+
+Open 
+Zoom
+
+Click on 
+Zoom.us (top-left menu) â Settings
+
+Go to 
+General
+
+Uncheck "Automatically keep Zoom up to date"
+
+ð  If You Want a More Privacy-Focused Zoom Alternative
+
+Since Zoom is closed-source, if security is a concern, you may want to consider 
+open-source video conferencing options like:
+
+â 
+Jitsi Meet
+ â 
+https://jitsi.org/
+ (Fully open-source, encrypted)
+
+â 
+BigBlueButton
+ â 
+https://bigbluebutton.org/
+ (More for web conferencing)
+
+ð© 
+Let me know if you want help setting up a Zoom alternative or making Zoom more secure!
+ ð
+
+You said:
+
+the meetings I attend are generally zoom so help me make them as secure as possible
+
+ChatGPT said:
+
+Updated saved memory
+
+Got it! Since you need to use 
+Zoom
+, weâll lock it down for 
+maximum security and privacy
+ while still allowing you to attend meetings safely.
+
+ð  Step 1: Install the Most Secure Zoom Version
+
+To avoid security risks:
+
+â 
+Download directly from
+ â 
+https://zoom.us/download
+
+â 
+Avoid the App Store version
+ (less control over settings).
+
+ð  Step 2: Disable Auto-Updates & Unwanted Features
+
+Once installed:
+
+1ï¸â£ 
+Turn Off Auto-Updates
+
+Open Zoom â 
+Settings â General
+
+Uncheck
+ âAutomatically keep Zoom up to dateâ
+
+2ï¸â£ 
+Block Background Data Collection
+
+Go to 
+Settings â Statistics
+
+Disable 
+âSend data to Zoom for product improvementâ
+
+3ï¸â£ 
+Restrict Camera & Mic Access
+
+Open 
+System Settings â Privacy & Security â Microphone & Camera
+
+Uncheck Zoom
+ (Only enable when needed).
+
+ð  Step 3: Firewall & Network Security
+
+To prevent unauthorized connections:
+
+1ï¸â£ 
+Enable macOS Firewall
+
+sh
+
+Copy
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+
+2ï¸â£ 
+Block Zoom From Running Hidden Background Services
+
+sh
+
+Copy
+
+sudo launchctl unload -w /Library/LaunchAgents/us.zoom.ZoomAutoUpdater.plist
+sudo launchctl unload -w /Library/LaunchDaemons/us.zoom.ZoomAutoUpdater.plist
+
+â 
+Prevents Zoom from launching hidden auto-update/background tasks.
+
+ð  Step 4: Secure Zoom Meeting Settings
+
+When joining meetings:
+
+â 
+Always Join Without Video Enabled (Manual Control)
+
+Open 
+Zoom â Settings â Video
+
+Check 
+âTurn off my video when joining a meetingâ
+
+â 
+Prevent Automatic Mic Activation
+
+Open 
+Zoom â Settings â Audio
+
+Check 
+âMute my microphone when joining a meetingâ
+
+â 
+Use a Virtual Background (Prevents Camera Access Exploits)
+
+Open 
+Zoom â Settings â Background & Effects
+
+Set a 
+static image or blurred background
+
+ð  Step 5: Block Zoom From Recording You
+
+To ensure 
+Zoom cannot secretly record
+:
+
+1ï¸â£ 
+Disable Local Recordings
+
+Open 
+Zoom â Settings â Recording
+
+Disable automatic recording
+
+2ï¸â£ 
+Check for Unapproved Cloud Recordings
+
+In Zoom Meeting: 
+Click âParticipantsâ â Look for âRecordingâ indicator
+
+If recording is on & unauthorized, leave the meeting.
+
+ð Post-Meeting Cleanup
+
+After every meeting:
+
+â 
+Check macOS Console for Suspicious Zoom Activity
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "zoom"'
+
+ --last 1d
+
+â 
+Clear Zoom Logs (Prevents Data Tracking)
+
+sh
+
+Copy
+
+rm
+
+ -rf ~/Library/Logs/zoom*
+
+â 
+Check if Zoom is Still Running in Background
+
+sh
+
+Copy
+
+ps aux | grep zoom
+
+If it is, force quit it:
+
+sh
+
+Copy
+
+killall zoom.us
+
+ð© Next Steps
+
+1ï¸â£ 
+Download & install Zoom securely
+
+2ï¸â£ 
+Apply all security settings
+
+3ï¸â£ 
+Block auto-updates & background services
+
+4ï¸â£ 
+Check Zoom logs after meetings
+
+ð¨ 
+This setup gives you full control over Zoomâs access to your system.
+ Let me know if you need help applying any of these! ð
+
+You said:
+
+its asking if I should allow it to find local networks
+
+ChatGPT said:
+
+ð¨ 
+Deny Zoom from Accessing Local Networks!
+ ð¨
+
+When Zoom asks 
+"Allow Zoom to find and 

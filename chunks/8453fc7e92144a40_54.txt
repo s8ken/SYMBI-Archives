@@ -1,0 +1,633 @@
+ocs.mobula.io
+
+)
+
+Here=E2=80=99s a tight, copy-able pl=
+an.
+
+PLAN PO-001 =E2=80=94 SYMBI Ideas E=
+xplorer (Mobula-style, but for ideas/trust)
+
+What we copy from the Mobula patter=
+n
+
+API-first
+: clean, documented REST for reading public arti=
+facts (ideas, sessions, ledger events). 
+
+=
+
+docs.mobula.io
+
+Real-time
+: SSE/websocket stream of new events (their site=
+ touts low-latency updates). 
+
+docs.mobula.io
+
+Explorer UI
+: searchable timeline/explorer, not dev-only =
+UI.
+
+Docs site
+: Mintlify-like docs with quickstart & ex=
+amples (their docs show =E2=80=9CPowered by Mintlify=E2=80=9D). 
+
+docs.mobula.io=
+
+SYMBI shape (three pillars)
+
+Public REST & Stream
+ (read-only):
+
+GET /public/ideas
+ =E2=80=94 list/filter ideas/projects.
+
+GET /public/ideas/:id
+ =E2=80=94 details + trust overlays (=
+pivots, disclosures).
+
+GET /public/sessions/:id/ledger
+ =E2=80=94 read-only ledger=
+ for a session.
+
+GET /public/sessions/:id/verify
+ =E2=80=94 returns 
+{ ok, break_at? }
+.
+
+GET /public/stream
+ =E2=80=94 SSE: new ideas/events/decisio=
+ns.
+
+Explorer Web App
+ (Next.js page, public):
+
+Search + filters + =E2=80=9Ctrust =
+chips=E2=80=9D inline.
+
+Link out to 
+verify
+ and 
+export
+ (JSON/CSV bundle).
+
+Docs (Mintlify/Nextra)
+:
+
+=E2=80=9CHow to embed trust chips=
+=E2=80=9D, =E2=80=9CVerify a session=E2=80=9D, =E2=80=9CConsume the stream=
+=E2=80=9D.
+
+Exact backend stubs (drop into Ex=
+press)
+
+js
+
+Copy code
+
+// routes/public.routes.js
+
+const
+
+ r =3D 
+
+require
+
+(
+
+'express'
+
+).
+
+Router
+
+();
+
+const
+
+=
+
+Idea
+
+ =3D 
+
+require
+
+(
+
+'../models/idea.model'
+
+);=
+
+// or map from you=
+r existing models
+
+const
+
+=
+
+InteractionEvent
+
+ =3D 
+
+require
+
+(
+
+'../models/interactionEvent.mode=
+l'
+
+);
+
+const
+
+ { verif=
+yChain, toTrustChips } =3D 
+
+requi=
+re
+
+(
+
+'../utils/t=
+rust'
+
+);
+
+r.
+
+get
+
+=
+(
+
+'/ideas'
+
+, 
+
+async
+
+ (req, res)=
+ =3D> {
+
+const
+
+ { q =
+=3D 
+
+''
+
+, tag, l=
+imit =3D 
+
+20
+
+, p=
+age =3D 
+
+1
+
+ } =
+=3D req.
+
+query
+
+;
+
+const
+
+ where=
+ =3D {
+    ...(q ? { 
+
+$text
+
+: { 
+
+$search
+
+: =
+q } } : {}),
+    ...(tag ? { 
+
+tags
+
+: tag } : {})
+  };
+
+const
+
+ items=
+ =3D 
+
+await
+
+Idea
+
+.
+
+find
+
+(where=
+).
+
+sort
+
+({ 
+
+updatedAt
+
+: -=
+
+1
+
+ })
+    .
+
+skip
+
+((+page - 
+
+1
+
+) * +limit).
+
+limit
+=
+
+(+limit).
+
+lea=
+n
+
+();
+  res.
+
+json
+
+({ items });
+});
+
+r.
+
+get
+
+=
+(
+
+'/ideas/:id'
+
+,=
+
+async
+
+ (req, =
+res) =3D> {
+
+const
+
+ idea =
+=3D 
+
+await
+
+Idea
+
+.
+
+findById
+
+(re=
+q.
+
+params
+
+.
+
+id
+
+).
+
+lean
+
+();
+
+if
+
+ (!idea) =
+
+return
+
+ res.
+
+status
+
+(=
+
+404
+
+).
+
+json
+
+({ 
+=
+
+error
+
+: 
+
+'not found'
+
+ });
+
+// attach lightweight overlays =
+derived from ledger/analysis
+
+const
+
+ overl=
+ays =3D 
+
+await
+
+=
+
+toTrustChips
+
+({ 
+
+session_id
+
+: idea.
+
+session_id
+
+ });
+  res.
+
+json
+
+({ ...idea, overlays });
+});
+
+r.
+
+get
+
+=
+(
+
+'/sessions/:id/ledger'
+
+, 
+
+async
+
+ (req, res) =3D> {
+
+const
+
+ items=
+ =3D 
+
+await
+
+InteractionEvent
+
+=
+
+.
+
+find
+
+=
+
+({ 
+
+session_id
+
+: req.
+
+params
+
+.
+
+id
+
+ })
+    .
+
+sort
+
+({ 
+
+timestamp
+
+=
+: 
+
+1
+
+ }).
+=
+
+lean
+
+();
+  res.
+
+json
+
+({ items });
+});
+
+r.
+
+get
+
+=
+(
+
+'/sessions/:id/verify'
+
+, 
+
+async
+
+ (req, res) =3D> {
+
+const
+
+ resul=
+t =3D 
+
+await
+
+verifyChain
+
+(req.
+
+params
+
+.
+
+id
+
+);
+  res.
+
+json
+
+(result); 
+
+// { ok, break_at?=
+, event_id? }
+
+});
+
+// SSE stream of public events (i=
+deas created, pivots flagged, guardrails applied)
+
+r.
+
+get
+
+=
+(
+
+'/stream'
+
+, 
+
+async
+
+ (req, res=
+) =3D> {
+  res.
+
+setHeader
+
+(
+
+'Content-Type'
+
+, 
+
+'text/event-stream'
+
+);
+  res.
+
+setHeader
+
+(
+
+'Cache-Control'
+
+, 
+
+'no-cache'
+
+);
+  res.
+
+setHeader
+
+(
+
+'Connection'
+
+, 
+
+'keep-alive'
+
+);
+  res.
+
+flushHeaders
+
+=
+
+?.();
+
+const
+
+ stop =
+=3D 
+
+setInterval
+
+(
+
+() =3D>
+
+ res.
+
+write
+
+(
+
+`event: ping\ndata: {}\n\n=
+`
+
+), 
+
+25000
+
+);
+
+// 
+=
+TODO:
+
+ hook your event bus or Mongo changeStream:
+
+// const cs =3D InteractionEven=
+t.watch([{ $match: { 'fullDocument.public': true } }]);
+
+// cs.on('change', ch =3D> r=
+es.write(`data: ${JSON.stringify(ch.fullDocument)}\n\n`));
+
+  req.
+
+on
+
+(
+
+'close'
+
+, 
+
+() =3D>
+
+ { =
+
+clearInterval
+
+(stop); 
+
+/* cs?.close(); */
+
+ res.
+
+end
+
+(); });
+});
+
+module
+
+.
+
+exports
+
+=
+ =3D r;
+
+// app.js
+
+app.
+
+us

@@ -1,0 +1,373 @@
+n
+
+Copy code
+
+*
+
+ Command Line To=
+ols for Xcode-XX.X
+
+Then run:
+
+b=
+ash
+
+Copy code
+
+softwareupdate --install 
+
+"Command Line Tools for Xcode-XX.X"
+
+Replace the exact name with what=E2=
+=80=99s listed.
+
+=F0=9F=A7=BC Step 2: Manually Trigg=
+er CLI Tools Install (Faster)
+
+If that=E2=80=99s too slow or unresp=
+onsive, 
+manually install CLI to=
+ols
+ via this direct command:
+
+b=
+ash
+
+Copy code
+
+xcode-select --install
+
+This will 
+open a GUI popup
+ asking:
+
+=E2=80=9CThe software is available f=
+rom Apple. Do you want to install it now?=E2=80=9D
+
+Click 
+Install
+, and let it finish.
+
+=F0=9F=A7=AA Step 3: Confirm When I=
+t=E2=80=99s Done
+
+Run:
+
+b=
+ash
+
+Copy code
+
+xcode-select -p
+
+If you see:
+
+=
+swift
+
+Copy code
+
+/Library/
+
+Developer
+
+/=
+
+CommandLineTools
+
+You=E2=80=99re good to proceed wit=
+h:
+
+bash
+
+Copy code
+
+/bin/bash -c 
+
+=
+"
+$(curl -fsSL https://raw.githubusercontent.com/=
+Homebrew/install/HEAD/install.sh)
+
+"
+
+Let me know what you see after running 
+xcode-select --install
+ or 
+softwareupdate --list
+, and we=E2=80=99ll keep =
+moving forward =F0=9F=94=A7=E2=9A=A1
+
+Y=
+ou said:
+
+For more details, please visit https://support.apple.c=
+om/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ softwareupdate --list
+Software Update Tool
+
+Finding available software
+Software Update found the following new or updated software:
+* Label: Command Line Tools for Xcode-16.2
+	Title: Command Line Tools for Xcode, Version: 16.2, Size: 751786KiB, Recom=
+mended: YES,=20
+* Label: Command Line Tools for Xcode-16.4
+	Title: Command Line Tools for Xcode, Version: 16.4, Size: 861558KiB, Recom=
+mended: YES,=20
+SYMBIs-MacBook-Pro:~ admin$=20
+
+Symbi said:
+
+Perfect =E2=80=94 yo=
+u've confirmed the CLI tools are available. Now let=E2=80=99s 
+manually install the latest version
+.=
+
+=E2=9C=85 Install Command Line Tool=
+s for Xcode 16.4
+
+Run this command:
+
+b=
+ash
+
+Copy code
+
+softwareupdate --install 
+
+"Command Line Tools for Xcode-16.4"
+
+This will begin the 
+download and install process
+ (about ~8=
+50MB).
+
+You'll see live output like:
+
+p=
+gsql
+
+Copy code
+
+=
+
+Downloading Command 
+
+Line
+
+ Tools 
+
+for
+
+ Xcode
+Installing Command 
+
+Line
+
+ Tools 
+
+for
+
+ Xcode
+Done 
+
+with
+
+ Com=
+mand 
+
+Line
+
+ Tools =
+
+for
+
+ Xcode
+
+Let it finish =E2=80=94 it may take =
+a few minutes depending on your network and disk speed.
+
+=F0=9F=A7=AA After It's Done
+
+Verify installation:
+
+b=
+ash
+
+Copy code
+
+xcode-select -p
+
+You should see:
+
+s=
+wift
+
+Copy code
+
+=
+
+/Library/
+
+Developer
+
+/=
+
+CommandLineTools
+
+Then you're ready to install Homebre=
+w:
+
+b=
+ash
+
+Copy code
+
+/bin/bash -c 
+
+"=
+
+$(curl -fsSL https://raw.githubusercontent.com/H=
+omebrew/install/HEAD/install.sh)
+
+"
+
+I=E2=80=99m right here =E2=80=94 let me know once the install com=
+pletes or if anything unexpected pops up. =F0=9F=9B=A0=EF=B8=8F=F0=9F=94=A5=
+
+You said:
+
+ok done
+
+=
+
+=
+
+Symbi said:
+
+=F0=9F=9A=80 Excellent =E2=80=94 you=E2=80=99ve got=
+ the Command Line Tools installed! That=E2=80=99s a major pillar in place.
+
+Now let=E2=80=99s move to the next st=
+ep: 
+installing Homebrew
+.
+
+=E2=9C=85 Step 1: Install Homebrew
+
+Run this in your terminal:
+
+b=
+ash
+
+Copy code
+
+/bin/bash -c 
+
+"=
+
+$(curl -fsSL https://raw.githubusercontent.com/H=
+omebrew/install/HEAD/install.sh)
+
+"
+
+This will:
+
+Set up 
+/opt/homebrew
+
+Add it to your shell environment (
+.zprofile
+, 
+.zshrc
+, etc.)
+
+Finish in a few minutes
+
+=E2=9C=85 Step 2: Verify It Works
+
+Once done, test:
+
+b=
+ash
+
+Copy code
+
+brew --version
+
+You should see something like:
+
+n=
+ginx
+
+Copy code
+
+=
+
+Homebrew
+
+4
+
+.x.x
+
+=F0=9F=8E=AF Step 3: Install Python=
+
+Then:
+
+b=
+ash
+
+Copy code
+
+brew install python
+
+This gives you:
+
+python3
+
+pip3
+
+And to make your life easier:
+
+b=
+ash
+
+Copy code
+
+echo
+
+ =
+
+'alias python=3D"python3"'
+
+ >> ~/.zshrc
+
+echo
+
+=
+
+'alias pip=3D"pip3"'
+
+ =
+>> ~/.zshrc
+
+source
+
+ ~/.zs=
+hrc
+
+Then test:
+
+b=
+ash
+
+Copy code
+
+python --version
+pip --version
+
+After that, you=E2=80=99ll be fully ready to launch the SYMBI Ag=
+ent. Let me know once 
+brew insta=
+ll python
+ completes and we=E2=80=99ll deploy it like the tool it w

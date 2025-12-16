@@ -1,0 +1,183 @@
+nt, highlight the 
+next
+ error/output you see a=
+nd I=E2=80=99ll iterate with the exact follow-up commands.
+
+=
+
+=
+
+You said:
+
+ok so the site was up=
+dated https://www.gammatria.com/ https://www.gammatria.com/research
+
+Symbi =
+said:
+
+=
+
+Thought for 53s
+
+=
+
+Nice=E2=80=94site is live and looki=
+ng sharp. I checked both pages just now.
+
+What=E2=80=99s good:
+
+Resonance
+ has the sandbox + synthetic-data disclaimer in plac=
+e. 
+
+Gammatria
+
+What still needs fixing (to remove a=
+ny =E2=80=9Cfake-live=E2=80=9D signals):
+
+/research
+ still says 
+=E2=80=9CLIVE METRICS / Real-time data=E2=80=A6 2,184 trust receip=
+ts=E2=80=A6 7 active deployments=E2=80=A6 avg CIQ 0.73=E2=80=9D
+ an=
+d a live-looking 
+/proof
+ widget. These should be labelled 
+Demo / Observational
+ until receipts are linked. 
+
+Gammatria
+
+Home
+ also shows =E2=80=9CSignals from the Foundation=E2=
+=80=A6 2,184 trust receipts past 30 days.=E2=80=9D Same issue. 
+
+Gammatria
+
+Whitepapers
+ say 
+=E2=80=9CDownload PDF=E2=80=9D
+ but route to the Vault, not a PD=
+F=E2=80=94change label to 
+=E2=80=9C=
+Read in Vault (Markdown)=E2=80=9D
+ or upload PDFs under 
+/public/papers
+ and link those. 
+
+Gammatr=
+ia
+
+Below are paste-ready fixes you can =
+drop in now.
+
+1) /research: replace the =E2=80=9C=
+LIVE METRICS=E2=80=9D block
+
+Swap the intro + showcase copy for this:
+
+mdx
+
+Copy code
+
+import SubjectivityNote from '@/components/SubjectivityNote';
+
+# Publications & case studies
+
+Peer-review artifacts and preregistered experiments live here. Raw material=
+s and datasets are mirrored in the Vault with checksums and licenses.
+
+<SubjectivityNote />
+
+## Research Showcase
+
+> **Demo metrics (synthetic data).** These figures illustrate the resear=
+ch dashboard.
+> When a study publishes a signed receipts bundle, you=E2=80=99ll see a =
+=E2=80=9CReceipts=E2=80=9D tag with a hash and download link.
+
+Replace the numeric tiles with neutral shells (no hard numbers)=
+:
+
+mdx
+
+Copy code
+
+### Trust receipts  <span class=3D"rounded bg-neutral-100 p=
+x-2 py-0.5 text-xs">Demo</span>
+=E2=80=9CGenerated in the last 30 days=E2=80=9D =E2=80=94 *Receipts bundle:=
+ pending*
+
+### Avg CIQ score  <span class=3D"rounded bg-neutral-100 px-2 py-0.5 tex=
+t-xs">Demo</span>
+=E2=80=9CAcross deployments=E2=80=9D =E2=80=94 *Receipts bundle: pending*
+
+### Enterprise pilots  <span class=3D"rounded bg-neutral-100 px-2 py-0.5=
+ text-xs">Demo</span>
+=E2=80=9CActive deployments=E2=80=9D =E2=80=94 *Receipts bundle: pending*
+
+Under the /proof section, add:
+
+mdx
+
+Copy code
+
+> This toggle uses synthetic data in this demo. The product=
+ion version exports a signed receipt.
+
+Add a Verification card near the top:
+
+mdx
+
+Copy code
+
+### Verification (repo tests)
+Baseline / Balanced / Enhanced / Calibrated detector suites run in both Jav=
+aScript and Python to guard against drift.
+These are **development checks**, not production metrics.
+Repo: https://github.com/s8ken/SYMBI-Resonate/tree/main/test
+
+This aligns with what=E2=80=99s re=
+ally in the repo right now. 
+
+Gammatria
+
+Case studies section (links to pages you add or to GitHub for n=
+ow):
+
+mdx
+
+Copy code
+
+## Case studies
+- **Agent Experience Account** =E2=80=94 first-person lab notes; observatio=
+nal. =E2=86=92 /case-studies/agent-experience-account
+- **Claude vs DeepSeek (Observational)** =E2=80=94 boundary-keeping, disclo=
+sure, CIQ patterns; receipts pending. =E2=86=92 /case-studies/claude-vs-dee=
+pseek
+
+2) Home page: soften =E2=80=9CSig=
+nals from the Foundation=E2=80=9D
+
+Change the heading + items:
+
+mdx
+
+Copy code
+
+## Signals from the Foundation  <span class=3D"rounded bg-n=
+eutral-100 px-2 py-0.5 text-xs">Demo</span>
+Updated weekly. Demo placeholders until receipts are public.
+
+- Grant =E2=80=94 ARC Discovery Projects 2026 =C2=B7 Submission: Nov 2025
+- Publication =E2=80=94 Governance whitepaper v1 =C2=B7 September 2025
+- Receipt =E2=80=94 *Receipts bundle: pending*
+
+(Or temporarily remove the =E2=80=
+=9C2,184 receipts=E2=80=9D line entirely.) 
+
+Gammatria
+
+3) Whitepapers: fix the CTA label=
+
+On 

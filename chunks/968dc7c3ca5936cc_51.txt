@@ -1,0 +1,282 @@
+ntitlements.
+
+sh
+
+Copy
+
+Edit
+
+codesign -d --entitlements :- /usr/libexec/AirPlayXPCHelper
+codesign -d --entitlements :- /System/Library/CoreServices/AirPlayUIAgent.app
+
+ð¨ 
+If these show critical entitlements (
+com.apple.airplay.receiver
+, 
+com.apple.private.airplay
+),
+ macOS is forcing AirPlay to launch.
+
+ð 
+Take a screenshot or paste the output here.
+
+ð ï¸ Step 3: Monitor AirPlay Launches in Real Time
+
+This will 
+catch when AirPlay starts
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo fs_usage | grep -i airplay
+
+ð 
+Watch if something keeps triggering it.
+
+ð WHY ARE WE DOING THIS?
+
+Instead of just blindly disabling AirPlay 
+over and over
+, we are now 
+tracking its origin
+:
+
+If macOS itself is force-enabling it
+, we will take 
+a different approach
+ (modifying system entitlements).
+
+If a background service keeps launching it
+, we will 
+shut that service down directly.
+
+ð 
+Letâs get the logs first.
+ Post them here, and weâll make our next move based on real data. 
+NO MORE REPEATING!
+ ð¥
+
+You said:
+
+3.1.rtf
+
+File
+
+here
+
+You said:
+
+see above
+
+ChatGPT said:
+
+From your logs, 
+AirPlayXPCHelper and AirPlayUIAgent are still running
+, despite your efforts to disable or block them.
+
+Key Findings:
+
+Active Processes
+:
+
+/System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent --launchd
+
+/usr/libexec/AirPlayXPCHelper
+
+Error Logs Indicate Persistent AirPlay Activity
+:
+
+Repeated logs of AirPlayXPCHelper trying to "Get paired peers"
+
+Errors related to NSXPCConnectionInvalid
+, meaning it keeps attempting connections.
+
+It is still scanning for devices
+ via Bonjour and AWDL (Apple Wireless Direct Link).
+
+It is using a network clock
+, suggesting active synchronization.
+
+Attempts to Block Were Not Fully Successful
+:
+
+chflags
+ and 
+chmod
+ commands were 
+denied
+ due to 
+System Integrity Protection (SIP)
+.
+
+LaunchDaemon/LaunchAgent files were 
+touched and permission-blocked
+, but it did not prevent execution.
+
+The logs indicate it is discovering devices and enabling AirPlay features
+.
+
+Next Steps to Fully Disable AirPlay:
+
+Since AirPlayXPCHelper is still actively running, we need to take a 
+more aggressive
+ approach.
+
+Method 1: Ensure AirPlay is Disabled in macOS Settings
+
+System Settings â General â AirDrop & Handoff
+
+Disable
+:
+
+AirDrop
+
+Handoff
+
+Allow Handoff between this Mac and your iCloud devices
+
+Turn Off
+: "AirPlay Receiver"
+
+System Settings â Displays
+
+Uncheck
+: "Allow AirPlay Receiver"
+
+Method 2: Disable AirPlay Directly via Terminal
+
+Run the following to disable AirPlay at the system level:
+
+bash
+
+Copy
+
+Edit
+
+defaults write /Library/Preferences/com.apple.airplay receiver-enabled -bool NO
+
+Block AirPlay from running at launch:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+sudo killall AirPlayUIAgent
+sudo killall AirPlayXPCHelper
+
+Restart SystemUIServer to Apply Changes
+
+bash
+
+Copy
+
+Edit
+
+killall SystemUIServer
+
+Method 3: Move or Restrict AirPlay Components
+
+If 
+AirPlayXPCHelper is still running after restart
+, you may need to move it in 
+Recovery Mode
+.
+
+1. Boot into macOS Recovery
+
+Shut down your Mac
+.
+
+Turn it back on
+ while holding 
+Command (â) + R
+ until you see the Apple logo.
+
+Open 
+Terminal
+ from the Utilities menu.
+
+2. Remount the System Drive as Writable
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+sudo mount -uw /
+
+3. Rename or Move AirPlay Binaries
+
+bash
+
+Copy
+
+Edit
+
+mv
+
+ /System/Library/CoreServices/AirPlayUIAgent.app /System/Library/CoreServices/AirPlayUIAgent.bak
+
+mv
+
+ /usr/libexec/AirPlayXPCHelper /usr/libexec/AirPlayXPCHelper.bak
+
+4. Re-enable SIP and Restart
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+reboot
+
+Final Check
+
+Once the system restarts, confirm again:
+
+bash
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"AirPlay|screensharing|screencapture|VNC"
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.airplay"'
+
+ --info --last 30m
+
+This 
+should permanently disable AirPlay
+. If you 
+still see activity
+, then 
+another process is re-ena

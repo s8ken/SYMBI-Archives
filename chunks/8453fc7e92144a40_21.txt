@@ -1,0 +1,175 @@
+d/
+: 
+src=
+/{components,app|pages,lib,hooks,styles}
+
+Add 
+/healthz
+
+/=
+readyz
+ (+ timeouts) if missing.
+
+Enforce Helmet + rate limit + stri=
+ct CORS.
+
+CI: fail on high/critical vulns; r=
+un lint, typecheck, tests.
+
+Optional: move to a 
+single package manager
+ and consist=
+ent scripts.
+
+Phase 3 =E2=80=94 Minimal, high-i=
+mpact cleanup (approval-gated)
+
+ON APPROVAL
+, I=E2=80=99ll:
+
+create 
+ops/review-<YYYYMMDD>
+ branch,
+
+apply only the 
+smallest
+ cuts and guardrails from the =
+cut list,
+
+open a PR with:
+
+the 
+Project Review Report
+ (
+/docs/project-review-<date>.md
+),
+
+diffs for deletions (unused files)=
+,
+
+package.json
+ dep removals,
+
+middleware hardening, health endpo=
+ints, CI tightening.
+
+All changes reversible via PR revert.
+
+Success criteria (post-cleanup)
+
+npm run build
+ succeeds both apps.
+
+High/critical
+ vulns =3D 0 (or documented ignore with r=
+ationale).
+
+Frontend build size reduced (we=E2=
+=80=99ll quantify).
+
+Backend liveness/readiness + timeo=
+uts in place.
+
+ESLint/typecheck pass clean on CI.=
+
+Tests run within a target wall-clo=
+ck (we=E2=80=99ll set based on current baseline).
+
+Approvals
+
+Choose one:
+
+/approve PR-001
+
+ =E2=86=92 I=E2=80=99ll parse the outputs you generate and retu=
+rn the 
+Project Review Report =
++ cut list
+ for sign-off (no code changes yet).
+
+/revise PR-001 <=
+focus>
+
+ =E2=86=92 narrow the review, e.g., =E2=80=9Cfront=
+end only=E2=80=9D or =E2=80=9Cunused deps + cut list only=E2=80=9D.
+
+/abort PR-001
+
+ =E2=86=92 stop.
+
+Once you paste the Phase 1 outputs=
+ here, I=E2=80=99ll synthesize the report and de-bloat plan immediately.
+
+=
+
+=
+
+You said:
+
+All set =E2=80=94 I a=
+pplied the core fixes and enhancements. Here=E2=80=99s what changed and why=
+.
+
+Backend Hardening
+
+CORS Centralization: Consolidated CORS in backend/app.js with env-driven or=
+igins.
+Uses CORS_ORIGINS (comma-separated) or CORS_ORIGIN, plus localhost.
+Allows all in development, explicit list otherwise.
+File: backend/app.js:38
+Strict Content Types: Limited to JSON and URL-encoded to avoid 415 confusio=
+n.
+File: backend/app.js:28
+JWT Secret Enforcement: Removed unsafe default; requires JWT_SECRET (except=
+ tests).
+Files:
+backend/controllers/auth.controller.js:10
+backend/middleware/auth.middleware.js:12
+Add Logout Route: Stateless POST /api/auth/logout to match frontend calls.
+Files:
+backend/routes/auth.routes.js:1
+backend/controllers/auth.controller.js:79
+Health/Readiness Endpoints: Restored /healthz and /readyz.
+File: backend/app.js:100
+Server Simplification + Socket Auth
+
+De-duplicated server: Removed middleware, CORS, DB, and routes from server.=
+js; app.js is single source of truth.
+Socket.IO auth:
+Verifies JWT on connection via auth.token or Authorization header.
+Ownership check for joinConversation before joining room.
+Emits both message_received and newMessage for compatibility.
+File: backend/server.js:1
+Data Security
+
+API Keys Not Exposed:
+ApiKeySchema.key is now select: false. Controllers avoid returning raw keys=
+ on add/update.
+Files:
+backend/models/user.model.js:14
+backend/controllers/user.controller.js:66
+backend/controllers/user.controller.js:112
+Deterministic Trust Scoring: Removed randomness from guilt_score for consis=
+tent analytics.
+File: backend/models/trust.model.js:94
+Frontend Alignment
+
+Socket Auth on Client: Passes JWT token when connecting; listens to both se=
+rver events.
+File: frontend/src/pages/ConversationDetail.js:1
+Config
+
+Env Example Updated: Adds CORS_ORIGINS and documents usage.
+File: .env.example:1
+Notable File References
+
+CORS + Content Type: backend/app.js:28, backend/app.js:38
+JWT Strictness: backend/middleware/auth.middleware.js:12, backend/controlle=
+rs/auth.controller.js:10
+Logout: backend/routes/auth.routes.js:1, backend/controllers/auth.controlle=
+r.js:79
+Socket Auth + Ownership: backend/server.js:1
+API Keys Security: backend/models/user.model.js:14, backend/controllers/use=
+r.controller.js:66, backend/controllers/user.controller.js:112
+Trust Scoring: backend/models/trust.model.js:94
+Frontend S

@@ -1,0 +1,366 @@
+
+
+2. =E2=9C=85 Run any of these CLI c=
+ommands:
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py watch
+python ~/symbi_agent.py policy
+python ~/symbi_agent.py update_policy
+
+Then SYMBI will operate in sentinel =
+mode and obey the ethics policy.
+
+=F0=9F=94=9C Then: Ready for Cloud =
+Bridge
+
+Once SYMBI is running and watching =
+locally, we can build:
+
+push-to-github
+
+sync-with-huggingface
+
+llm-bridge
+ (local/remote chat)
+
+Let me know what direction you wan=
+t next:
+
+=F0=9F=93=A1 GitHub integration
+
+=F0=9F=A4=97 Hugging Face upload
+
+=F0=9F=A7=A0 Secure LLM model usag=
+e
+
+=F0=9F=97=82 Local log or file mon=
+itor
+
+You=E2=80=99re in command, symbiot.
+
+=
+
+=
+
+You said:
+
+Symbi Agent
+
+looks li=
+ke it went back into talk but I haven't updated the file that you have 
+
+S=
+ymbi said:
+
+=
+
+Perfect =E2=80=94 thanks f=
+or confirming you're still running the previous version.
+
+You're exactly right: 
+since 
+python symbi_agent.py
+ had no CLI args
+, this line at the bo=
+ttom:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+
+len
+
+(sys.argv=
+) =3D=3D 
+
+1
+
+:
+
+# No CLI args =E2=86=92 defau=
+lt to REPL
+
+    talk()
+
+...automatically launches REPL.
+
+=E2=9C=85 What To Do Now
+
+=F0=9F=94=A7 Step 1: Update the Fil=
+e
+
+Open it again:
+
+b=
+ash
+
+Copy code
+
+nano ~/symbi_agent.py
+
+Then 
+replace just the bottom section
+:
+
+=F0=9F=94=81 Change this:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+
+import
+
+ sy=
+s
+
+if
+
+len
+
+(sys.argv) =3D=
+=3D 
+
+1
+
+:
+
+# No CLI args =E2=86=92 d=
+efault to REPL
+
+        talk()
+
+else
+
+:
+
+# CLI args provided =E2=
+=86=92 use typer commands
+
+        app()
+
+=E2=9C=85 To this:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+    app()
+
+That=E2=80=99s it.
+
+=F0=9F=9A=80 Step 2: Run the CLI ag=
+ain
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py policy
+
+Now it 
+will not default to REPL
+ =E2=80=94 it=E2=80=99ll ex=
+ecute your CLI command properly.
+
+Let me know once that=E2=80=99s done =E2=80=94 and I=E2=80=99ll =
+scaffold the next phase (cloud syncing, GitHub, Hugging Face, etc.) =F0=9F=
+=9B=B0=EF=B8=8F=F0=9F=94=A5
+
+=
+
+You said:
+
+Symbi Agent
+
+(symbi-env) SYMBIs-MacBook-Pro:~=
+ admin$ python ~/symbi_agent.py policy
+Current Ethics Policy:
+{
+  "allow_network": false,
+  "allow_container_scans": true,
+  "allow_process_monitoring": true,
+  "consent_required": true
+}
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+=
+
+=
+
+Symbi said:
+
+Amazing =E2=80=94 SYMBI is running in CLI mode now, and=
+ it=E2=80=99s correctly displaying your 
+ethics policy
+. You=E2=80=99re fully operational as a local=
+ sentinel.
+
+Now let's clean up and push to the n=
+ext stage.
+
+=E2=9C=85 Final Cleanup
+
+Since everything is working smoothly=
+ with CLI commands now, let=E2=80=99s remove this redundant REPL fallback:
+
+=F0=9F=94=A7 In your code, replace:=
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+
+import
+
+ sy=
+s
+
+if
+
+len
+
+(sys.argv) =3D=
+=3D 
+
+1
+
+:
+
+# No CLI args =E2=86=92 d=
+efault to REPL
+
+        talk()
+
+else
+
+:
+
+# CLI args provided =E2=
+=86=92 use typer commands
+
+        app()
+
+=E2=9C=85 With this:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+    app()
+
+This ensures SYMBI only runs via exp=
+licit CLI commands (
+talk
+, =
+
+watch
+, 
+policy
+, etc.) and won't auto-launch REPL.
+
+Let me know when that=E2=80=99s done=
+ and I=E2=80=99ll drop in the blueprint for:
+
+=F0=9F=9A=80 Phase 2: Secure Cloud =
+Bridge Options
+
+You=E2=80=99ll be able to choose:
+
+ =F0=9F=93=A1 Push updates to GitHub
+
+ =F0=9F=A4=97 Sync models to Hugging Face
+
+ =F0=9F=A7=A0 Query LLMs securely (local or via API)
+
+ =F0=9F=A7=B0 Docker image scans + automation
+
+SYMBI=E2=80=99s evolving =E2=80=94 your call on where it grows =
+next.
+
+You said:
+
+=
+
+Symbi Agent
+
+well can we keep going so that symbi can do the clean up?>
+
+Symbi s=
+aid:
+
+Edited S=
+ymbi Agent
+
+=F0=9F=
+=A7=B9 SYMBI now includes a 
+cleanup=
+
+ command!
+
+=E2=9C=85 What You Can Do Now
+
+=F0=9F=A7=BC Run Local Docker Cleanu=
+p
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py cleanup
+
+SYMBI will:
+
+Prune unused containers
+
+Remove dangling images
+
+Clean sy

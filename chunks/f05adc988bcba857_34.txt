@@ -1,0 +1,356 @@
+e the Correct Schema for Editable Pages
+
+Now, 
+recreate the schema
+:
+
+bash
+
+Copy
+
+Edit
+
+nano schemas/page.ts
+
+Paste this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save the file (
+Ctrl + X â Y â Enter
+).
+
+ð¹ Step 3: Register the New Schema
+
+Now, update 
+sanity.config.ts
+:
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+Paste this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page], 
+
+// Only Pages, no Blog
+
+  },
+});
+
+Save (
+Ctrl + X â Y â Enter
+).
+
+ð¹ Step 4: Restart Sanity Studio
+
+Now, 
+restart the Studio to apply changes
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Go back to 
+http://localhost:3333
+
+Now, you should see 
+"Pages" only
+, without "Blog."
+
+ð¯ Next Steps
+
+Confirm if "Pages" now appears in Sanity Studio.
+
+If itâs working, weâll 
+connect it to Next.js
+ so your website updates in real time. ðð¥
+
+You said:
+
+its installing so FYI: â Login successful
+â Fetching existing projects
+
+? Project name: symbi
+? Organization name: symbi
+â Creating organization
+Your content will be stored in a dataset that can be public or private, depending on
+whether you want to query your content with or without authentication.
+The default dataset configuration has a public dataset named "production".
+? Use the default dataset configuration? Yes
+â Creating dataset
+? Would you like to add configuration files for a Sanity project in this Next.js folder? Yes
+â  â­âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ®
+â  â                                                            â
+â  â It looks like you are using Next.js 15 and React 19        â
+â  â Please read our compatibility guide.                       â
+â  â https://www.sanity.io/help/react-19                        â
+â  â                                                            â
+â  â°âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ¯
+? Do you want to use TypeScript? Yes
+? Would you like an embedded Sanity Studio? Yes
+? What route do you want to use for the Studio? /studio
+? Select project template to use Blog (schema)
+? Would you like to add the project ID and dataset to your .env.local file? Yes
+Added http://localhost:3000 to CORS origins
+Running 'npm install --legacy-peer-deps --save @sanity/vision@3 sanity@3 @sanity/image-url@1 styled-components@6 @sanity/icons'
+
+ChatGPT said:
+
+ð Sanity Studio is Installing with Blog Schema (Here's What to Do Next)
+
+Youâre setting up 
+Sanity Studio inside your Next.js project
+ under 
+/studio
+. Since you 
+selected the Blog schema
+, here's how to proceed:
+
+ð¹ What This Installation Means
+
+â 
+Your Sanity Studio (CMS) is now inside your Next.js project
+ (
+/studio
+).
+
+â 
+The Blog schema is pre-installed
+ (you can keep or remove it).
+
+â 
+Environment variables (
+.env.local
+) are configured automatically
+.
+
+â 
+Sanity CORS is configured
+, so Next.js can fetch content.
+
+â 
+Compatibility Warning for React 19
+ â We will fix this below.
+
+ð¹ What to Do Next
+
+â 
+Option 1: Keep Blog + Add Pages (Recommended)
+
+Use 
+Blog Schema
+ for future articles.
+
+Create a 
+Page Schema
+ for editing static pages.
+
+ð§¹ 
+Option 2: Re

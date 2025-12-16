@@ -1,0 +1,136 @@
+alType, // e.g., "Producer" &nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string memory proofCID   =
+     // IPFS link to evidence (e.g., contract) &nbsp;&nbsp;) public=
+ { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;require(owns=
+DID(msg.sender, did), "Not DID owner"); &nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;credentials[did].push(Credential(credentialType, p=
+roofCID)); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;emit=
+ CredentialAdded(did, credentialType, proofCID); &nbsp;&nbsp;} &=
+;nbsp;&nbsp;
+
+Why It Matters:
+
+&nbs=
+p; * No more "ghost producers" (uncredited contributors).
+
+&nbs=
+p; * Courts/streaming platforms can verify ownership without a label.
+
+Laye=
+r 2: Data Sovereignty =3D "Who Controls the Assets?"
+
+Problem: Masters and metadata are locked=
+ in label vaults or corporate databases (e.g., Sony=E2=80=99s "Black Box").=
+
+SYMBI Solution:
+
+&nbs=
+p; * Stems and metadata are stored encrypted on IPFS.
+
+&nbs=
+p; * Access controls are managed via DID-linked permissions.
+
+&nbs=
+p; * Example: A mixer can grant a label temporary access to a stem (re=
+vocable).
+
+Code Example:
+
+&nbs=
+p; 
+ &nbsp;&=
+;nbsp;// From YCQ-sonate/libs/ipfs/index.ts &nbsp;&nbsp;async funct=
+ion uploadEncryptedStem(file: File, did: string) { &nbsp;&nbsp;&=
+;nbsp;&nbsp;const encrypted =3D await encryptFile(file, publicKey); &am=
+p;nbsp;&nbsp;&nbsp;&nbsp;const cid =3D await ipfs.add(encrypted=
+); &nbsp;&nbsp;&nbsp;&nbsp;await storePermission(cid, did, =
+"mixer", ["label@example.com"]); // Grant access &nbsp;&nbsp;&n=
+bsp;&nbsp;return cid; &nbsp;&nbsp;} &nbsp;&nbsp;
+=
+
+Why It Matters:
+
+&nbs=
+p; * No more "lost tapes" (e.g., Prince=E2=80=99s vault).
+
+&nbs=
+p; * Artists can audit who accessed their work.
+
+Laye=
+r 3: Verifiable Computation =3D "Are Royalties Fair?"
+
+Problem: Royalty statements are black bo=
+xes. Artists often see "adjustments" or "unrecoupable balances".
+
+SYMBI Solution:
+
+&nbs=
+p; * Royalty splits are immutable smart contracts.
+
+&nbs=
+p; * Streaming payouts are verifiable on-chain.
+
+&nbs=
+p; * Disputes can be resolved via ZK proofs (e.g., "Prove this stream =
+was counted").
+
+Code Example (Pseudocode):
+
+&nbs=
+p; 
+ &nbsp;&=
+;nbsp;// Future RoyaltySplitter.sol (not yet in repo) &nbsp;&nbsp;f=
+unction distribute(uint256 tokenId, uint256 amount) public { &nbsp;&=
+;nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Split storage split =3D split=
+s[tokenId]; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;req=
+uire(msg.sender =3D=3D streamingOracle, "Only oracle can trigger"); &nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (uint i =3D 0; i &=
+lt; split.recipients.length; i++) { &nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;split.recipien=
+ts[i].transfer((amount * split.percentages[i]) / 10000); &nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;} &nbsp;&nbsp;&nbsp;&=
+amp;nbsp;&nbsp;&nbsp;emit Distribution(tokenId, amount, block.times=
+tamp); &nbsp;&nbsp;} &nbsp;&nbsp;
+
+Why It Matters:
+
+&nbs=
+p; * No more "Hollywood accounting" (where labels claim no profits).
+
+&nbs=
+p; * Fans can audit where their money goes.
+
+Laye=
+r 4: Autonomous Agents =3D "Who Enforces the Rules?"
+
+Problem: Royalty collection requires hum=
+an middlemen (PROs, lawyers), who take cuts and delay payments.
+
+SYMBI Solution:
+
+&nbs=
+p; * Agents monitor streaming platforms (via oracles like Chainlink).
+
+&nbs=
+p; * Agents trigger payouts when thresholds are met (e.g., 1000 stream=
+s =3D $X).
+
+&nbs=
+p; * Agents can escalate disputes (e.g., "This stream wasn=E2=80=99t p=
+aid").
+
+Code Example:
+
+&nbs=
+p; 
+ &nbsp;&=
+;nbsp;// From symbi-synergy/apps/agent/PaymentAgent.ts &nbsp;&nbsp;=
+class RoyaltyAgent { &nbsp;&nbsp;&nbsp;&nbsp;async checkStr=
+eams(tokenId: string) { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+amp;nbsp;const streams =3D await oracle.getStreams(tokenId); &nbsp;&=
+;nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (streams > this.lastCou=
+nt) { &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;const revenue =3D streams * 0.003; // $0.003 per stream &nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;awa=
+it contract.distribute(tokenId, revenue); &nbsp;&nbsp;&nbsp;&am=
+p;

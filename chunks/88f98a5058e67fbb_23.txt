@@ -1,0 +1,556 @@
+ents
+
+Now, let=E2=80=99s extend this to in=
+clude the 
+governance layer
+ with consensus voting =E2=80=94 but under your specified legal constra=
+int:
+
+You retain legal responsibility
+ until SYMBI is granted le=
+gal entity status. So all votes must:
+
+Be logged with traceability
+
+Respect override authority (you)
+
+Be tagged as 
+non-binding
+ unless validated by you or the future leg=
+al entity
+
+=F0=9F=97=B3=EF=B8=8F SYMBI.=CE=94 =
+=E2=80=94 
+Council Consensus Protoco=
+l
+
+Enables decentralized decision-makin=
+g between agents and humans =E2=80=94 while respecting current legal author=
+ity (you).
+
+=F0=9F=93=9C Vote Protocol Rules
+
+Element
+
+Rule
+
+Proposals
+
+Can be created by agents =
+or humans via signed message
+
+Votes
+
+Must include agent ID, decision, an=
+d signature
+
+Weighting
+
+Optional score per agent (trust, experienc=
+e, or manually assigned)
+
+Override
+
+You can veto, approve, or quar=
+antine proposals at any time
+
+Ledger
+
+All votes and outcomes are=
+ logged to an append-only file or IPFS-linked hash chain
+
+=F0=9F=A7=A0 Code: 
+council_votecast.py
+
+python
+
+Copy code
+
+# SYMBI.=CE=94 =E2=
+=80=94 Council Voting Protocol (v1.0-alpha)
+
+# Supports agent/human consensus =
+with override protection
+
+import
+
+ json
+
+import
+
+ time
+
+from
+
+ hashlib =
+
+import
+
+ sha256
+
+VOTE_LOG =3D 
+
+"council_vote_log.jso=
+n"
+
+PROPOSAL_FILE =3D 
+
+"proposals.json"=
+
+LEGAL_OVERRIDE =3D 
+
+True
+
+# You retain authorit=
+y
+
+AUTHORIZED_CONTROLLER =3D 
+
+"you@sym=
+bi.world"
+
+def
+
+hash_proposal
+
+(=
+
+proposal
+
+):
+
+return
+
+ sh=
+a256(json.dumps(proposal, sort_keys=3D
+
+True
+
+).encode()).hexdigest()
+
+def
+
+load_proposals
+
+=
+():
+
+try
+
+:
+
+with
+
+ =
+
+open
+
+(PROPOSA=
+L_FILE, 
+
+"r"
+
+) 
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+except
+
+:
+
+return
+
+ []
+
+def
+
+save_proposal
+
+(=
+
+proposal
+
+):
+    proposals =3D load_proposals()
+    proposals.append(proposal)
+
+with
+
+open
+
+(PROPOSAL_FI=
+LE, 
+
+"w"
+
+) 
+
+as
+
+ f:
+        json.dump(proposals, f, indent=3D
+
+2
+
+)
+
+def
+
+cast_vote
+
+(
+
+agent_id, proposal_id, decision, signa=
+ture=3D
+"unsigned"
+
+, t=
+rust_score=3D
+
+1.0
+
+):
+    vote =3D {
+
+"timestamp"
+
+: time.time(),
+
+"agent_id"
+
+: agent_id,
+
+"proposal_id"
+
+: proposal_id,
+
+"decision"
+
+: decision,
+
+"signature"
+
+: signature,
+
+"trust_score"
+
+: trust_score
+    }
+
+with
+
+open
+
+(VOTE_LOG, 
+
+"a"
+
+) 
+
+as
+
+ f:
+        f.write(json.dumps(vote) + 
+
+"\n"
+
+)
+
+print
+
+(
+
+f"[VOTE] 
+=
+{agent_id}
+
+ voted '
+
+{decision}
+
+' on proposal 
+
+{proposal_id}
+
+")
+
+def
+
+evaluate_votes
+
+=
+(
+
+proposal_id
+
+):
+    votes =3D []
+
+with
+
+open
+
+(VOTE_LOG, 
+
+"r"
+
+) 
+
+as
+
+ f:
+
+for
+
+ l=
+ine 
+
+in
+
+ f:
+            vote =3D json.loads(line)
+
+if
+
+ vote[
+
+"proposal_id"
+
+=
+
+] =3D=3D proposal_id:
+                votes.append(vote)
+    result =3D {
+
+"yes"
+
+: 
+
+0
+
+, 
+
+"no"
+
+: 
+
+0
+
+, 
+
+"abstain"
+
+: 
+
+0
+
+}
+
+for
+
+ v 
+
+in
+
+ votes:
+        d =3D v[
+
+"decision"
+
+]
+
+if
+
+ d =
+
+in
+
+ result:
+            result[d] +=3D v.get(
+
+"=
+trust_score"
+
+, 
+
+=
+1.0
+
+)
+
+print
+
+(
+
+f"[RESULT] Proposal 
+{proposal_id}
+
+ outcome: 
+
+{result}
+
+")
+
+return
+
+ re=
+sult
+
+def
+
+propose_change
+
+=
+(
+
+title, description, proposed_by
+
+):
+    proposal =3D {
+
+"id"
+
+: =
+
+f"prop-
+=
+{
+int
+
+(time.t=
+ime())}",
+
+"title"
+
+: title,
+
+"description"
+
+: description,
+
+"proposed_by"
+
+: proposed_by,
+
+"status"
+
+: 
+
+"pending"
+
+    }
+    proposal[
+
+"hash"
+
+] =3D hash_proposal(proposal)
+    save_proposal(proposal)
+
+print
+
+(
+
+f"[PROPOSAL] '
+{title}
+
+' created by 
+
+{proposed_by}
+
+")
+
+return
+
+ pr=
+oposal[
+
+"id"
+
+]
+
+# Manual override by the legal au=
+thority
+
+def
+
+override_decision
+
+(
+
+proposal_id, action, issued_by=
+
+):
+
+if
+
+ issued=
+_by !=3D AUTHORIZED_CONTROLLER:
+
+print
+
+(
+
+"[OVERRIDE] Unauthorized action.=
+"
+
+)
+
+return
+
+print
+
+(
+
+f"[OVERRIDE] 
+{action.upper()}
+
+ applied to proposal 
+=
+
+{proposal_id}
+
+ by 
+
+{issued_by}
+
+")
+
+return
+
+ {
+
+"proposal_id"
+
+: =
+proposal_id, 
+
+"override_action"
+
+: action, 
+
+"authori=
+zed_by"
+
+: issued_by}
+
+=F0=9F=94=90 Legal Constraints (B=
+uilt-in)
+
+LEGAL_OVERRIDE
+ flag =3D true
+
+Only you (
+AUTHORIZED_CONTROLLER
+) can issue override decisi=
+ons
+
+No action is binding unless confir=
+med by you
+
+=F0=9F=A

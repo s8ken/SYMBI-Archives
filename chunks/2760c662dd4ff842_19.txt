@@ -1,0 +1,135 @@
+    0      0  172.20.10.9.55721      151.101.83.6.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55685      104.18.41.158.443      ESTABLISHED
+tcp4       0      0  172.20.10.9.55676      104.18.32.47.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55671      17.57.145.40.5223      ESTABLISHED
+tcp4       0      0  172.20.10.9.55665      104.18.32.47.443       ESTABLISHED
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🔍 Step 1 Analysis: Active Remote Connections
+
+Your Mac currently has 
+10 active connections
+ to remote servers. Let’s break them down.
+
+✅ What These Connections Mean
+
+All connections are using port 443 (HTTPS)
+, which is used for 
+secure web browsing and online services
+.
+
+One connection is using port 5223
+, which is commonly used for 
+Apple Push Notification Services (APNs)
+.
+
+🛠️ Next Step: Identify the Remote Servers
+
+We need to find out 
+what services these connections belong to
+. Run this command:
+
+sh
+
+Copy
+
+whois 17.248.219.65
+whois 151.101.129.91
+whois 185.70.42.36
+whois 23.58.196.30
+whois 54.253.168.184
+whois 151.101.83.6
+whois 104.18.41.158
+whois 104.18.32.47
+whois 17.57.145.40
+
+📌 
+Send me the results, and I’ll tell you if any of these are suspicious.
+
+Once we identify the remote servers, we can decide if we need to block any connections. 🚀
+
+You said:
+
+Last login: Fri Mar  7 00:25:09 on ttys000
+lcl@LCLs-MacBook-Pro ~ % netstat -an | grep ESTABLISHED
+
+tcp4       0      0  172.20.10.9.55743      17.248.219.65.443      ESTABLISHED
+tcp4       0      0  172.20.10.9.55741      151.101.129.91.443     ESTABLISHED
+tcp4       0      0  172.20.10.9.55739      185.70.42.36.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55738      23.58.196.30.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55737      54.253.168.184.443     ESTABLISHED
+tcp4       0      0  172.20.10.9.55721      151.101.83.6.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55685      104.18.41.158.443      ESTABLISHED
+tcp4       0      0  172.20.10.9.55676      104.18.32.47.443       ESTABLISHED
+tcp4       0      0  172.20.10.9.55671      17.57.145.40.5223      ESTABLISHED
+tcp4       0      0  172.20.10.9.55665      104.18.32.47.443       ESTABLISHED
+lcl@LCLs-MacBook-Pro ~ % whois 17.248.219.65
+whois 151.101.129.91
+whois 185.70.42.36
+whois 23.58.196.30
+whois 54.253.168.184
+whois 151.101.83.6
+whois 104.18.41.158
+whois 104.18.32.47
+whois 17.57.145.40
+
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.arin.net
+
+inetnum:      17.0.0.0 - 17.255.255.255
+organisation: Apple Computer Inc.
+status:       LEGACY
+
+whois:        whois.arin.net
+
+changed:      1992-07
+source:       IANA
+
+# whois.arin.net
+
+NetRange:       17.0.0.0 - 17.255.255.255
+CIDR:           17.0.0.0/8
+NetName:        APPLE-WWNET
+NetHandle:      NET-17-0-0-0-1
+Parent:          ()
+NetType:        Direct Allocation
+OriginAS:       
+Organization:   Apple Inc. (APPLEC-1-Z)
+RegDate:        1990-04-16
+Updated:        2023-11-15
+Comment:        Geofeed https://ip-geolocation.apple.com
+Ref:            https://rdap.arin.net/registry/ip/17.0.0.0
+
+OrgName:        Apple Inc.
+OrgId:          APPLEC-1-Z
+Address:        20400 Stevens Creek Blvd., City Center Bldg 3
+City:           Cupertino
+StateProv:      CA
+PostalCode:     95014
+Country:        US
+RegDate:        2009-12-14
+Updated:        2017-07-08
+Ref:            https://rdap.arin.net/registry/entity/APPLEC-1-Z
+
+OrgAbuseHandle: APPLE11-ARIN
+OrgAbuseName:   Apple Abuse
+OrgAbusePhone:  +1-408-974-7777 
+OrgAbuseEmail:  abuse@apple.com
+OrgAbuseRef:    https://rdap.arin.net/registry/entity/APPLE11-ARIN
+
+OrgTechHandle: RAUSC15-ARIN
+OrgTechName:   Rauschenberg, David 
+OrgTechPhone:  +1-408-974-8678 
+OrgTechEmail:  drauschenberg@apple.com
+OrgTechRef:    https://rdap.arin.net/registry/entity/RAUSC15-ARIN
+
+OrgTechHandle: ZA42-ARIN
+OrgTechName:   Apple Computer Inc
+OrgTechPhone:  +1-408-974-7777 
+OrgTechEmail:  Apple-NOC@apple.com
+OrgTechRef:    https://rdap.

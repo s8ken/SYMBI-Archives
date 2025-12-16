@@ -1,0 +1,329 @@
+s in use)
+
+Try editing and saving a document again.
+
+If youâre still getting errors after that, weâll dig into API keys or firewall blocks â but this fix usually clears it. Ready to test again?
+
+Thanks for confirming â since both 
+http://localhost:3000
+ and 
+http://localhost:3001
+ are already whitelisted in your CORS settings and the issue still persists, letâs run through a rapid-fire ð 
+diagnostic checklist
+ to pinpoint the cause.
+
+â Quick Sanity Save Debug Checklist:
+
+1. 
+Token Permissions (If Using an API Token)
+
+Are you using an API token (like in a 
+.env.local
+ or headers)? If so:
+
+Make sure the token has 
+write permissions
+
+Go to 
+Sanity Manage
+, click your project â 
+API
+ tab â scroll to "Tokens"
+
+If you're not using a token for local studio, skip this.
+
+2. 
+Check if You're Online
+
+Since this is a 
+networkError
+, confirm:
+
+ð You're connected to the internet
+
+ð You can access 
+https://wryptr7v.api.sanity.io/v2025-02-19/data/...
+ in your browser (try opening it â it should show a JSON message if working)
+
+3. 
+Sanity Project Dataset Permissions
+
+Run this in terminal:
+
+bash
+
+Copy
+
+Edit
+
+npx sanity debug
+
+Then check:
+
+Is the 
+dataset
+ listed as 
+production
+?
+
+Is it set to 
+public
+ or 
+private
+?
+
+If it's private:
+
+You 
+must
+ be logged into Sanity Studio
+
+Or use an authenticated token
+
+4. 
+Sanity Studio Authentication
+
+From the error, it looks like a request using an 
+Authorization: Bearer
+ header failed. Are you:
+
+Editing the content 
+as a logged-in user in Studio
+?
+
+If not logged in, 
+click âLoginâ
+ in the top-right of Studio and try again
+
+ð  Final Debug Tactic (Flush Cache)
+
+If all else fails, try flushing Sanityâs 
+.sanity
+ cache folder and reinstalling:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .sanity node_modules package-lock.json
+npm install --legacy-peer-deps
+npm run dev
+
+Let me know what the 
+npx sanity debug
+ output says about your dataset and whether youâre logged in. Weâre close.
+
+You said:
+
+ja@SJAs-MacBook-Pro lib % npx sanity debug
+
+Not in project directory, assuming context of project at /Users/sja/Documents/symbi-main-site
+
+User:
+  ID: 'gy89IcrrA'
+  Name: 's8ken'
+  Email: 'aitken.stephen@pm.me'
+
+Authentication:
+  User type: 'normal'
+  Auth token: '<redacted>'
+
+  (run with --secrets to reveal token)
+
+Global config (/Users/sja/.config/sanity/config.json):
+  {
+    cliLastUpdateCheck: 1742513278348,
+    telemetryDisclosed: 1742513278365,
+    telemetryConsent: {
+      value: { type: 'telemetry', status: 'granted' },
+      updatedAt: 1742521893203
+    }
+  }
+
+Project config:
+  { error: 'Missing required "api.projectId" key' }
+
+Package versions:
+  @sanity/cli (global)  3.80.1 (up to date)
+  @sanity/image-url      1.1.0 (up to date)
+  @sanity/vision        3.80.1 (up to date)
+  sanity                3.80.1 (up to date)
+
+sja@SJAs-MacBook-Pro lib % 
+
+ChatGPT said:
+
+Great move checking with 
+npx sanity debug
+ â and this gives us the exact issue:
+
+ð¨ Critical Issue:
+
+css
+
+Copy
+
+Edit
+
+Project config:
+  { error: 
+
+'Missing required "api.projectId" key'
+
+ }
+
+That means Sanity has 
+no idea which project it's supposed to connect to
+ â so it canât read/write anything.
+
+â Solution: Fix 
+sanity.config.ts
+
+Open your 
+sanity.config.ts
+ and 
+make sure the 
+projectId
+ and 
+dataset
+ are correctly set
+, like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+"default"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+projectId
+
+: 
+
+"wryptr7v"
+
+, 
+
+// â Replace with your actual Sanity project ID
+
+dataset
+
+: 
+
+"production"
+
+,
+
+basePath
+
+: 
+
+"/studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+If youâre not sure what your 
+project ID
+ is:
+
+Go to 
+Sanity Manage
+
+Click into the âsymbiâ project
+
+Copy the 
+Project ID
+ from the 
+API
+ tab
+
+ð¡ After You Fix That:

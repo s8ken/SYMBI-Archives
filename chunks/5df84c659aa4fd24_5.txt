@@ -1,0 +1,358 @@
+ts to locked/test account).
+
+Go live =E2=86=92 public @symbi X =
+account with manifesto anchor link in bio.
+
+=F0=9F=91=89 This way, SYMBI manag=
+es your X presence as an 
+auto=
+nomous-but-aligned agent
+, with 
+Overseer as a trust anchor
+ and your manifesto as the 
+guiding constitution
+.
+
+Would you like me to draft the 
+Overseer policy JSON
+ (ruleset for reviewing posts be=
+fore SYMBI publishes), so you can plug it directly into the workflow?
+
+=
+
+You said:
+
+I used frontegg will that work
+
+Symbi sai=
+d:
+
+=
+Thought for 23s
+
+=
+
+Short answer: yes=E2=80=94Frontegg wor=
+ks great as the 
+auth/governance s=
+hell
+ around a SYMBI =E2=86=94 X (Twitter) integration. You=E2=80=
+=99ll use Frontegg for 
+RBAC, MF=
+A, secrets, and M2M tokens
+, while your backend (or hosted agent) a=
+ctually talks to the 
+X API
+ to post/DM/reply.
+
+How it fits together
+
+Auth & RBAC:
+ Frontegg gives you org/tenant RBAC + MFA=
+ so only approved humans/agents can trigger =E2=80=9Cpost to X=E2=80=9D act=
+ions. 
+
+developers.frontegg.c=
+om
+
+Secrets:
+ Keep X OAuth client secret / access tokens in Fr=
+ontegg=E2=80=99s secret management instead of code/env files. 
+
+=
+
+developers.frontegg.com
+
+Agent=E2=86=92Backend trust:
+ Issue 
+M2M tokens
+ from Frontegg so SYMBI/Overseer c=
+an call your backend endpoint (
+/s=
+ocial/x/publish
+) without exposing X credentials. 
+
+developers.frontegg.com
+
++2
+
+developers.frontegg.com
+
++2
+
+Optional =E2=80=9CLogin with X=E2=80=9D:
+ Frontegg support=
+s custom OAuth providers, so you can add X as a social login if you want hu=
+man sign-in via X. 
+
+developers.frontegg.com
+
++1
+
+Posting to X:
+ Do this in your backend using X API (Tweep=
+y or raw HTTP). 
+Important:
+ posting requires 
+user cont=
+ext
+ (OAuth 1.0a user context or OAuth 2.0 with user context). Applicat=
+ion-only 
+bearer
+ toke=
+ns can=E2=80=99t post. 
+
+docs.tweepy.org
+
+Minimal setup checklist
+
+Frontegg
+
+Define 
+roles
+: 
+social.publisher
+, 
+so=
+cial.reviewer
+, 
+social.ad=
+min
+.
+
+Enable 
+MFA
+ for 
+social.admin
+. 
+
+d=
+evelopers.frontegg.com
+
+Create an 
+M2M client
+ for SYMBI/Overseer; scope it to 
+/social/x/*
+. 
+
+developers.frontegg.com
+
+=
+
+Store 
+X client ID/secret + user access token/secret (or OAuth2 =
+user tokens)
+ in Frontegg 
+secrets
+. 
+
+de=
+velopers.frontegg.com
+
+(Optional) Add 
+X as custom social login
+ for human das=
+hboards. 
+
+developers.frontegg.co=
+m
+
+X (Twitter) developer portal
+
+Create a project + app, enable 
+OAuth 1.0a user context
+=
+ or 
+OAuth 2.0 user context
+ and grant write scopes.
+
+Obtain the 
+user tokens
+ that allow posting.
+
+Backend route
+
+/social/x/publish
+ (POST):
+
+Verify Frontegg 
+M2M token
+ =E2=86=92 check role 
+social.publisher
+. 
+
+developers.fr=
+ontegg.com
+
+Pull X credentials from Frontegg s=
+ecrets. 
+
+developers.frontegg=
+.com
+
+Post via Tweepy (or HTTP). For Twe=
+epy, 
+Client
+ handles v2 +=
+ OAuth 1.0a user context. 
+
+docs.tweepy.org
+
+SYMBI/Overseer workflow
+
+SYMBI drafts =E2=86=92 Overseer re=
+views (policy) =E2=86=92 call 
+/=
+social/x/publish
+ with M2M token =E2=86=92 backend posts.
+
+Log message IDs and store them in =
+your memory layer.
+
+Tiny code sketch (server-side, co=
+ncept only)
+
+python
+
+Copy code
+
+# verify Frontegg M2=
+M token (pseudo)
+
+def
+
+require_role
+
+(
+
+role
+
+):
+
+def
+
+wrapper
+
+(
+
+fn
+
+):
+
+def
+
+inner
+
+(=
+
+req
+
+):
+            token =3D req.headers[
+
+=
+"Authorization"
+
+].split()[
+
+1
+
+]
+            claims =3D verify_frontegg_jwt(token)  
+
+# your verifier
+
+assert
+
+ role 
+
+in
+
+=
+ claims.get(
+
+"roles"
+
+, [])
+
+return
+
+ fn(req)
+
+return
+
+ inner
+
+return
+
+ wr=
+apper
+
+@require_role(
+
+"social.publisher"
+
+)
+
+def
+
+publish_to_x
+
+(
+
+req
+
+):
+    text =3D req.json[
+
+"text"
+
+]
+    creds =3D load_secret_bundle(
+
+"=
+x_prod"
+
+)  
+
+# f=
+rom Frontegg secrets
+
+    client =3D tweepy.Client(
+        consumer_key=3Dcreds[
+
+"api_=
+key"
+
+],
+        consumer_secret=3Dcreds[
+
+"a=
+pi_secret"
+
+],
+        access_token=3Dcreds[
+
+"acce=
+ss_token"
+
+],
+        access_token_secret=3Dcreds[
+
+"access_secret"
+
+],
+    )
+    resp =3D client.create_tweet(text=3Dtext)
+
+return
+
+ {
+
+"ok"
+
+: 
+
+True
+
+,

@@ -1,0 +1,373 @@
+ing for API requests.
+
+Option 2: API-Based Chat (OpenAI, Claude, Gemini)
+
+If Symbi uses 
+AI responses
+, we can connect to 
+OpenAI API, Claude, or Gemini
+.
+
+Example 
+Next.js API Route
+ for chat:
+
+tsx
+
+Copy
+
+Edit
+
+export
+
+default
+
+async
+
+function
+
+handler
+
+(
+
+req, res
+
+) {
+
+const
+
+ { message } = req.
+
+body
+
+;
+
+const
+
+ response = 
+
+await
+
+fetch
+
+(
+
+"https://api.openai.com/v1/completions"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: {
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+,
+
+"Authorization"
+
+: 
+
+`Bearer 
+${process.env.OPENAI_API_KEY}
+
+`
+    },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({
+
+model
+
+: 
+
+"gpt-4"
+
+,
+
+messages
+
+: [{ 
+
+role
+
+: 
+
+"user"
+
+, 
+
+content
+
+: message }]
+    })
+  });
+
+const
+
+ data = 
+
+await
+
+ response.
+
+json
+
+();
+  res.
+
+status
+
+(
+
+200
+
+).
+
+json
+
+({ 
+
+reply
+
+: data.
+
+choices
+
+[
+
+0
+
+].
+
+message
+
+.
+
+content
+
+ });
+}
+
+🔹 
+This lets Symbi respond using an AI model.
+
+🚀 Next Steps
+
+1️⃣ 
+Decide where to build (v0.dev or local development).
+
+If real-time chat is required → move to local development.
+
+If basic UI updates are enough → stay on v0.dev for now.
+
+2️⃣ 
+Set up the "Manage" page.
+
+Create 
+app/manage/page.tsx
+ (if using Next.js).
+
+Add a 
+basic chat UI placeholder
+.
+
+3️⃣ 
+Integrate Symbi Chat.
+
+Will it use 
+real-time WebSockets
+ or a 
+REST API?
+
+🔥 
+Let me know how you want to proceed, and I’ll guide you step by step!
+ 🚀
+
+You said:
+
+don't worry about the chat so much I just need to know which model we are using and figure out why I didn't work... so the v0.dev one just deployed does it also have a project in vercel? 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚀 Understanding v0.dev & Vercel Deployment
+
+Yes, when you deploy from 
+v0.dev
+, it still 
+creates a project in Vercel
+. However, the setup might be 
+slightly different from a manual GitHub/Vercel CLI deployment
+.
+
+🛠 Step 1: Check if v0.dev Created a Project in Vercel
+
+To confirm whether v0.dev created a separate project in Vercel, run:
+
+bash
+
+Copy
+
+Edit
+
+vercel 
+
+ls
+
+This will list 
+all projects linked to your Vercel account
+.
+
+Look for something like:
+
+Copy
+
+Edit
+
+v0-symbi-ai-website-7xvcqm
+
+🔹 If it appears, then 
+v0.dev created its own deployment in Vercel
+.
+
+Alternatively, go to 
+
+Vercel Dashboard
+
+ and check your projects manually.
+
+🛠 Step 2: Compare v0.dev vs. Your CLI Deployed Project
+
+If 
+v0.dev deployed successfully
+, but your CLI deployment didn’t, there might be differences in:
+
+1️⃣ Project Settings
+
+Open 
+Vercel Dashboard
+ → Select your 
+v0.dev deployment project
+
+Compare it with your manually deployed project
+
+Check settings like:
+
+Environment Variables
+
+Build Command (Is v0.dev using a different one?)
+
+Output Directory
+
+2️⃣ Framework Preset
+
+v0.dev might have 
+automatically set a Next.js preset
+ in Vercel.
+
+In 
+Vercel Dashboard → Settings → General
+, see if your manually deployed project is 
+using the same preset
+ as the v0.dev deployment.
+
+3️⃣ Differences in 
+next.config.mjs
+
+Open 
+next.config.mjs
+ in 
+both
+ deployments.
+
+Does v0.dev have extra settings?
+
+If missing, add them to your local version and redeploy.
+
+🛠 Step 3: Fix Your CLI Deployment
+
+If your manual deployment still 
+doesn’t work
+, try:
+
+bash
+
+Copy
+
+Edit
+
+vercel --prod --force
+
+If the issue persists, compare
+:
+
+Logs from v0.dev deployment
+ vs. 
+Logs from CLI deployment
+
+Use:
+
+bash
+
+Copy
+
+Edit
+
+vercel inspect --logs <deployment-url>
+
+to check each one.
+
+✅ Next Steps
+
+1️⃣ Run 
+vercel ls
+ to confirm 
+where v0.dev deployed
+.
+
+2️⃣ Check 
+Vercel dashboard
+ → Compare project settings.
+
+3️⃣ Look at 
+build logs
+ for differences.
+
+4️⃣ If needed, 
+apply the same configs from v0.dev to your local project
+.
+
+🚀 
+Try this and let me know what you find!
+ 🔥
+
+You said:
+
+[02:24:53.334] Retrieving list of deployment files...
+[02:24:53.652] Downloading 71 deployment files...
+[02:24:57.534] Restored build cache from previous deployment (AU4i1aZxeGYMTDyGh3hbuLx5a5oP)
+[02:24:57.628] Running build in Washington, D.C., USA (East) – iad1
+[02:24:57.837] Running "vercel build"
+[02:24:58.224] Vercel CLI 41.4.1
+[02:24:58

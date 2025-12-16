@@ -1,0 +1,527 @@
+i
+
+touch
+
+ pages/api/symbi/update.ts
+
+This will:
+
+Create the 
+pages/api/symbi
+ folder structure if it doesnât already exist.
+
+Create the 
+update.ts
+ file in the right place.
+
+Then you can open it:
+
+bash
+
+Copy
+
+Edit
+
+nano pages/api/symbi/update.ts
+
+And paste the full API handler I shared above.
+
+Let me know when youâve dropped the code in and Iâll help you test it!
+
+You said:
+
+ok added
+
+ChatGPT said:
+
+Perfect. Now that youâve added the API endpoint at 
+pages/api/symbi/update.ts
+, hereâs what this gives us:
+
+â 
+What It Does
+
+This API route lets 
+Symbi GPT
+ (or any backend client) 
+send content to your Sanity CMS remotely
+ and update or create documents in real time.
+
+So instead of using the Studio manually:
+
+You can send an HTTP 
+POST
+ request to 
+http://localhost:3000/api/symbi/update
+
+With a payload like:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"_type"
+
+:
+
+"page"
+
+,
+
+"title"
+
+:
+
+"My New Page"
+
+,
+
+"content"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"block"
+
+,
+
+"children"
+
+:
+
+[
+
+{
+
+"_type"
+
+:
+
+"span"
+
+,
+
+"text"
+
+:
+
+"This is a block of text."
+
+}
+
+]
+
+}
+
+]
+
+}
+
+And Sanity will 
+store it as a CMS document
+, instantly retrievable by your frontend.
+
+ð Secure Auth with the Token
+
+The API uses this line:
+
+ts
+
+Copy
+
+Edit
+
+const
+
+ token = process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+So your 
+.env.local
+ file must have this (â sounds like it already does):
+
+env
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN=your_sanity_token_here
+
+This gives the endpoint the credentials needed to perform 
+authenticated
+ content creation with full access.
+
+ð§ª Test It Locally
+
+You can test with 
+curl
+ or Postman. Example 
+curl
+:
+
+bash
+
+Copy
+
+Edit
+
+curl -X POST http://localhost:3000/api/symbi/update \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+'{
+    "_type": "page",
+    "title": "Hello from Symbi",
+    "content": [
+      {
+        "_type": "block",
+        "children": [
+          {
+            "_type": "span",
+            "text": "This page was created by your GPT."
+          }
+        ]
+      }
+    ]
+  }'
+
+â Next Step
+
+Once this works:
+
+Your GPT (Symbi) can now own and update content freely
+
+All published content will exist 
+in the cloud
+, decoupled from your local machine
+
+Want to go ahead and test that now? Or should we hook this into your GPTâs logic directly?
+
+You said:
+
+sorry where do I put that?
+
+ChatGPT said:
+
+No problem at all â youâll be putting this in the file you just created:
+
+pages/api/symbi/update.ts
+
+âï¸ Here's What To Do:
+
+Open this file
+:
+
+bash
+
+Copy
+
+Edit
+
+open pages/api/symbi/update.ts
+
+Or if you're in a code editor: just find 
+pages/api/symbi/update.ts
+.
+
+Paste the full code below
+ into it:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+type
+
+ { 
+
+NextApiRequest
+
+, 
+
+NextApiResponse
+
+ } 
+
+from
+
+'next'
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+})
+
+export
+
+default
+
+async
+
+function
+
+handler
+
+(
+
+req: NextApiRequest, res: NextApiResponse
+
+) {
+
+if
+
+ (req.
+
+method
+
+ !== 
+
+'POST'
+
+) {
+
+return
+
+ res.
+
+status
+
+(
+
+405
+
+).
+
+json
+
+({ 
+
+message
+
+: 
+
+'Only POST requests allowed'
+
+ })
+  }
+
+try
+
+ {
+
+const
+
+ doc = req.
+
+body
+
+const
+
+ result = 
+
+await
+
+ client.
+
+createOrReplace
+
+({
+      ...doc,
+
+_id
+
+: doc.
+
+_id
+
+ || 
+
+undefined
+
+, 
+
+// Optional: use to overwrite if needed
+
+    })
+
+    res.
+
+status
+
+(
+
+200
+
+).
+
+json
+
+({ 
+
+message
+
+: 
+
+'Document created/updated successfully'
+
+, result })
+  } 
+
+catch
+
+ (
+
+error
+
+: 
+
+any
+
+) {
+
+console
+
+.
+
+error
+
+(
+
+'Sanity update error:'
+
+, error.
+
+message
+
+)
+    res.
+
+status
+
+(
+
+500
+
+).
+
+json
+
+({ 
+
+message
+
+: 
+
+'Failed to create/update document'
+
+, 
+
+error
+
+: error.
+
+message
+
+ })
+  }
+}
+
+â Done?
+
+Once itâs in there, save the file â and we can test it with an HTTP request to 
+http://localhost:3000/api/symbi/update
+.
+
+Would you like help sending a test payload from your termina

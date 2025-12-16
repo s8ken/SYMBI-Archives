@@ -1,0 +1,224 @@
+4.1
+Error: Deployment not ready. Currently: ● Error.
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 
+Vercel Logs Not Available Yet (Deployment Failed)
+
+Since the logs aren’t ready yet, let’s 
+troubleshoot the issue locally
+ and then redeploy. 🚀
+
+🛠 Step 1: Run 
+npm install
+ Locally
+
+Since Vercel 
+failed at 
+npm install
+
+, we need to check if the issue also happens locally.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm install
+
+If 
+it succeeds
+, then Vercel might have a 
+cached build issue
+.
+
+If 
+it fails
+, copy the error message here, and I’ll debug it.
+
+🛠 Step 2: Force Install Dependencies
+
+If 
+npm install
+ fails, try:
+
+bash
+
+Copy
+
+Edit
+
+npm install --legacy-peer-deps
+
+This 
+ignores peer dependency conflicts
+.
+
+🛠 Step 3: Clean & Reinstall Everything
+
+If the issue persists, 
+fully reset dependencies
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+
+✅ This removes any broken dependencies.
+
+🚀 Step 4: Run Locally Before Deploying
+
+Before redeploying, test locally:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+If it 
+runs fine on 
+http://localhost:3000
+
+, then we’re ready to deploy.
+
+If 
+it fails
+, let me know the error.
+
+🚀 Step 5: Redeploy to Vercel
+
+Once your app 
+runs fine locally
+, push the latest changes:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed npm install issue"
+
+git push origin main
+
+Then 
+force a fresh Vercel deployment
+:
+
+bash
+
+Copy
+
+Edit
+
+vercel --prod --force
+
+🔹 The 
+--force
+ flag 
+prevents Vercel from using old cached files
+.
+
+🌍 Final Check
+
+1️⃣ 
+
+npm install
+ works locally
+
+2️⃣ 
+
+npm run dev
+ runs successfully
+
+3️⃣ 
+Vercel Deployment (
+vercel --prod --force
+) works without errors
+
+🔥 
+Try these steps and let me know if you hit any issues!
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npm install
+
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: react-day-picker@8.10.1
+npm error Found: react@19.0.0
+npm error node_modules/react
+npm error   react@"^19" from the root project
+npm error   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm error   node_modules/@floating-ui/react-dom
+npm error     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.2
+npm error     node_modules/@radix-ui/react-popper
+npm error       @radix-ui/react-popper@"1.2.2" from @radix-ui/react-hover-card@1.1.6
+npm error       node_modules/@radix-ui/react-hover-card
+npm error         @radix-ui/react-hover-card@"^1.1.4" from the root project
+npm error       4 more (@radix-ui/react-menu, @radix-ui/react-popover, ...)
+npm error   70 more (@radix-ui/react-accordion, ...)
+npm error
+npm error Could not resolve dependency:
+npm error peer react@"^16.8.0 || ^17.0.0 || ^18.0.0" from react-day-picker@8.10.1
+npm error node_modules/react-day-picker
+npm error   react-day-picker@"8.10.1" from the root project
+npm error
+npm error Conflicting peer dependency: react@18.3.1
+npm error node_modules/react
+npm error   peer react@"^16.8.0 || ^17.0.0 || ^18.0.0" from react-day-picker@8.10.1
+npm error   node_modules/react-day-picker
+npm error     react-day-picker@"8.10.1" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sja/.npm/_logs/2025-03-20T15_13_07_634Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sja/.npm/_logs/2025-03-20T15_13_07_634Z-debug-0.log
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Issue: React Version Conflict (React 19 vs React 18)
+
+Your project is using 
+React 19
+, but 
+
+react-day-picker@8.10.1
+ only supports React 16, 17, or 18
+.
+
+✅ 
+Fix: Downgrade React to a Compatible Version (
+18.3.1
+)
+
+🛠 Step 1: Install React 18 Instead of React 19
+
+Run the following command to 
+force dow

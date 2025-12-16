@@ -1,0 +1,348 @@
+:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:3402:42
+updateFunctionComponent@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:4726:36
+beginWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:5358:47
+runWithFiberInDEV@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:631:28
+performUnitOfWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7947:114
+workLoopSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7840:57
+renderRootSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7823:25
+performWorkOnRoot@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7558:225
+performWorkOnRootViaSchedulerTask@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:8386:26
+performWorkUntilDeadline@http://localhost:3001/_next/static/chunks/node_modules_beb00741._.js:1462:72
+
+Vercel Deployment Expert GPT said:
+
+🚨 Build Error on 
+localhost:3001
+
+Your Next.js app is 
+crashing during build time
+ because of a 
+server-side rendering (SSR) issue
+. Since 
+Sanity Studio is running on port 
+3001
+
+, the error may be related to:
+
+A Next.js component failing during SSR
+ (likely in 
+layout.tsx
+ or 
+page.tsx
+).
+
+Sanity setup conflicting with React 19 or Next.js 15
+.
+
+A missing environment variable or misconfigured fetch request
+.
+
+🔹 Step 1: Run a Clean Build
+
+Before debugging, 
+force a clean build
+:
+
+bash
+
+Copy
+
+rm
+
+ -rf .next
+npm run dev
+
+Then try accessing:
+
+Website:
+
+http://localhost:3000
+
+Sanity Studio:
+
+http://localhost:3001
+
+If the error 
+persists
+, move to 
+Step 2
+.
+
+🔹 Step 2: Check the Actual Error
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+In the 
+terminal logs
+, check 
+what error appears
+. Look for:
+
+A specific component breaking.
+
+Missing imports or API calls.
+
+Next.js failing during SSR.
+
+🔹 Step 3: Debug 
+layout.tsx
+ & 
+page.tsx
+
+If you see 
+an error in 
+layout.tsx
+ or 
+page.tsx
+
+, open those files and:
+
+Ensure 
+use client
+ is present if using hooks.
+
+Wrap 
+fetch()
+ calls inside 
+useEffect()
+ if they depend on external APIs.
+
+Example Fix for 
+layout.tsx
+
+tsx
+
+Copy
+
+"use client"
+
+; 
+
+// Ensure this is at the top
+
+import
+
+ { 
+
+ReactNode
+
+ } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }: { children: ReactNode }
+
+) {
+
+return
+
+ (
+
+<
+div
+
+>
+
+<
+header
+
+>My Site
+
+</
+header
+
+>
+
+<
+main
+
+>{children}
+
+</
+main
+
+>
+
+<
+footer
+
+>© 2025 SYMBI
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+🔹 Step 4: Ensure Sanity is Configured Correctly
+
+Open 
+
+sanity.config.ts
+
+ and check:
+
+ts
+
+Copy
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fixes React 19 issues
+
+});
+
+Restart the server:
+
+bash
+
+Copy
+
+npm run dev
+
+Try accessing 
+both URLs again
+.
+
+🔹 Step 5: If the Error Persists, Send the Full Terminal Log
+
+If 
+the app still crashes
+, send the 
+full error message from the terminal
+ so I can debug further! 🚀🔥
+
+You said:
+
+sanity.rtf
+
+File
+
+this may help
+
+Vercel Deployment Expert GPT said:
+
+🚨 Major Issue: Sanity Installation is Broken in Next.js 15 + React 19
+
+Your 
+Sanity setup is failing
+ due to compatibility issues with 
+Next.js 15 and React 19
+.
+
+Here’s a summary of the errors and how to fix them:
+
+🔹 Issues Found
+
+1️⃣ 
+Sanity Studio is failing to load at 
+/studio
+
+ (Error 500)
+
+2️⃣ 
+Missing Sanity exports (
+defineConfig
+, 
+defineField
+, 
+defineArrayMember
+)
+
+3️⃣ 
+Next.js is trying to import non-existent metadata from 
+next-sanity/studio
+
+4️⃣ 
+A broken import in 
+sanity.config.ts
+ (
+sanity/structure
+ is missing)
+
+🔹 Step 1: Remove the Broken Sanity Installation
+
+Let's 
+reset the Sanity setup
+ in your project.
+
+Run:
+
+bash
+
+Copy
+
+rm
+
+ -rf sanity node_modules package-lock.json .next
+npm install
+
+This will:
+
+✅ 
+Remove Sanity-related broken files
+
+✅ 
+Delete cached build files
+
+✅ 
+Reinstall dependencies cleanly
+
+Now, 
+reinstall Sanity Studio corre

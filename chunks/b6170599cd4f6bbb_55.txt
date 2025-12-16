@@ -1,0 +1,272 @@
+pportd
+ and 
+ControlCe
+, weâll use a 
+stronger method
+ to 
+identify and block
+ them permanently. ð¨
+
+ð Step 1: Identify the Process Keeping These Ports Open
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :5000
+sudo lsof -i :7000
+sudo lsof -i :49172
+
+ð 
+This tells us what process is keeping these ports open.
+
+ð 
+Post the results here
+, and weâll disable or remove it.
+
+ð Step 2: Check If These Ports Are Open Due to a System Daemon
+
+Since 
+launchctl disable
+
+didnât fully close them
+, letâs check 
+if theyâre being restarted automatically by macOS
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -E 
+
+"5000|7000|49172"
+
+ð 
+If any services show up, we will manually disable them.
+
+ð Step 3: Use the Firewall to Block These Ports
+
+Even if a process is 
+trying to listen
+, we can 
+block all incoming connections
+ using the macOS firewall.
+
+1ï¸â£ Enable Stealth Mode & Block All Incoming Traffic
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setblockall on
+
+ð 
+This makes your Mac invisible on the network and blocks ALL incoming connections.
+
+2ï¸â£ Manually Block These Ports Using 
+pfctl
+
+Since the firewall 
+doesnât let you block specific ports easily
+, weâll use 
+Packet Filter (
+pfctl
+)
+.
+
+Create a Firewall Rule to Block Ports 5000, 7000, and 49172
+
+Run This to Create the Rule:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+"block drop in proto tcp from any to any port {5000, 7000, 49172}"
+
+ | sudo pfctl -f -
+
+ð 
+This blocks all incoming traffic on these ports.
+
+Enable Packet Filter (
+pfctl
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo pfctl -e
+
+ð 
+This enforces the new rule immediately.
+
+Verify That the Rule is Active
+
+sh
+
+Copy
+
+Edit
+
+sudo pfctl -sr
+
+ð This 
+confirms that the firewall is blocking these ports.
+
+ð Step 4: Confirm That Ports Are Now Closed
+
+After applying all steps, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+ð If 
+5000
+, 
+7000
+, and 
+49172
+
+are gone
+, you are 
+fully locked down.
+ ð
+
+ð Next Steps
+
+1ï¸â£ 
+Run 
+lsof
+ and 
+launchctl
+ to see whatâs keeping these ports open.
+
+2ï¸â£ **Apply the 
+pfctl
+ firewall rule
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i :5000
+sudo lsof -i :7000
+sudo lsof -i :49172
+
+COMMAND    PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ControlCe 2910  sja   10u  IPv4 0x5fe0e3be7bdcff25      0t0  TCP *:commplex-main (LISTEN)
+ControlCe 2910  sja   11u  IPv6 0x422e0a3e953c8b09      0t0  TCP *:commplex-main (LISTEN)
+COMMAND    PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ControlCe 2910  sja    8u  IPv4 0xf4c98fe9bc86bdc7      0t0  TCP *:afs3-fileserver (LISTEN)
+ControlCe 2910  sja    9u  IPv6 0x2a0ce3689885951f      0t0  TCP *:afs3-fileserver (LISTEN)
+COMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+rapportd 593  sja    8u  IPv4 0xba7361f9b437f6cc      0t0  TCP *:49172 (LISTEN)
+rapportd 593  sja    9u  IPv6 0x702fe0d738dd66c0      0t0  TCP *:49172 (LISTEN)
+sja@SJAs-MacBook-Pro ~ % 
+
+2/2
+
+ChatGPT said:
+
+ð 
+ControlCe
+ & 
+rapportd
+ Are Still Running â Letâs Permanently Disable & Remove Them
+
+Even after previous attempts, 
+these two processes are still listening for remote connections
+:
+
+ControlCe
+
+(Control Center)
+ is still using 
+ports 5000 & 7000
+
+rapportd
+
+(Apple's remote device service)
+ is still using 
+port 49172
+
+ð¨ 
+We need to fully kill them and prevent them from restarting.
+ ð¨
+
+ð Step 1: Kill These Processes Immediately
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 2910
+sudo 
+
+kill
+
+ -9 593
+
+ð This 
+forcefully stops both processes
+.
+
+ð Step 2: Prevent 
+ControlCe
+ (Control Center) from Restarting
+
+Since 
+ControlCe
+ keeps coming back, it is being 
+auto-relaunched
+ by macOS.
+
+To 
+disable it permanently
+, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+ð 
+This prevents macOS from automatically restarting Control Center.
+
+ð Step 3: Prevent 
+rapportd
+ from R

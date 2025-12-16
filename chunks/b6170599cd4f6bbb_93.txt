@@ -1,0 +1,268 @@
+cation
+ and make sure Java sees it.
+
+ð¥ Step 1: Manually Copy 
+libtsk_jni.dylib
+ to Autopsyâs 
+lib
+ Directory
+
+Since Autopsy 
+isn't finding the JNI library
+, letâs 
+place it directly inside its folder
+:
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p ~/Downloads/autopsy-4.21.0/lib
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib ~/Downloads/autopsy-4.21.0/lib/
+
+ð 
+Now, Autopsy has direct access to the missing library.
+
+ð¥ Step 2: Set the Library Path Properly
+
+We need to 
+explicitly tell Java where to look for this library
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:
+
+$DYLD_LIBRARY_PATH
+
+ð 
+This makes sure Java looks for 
+libtsk_jni.dylib
+ in the right place.
+
+ð¥ Step 3: Run Autopsy Again
+
+Now, try launching it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+ð 
+If everything is set correctly, it should now launch!
+ ð
+
+ð¥ Step 4: (If Still Failing) Use 
+sudo
+
+If Autopsy 
+still refuses to load
+, try running it with 
+sudo
+ to ensure full access:
+
+sh
+
+Copy
+
+Edit
+
+sudo ./autopsy
+
+ð 
+This can sometimes bypass permission issues with Java.
+
+ð 
+Try these steps and let me know if Autopsy finally launches! ðð
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 01:39:00.434 java[8037:39292] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 01:40:47.908 java[8162:40743] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ Autopsy Still Failing â Fixing the JNI Error! ð
+
+The error 
+"Library not found in jar (libtsk_jni)"
+ and 
+"UnsatisfiedLinkError"
+ means 
+Autopsy still canât find the 
+libtsk_jni.dylib
+ library.
+ Letâs get this fixed!
+
+ð¥ Step 1: Verify the Correct Library Exists
+
+Run this command to 
+double-check
+ that 
+libtsk_jni.dylib
+ exists:
+
+sh
+
+Copy
+
+Edit
+
+find /opt/homebrew -name 
+
+"libtsk_jni.dylib"
+
+ 2>/dev/null
+
+If this file 
+is missing
+, reinstall Sleuthkit:
+
+sh
+
+Copy
+
+Edit
+
+brew reinstall sleuthkit
+
+ð¥ Step 2: Manually Link the Library
+
+Letâs 
+force Java to use the correct JNI library
+ by setting the environment variable 
+inside the Autopsy startup script
+.
+
+1ï¸â£ Open the Autopsy startup script
+
+sh
+
+Copy
+
+Edit
+
+nano ~/Downloads/autopsy-4.21.0/bin/autopsy
+
+2ï¸â£ Find the section where Java is executed
+
+Look for a line that starts with something like:
+
+sh
+
+Copy
+
+Edit
+
+exec
+
+"
+$JAVA
+
+" ...
+
+3ï¸â£ Modify the 
+exec
+ command to include the correct library path
+
+Before the 
+exec "$JAVA" ...
+ line, add:
+
+sh
+
+Copy
+
+Edit
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % find /opt/homebrew -name "libtsk_jni.dylib" 2>/dev/null
+
+/opt/homebrew/lib/libtsk_jni.dylib
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+ChatGPT said:
+
+Great! The 
+
+libtsk_jni.dylib
+
+ file 
+exists
+ in:
+
+/opt/homebrew/lib/libtsk_jni.dylib
+
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+
+Now, we need to 
+tell Autopsy where to find it.
+ Follow these steps:
+
+ð¥ Step 1: Set the Library Path Temporarily
+
+Try launching Autopsy with the correct library path:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+./autopsy
+
+ð¡ 
+If that works, weâll make it permanent.
+ If not, go to Step 2.
+
+ð¥ Step 2: Manuall

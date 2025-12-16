@@ -1,0 +1,324 @@
+ version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Looks like Java 23 is still active despite unlinking it. Let’s 
+completely remove it
+ and force Java 11.
+
+🔥 Step 1: Remove Java 23 Completely
+
+Since unlinking didn’t work, let’s 
+uninstall
+ Java 23.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew uninstall --ignore-dependencies openjdk
+
+Now, verify:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+It 
+should fail
+ or say "command not found." If it still shows Java 23, restart your terminal and check again.
+
+🔥 Step 2: Re-Link Java 11
+
+Now, 
+force Java 11 to be the default
+:
+
+sh
+
+Copy
+
+Edit
+
+brew 
+
+link
+
+ --force --overwrite openjdk@11
+
+Confirm the change:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+Expected output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+2024
+
+-XX-XX
+
+🔥 Step 3: Set Java 11 Permanently
+
+Even after linking, let’s 
+ensure the system uses Java 11
+ every time.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+🔥 Step 4: Restart Terminal & Verify
+
+Now 
+close and reopen your terminal
+, then check:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+If it 
+still shows Java 23
+, you might need to manually delete Java 23 files.
+
+🔥 Step 5: Manually Delete Java 23 (If Needed)
+
+If 
+java -version
+
+still
+ shows Java 23, manually remove it:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /Library/Java/JavaVirtualMachines/openjdk.jdk
+sudo 
+
+rm
+
+ -rf /opt/homebrew/Cellar/openjdk
+
+Then, restart the terminal and check again.
+
+Now, Try Running Autopsy Again
+
+Once Java 11 is confirmed as default, 
+try launching Autopsy
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+Let me know what happens next! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew link --force --overwrite openjdk@11
+
+Linking /opt/homebrew/Cellar/openjdk@11/11.0.26... 65 symlinks created.
+
+If you need to have this software first in your PATH instead consider running:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "11.0.26" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 11.0.26+0)
+OpenJDK 64-Bit Server VM Homebrew (build 11.0.26+0, mixed mode)
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Java 11 is now set as default!
+ 🔥
+
+Now, let's test 
+Autopsy
+ again. Run:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+💡 If it 
+still fails
+ with 
+libtsk_jni
+ issues, try this fix:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+./autopsy
+
+Let me know what happens next! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
+./autopsy
+
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Alright, looks like 
+Autopsy
+ isn't recognizing the Java runtime. Let's force it to use 
+Java 11
+ explicitly. Try the following:
+
+Step 1: Ensure Java 11 is set up correctly
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/opt/homebrew/opt/openjdk@11"
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Verify that Java 11 is now the active version:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+It should output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+ ...
+
+Step 2: Run Autopsy with explicit JDK path
+
+sh
+
+Copy
+
+Edi

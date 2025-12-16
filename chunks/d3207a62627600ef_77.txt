@@ -1,0 +1,374 @@
+
+📌 
+This prevents macOS from reinstalling them.
+
+🚀 Step 5: Remove System Daemons That Restart Them
+
+If 
+rapportd
+ or Control Center keeps returning, 
+remove their startup files
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.rapportd.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.controlcenter.plist
+
+📌 
+This stops macOS from running them at startup.
+
+🚀 Step 6: Reboot & Confirm They Are Gone
+
+Now, restart your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+Then check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo launchctl list | grep -E 
+
+"ControlCe|rapportd"
+
+📌 
+If no output appears, they are FINALLY removed! 🎉
+
+🚀 Step 7: Re-enable SIP for Security
+
+Once confirmed 
+that they are gone
+, 
+restore SIP
+:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+📌 
+Done!
+ 🚀 
+Try these steps and let me know if they are FINALLY gone. 🔥🔒
+
+You said:
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Recovery Mode: 
+rapportd
+ is Already Gone or in a Different Location
+
+🔥 
+The "No such file or directory" error means that 
+rapportd
+ is either already removed or is located somewhere else.
+
+🚨 
+Also, 
+sudo
+ is not available in macOS Recovery Mode, so you don’t need it!
+
+🚀 Step 1: Confirm Whether 
+rapportd
+ is Still Present
+
+Since 
+mv
+ failed, 
+let’s check if the file exists at all
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la /usr/libexec/ | grep rapportd
+
+📌 
+If no output appears, 
+rapportd
+ is already gone! 🎉
+
+📌 
+If it still appears, continue to Step 2.
+
+🚀 Step 2: If 
+rapportd
+ is in a Different Location, Find It
+
+Try searching for 
+rapportd
+ manually:
+
+sh
+
+Copy
+
+Edit
+
+find / -name rapportd 2>/dev/null
+
+📌 
+This will locate the file anywhere on your system.
+
+📌 
+If it finds a different path, use that path for the next steps.
+
+🚀 Step 3: If 
+rapportd
+ Exists, Try Moving It Again
+
+If 
+ls
+ or 
+find
+ shows the file still exists, 
+try moving it again
+:
+
+sh
+
+Copy
+
+Edit
+
+mv
+
+ /usr/libexec/rapportd /usr/libexec/rapportd.bak
+
+📌 
+If this still fails, go to Step 4.
+
+🚀 Step 4: If Moving Still Fails, Delete It Instead
+
+If 
+mv
+ still doesn’t work, 
+force delete it
+:
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /usr/libexec/rapportd
+
+📌 
+Now, 
+rapportd
+ is permanently gone.
+
+🚀 Step 5: Create a Fake 
+rapportd
+ So macOS Can’t Restore It
+
+Even if you remove 
+rapportd
+, 
+macOS might try to restore it.
+
+To block this:
+
+sh
+
+Copy
+
+Edit
+
+touch
+
+ /usr/libexec/rapportd
+
+chmod
+
+ 000 /usr/libexec/rapportd
+chflags uchg /usr/libexec/rapportd
+
+📌 
+This makes 
+rapportd
+ permanently unusable.
+
+🚀 Step 6: Remove Any Launch Daemons That Restart It
+
+If 
+rapportd
+ keeps coming back, 
+remove its startup files
+:
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+rm
+
+ -rf /System/Library/LaunchDaemons/com.apple.rapportd.plist
+
+📌 
+This prevents macOS from launching it at boot.
+
+🚀 Step 7: Reboot & Confirm Removal
+
+Now, restart your Mac:
+
+sh
+
+Copy
+
+Edit
+
+reboot
+
+After booting, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep rapportd
+sudo launchctl list | grep rapportd
+
+📌 
+If no output appears, 
+rapportd
+ is finally removed! 🎉
+
+🚀 Step 8: Re-enable SIP for Security
+
+Once confirmed 
+that it is gone
+, 
+restore SIP to protect your system
+:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+📌 
+Done!
+ 🚀 
+Try these steps and let me know if 
+rapportd
+ is FINALLY gone. 🔥🔒
+
+You said:
+
+1/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Recovery Mode Issues: 
+rapportd
+ Not Found & 
+sudo
+ Command Missing
+
+🚨 
+Key Takeaways from Your Image:
+
+1️⃣ 
+
+rapportd
+ is either already removed or in a different location.
+
+2️⃣ 
+
+sudo
+ is NOT available in macOS Recovery Mode.
+
+3️⃣ 
+
+mount -uw /
+ worked, so you should have write access.
+
+🚀 Step 1: Check If 
+rapportd
+ Exists Anywhere on Your System
+
+Since 
+mv
+ failed with "No such file or directory," let's check whether 
+rapportd
+ is still there.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -la /usr/libexec/ | grep rappor

@@ -1,0 +1,233 @@
+SB logging or system integrity is compromised.
+
+macOS should list even built-in USB devices (e.g., internal keyboard on MacBooks), so something may be interfering.
+
+🚨 Next Steps: Dig Deeper
+
+1️⃣ Check if USB Devices Are Being Blocked
+
+Try resetting the USB subsystem:
+
+sh
+
+Copy
+
+sudo killall -STOP -c usbd && sudo killall -CONT -c usbd
+
+Then rerun:
+
+sh
+
+Copy
+
+ioreg -p IOUSB -w0 -l
+
+If devices 
+still don’t appear
+, something may be interfering.
+
+2️⃣ Check for USB Driver or Hardware Issues
+
+Run:
+
+sh
+
+Copy
+
+kextstat | grep -i usb
+
+This lists active USB-related kernel extensions. Look for anything 
+unusual
+ or missing.
+
+3️⃣ Check for Unauthorized Processes Running
+
+Run:
+
+sh
+
+Copy
+
+ps aux | grep -i usb
+
+If any unknown processes related to USB appear, it may be an issue.
+
+4️⃣ Check System Logs for USB Errors
+
+Run:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.iokit.usb"'
+
+ --info --last 1h
+
+This will reveal if macOS is detecting any USB-related issues.
+
+🚨 If You Still Suspect Compromise:
+
+Try booting into Safe Mode
+ (
+Shift
+ on startup) and rerun the USB checks.
+
+Create a new macOS user account
+ and test USB detection there.
+
+Consider running a malware scan
+ (Malwarebytes or KnockKnock).
+
+If things still look suspicious, a full macOS reinstall may be safest.
+
+Let me know if you find anything unusual from these tests! 🚨
+
+You said:
+
+no it seams the command didn't do anything for
+
+ChatGPT said:
+
+If the command didn't return any output, that could indicate one of the following:
+
+USB Devices Are Not Detected
+ – Either nothing is plugged in, or something is preventing macOS from listing USB devices.
+
+A Rootkit or Malware May Be Hiding USB Activity
+ – Some advanced threats can block USB enumeration.
+
+macOS May Have USB Issues
+ – A corrupted driver or system bug could be affecting USB detection.
+
+🚨 Next Steps to Investigate Further
+
+1️⃣ Check USB Detection in Safe Mode
+
+Safe Mode disables third-party extensions and malware that might be hiding USB devices.
+
+Restart your Mac and hold down 
+Shift
+
+ until you see the login screen.
+
+Open 
+Terminal
+ and run:
+
+sh
+
+Copy
+
+ioreg -p IOUSB -w0 -l
+
+If USB devices appear in Safe Mode but not in normal mode, something is interfering with USB detection.
+
+2️⃣ Check for Missing or Corrupted USB Drivers
+
+Try reloading USB drivers manually:
+
+sh
+
+Copy
+
+sudo kextload /System/Library/Extensions/IOUSBHostFamily.kext
+
+Then re-run:
+
+sh
+
+Copy
+
+ioreg -p IOUSB -w0 -l
+
+If you see errors, the USB driver might be corrupted.
+
+3️⃣ Check if USB Services Are Running
+
+Run the following to check for USB-related processes:
+
+sh
+
+Copy
+
+ps aux | grep -i usb
+
+If no USB-related processes are running, something might be blocking them.
+
+4️⃣ Reset SMC & NVRAM (Mac Firmware)
+
+Corrupted firmware settings can block USB device detection. Try these:
+
+For Intel Macs:
+
+Shut down your Mac.
+
+Hold 
+Shift + Control + Option + Power
+ for 10 seconds.
+
+Release and power it back on.
+
+For Apple Silicon (M1/M2) Macs:
+
+Shut down your Mac.
+
+Hold the 
+Power button
+ until you see "Loading startup options."
+
+Select 
+Options > Continue
+ and check if USB works.
+
+5️⃣ Scan for Rootkits
+
+If malware is hiding USB devices, a scan may reveal it. Try:
+
+Install 
+KnockKnock
+ (
+objective-see.com
+) and scan for persistent malware.
+
+Run 
+Malwarebytes
+ to check for infections.
+
+🚨 If Nothing Works
+
+If all USB devices remain invisible, and none of the above solutions work:
+
+Consider a full macOS reinstall.
+ This rules out software-based threats.
+
+Check USB ports physically.
+ If your Mac was tampered with, a hardware device might be attached inside.
+
+Let me know what happens when you try these steps! 🚨
+
+You said:
+
+hang on one step at a time please 
+
+ChatGPT said:
+
+Got it! Let's go step by step.
+
+Step 1️⃣: Boot into Safe Mode & Check USB Devices
+
+Safe Mode disables unnecessary system extensions, including malware that could be interfering with USB detection.
+
+How to Boot into Safe Mode:
+
+On an Intel Mac:
+
+Shut down your Mac completely
+ (not restart).
+
+Turn it bac

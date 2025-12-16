@@ -1,0 +1,325 @@
+=80=93compatible extension, keep your Express backend as the brain,=
+ and layer the 
+conversation bri=
+dge + trust architecture
+ on top. That gives you speed, familiarity=
+, and reach (VS Code, VSCodium, Codespaces, Trae/Cursor when compatible) wi=
+thout bloating the app.
+
+Verdict (strategy)
+
+Thin client, thick protocol.
+ Make the IDE just a 
+viewport
+ + 
+controls
+; do not put provider secrets inside the IDE. The=
+
+backend
+ stays the sou=
+rce of truth for agents, assistants, trust/ledger, and policy.
+
+Compatibility-first.
+ Target plain VS Code APIs (webview, =
+tree view, status bar, commands). If a derivative (Trae/Cursor) exposes a =
+=E2=80=9CChat=E2=80=9D API, great; otherwise 
+fall back to webviews
+. No dependence on proprietary =
+chat APIs.
+
+Security posture.
+ IDE only holds 
+SYMBI_API_KEY
+ (symbolic, scoped). All vendor keys =
+stay server-side. All outbound calls from the extension hit your backend; H=
+MAC-sign webhooks on return paths.
+
+Minimal architecture (what ships)=
+
+bash
+
+Copy code
+
+VS Code Extension (TypeScript)
+ =E2=94=9C=E2=94=80 Command palette: 
+
+"Symbi: Open Console"
+
+, 
+
+"Symbi: Toggle Hibernation (view-only)"
+
+, 
+
+"Symbi: Verify Ledger"
+
+=
+
+ =E2=94=9C=E2=94=80 Webview Panel: Chat + Trust overlay (conversation bridg=
+e UI)
+ =E2=94=9C=E2=94=80 Tree View: Ledger (session timeline + pivots)
+ =E2=94=9C=E2=94=80 Status Bar: SYMBI mode indicator (normal/hibernation)
+ =E2=94=9C=E2=94=80 Workspace hooks: onDidSave =E2=86=92 emit read-only eve=
+nt; show lightweight trust chips
+ =E2=94=94=E2=94=80 SecretStorage: SYMBI_API_KEY only
+
+Express Backend (already yours)
+ =E2=94=9C=E2=94=80 /api/assistant/*   (latest assistant fallback, tools)
+ =E2=94=9C=E2=94=80 /api/llm/*         (dynamic model list, generate, SSE s=
+tream or simulate)
+ =E2=94=9C=E2=94=80 /api/events        (append-only interaction events)
+ =E2=94=9C=E2=94=80 /api/ledger        (list, verify)
+ =E2=94=9C=E2=94=80 /api/insights/*    (timeline/pivots)
+ =E2=94=94=E2=94=80 /api/trust/*       (analytics, audits; RBAC enforced)
+
+Data flow:
+ Extension =E2=87=84 Backend (JWT in headers=
+ if needed, plus 
+SYMBI_API_KEY
+); Backend =E2=87=84 LLM vendors.
+
+No provider keys in the exten=
+sion.
+
+MVP scope (lean, fast)
+
+Symbi Console
+ (webview): chat to latest assistant, sho=
+w guardrails actions, model picker (from 
+/api/llm/models/openai
+).
+
+Ledger View
+ (TreeDataProvider): session IDs + events; =
+chip pivots/disclosures; =E2=80=9CVerify chain=E2=80=9D action.
+
+Status Bar
+: =E2=80=9CSYMBI: normal/hibernation=E2=80=
+=9D (read-only indicator from 
+/=
+healthz
+ + env).
+
+Commands
+: open console, copy session id, verify ledger=
+, quick-start session.
+
+Hard rules
+: no writes to workspace without explicit us=
+er action; all server changes happen behind your existing RBAC.
+
+Risks & mitigations
+
+Chat API availability:
+ Some IDEs restrict native chat =
+APIs. 
+Mitigation:
+ sh=
+ip a 
+webview
+ UI=E2=
+=80=94works everywhere.
+
+Telemetry & licensing:
+ Prefer 
+Code=E2=80=93OSS/VSCodium
+ for private =
+distros; keep extension telemetry off; document egress.
+
+Secret sprawl:
+ Use 
+SecretStorage
+ for only 
+SYMBI_API_KEY
+; prohibit adding provider keys; backend me=
+diates all LLM calls.
+
+Edge IDEs (Trae/Cursor):
+ Good chance they run VS Code =
+extensions; if not, you still have the 
+webview app
+ you can iframe/embed.
+
+Extension skeleton (tight, workin=
+g starter)
+
+package.json
+=
+
+json
+
+Copy code
+
+{
+
+"name"
+
+:
+
+"symbi"
+
+,
+
+"displayName"
+
+:
+
+"SYMBI"
+
+,
+
+"publisher"
+
+:
+
+"symbi"
+
+,
+
+"version"
+
+:
+
+"0.0.1"
+
+,
+
+"engines"
+
+:
+
+{
+
+"vscode"
+
+:
+
+"^1.90.0"
+
+}
+
+,
+
+"activationEvents"
+
+:
+
+[
+
+"onStartupFinished"
+
+,
+
+"onCommand:=
+symbi.openConsole"
+
+]
+
+,
+
+"contributes"
+
+:
+
+{
+
+"commands"
+
+:
+
+[
+
+{
+
+"command"
+
+:
+
+"symbi.openConsole"
+
+,
+
+"tit=
+le"
+
+:
+
+"Symbi: Open Console"
+
+}
+
+,
+
+{
+
+"command"
+
+:
+
+"symbi.verifyLedger"
+
+,
+
+"ti=
+tle"
+
+:
+
+"Symbi: Verify Ledger"
+
+}
+
+]
+
+,
+
+"views"
+
+:
+
+{
+
+"explorer"
+
+=
+
+:
+
+[
+
+{
+
+"id"
+
+:
+
+"symbi.ledger"
+
+,
+
+"name"
+
+:=
+
+"Symbi Ledger=
+"
+
+}
+
+]
+
+}
+
+}
+
+,
+
+"main"
+
+:
+
+"./dist/extension.js"
+
+,
+
+"c

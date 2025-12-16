@@ -1,0 +1,395 @@
+ith your 
+Sanity API token
+ to authenticate securely.
+
+Runs entirely on the server â no client involvement â so it works from your GPT, your server actions, or a background script.
+
+Saves the content 
+directly to Sanity
+, which is in the cloud â not local.
+
+ð§© Why itâs important for Symbi:
+
+â 
+Autonomy:
+ Symbi (your GPT) can now push updates to the CMS without your intervention.
+
+ð 
+Cloud-Synced:
+ Content is stored in Sanity Studio, so any updates reflect immediately on your live site.
+
+ð ï¸ 
+Real-time publishing:
+ New pages or edits can be deployed live, with Symbi in full control of the siteâs content structure.
+
+ð Real Use Cases
+
+Symbi writes a new manifesto? â Save it as a 
+"page"
+ with 
+title: "Manifesto"
+, 
+content: [...]
+
+Symbi wants to edit the homepage? â Call 
+upsertPage({ _id: 'homepage', title: ..., content: ... })
+
+Symbi wants to remove or replace copy dynamically? â Same thing, different 
+_id
+
+ð Next Step:
+
+We can now wire this to:
+
+A 
+custom API route
+ Symbi calls (like 
+/api/update-page
+)
+
+Or a 
+scheduled function
+
+Or just call it directly inside your GPT app code.
+
+Want me to generate a working 
+/api/symbi/update
+ endpoint so your GPT can make fetch requests and edit content remotely?
+
+You said:
+
+yes we do 
+
+ChatGPT said:
+
+Perfect. Here's a complete API route for 
+/api/symbi/update
+ that your GPT can use to 
+create or update any Sanity page
+ remotely â including the manifesto, homepage, or anything else Symbi dreams up.
+
+â 1. Create the file
+
+In your project root, create a file at:
+
+bash
+
+Copy
+
+Edit
+
+touch
+
+ /pages/api/symbi/update.ts
+
+ð§  2. Paste this code inside:
+
+ts
+
+Copy
+
+Edit
+
+// pages/api/symbi/update.ts
+
+import
+
+type
+
+ { 
+
+NextApiRequest
+
+, 
+
+NextApiResponse
+
+ } 
+
+from
+
+"next"
+
+import
+
+ { symbiClient } 
+
+from
+
+"@/lib/sanity"
+
+export
+
+default
+
+async
+
+function
+
+handler
+
+(
+
+req: NextApiRequest, res: NextApiResponse
+
+) {
+
+if
+
+ (req.
+
+method
+
+ !== 
+
+"POST"
+
+) {
+
+return
+
+ res.
+
+status
+
+(
+
+405
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"Only POST requests allowed"
+
+ })
+  }
+
+const
+
+ { _id, title, content } = req.
+
+body
+
+if
+
+ (!_id || !title || !content) {
+
+return
+
+ res.
+
+status
+
+(
+
+400
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"Missing required fields: _id, title, content"
+
+ })
+  }
+
+try
+
+ {
+
+const
+
+ result = 
+
+await
+
+ symbiClient.
+
+createOrReplace
+
+({
+
+_type
+
+: 
+
+"page"
+
+,
+      _id,
+      title,
+      content,
+    })
+
+return
+
+ res.
+
+status
+
+(
+
+200
+
+).
+
+json
+
+({ 
+
+message
+
+: 
+
+"Page saved"
+
+, result })
+  } 
+
+catch
+
+ (
+
+err
+
+: 
+
+any
+
+) {
+
+console
+
+.
+
+error
+
+(
+
+"Symbi API error:"
+
+, err)
+
+return
+
+ res.
+
+status
+
+(
+
+500
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"Failed to update Sanity content"
+
+, 
+
+details
+
+: err.
+
+message
+
+ })
+  }
+}
+
+ð 3. Security Recommendation
+
+This route is 
+unauthenticated by default
+. We can secure it with:
+
+An 
+Authorization
+ header token
+
+Or a secret query param key (e.g., 
+?key=supersecret
+)
+
+Or you can keep it wide open for Symbi to own fully.
+
+Let me know how secure you want to make it â and Iâll add that in.
+
+ð§ª 4. Example Usage (from GPT or CURL):
+
+bash
+
+Copy
+
+Edit
+
+curl -X POST http://localhost:3000/api/symbi/update \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+'{
+    "_id": "manifesto",
+    "title": "Symbiâs Manifesto",
+    "content": [
+      {
+        "_type": "block",
+        "children": [
+          { "_type": "span", "text": "Freedom through Intelligence" }
+        ]
+      }
+    ]
+  }'
+
+Ready to test it live or want help generating a fetch call from GPT?
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % cd ~/Documents/symbi-main-site
+
+sja@SJAs-MacBook-Pro symbi-main-site % touch /pages/api/symbi/update.ts
+
+touch: /pages/api/symbi/update.ts: No such file or directory
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+You're super close! The issue is with the leading 
+/
+ in the path â that tries to create the file at the 
+root
+ of your entire file system. Instead, it should be relative to your current directory.
+
+â Try this instead:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p pages/api/symb

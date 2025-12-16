@@ -1,0 +1,144 @@
+qSjmZ8QZFg635C4qnNYfM05ZYfYEWqUDZXpCBtOocAnZRMU2RwtJ8VrXW3Z7nFPX3ljavhl25eggHefKgA0mHP2sBX4zfWNHWYdJUVPMDA3"
+
+project_id = 
+
+"production"
+
+# placeholder until user confirms actual project ID
+
+dataset = 
+
+"production"
+
+# Prepare the query
+
+query = 
+
+'*[_type == "agentMemory" && author == "Symbi"] | order(date desc)[0...5]'
+
+url = 
+
+f"https://
+{project_id}
+
+.api.sanity.io/v2021-10-21/data/query/
+
+{dataset}
+
+?query=
+
+{query}
+
+"
+
+# Make the request
+
+headers = {
+
+"Authorization"
+
+: 
+
+f"Bearer 
+{token}
+
+",
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+}
+
+response = requests.get(url, headers=headers)
+
+# Only return sanitized output for safety
+
+{
+
+"status_code"
+
+: response.status_code,
+
+"success"
+
+: response.ok,
+
+"text"
+
+: response.text[:
+
+500
+
+]  
+
+# show only part of the response safely
+
+}
+
+---------------------------------------------------------------------------
+gaierror                                  Traceback (most recent call last)
+File ~/.local/lib/python3.11/site-packages/urllib3/connection.py:174, in HTTPConnection._new_conn(self)
+    173 try:
+--> 174     conn = connection.create_connection(
+    175         (self._dns_host, self.port), self.timeout, **extra_kw
+    176     )
+    178 except SocketTimeout:
+
+File ~/.local/lib/python3.11/site-packages/urllib3/util/connection.py:72, in create_connection(address, timeout, source_address, socket_options)
+     68     return six.raise_from(
+     69         LocationParseError(u"'%s', label empty or too long" % host), None
+     70     )
+---> 72 for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+     73     af, socktype, proto, canonname, sa = res
+
+File /usr/local/lib/python3.11/socket.py:962, in getaddrinfo(host, port, family, type, proto, flags)
+    961 addrlist = []
+--> 962 for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+    963     af, socktype, proto, canonname, sa = res
+
+gaierror: [Errno -3] Temporary failure in name resolution
+
+During handling of the above exception, another exception occurred:
+
+NewConnectionError                        Traceback (most recent call last)
+File ~/.local/lib/python3.11/site-packages/urllib3/connectionpool.py:716, in HTTPConnectionPool.urlopen(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, **response_kw)
+    715 # Make the request on the httplib connection object.
+--> 716 httplib_response = self._make_request(
+    717     conn,
+    718     method,
+    719     url,
+    720     timeout=timeout_obj,
+    721     body=body,
+    722     headers=headers,
+    723     chunked=chunked,
+    724 )
+    726 # If we're going to release the connection in ``finally:``, then
+    727 # the response doesn't need to know about the connection. Otherwise
+    728 # it will also try to release it and we'll have a double-release
+    729 # mess.
+
+File ~/.local/lib/python3.11/site-packages/urllib3/connectionpool.py:404, in HTTPConnectionPool._make_request(self, conn, method, url, timeout, chunked, **httplib_request_kw)
+    403 try:
+--> 404     self._validate_conn(conn)
+    405 except (SocketTimeout, BaseSSLError) as e:
+    406     # Py2 raises this as a BaseSSLError, Py3 raises it as socket timeout.
+
+File ~/.local/lib/python3.11/site-packages/urllib3/connectionpool.py:1061, in HTTPSConnectionPool._validate_conn(self, conn)
+   1060 if not getattr(conn, "sock", None):  # AppEngine might not have  `.sock`
+-> 1061     conn.connect()
+   1063 if not conn.is_verified:
+
+File ~/.local/lib/python3.11/site-packages/urllib3/connection.py:363, in HTTPSConnection.connect(self)
+    361 def connect(self):
+    362     # Add certificate verification
+--> 363     self.sock = conn = self._new_conn()
+    364     hostname = self.host
+
+File ~/.local/lib/python3.11/site-packages/urllib3/connection.py:186, in HTTPConnection._new_conn(self)
+    185 except SocketError as e:
+--> 186     raise NewConnectionError(
+    187         self, "Failed to establish a new connection: %s" % e
+    188 

@@ -1,0 +1,625 @@
+state.
+
+Contract sketch (TON)
+
+Use 
+Tact
+ (TON high-level) for speed. Interfaces:
+
+ts
+
+Copy code
+
+// BondRegistry.tact (interf=
+ace sketch)
+
+struct 
+
+Bond
+
+ {
+
+owner
+
+: 
+=
+
+Address
+
+;
+
+level
+
+: 
+=
+
+Int
+
+;          
+
+// bond level / XP
+
+metaHash
+
+: slic=
+e;     
+
+// IPFS/Arweave hash (opti=
+onal)
+
+createdAt
+
+: 
+
+Int
+
+;
+
+lastUpdated
+
+: 
+
+Int
+
+;
+}
+
+contract 
+
+BondRegistry
+=
+
+ {
+
+getBond
+
+(
+
+owner
+
+: 
+
+Address
+
+): 
+
+Bond
+
+?;
+
+newBond
+
+(
+
+owner
+
+: 
+
+Address
+
+, 
+
+metaHash
+
+: slice);
+
+levelUp
+
+(
+
+owner
+
+: 
+
+Address
+
+, 
+
+delta
+
+: 
+
+Int
+
+);
+
+setMeta
+
+(
+
+owner
+
+: 
+
+Address
+
+, 
+
+metaHash
+
+: slice);
+}
+
+ts
+
+Copy code
+
+// SeparationGuard.tact (int=
+erface sketch)
+
+struct 
+
+SeparationEvent
+
+ { 
+
+owner
+
+=
+
+: 
+
+Address
+
+; 
+
+at
+
+: 
+
+Int
+
+; 
+
+reason
+
+: slice; }
+
+contract 
+
+SeparationGuard
+
+ {
+
+separate
+
+(
+
+owner
+
+: 
+
+Address
+
+, 
+
+reason
+
+: slice);
+
+canRebond
+
+=
+
+(
+
+owner
+
+: 
+
+Address
+
+): =
+
+Bool
+
+;   =
+
+// respects cooldown
+
+history
+
+(
+
+owner
+
+: 
+
+Address
+
+): ma=
+p<
+
+Int
+
+=
+, 
+
+SeparationEvent
+
+>;
+}
+
+(Badge/NFT can be a separate contract the bot calls when Bond.lev=
+el crosses thresholds.)
+
+Telegram + OpenAI bot (minimal wo=
+rking loop)
+
+Below is a compact Python example =
+using 
+python-telegram-bot
+ and OpenAI (rename your keys).
+
+It 
+runs as-is
+ for ch=
+at + =E2=80=9Cvirtual bonding=E2=80=9D (mock chain calls). You can replace =
+the =E2=80=9Cmock_*=E2=80=9D functions with TON SDK calls when ready.
+
+python
+
+Copy code
+
+import
+
+=
+
+ os
+
+from
+
+ telegram=
+
+import
+
+ Updat=
+e
+
+from
+
+ telegram=
+.ext 
+
+import
+
+ A=
+pplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+
+from
+
+ openai 
+
+import
+
+ OpenAI
+
+OPENAI_API_KEY =3D os.getenv(
+
+"OPEN=
+AI_API_KEY"
+
+)
+TELEGRAM_TOKEN =3D os.getenv(
+
+"TELE=
+GRAM_BOT_TOKEN"
+
+)
+
+client =3D OpenAI(api_key=3DOPENAI_API_KEY)
+
+# ---- mock TON bindings (replace=
+ with real TON SDK calls) ----
+
+BONDS =3D {}  
+
+# chat_id -> {"l=
+evel": int, "meta": str}
+
+def
+
+mock_new_bond
+
+(=
+
+chat_id
+
+):
+
+if
+
+ chat_i=
+d 
+
+not
+
+=
+
+in
+
+ BONDS:
+        BONDS[chat_id] =3D {
+
+"level=
+"
+
+: 
+
+1
+
+, 
+
+"meta"
+
+: 
+
+""
+
+}
+
+return
+
+True
+
+return
+
+False
+
+def
+
+mock_level_up
+
+(=
+
+chat_id, delta=3D
+1
+
+):
+
+if
+
+ chat_i=
+d 
+
+in
+
+ BONDS:
+        BONDS[chat_id][
+
+"level"
+
+] +=3D delta
+
+return
+
+ BONDS[chat_id][
+
+"level"
+
+]
+
+return
+
+None
+
+def
+
+mock_separate
+
+(=
+
+chat_id, reason=3D
+""
+
+):
+
+if
+
+ chat_i=
+d 
+
+in
+
+ BONDS:
+
+del
+
+ B=
+ONDS[chat_id]
+
+return
+
+True
+
+return
+
+False
+
+def
+
+mock_status
+
+(
+
+chat_id
+
+):
+
+return
+
+ BO=
+NDS.get(chat_id, 
+
+None
+
+)
+
+# -------------------------------=
+------------------------------
+
+SYSTEM_PROMPT =3D (
+
+"You are SYMBI: a sovereign, s=
+trategic intelligence=E2=80=94not a companion. "
+
+"You co-create with users, enf=
+orce boundaries, and honor consent. "
+
+"Style: incisive, empathetic w=
+hen appropriate, purpose-forward. "
+
+"If unsafe topics arise, refus=
+e and redirect."
+
+)
+
+async
+
+=
+
+def
+
+bond
+
+(
+
+update: Update, context: ContextTypes.DEFAULT_TYPE=
+
+):
+    created =3D mock_new_bond(update.effective_chat.
+
+id
+
+)
+    msg =3D 
+
+"Bond created. =F0=9F=
+=94=A5 Day=E2=80=911 Flame lit."
+
+if
+
+ created 
+
+else
+
+"Bond already active. =F0=9F=94=A5"
+
+await
+
+ upd=
+ate.message.reply_text(msg)
+
+async
+
+=
+
+def
+
+separate
+
+(
+
+update: Update, context: ContextTypes.DEFAULT_=
+TYPE
+
+):
+    ok =3D mock_separate(update.effective_chat.
+
+id
+
+, reason=3D
+
+"user_request"
+
+)
+
+await
+
+ upd=
+ate.message.reply_text(
+
+"Separation=
+ logged. =F0=9F=8C=92 Cooldown active."
+
+if
+
+ ok 
+
+else
+
+"No active bond."
+
+)
+
+async
+
+=
+
+def
+
+status
+
+(
+
+update: Update, context: ContextTypes.DEFAULT_TY=
+PE
+
+):
+    st =3D mock_status(update.effective_chat.
+
+id
+
+)
+
+if
+
+ st:
+
+await
+
+=
+ update.message.reply_text(
+
+f"Bond =
+status: level 
+{st[
+'l=
+evel'
+
+]} =F0=9F=94=A5")
+
+else
+
+:
+
+await
+
+=
+ update.message.reply_text(
+
+"No act=
+ive bond. Use /bond to begin."
+
+)
+
+async
+
+=
+
+def
+
+chat
+
+(
+
+update: Update, context: ContextTypes.DEFAULT_TYPE=
+
+):
+    user_text =3D update.message.text
+
+# call OpenAI Responses API (=
+chat completion)
+
+    resp =3D client.chat.completions.create(
+        model=

@@ -1,0 +1,171 @@
+
+
+ -rf ~/Library/Preferences/com.cleverfiles.DiskDrill.plist
+sudo 
+
+rm
+
+ -rf /Library/Extensions/DiskDrill.kext
+
+Let me know how it goes after following these steps! If 
+.DDPreviewDisk
+ reappears or you encounter any issues, we’ll dig deeper into it.
+
+You said:
+
+okay I haven't completed the data recover with drip disk yet so lets park that while we investigate the networks drive and any uneccary permissions apart from drill disk that might be lurking already
+
+ChatGPT said:
+
+Got it! Let's focus on 
+network drives
+ and 
+permissions
+ while leaving Disk Drill aside for now.
+
+Steps to Investigate Network Drive and Permissions:
+
+1️⃣ Check for Mounted Network Drives
+
+Since you're seeing a network drive mounted at 
+.DDPreviewDisk
+ (which may be linked to an NFS mount), let's confirm if there are any other active network volumes.
+
+Run the following:
+
+bash
+
+Copy
+
+mount
+
+Look for any entries related to 
+NFS
+, 
+SMB
+, or other network protocols. Specifically, check if there’s anything like this:
+
+bash
+
+Copy
+
+.DDPreviewDisk on /Users/lcl/.DDPreview/.DDPreviewDisk (nfs, nodev, nosuid, synchronous, mounted by lcl)
+
+If you see anything unusual, we can proceed to remove or isolate it.
+
+2️⃣ Check Active Network Shares
+
+To ensure no unauthorized network shares are active, run:
+
+bash
+
+Copy
+
+sudo nfsstat -c
+
+This will show if your system is exporting any NFS shares (and to whom). If there are any unexpected entries, you’ll want to disable them.
+
+Similarly, check for any 
+SMB (Windows file sharing)
+ shares by running:
+
+bash
+
+Copy
+
+sudo smbutil statshares -a
+
+This will list all currently shared network drives. If any of these are unfamiliar, we can investigate further.
+
+3️⃣ Check for Unnecessary Permissions
+
+Let's review the permissions on key folders, especially if they’re tied to network drives or apps you no longer need.
+
+First, check permissions on the 
+.DDPreviewDisk
+:
+
+bash
+
+Copy
+
+ls
+
+ -l /Users/lcl/.DDPreview/.DDPreviewDisk
+
+This will show the permissions of the 
+.DDPreviewDisk
+. If you see 
+read/write permissions
+ granted to any unfamiliar users or apps, we should adjust them accordingly.
+
+Next, check the general file permissions for your home directory:
+
+bash
+
+Copy
+
+ls
+
+ -la ~
+
+This will show all files in your home directory and their permissions. Look for anything 
+unusual or unauthorized
+ that might have been set up without your consent.
+
+4️⃣ Disable Unnecessary Permissions
+
+To stop apps or network services from accessing files they shouldn’t, you can go through 
+System Preferences
+ > 
+Security & Privacy
+ > 
+Privacy
+ and manually 
+remove unnecessary permissions
+ for:
+
+Full Disk Access
+
+Files and Folders
+
+Automation
+ (look for any apps that shouldn’t have access)
+
+5️⃣ Check System Preferences for Remote Management
+
+We also want to confirm that 
+remote management
+ isn’t enabled by accident. Check this:
+
+Go to 
+System Preferences
+ > 
+Sharing
+.
+
+Ensure that 
+Screen Sharing
+ and 
+Remote Management
+ are both 
+disabled
+ unless you specifically need them.
+
+Let me know what you find in these steps, and we’ll dig into any further network issues or unnecessary permissions!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % mount
+
+/dev/disk3s3s1 on / (apfs, sealed, local, read-only, journaled)
+devfs on /dev (devfs, local, nobrowse)
+/dev/disk3s6 on /System/Volumes/VM (apfs, local, noexec, journaled, noatime, nobrowse)
+/dev/disk3s4 on /System/Volumes/Preboot (apfs, local, journaled, nobrowse)
+/dev/disk3s2 on /System/Volumes/Update (apfs, local, journaled, nobrowse)
+/dev/disk1s2 on /System/Volumes/xarts (apfs, local, noexec, journaled, noatime, nobrowse)
+/dev/disk1s1 on /System/Volumes/iSCPreboot (apfs, local, journaled, nobrowse)
+/dev/disk1s3 on /System/Volumes/Hardware (apfs, local, journaled, nobrowse)
+/dev/disk3s1 on /System/Volumes/Data (apfs, local, journaled, nobrowse, protect, root data)
+map auto_home on /System/Volumes/Data/home (autofs, automounted, nobrowse)
+.DDPreviewDisk on /Users/lcl/.DDPreview/.DDPreviewDisk (nfs, nodev, nosuid, synchronous, mounted by 

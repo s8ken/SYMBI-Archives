@@ -1,0 +1,101 @@
+th system integrity verification.
+
+Possible tampering with code signatures of system or third-party applications.
+
+A failure to validate cryptographic signatures, which is unusual for a properly functioning macOS system.
+
+2. Accessibility & Window Management Activity
+
+There are logs mentioning 
+AXVisualSupportAgent
+ and 
+Accessibility Services
+ being activated
+
+. Given your concerns about unauthorized control, this is something to look into. Accessibility features can be abused for remote control or privilege escalation.
+
+3. Bluetooth & Wi-Fi Activity (Potential Nearby Devices)
+
+Logs show 
+Bluetooth "NearbyInfo" devices appearing and disappearing
+
+. These could be AirDrop, Continuity, or unauthorized nearby connections.
+
+Wi-Fi P2P activity and scanning
+ is occurring
+
+. If you aren't actively using AirDrop, Sidecar, or other P2P services, this could be a sign of unwanted network interactions.
+
+The system performed a 
+"QUERY ALL WIFI NETWORKS"
+ request
+
+, which could indicate background scanning for new or previously connected networks.
+
+4. Possible Mirroring or Remote Connection
+
+Sharingd & Remote Pairing Daemon activity
+ is logged
+
+. This process is used for AirDrop, Handoff, and other device-to-device interactions. If you’re not using those features, it’s worth disabling them.
+
+WindowManager and Accessibility processes are interacting
+ in ways that suggest UI manipulation
+
+.
+
+5. Watchdog & Power Events
+
+Watchdogd entries
+ indicate system monitoring for unexpected behavior
+
+. This could be normal, but if you’re experiencing crashes or instability, it might be related.
+
+Powerd events
+ reference "DesktopMode check on Battery 0"
+
+. This could mean the system is being tricked into believing it's in a different power state—sometimes seen in virtualization or remote control scenarios.
+
+Next Steps
+
+Check Accessibility Settings
+: Go to 
+System Settings → Privacy & Security → Accessibility
+ and see if any unknown apps have control.
+
+Disable Unused Wireless Features
+: Turn off 
+AirDrop, Handoff, Bluetooth, and Wi-Fi P2P
+ if not needed.
+
+Verify Code Integrity
+: Run this in 
+Terminal
+ to check for unsigned or modified system files:
+
+sh
+
+Copy
+
+sudo systemctl status trustd
+
+Monitor Logs in Real-Time
+: Use this command in Terminal to catch suspicious activity live:
+
+sh
+
+Copy
+
+log
+
+ stream --predicate 
+
+'subsystem == "com.apple.accessibility"'
+
+ --info
+
+Would you like help with deeper system diagnostics or securing your network?
+
+Sources
+
+ChatGPT can make mistakes. OpenAI doesn't use Intelligence Unbound Stephen 8ken 🔃🎵🔀 workspace data to train its models.

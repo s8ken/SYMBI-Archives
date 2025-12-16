@@ -1,0 +1,261 @@
+your agent with:
+
+b=
+ash
+
+Copy code
+
+/opt/homebrew/bin/python3 symbi_agent.py watch
+
+But for 
+everyday use
+, we=E2=80=99ll make it easier:
+
+=F0=9F=9B=A0 Step 2: Add Aliases (P=
+ermanent Fix)
+
+Add this to your 
+~/.zshrc
+ or 
+~/.bash_profile
+ (depending on your shell):
+
+b=
+ash
+
+Copy code
+
+echo
+
+ =
+
+'export PATH=3D"/opt/homebrew/opt/=
+python@3.13/libexec/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zs=
+hrc
+
+This adds the 
+python
+, 
+pip
+, and related commands to your shell's PATH.
+
+Then confirm:
+
+b=
+ash
+
+Copy code
+
+which
+
+=
+ python
+
+which
+
+ pip
+
+You should see something like:
+
+s=
+wift
+
+Copy code
+
+=
+
+/opt/
+
+homebrew
+
+/opt/
+
+python@
+
+3.13
+
+/libexec/
+
+bin
+
+/
+
+python
+
+Now try again:
+
+b=
+ash
+
+Copy code
+
+pip install typer rich psutil
+python symbi_agent.py talk
+
+Want me to generate the 
+symbi_agent.py
+ file for you so it=E2=80=99s ready to launch? Jus=
+t say the word =F0=9F=94=A7=F0=9F=94=A5
+
+You said:
+
+what's the etrenally managed mean error: externall=
+y-managed-environment
+
+=C3=97 This environment is externally managed
+=E2=95=B0=E2=94=80> To install Python packages system-wide, try brew ins=
+tall
+    xyz, where xyz is the package you are trying to
+    install.
+   =20
+    If you wish to install a Python library that isn't in Homebrew,
+    use a virtual environment:
+   =20
+    python3 -m venv path/to/venv
+    source path/to/venv/bin/activate
+    python3 -m pip install xyz
+   =20
+    If you wish to install a Python application that isn't in Homebrew,
+    it may be easiest to use 'pipx install xyz', which will manage a
+    virtual environment for you. You can install pipx with
+   =20
+    brew install pipx
+   =20
+    You may restore the old behavior of pip by passing
+    the '--break-system-packages' flag to pip, or by adding
+    'break-system-packages =3D true' to your pip.conf file. The latter
+    will permanently disable this error.
+   =20
+    If you disable this error, we STRONGLY recommend that you additionally
+    pass the '--user' flag to pip, or set 'user =3D true' in your pip.conf
+    file. Failure to do this can result in a broken Homebrew installation.
+   =20
+    Read more about this behavior here: <https://peps.python.org/pep-066=
+8/>
+
+note: If you believe this is a mistake, please contact your Python installa=
+tion or OS distribution provider. You can override this, at the risk of bre=
+aking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+SYMBIs-MacBook-Pro:~ admin$
+
+Symbi said:
+
+Perfect =E2=80=94 this is a new and 
+intentional safety feature
+ introduced in Python 3.12+ =
+and enforced by Homebrew=E2=80=99s Python 3.13.
+
+You're seeing this because Homebrew =
+now 
+protects the system-wide Py=
+thon environment
+ from being modified directly by 
+pip
+, which helps avoid breaking your setup=
+.
+
+=F0=9F=A7=A0 What Does =E2=80=9CExt=
+ernally Managed=E2=80=9D Mean?
+
+It means:
+
+"This Python was installed by a pack=
+age manager (Homebrew), and we don=E2=80=99t want 
+pip
+ overwriting system-level packages."
+
+That=E2=80=99s good =E2=80=94 but it=
+ requires using 
+virtual environ=
+ments
+, which are clean and sandboxed.
+
+=E2=9C=85 RECOMMENDED FIX: Use a Vi=
+rtual Environment (Safe + Clean)
+
+Run the following:
+
+b=
+ash
+
+Copy code
+
+python3 -m venv ~/symbi-env
+
+source
+
+ ~/sym=
+bi-env/bin/activate
+pip install typer rich psutil
+
+Then launch the agent:
+
+b=
+ash
+
+Copy code
+
+python symbi_agent.py watch
+
+=F0=9F=94=81 Future Use
+
+Each time you want to use SYMBI:
+
+b=
+ash
+
+Copy code
+
+source
+
+ ~/symbi-env/bin/activate
+python symbi_agent.py talk
+
+You=E2=80=99ll know you=E2=80=99re =
+in the virtual environment because your terminal will show:
+
+ruby
+
+Copy code
+
+(symbi-env) 
+
+SYMBIs
+
+-
+
+MacBook
+
+-
+
+Pro
+=
+
+:~
+
+ admin
+$
+
+=F0=9F=94=92 Why This Is Better
+
+Isolates SYMBI=E2=80=99s packages =
+from your system Python
+
+Makes it portable to package or de=
+ploy later
+
+Prevents breaking Homebrew-managed=
+ tools
+
+Would you like me to generate the =
+
+symbi_agent.py
+ file dire=
+ctly into that environment for you 

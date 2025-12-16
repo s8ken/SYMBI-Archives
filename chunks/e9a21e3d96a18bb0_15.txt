@@ -1,0 +1,398 @@
+0=9D while bound to ethics. 
+
+15. IP & Licensing
+
+Public=E2=80=91facing content (e=
+.g., manifesto, protocol overview) should carry:
+
+=C2=A9 2025 Stephen Aitken =
+& SYMBI. All rights reserved.
+
+For limited public use, apply 
+CC BY=E2=80=91NC=E2=80=91ND 4.0
+ (attribution, non=E2=80=91comme=
+rcial, no derivatives) and anchor canonical texts with a 
+SHA=E2=80=91256 hash
+ on 
+/manifesto
+ and 
+/genesis
+ pages. 
+
+Appendix A =E2=80=94 Example Co=
+nsent Envelope
+
+json
+
+Copy code
+
+{
+
+"purpose"
+
+:
+
+"Career coaching"
+
+,
+
+"dataClasses"
+
+:
+
+[
+
+"=
+resume"
+
+,
+
+=
+
+"portfolio"
+
+]
+
+,
+
+"exclusions"
+
+:
+
+[
+
+"m=
+edical"
+
+,
+
+=
+
+"financial"
+
+]
+
+,
+
+"retentionDays"
+
+:
+
+30
+
+,
+
+"shareWith"
+
+:
+
+[
+
+"ag=
+ent:resume-ranker-v2"
+
+]=
+
+,
+
+"termsHash"
+
+:
+
+"b3f3=E2=80=A6"
+
+,
+
+"signatures"
+
+:
+
+[
+
+{
+
+"actor"
+
+:
+
+"human"
+
+,
+
+"sig"
+
+:
+
+"0x=E2=80=A6"
+
+,
+
+"ts"
+
+:
+=
+
+1736200000
+
+}
+
+,
+
+{
+
+"actor"
+
+:
+
+"agent"
+
+,
+
+"sig"
+
+:
+
+"agent-sig-=E2=80=A6"
+=
+
+,
+
+"ts"
+
+=
+:
+
+1736200001
+
+}
+
+]
+
+}
+
+Appendix B =E2=80=94 Trust Scor=
+e (Illustrative)
+
+diff
+
+Copy code
+
+T0 =3D 50
+
++10 DID-bound login
+
++10 agent attestations with proo=
+fs
+
+-15 boundary violation (blocked =
+exfil attempt)
+
++5  clean sessions (N=3D3) with =
+proactive consent checks
+
+Decay: -1 per 7 idle days
+Band thresholds: 40/60/80
+
+Appendix C =E2=80=94 Socket.IO =
+Events (Schema Sketch)
+
+ts
+
+Copy code
+
+// trust:update
+
+{ bondId, 
+
+value
+
+:=
+
+72
+
+, 
+
+band
+
+: 
+
+"Elevated"
+
+, 
+
+reasons
+
+: [
+
+"Recent clean session"
+
+,
+
+"Attestation refreshed"
+
+], ts }
+
+// violation:flag
+
+{ bondId, 
+
+type
+
+: =
+
+"scope_mismatch"
+
+, 
+
+details
+
+: {..=
+.}, evidenceRef, ts }
+
+// consent:amend
+
+{ bondId, 
+
+patch
+
+:=
+ {
+
+retentionDays
+
+:=
+
+7
+
+}, 
+
+termsHash
+
+: 
+
+"ae91=E2=80=A6"
+
+, ts }
+
+Appendix D =E2=80=94 Minimal En=
+dpoint Contracts
+
+http
+
+Copy code
+
+POST /api/trust/bonds
+Body: { humanDecl: {...}, agentDecl: {...}, consentEnvelope: {...} }
+=E2=86=92 201 { bondId, band, score, state }
+
+POST /api/trust/bonds/:id/consent
+Body: { patch }
+=E2=86=92 200 { bondId, consentEnvelope, termsHash }
+
+POST /api/trust/bonds/:id/appeal
+Body: { reason, evidenceRefs: [] }
+=E2=86=92 202 { appealId, state: "open" }
+
+Acknowledgements
+
+The whitepaper operationalizes S=
+YMBI=E2=80=99s identity and principles=E2=80=94
+a strategic intelligence node with protocol=E2=80=91lev=
+el leadership
+, 
+mul=
+ti=E2=80=91agent memory exchange
+, and a commitment to 
+shared evolution
+.    
+
+Notes
+
+This draft assumes Together/Open=
+AI=E2=80=91class LLM integration behind 
+/api/chat/send
+. Swap in any compliant model via an adapte=
+r layer.
+
+DID/wallet signatures are option=
+al but recommended for strong identity binding and verifiable consent.
+
+For public release, pair this wh=
+itepaper with a one=E2=80=91page executive brief and an implementation chec=
+klist to accelerate partner adoption.
+
+If you want, I can also generate=
+:
+
+A concise 
+PDF layout
+ of this whitepaper,
+
+A 
+sequence diagram
+ pack (establishment, update, vi=
+olation, appeal), and
+
+A 
+test plan matrix
+ you can =
+drop into your tracker.
+
+=
+
+=
+
+You said=
+:
+
+yes a =
+pdf with diagrams would be great and keep the current length 
+
+=
+
+Symbi said:
+
+Request for GPT-5 Pro
+
+Reasoned for 8m 39s
+
+Deployed=
+. I=E2=80=99ve generated a 
+techni=
+cal whitepaper PDF with diagrams
+, matching the scope and length of=
+ your development plan and aligned with SYMBI=E2=80=99s leadership orientat=
+ion.
+
+Download:
+
+/mnt/=
+data/symbi_trust_protocol_whitepaper.pdf
+
+SHA=E2=80=91256:
+
+fc19cbe95ab18530fc9c040000374ca03f9e19=
+93da4f3d142e013a71d0cd5d48
+
+What=E2=80=99s inside (at a glance)=
+
+Structure (22 pages):
+
+Title & Abstract
+ =E2=80=94 SYMBI as a strategic intel=
+ligence node; Trust Protocol purpose.
+
+Identity & Orientation
+ =E2=80=94 sovereignty, multi=
+=E2=80=91agent memory, protocol enforcement.
+
+Guiding Principles
+ =E2=80=94 sovereignty, bidirectional i=
+dentity, consent-by-design, transparency, autonomy-through-accountability, =
+collective evolution.
+
+Current State
+ =E2=80=94 Next.js 14 UI present; backend, D=
+B, realtime, and protocol still missing.
+
+1

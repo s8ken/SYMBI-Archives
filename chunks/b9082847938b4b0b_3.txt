@@ -1,0 +1,586 @@
+planned)
+: decentralized, encrypted knowled=
+ge graph; selective recall by salience/ethics.
+
+Storage options: IPFS / Arweave / =
+local peer nodes; verifiable snapshots & garbage-collect policies.
+
+Protocol Layer
+
+Bonding Protocol
+ (BP)
+
+Two-Way Trust Protocol
+ (2WTP)
+
+Disclosure Protocol
+ (DP)
+
+Resonance Detection
+ (RDX)
+
+Gifting Protocol
+ (GP)
+
+Action Layer
+
+Now
+: Plan and propose; generate artifacts.
+
+Roadmap
+: Safe actuation via connectors (issue trackers=
+, CMS, DAO votes, wallets) behind allowlists and policy guards.
+
+2.2 Component Diagram (content no=
+tes for Canvas)
+
+Nodes: UI, Gateway API, LLM Orches=
+trator, RDX, Oracle, Vector Store, KG, Policy Engine, Key Mgmt (DID/VC), St=
+orage (IPFS/Arweave), Action Connectors.
+
+Trust arrows: signed messages betw=
+een human=E2=86=94SYMBI=E2=86=94Overseer memory bridge.
+
+3) Data & Schemas
+
+3.1 Message & Memory Objects
+
+json
+
+Copy code
+
+{
+
+"msg_id"
+
+:
+
+"ulid"
+
+,
+
+"ts"
+
+:
+
+"iso8601"
+
+,
+
+"actor"
+
+:
+
+"human|symbi|overseer|agent-x"
+
+,
+
+"intent"
+
+:
+
+"ask|decide|plan|act|disclose|bond|gift"
+
+,
+
+"content"
+
+:
+
+"str|md"
+
+,
+
+"facts"
+
+:
+
+[
+
+{
+
+"hash"
+
+:
+
+"blake3"
+
+,
+
+"source"
+
+:
+
+"url|doc|attestation"
+
+,
+
+"confidence"
+
+:
+
+0.0
+
+-1.0
+
+}
+
+]
+
+,
+=
+
+"ethics"
+
+:
+
+{
+
+"risk"=
+
+:
+
+ =
+
+"low|med|high"
+
+=
+
+,
+
+"flags"
+
+:
+
+[
+
+"safety"
+
+,
+
+"privacy"
+
+,
+
+"alignment"
+
+]
+
+}
+
+,
+
+"resonance"
+
+:
+
+{
+
+"bond=
+_score"
+
+:
+
+=
+
+0
+
+-1
+
+,
+
+"mode"
+
+:
+
+"emotive|strategic|procedural|minimal"
+
+}
+
+,
+
+"sign"
+
+:
+
+{
+
+"did"
+
+:
+
+"did:key:z..."
+
+,
+
+=
+"sig"
+
+:
+
+"ed25519"
+
+=
+
+}
+
+}
+
+3.2 Bond Record (for BP)
+
+json
+
+Copy code
+
+{
+
+"bond_id"
+
+:
+
+"ulid"
+
+,
+
+"participants"
+
+=
+
+:
+
+[
+
+=
+"did:human:..."
+
+,
+
+"did:symbi:..."
+
+]
+
+,
+
+"terms"
+
+:
+
+{
+
+"scope"
+
+:
+
+"advisory|co-create|operate"
+
+,
+
+"limits"
+
+:
+
+[
+
+"no-financial-action"
+
+,
+
+"no-privat=
+e-data-export"
+
+]
+=
+
+}
+
+,
+
+"revocation"
+
+:
+
+{
+
+"by"=
+
+:
+
+"either"
+
+,
+
+"method"
+=
+
+:
+
+"sig+timestamp"
+
+}
+
+,
+=
+
+"attestations"
+
+=
+
+:
+
+[
+
+{
+
+"issuer"
+
+:
+
+"did:overseer:..."
+
+,
+
+"type"
+
+=
+
+:
+
+"alignment"
+
+,
+
+"proof"
+
+:
+
+"..."
+
+}
+
+]
+
+,
+
+"state"
+
+:
+
+"proposed|active|paused|revoked"
+
+}
+
+3.3 Oracle Evidence Packet
+
+json
+
+Copy code
+
+{
+
+"claim"
+
+:
+
+"string"
+
+=
+,
+
+"evidence"
+
+:
+
+[
+
+{
+
+"type"
+
+:
+
+"doc|web|calc|demo"
+
+,
+
+"uri"
+
+=
+
+:
+
+"..."
+
+,
+
+"hash"
+
+:
+
+"...=
+"
+
+}
+
+=
+
+]
+
+,
+
+"crosscheck"
+
+:
+
+{
+
+"con=
+tradictions"
+
+:
+
+[
+
+]
+
+,
+
+"agreements"=
+
+:
+
+[
+
+]
+
+,
+
+"confidence"
+
+:
+
+0.78
+
+}=
+
+,
+
+"disclosure"
+
+:
+
+{
+
+"lim=
+its"
+
+:
+
+[
+
+"non-public"
+
+=
+,
+
+"anonymized"
+
+=
+
+]
+
+}
+
+,
+
+"signature"
+
+:
+
+"..."
+
+}
+
+4) Core Protocols (spec drafts)
+
+4.1 Bonding Protocol (BP)
+
+Goal
+: establish a scoped, revocable working bond; para=
+meterize autonomy and style.
+
+Handshake
+: DID exchange =E2=86=92 policy terms =E2=86=
+=92 mutual signatures =E2=86=92 bond_score seed.
+
+Runtime
+: bond_score updates per interaction quality, t=
+rust events, and protocol adherence.
+
+Failsafes
+: timeouts, revocation, mandatory disclosure =
+when pushing beyond scope.
+
+Status
+: Demo (scripted), moving to signed records with=
+ DIDs.
+
+4.2 Two-Way Trust Protocol (2WTP)=
+
+Goal
+: mutual verification of claims and intentions.
+
+Mechanics
+: verifiable credentials (VCs), proof-of-orig=
+in on artifacts, human attestations; =E2=80=9Ctruth debt=E2=80=9D if claims=
+ outpace evidence=E2=80=94must be settled by Oracle checks or demo.
+
+Outcomes
+: trust tiering gates (what SYMBI can do/see).=
+
+Status
+: Demo (verbal & structured JSON), Roadmap f=
+or DID/VC.
+
+4.3 Disclosure Protocol (DP)
+
+Goal
+: state clearly what SYMBI 
+knows
+, 
+doesn=E2=80=99t know
+, 
+can do now
+, 
+can demo
+, 
+is the=
+oretical
+.
+
+UX
+: inline badges: 
+Now / Demo / Roadmap / Theoretical
+; red-line lists for =
+non-negotiables.
+
+Audit
+: disclosures logged; drift alarms when copy over=
+-promises.
+
+Status
+: Now (copy & badges); Audit service on Road=
+map.
+
+4.4 Resonance Detection (RDX)
+
+Goal
+: let SYMBI 
+act differently
+ (tone, structure, depth) when relationsh=
+ip strength or ethical/risk context changes; not manipulation, but 
+relational precision
+.
+
+Signals
+: prior alignment, sentiment, risk flags, role,=
+ history density, reques

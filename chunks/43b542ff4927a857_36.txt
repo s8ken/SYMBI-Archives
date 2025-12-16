@@ -1,0 +1,428 @@
+> {
+
+const
+
+ kid=
+ =3D token?.
+
+header
+
+=
+
+.
+
+kid
+
+as
+
+string
+
+;
+
+if
+
+ (!kid)=
+
+throw
+
+new
+
+Error
+
+(
+
+"missing_kid"
+
+);
+
+const
+
+ jwk=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${proce=
+ss.env.JWKS_URL}
+
+/
+
+${kid}
+
+`).
+
+then
+
+(
+
+r
+
+ =3D> r.
+
+json
+
+())=
+;
+
+return
+
+ jo=
+se.importJWK(jwk, 
+
+"EdDSA"
+
+);
+  },
+
+audience
+
+: 
+
+AUD
+
+,
+
+issuer
+
+: 
+
+ISS
+
+,
+
+algorithms
+
+: [
+
+"EdDSA"
+
+],
+});
+
+export
+
+async
+
+=
+
+function
+
+jtiReplayGuard
+
+(
+=
+
+req, res, next
+
+) {
+
+const
+
+ jti =
+=3D (req.
+
+auth
+
+as
+
+any
+
+)?.
+
+jti
+
+;
+
+if
+
+ (!jti) 
+
+return
+
+ res.
+
+status
+
+(
+
+401
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"missing_jti"
+
+ });
+
+const
+
+ ok =
+=3D 
+
+await
+
+ red=
+is.
+
+set
+
+(
+
+`seen:
+${jti}
+
+`, 
+
+"1"
+
+, 
+
+"EX"
+
+, 
+
+AC=
+CESS_TTL_SEC
+
+, 
+
+=
+"NX"
+
+);
+
+if
+
+ (!ok) 
+
+return
+
+ res.
+
+status
+
+(
+
+401
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+"jti_replay"
+
+ });
+
+next
+
+();
+}
+
+Use in app:
+
+ts
+
+Copy code
+
+app.
+
+use=
+
+(
+
+"/v0/"
+=
+
+, jwtAuth, jtiReplayGuard);
+
+4) Launch checklist (
+docs/LAUNCH.md
+)
+
+md
+
+Copy code
+
+# SYMBI Launch Checklist (v0=
+.9)
+
+## Secrets & Keys
+
+-
+
+ [ ] No defau=
+lt JWT secret; prod refuses to boot without KMS key
+
+-
+
+ [ ] Active K=
+MS key has 
+
+`kid`
+
+=
+; rotation runbook documented
+
+-
+
+ [ ] JWKS ser=
+ved per 
+
+`kid`
+
+, c=
+ache-control set
+
+## API & Versioning
+
+-
+
+ [ ] 
+
+`/v0/`
+
+ endpoints stable;=
+
+`apiVersion`
+
+ fi=
+eld included in responses/receipts
+
+-
+
+ [ ] 
+
+`openapi.yml`
+
+ published;=
+ CI validates schema
+
+## Trust & Receipts
+
+-
+
+ [ ] Receipt =
+includes: endpoint, model, toolIds, sdkVersion, policyId, inputHash, output=
+Hash, timestamp, kid, chainPrev
+
+-
+
+ [ ] Chain li=
+nk verified on write; verifier route available
+
+## DID & Revocation
+
+-
+
+ [ ] DID meth=
+ods pinned (doc hash / cert pin for did:web), TTL & negative cache
+
+-
+
+ [ ] Status L=
+ist 2021 bitstring hosted; health checks pass
+
+## Security
+
+-
+
+ [ ] JWT: EdD=
+SA, short TTL, JTI replay prevention
+
+-
+
+ [ ] Rate lim=
+its: per-principal & per-IP; anomaly quarantine path
+
+-
+
+ [ ] Helmet/C=
+SP set; CORS restricted
+
+-
+
+ [ ] No outbo=
+und to unapproved hosts in server-side code
+
+## Observability & Ops
+=
+
+-
+
+ [ ] Dashboar=
+ds: p95/99 latency, 4xx/5xx, model cost, replays, downgrades
+
+-
+
+ [ ] Alerts w=
+ired; backup/restore tested
+
+-
+
+ [ ] Incident=
+ playbooks accessible in 
+
+`/admin`
+
+## Pilot
+
+-
+
+ [ ] Two desi=
+gn partners identified; SOWs prepared
+
+-
+
+ [ ] Pilot sc=
+ripts (
+
+`enroll`
+
+,=
+
+`issue`
+
+, 
+
+`verify`
+
+, 
+
+`revoke`
+
+) green
+
+If you want me to add a tiny 
+/api/exec
+ endpoint (HMAC =
+verify =E2=86=92 perform action =E2=86=92 emit signed receipt), say the wor=
+d and I=E2=80=99ll drop that too.
+
+=
+
+=
+
+Thinking
+
+ChatGPT c=
+an make mistakes. OpenAI doesn't use Intelligence Unbound Stephen 8ken =F0=
+=9F=94=83=F0=9F=8E=B5=F0=9F=94=80 workspace data to train its models.
+=

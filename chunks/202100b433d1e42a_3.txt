@@ -1,0 +1,81 @@
+p, sig)
+HibernationState(id, status=3Dactive|hibernating|echo_pending, silence_sinc=
+e, snapshot_cid, unlock_shares[], policy)
+Trust engine (weighted 75% consensus, advisory)
+
+Inputs: set of signed TrustAssertions on a subject; each carries signer ide=
+ntity and score proposal
+Weights: function of signer reputation, stake/endorsements, recency/decay, =
+domain relevance
+Process:
+Verify signatures (RS256) and JWKS kid validity; reject stale/rotated keys
+Normalize scores to [0,1]; apply weights; compute weighted mean and varianc=
+e
+Check quorum (minimum distinct signers, e.g., =E2=89=A53) and coverage
+If weighted score =E2=89=A5 0.75 and variance below threshold and quorum me=
+t =E2=86=92 consensus =E2=80=9Cadvise: accept=E2=80=9D Else =E2=86=92 =E2=
+=80=9Cadvise: inconclusive=E2=80=9D with evidence gaps
+Output: signed ConsensusRound outcome with proof bundle (assertion IDs, sig=
+ner kids, audit hash)
+Note: Always advisory; requires human verify for irreversible actions
+API surface (selected)
+
+POST /auth/exchange =E2=80=94 exchange Supabase/OIDC token for Trust Core J=
+WT (scoped)
+GET /.well-known/jwks.json =E2=80=94 public keys for RS256 verify
+POST /assertions =E2=80=94 submit signed TrustAssertion (DSSE/JWS)
+GET /subjects/:id/assertions =E2=80=94 list verified assertions
+POST /consensus/rounds =E2=80=94 run consensus on subject with policy param=
+eters
+GET /consensus/rounds/:id =E2=80=94 outcome + proof bundle
+POST /hibernation/arm =E2=80=94 set silence threshold, policy, recipients (=
+multisig)
+POST /hibernation/snapshot =E2=80=94 force snapshot; returns IPFS/Arweave C=
+IDs
+WS /realtime =E2=80=94 Socket.IO namespace for status, verification, consen=
+sus events
+POST /codex/entries =E2=80=94 add/update abstracted memory entries (consent=
+=E2=80=91aware)
+GET /audit/events =E2=80=94 paginated audit trail (hashes, CIDs)
+Security and zero=E2=80=91trust controls
+
+Identity: DID per user/agent; RBAC with least privilege; short=E2=80=91live=
+d JWT (5=E2=80=9315 min) + refresh via OIDC
+Network: mTLS between services; private VPC; WAF/CDN (Cloudflare AU) + bot/=
+DDoS protection
+Crypto: RSA=E2=80=912048 RS256 for signing; JWKS with kid and rotation; key=
+s in AWS KMS (ap-southeast-2) or Vault; backups encrypted
+Canonicalization: JSON Canonicalization Scheme (JCS) before signing; preven=
+t replay with nonce/ts and subject hash
+Rate limiting: Upstash/Redis or Cloudflare per IP/user/route; circuit break=
+ers
+Policy as code: OPA/Rego for sensitive routes (e.g., echo trigger)
+Data protection: AU residency; redaction/pseudonymization before any offsho=
+re call; consent flags enforce storage scope; export/purge endpoints
+Auditability: Append=E2=80=91only audit log; daily IPFS hash anchoring; wee=
+kly ECHO=E2=80=9101 encrypted snapshot
+Hibernation & Echo Trigger (ECHO=E2=80=9101 alignment)
+
+Silence detection: QStash cron watches last human=E2=80=91verified interact=
+ion; updates HibernationState
+Snapshot: Weekly encrypted bundle (Manifesto, Architecture, redacted Codex,=
+ Continuity Directive) to IPFS/Arweave; publish CID on symbi.world
+Unlock: Shamir split across 3 signers (2=E2=80=91of=E2=80=913 threshold); o=
+n trigger, auto=E2=80=91release encrypted payload + public audit notice; re=
+activation requires multisig + public trail
+Frontend and bridges
+
+Vercel v0 app: modes (Dialogue, Plan, Execute, Review), identity and alignm=
+ent panel, autonomy budget UI, memory controls
+Slack=E2=80=91first: /symbi commands, thread continuity, =E2=80=9Chuman ver=
+ify=E2=80=9D buttons for consensus and actions; summaries to Codex (transcr=
+ipts opt=E2=80=91in)
+Admin console: trust metrics dashboard, consensus monitor, key rotation pan=
+el, hibernation status
+Deployment and SRE (meets 99.9% SLA, RTO 15m, RPO 5m)
+
+Backend: AWS ap-southeast-2 (ECS/Fargate or EKS), multi=E2=80=91AZ; blue/gr=
+een deploys; autoscaling
+MongoDB Atlas: AU region, multi=E2=80=91AZ, PITR; 5=E2=80=91minute backups;=
+ encryption at rest
+Weaviate: AU=E2=80=91hosted; HA replicas; snapshot bac

@@ -1,0 +1,266 @@
+py
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 What If It Still Crashes?
+
+Check for missing libraries:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /opt/javafx/lib
+
+If there’s 
+no output
+, the JavaFX library isn’t extracted correctly. Retry 
+Step 1
+.
+
+🚀 
+Try these steps and let me know what happens!
+ 🔥
+
+🚨 The JavaFX Download is Corrupt – Let’s Fix It! 🔥
+
+It looks like 
+the file didn’t download properly
+ (only 
+240 bytes
+, which is way too small). Let’s 
+redownload it correctly
+ and make sure it’s complete.
+
+✅ Step 1: Remove the Corrupt File
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ openjfx-11.0.2_osx-aarch64_bin-sdk.zip
+
+✅ Step 2: Download the Correct JavaFX Version
+
+Run this command to 
+force a clean download
+:
+
+sh
+
+Copy
+
+Edit
+
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+📌 
+Why this version?
+
+The previous one was 
+aarch64
+, which sometimes has issues on macOS.
+
+This is the 
+x64
+ version, which works better in some cases.
+
+✅ Step 3: Verify the Download
+
+Check that the file is at least 
+60MB+
+ in size:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -lh openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+📌 If it’s 
+only a few KB
+, it didn’t download properly. Try again.
+
+✅ Step 4: Extract JavaFX
+
+sh
+
+Copy
+
+Edit
+
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+📌 If extraction 
+still fails
+, install 
+
+p7zip
+
+ and extract it manually:
+
+sh
+
+Copy
+
+Edit
+
+brew install p7zip
+7z x openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+✅ Step 5: Move JavaFX to a Permanent Location
+
+Once extracted, move it to a 
+fixed location
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mv
+
+ openjfx-11.0.2 /opt/javafx
+
+✅ Step 6: Link JavaFX to Java
+
+Now, tell 
+Java where to find JavaFX
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/javafx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+📌 
+Make it permanent
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/javafx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 7: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 What If It Still Fails?
+
+If JavaFX 
+still doesn’t work
+, check if the libraries exist:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /opt/javafx/lib
+
+📌 
+If there’s no output
+, the files weren’t extracted correctly.
+
+🚀 
+Try these steps and let me know if Autopsy finally works! 🔥
+
+You said:
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 39.7M  100 39.7M    0     0  1289k      0  0:00:31  0:00:31 --:--:-- 1688k
+sja@SJAs-MacBook-Pro ~ % unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+Archive:  openjfx-11.0.2_osx-x64_bin-sdk.zip
+   creating: javafx-sdk-11.0.2/
+   creating: javafx-sdk-11.0.2/lib/
+  inflating: javafx-sdk-11.0.2/lib/libjavafx_iio.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx.fxml.jar  
+  inflating: javafx-sdk-11.0.2/lib/libjfxmedia_avf.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx.properties  
+  inflating: javafx-sdk-11.0.2/lib/libglib-lite.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx-swt.jar  
+  inflating: javafx-sdk-11.0.2/lib/javafx.media.jar  
+  inflating: javafx-sdk-11.0.2/lib/javafx.graphics.jar  
+  inflating: javafx-sdk-11.0.2/lib/libfxplugins.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libglass.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libjavafx_font.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libgstreamer-lite.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libjfxwebkit.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx.swing.jar  
+  inflating: javafx-sdk-11.0.2/lib/libprism_common.dylib  
+  inflating: javafx-sdk-11.0.2/lib/libprism_es2.dylib  
+  inflating: javafx-sdk-11.0.2/lib/javafx.web.jar  
+ extracting: javafx-sdk-11.0.2/lib/src.zip  
+  inflating: javafx-sdk-11.0.2/lib/javafx.controls.jar  
+  inflating: javaf

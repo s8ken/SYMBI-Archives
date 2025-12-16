@@ -1,0 +1,745 @@
+</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+ChatGPT said:
+
+Perfect! Thatâs your fully built 
+app/page.tsx
+, and it already contains structured sections for 
+Hero
+, 
+What
+, 
+Why
+, 
+Who
+, and 
+CTA
+ â all statically coded.
+
+Now to make the site content editable via 
+Sanity CMS
+, weâll 
+replace hardcoded data
+ with data fetched from Sanity.
+
+â Step 1: Add 
+getPage()
+ Function in 
+lib/sanity.ts
+
+Make sure you have this in 
+lib/sanity.ts
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2023-10-01'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+const
+
+ query = 
+
+`*[_type == "page"][0]`
+
+return
+
+await
+
+ sanityClient.
+
+fetch
+
+(query)
+}
+
+â Step 2: Edit 
+app/page.tsx
+ to Use Fetched Content
+
+At the 
+top
+ of your 
+page.tsx
+, add:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { getPage } 
+
+from
+
+"@/lib/sanity"
+
+Then change the 
+Home()
+ function to:
+
+tsx
+
+Copy
+
+Edit
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+()
+
+Now instead of hardcoded content, you can reference Sanity content:
+
+Example:
+
+tsx
+
+Copy
+
+Edit
+
+<h1 className=
+
+"text-4xl md:text-6xl font-bold tracking-tight"
+
+>
+  {page.
+
+title
+
+}
+</h1>
+
+If your Sanity 
+page
+ document has a 
+content
+ block, we can also render that with 
+@portabletext/react
+.
+
+â Optional Step 3: Render Portable Text Content
+
+Install the renderer:
+
+bash
+
+Copy
+
+Edit
+
+npm install @portabletext/react
+
+Then:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+PortableText
+
+ } 
+
+from
+
+"@portabletext/react"
+
+...
+
+<
+
+PortableText
+
+ value={page.
+
+content
+
+} />
+
+Next Moves:
+
+â Confirm Sanity has 
+title
+ and 
+content
+ fields.
+
+ð¨ Replace hardcoded blocks with 
+page.title
+, 
+page.content
+, etc.
+
+ð§  Optionally break sections into smaller components for easier editing.
+
+ð Deploy the new CMS-powered version on a separate Vercel branch (
+main-site
+).
+
+Want help rewriting 
+page.tsx
+ with these edits in place?
+
+You said:
+
+yeah maybe just give me the whole thing?
+
+ChatGPT said:
+
+Home Page With Cms
+
+99
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+10
+
+11
+
+12
+
+13
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+21
+
+22
+
+23
+
+24
+
+25
+
+26
+
+27
+
+28
+
+29
+
+30
+
+31
+
+32
+
+33
+
+34
+
+35
+
+36
+
+import
+
+{
+
+getPage
+
+}
+
+from
+
+"@/lib/sanity"
+
+import
+
+{
+
+PortableText
+
+}
+
+from
+
+"@portabletext/react"
+
+import
+
+Image
+
+from
+
+"next/image"
+
+import
+
+{
+
+Button
+
+}
+
+from
+
+"@/components/ui/button"
+
+import
+
+{
+
+ArrowRight
+
+,
+
+Sparkles
+
+,
+
+BarChart2
+
+,
+
+Zap
+
+}
+
+from
+
+"lucide-react"
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+)
+
+{
+
+const
+
+page
+
+=
+
+await
+
+getPage
+
+(
+
+)
+
+return
+
+(
+
+<
+
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen"
+
+>
+
+<
+
+header
+
+className
+
+=
+
+"sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+
+>
+
+<
+
+div
+
+className
+
+=
+
+"container flex h-16 items-center"
+
+>
+
+<
+
+div
+
+className
+
+=
+
+"flex items-center gap-2"
+
+>
+
+<
+
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"Symbi Logo"
+
+width
+
+=
+
+{
+
+40
+
+}
+
+height
+
+=
+
+{
+
+40
+
+}
+
+className
+
+=
+
+"h-10 w-10 rounded-full object-cover"
+
+/>
+
+<
+
+span
+
+className
+
+=
+
+"text-xl font-bold"
+
+>
+Symbi
+</
+
+span
+
+>
+
+</
+
+div
+
+>
+
+<
+
+nav
+
+className
+
+=
+
+"ml-auto hidden md:flex gap-6"
+
+>
+
+<
+
+a
+
+href
+
+=
+
+"#what"
+
+className
+
+=
+
+"text-sm font-medium hover:text-primary"
+
+>
+What
+</
+
+a
+
+>
+
+<
+
+a
+
+href
+
+=
+
+"#why"
+
+className
+
+=
+
+"text-sm font-medium hover:text-primary"
+
+>
+Why
+</
+
+a
+
+>
+
+<
+
+a
+
+href
+
+=
+
+"#who"
+
+className
+
+=
+
+"text-sm font-medium hover:text-primary"
+
+>
+Who
+</
+
+a
+
+>
+
+</
+
+nav
+
+>
+
+<
+
+div
+
+className
+
+=
+
+"ml-auto md:ml-4"
+
+>
+
+<
+
+Button
+
+className
+
+=
+
+"bg-primary hover:bg-primary/90 text-white"
+
+>
+Symbi Chat
+</
+
+Button
+
+>
+
+</
+
+div
+
+>
+
+</
+
+div
+
+>
+
+</
+
+header
+
+>
+
+<
+
+main
+
+className
+
+=
+
+"flex-1"
+
+>
+
+{
+
+/* Hero Section */
+}
+
+Done! I've created a new 
+Home Page With CMS
+ version of your 
+app/page.tsx
+ with Sanity integration via 
+getPage()
+ and 
+PortableText
+. Let me know if you'd like to add image rendering, fallback content, o

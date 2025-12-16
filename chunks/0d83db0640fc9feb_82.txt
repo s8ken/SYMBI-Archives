@@ -1,0 +1,104 @@
+ssages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+log: runtime predicate failure - invalid predicate:
+composedMessage CONTAINS "camera" AND date >= "2025-03-08 13:53:54"
+(likely a type mismatch)
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'eventMessage contains "camera" AND timestamp >= "2025-03-08 13:53:54"' --info
+
+log: warning: ./system_logs.logarchive present but reading from system log store.
+Filtering the log data using "composedMessage CONTAINS "camera" AND date >= "2025-03-08 13:53:54""
+Skipping debug messages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+log: runtime predicate failure - invalid predicate:
+composedMessage CONTAINS "camera" AND date >= "2025-03-08 13:53:54"
+(likely a type mismatch)
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+It seems like there's an issue with the formatting of the 
+log show
+ predicate, particularly around the 
+timestamp
+ and the 
+eventMessage
+ parameters. The error indicates a mismatch with the types, possibly because the timestamp format you're using is not matching what the log command expects.
+
+Hereâs a potential fix:
+
+Correcting the Timestamp Predicate:
+
+Instead of using a complex date format like "2025-03-08 13:53:54," try using the full ISO 8601 format (e.g., 
+2025-03-08T13:53:54Z
+) as that's typically expected for system logs.
+
+Let's try this:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera" AND timestamp >= "2025-03-08T13:53:54Z"'
+
+ --info
+
+Make sure to adjust the timestamp based on your needs. This format should resolve the type mismatch error.
+
+If the 
+log
+ command still fails:
+
+If this approach doesnât work, you might want to try checking if there are logs in different categories, like system logs or diagnostics, or use the 
+--debug
+ flag for more detailed output. Let me know how it goes!
+
+You said:
+
+don't use timestamps use say last 2 hours
+
+ChatGPT said:
+
+To search for logs from the last 2 hours without specifying a timestamp, you can use the 
+log show
+ command with a dynamic time filter using 
+--last
+ option.
+
+Hereâs the command to view logs from the last 2 hours:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera"'
+
+ --info --last 2h
+
+Explanation:
+
+--last 2h
+ filters the logs from the last 2 hours.
+
+--predicate 'eventMessage contains "camera"'
+ filters the logs that include the word "camera" in the message.
+
+--info
+ provides detailed information about the logs.
+
+This should provide you with the logs from the last 2 hours that contain the word "camera." Let me know if this works or if you'd like further adjustments!
+
+You said:
+
+d: (RunningBoard) [com.apple.runningboard:process] [xpcservice<com.apple.mscamerad-xpc([app<application.com.apple.Preview.1152921500311897406.1152921500311897411(501)>:2602])(501)>{vt hash: 0}:2606:2606] This process will not be managed.
+2025-03-08 04:26:42.749398-0800 0x969e2    Default     0x0                  505    0    ControlCenter: (AVFCapture) [com.apple.cameracapture:] <<<< AVControlCenterModules >>>> AVControlCenterDeviceHasUltraWideCamera: Has ultra wide camera: NO on <private>
+2025-03-08 04:26:42.749401-0800 0x969e2    Default     0x0                  505    0    ControlCenter: (AVFCapture) [com.apple.cameracapture:] <<<< AVControlCenterModules >>>> AVControlCenterDeviceHasWideCamera: Has wide camera: NO on <private>
+2025-03-08 04:26:53.978327-0800 0x2048     Default     0x0                  688    0    Safari: (WebKit) [com.apple.WebKit:WebRTC] UserMediaPermissionRequestManagerProxy::computeFilteredDeviceList(541809D1D7CF7817) 3 devices revealed, has filtering = false has camera = true, has microphone = true
+2025-03-08 04:26:53.978420-0800 0x2048     Default     0x0                  688    0    Safari: (WebKit) [com.apple.WebKit:WebRTC] UserMediaPermissionRequestManagerProxy::computeFilteredDeviceList(541809D1D7CF7817) 3 devices revealed, has filtering 

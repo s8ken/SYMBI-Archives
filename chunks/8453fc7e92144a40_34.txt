@@ -1,0 +1,85 @@
+E2=80=94 backend/controllers/guar=
+drails.controller.js
+GET /api/insights/timeline =E2=80=94 yes =E2=80=94 backend/controllers/insi=
+ghts.controller.js
+Webhooks
+POST /api/webhooks/sky/:agentId =E2=80=94 public =E2=80=94 backend/routes/w=
+ebhook.routes.js
+POST /api/webhooks/test =E2=80=94 public
+GET /api/webhooks/status =E2=80=94 public
+Socket.IO channels (connection auth, events)
+Connection auth: handshake requires JWT (auth.token or Authorization header=
+); sets socket.user.id backend/server.js:45
+Events
+C=E2=86=92S joinConversation =E2=80=94 handler backend/server.js:65 (checks=
+ conversation ownership; joins room; emits joined or error)
+C=E2=86=92S new_message =E2=80=94 handler backend/server.js:79 (rebroadcast=
+s as message_received and newMessage)
+C=E2=86=92S ai_communication =E2=80=94 handler backend/server.js:86 (rebroa=
+dcasts to targetAgentId room)
+Models/Schemas (MongoDB via Mongoose)
+User: backend/models/user.model.js =E2=80=94 name, email(unique), password(=
+select
+), apiKeys[{provider,name,key(select:false)}], preferences
+Agent: backend/models/agent.model.js =E2=80=94 provider, model, systemPromp=
+t, apiKeyId, traits, externalSystems(apiKey select
+), statuses
+Conversation: backend/models/conversation.model.js =E2=80=94 messages[{send=
+er,content,agentId,timestamp,=E2=80=A6}], agents[], tags, ci/ethics metrics
+TrustDeclaration: backend/models/trust.model.js =E2=80=94 agent_id/name, tr=
+ust_articles(6), compliance_score, guilt_score(deterministic), audit_histor=
+y
+Context: backend/models/context.model.js =E2=80=94 knowledge entries, vecto=
+rization hooks, Weaviate sync
+Report: backend/models/report.model.js
+InteractionEvent: backend/models/interactionEvent.model.js =E2=80=94 sessio=
+n_id/user, prompt/response, analysis, embeddings, ledger{prev_hash,row_hash=
+,signature}; append-only pre-hooks
+Services/Workers/Queues
+LLM provider orchestration: backend/controllers/llm.controller.js
+OpenAI Assistants (create/list/update/delete, threads, runs, tool outputs):=
+ backend/services/assistant.service.js
+Heuristic analyzer: backend/services/analysis.service.js
+Weaviate client (optional), Snowflake client
+No job queue/worker configured (BullMQ/Redis not present)
+Config flags / env vars referenced
+Core: PORT, NODE_ENV, MONGODB_URI, JWT_SECRET, CORS_ORIGIN, CORS_ORIGINS
+LLM: OPENAI_API_KEY, ANTHROPIC_API_KEY, PERPLEXITY_API_KEY, V0_API_KEY, OPE=
+NAI_BASE_URL
+Weaviate: WEAVIATE_URL, WEAVIATE_TIMEOUT, WEAVIATE_STARTUP_PERIOD, WEAVIATE=
+_API_KEY, WEAVIATE_ADDITIONAL_HEADERS, DEFAULT_SEARCH_LIMIT, DEFAULT_SIMILA=
+RITY_THRESHOLD, MAX_SEARCH_RESULTS
+Ledger: LEDGER_SIGNING_KEY
+Snowflake: SNOWFLAKE_* (account, username, password, database, schema, ware=
+house, role, timeout)
+Frontend Inventory
+Router map (paths =E2=86=92 components)
+/login (Login), /register (Register)
+/ and /dashboard (Dashboard)
+/conversations (Conversations), /conversations/:id (ConversationDetail)
+/agents (Agents), /agents/:id (AgentDetail)
+/assistants (Assistants), /assistants/new (AssistantDetail), /assistants/:a=
+ssistantId/chat (AssistantChat)
+/settings (Settings), /reports (Reports), /context-bridge (ContextBridge), =
+/review (ReviewConsole)
+* (NotFound)
+Key screens/components
+Dashboard, Conversations/ConversationDetail (Socket.IO integration with io(=
+{auth:{token}})), Agents, Assistants, Settings, Reports, Context Bridge, Re=
+viewConsole (timeline from /api/insights/timeline)
+API client usage
+Axios with global Authorization header from localStorage token in frontend/=
+src/context/AuthContext.js
+CRA proxy "proxy": "http://localhost:5000"
+Error handling localized to components; no global interceptor beyond auth h=
+eader
+Build output
+Not produced in this read-only pass (CRA scripts present)
+LLM & Assistants
+Model selection
+OpenAI defaults to gpt-4o (also gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-tu=
+rbo)
+GET /api/llm/models/openai attempts openai.models.list() (if key set) and f=
+alls back to static list
+Code review defaults to gpt-4o for OpenAI
+Assistant endpoin

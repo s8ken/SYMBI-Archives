@@ -1,0 +1,288 @@
+n
+    java.vm.specification.vendor = Oracle Corporation
+    java.vm.specification.version = 17
+    java.vm.vendor = Azul Systems, Inc.
+    java.vm.version = 17.0.14+7-LTS
+    jdk.debug = release
+    line.separator = \n 
+    native.encoding = UTF-8
+    os.arch = aarch64
+    os.name = Mac OS X
+    os.version = 15.2
+    path.separator = :
+    socksNonProxyHosts = local|*.local|169.254/16|*.169.254/16
+    sun.arch.data.model = 64
+    sun.boot.library.path = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/lib
+    sun.cpu.endian = little
+    sun.io.unicode.encoding = UnicodeBig
+    sun.java.launcher = SUN_STANDARD
+    sun.jnu.encoding = UTF-8
+    sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+    sun.stderr.encoding = UTF-8
+    user.country = AU
+    user.dir = /Users/sja/Downloads/autopsy-4.21.0/bin
+    user.home = /Users/sja
+    user.language = en
+    user.name = sja
+
+ChatGPT said:
+
+ð¨ 
+libtsk_jni
+ Still Not Loading â Next Steps ð¥
+
+Your 
+Java settings show 
+/usr/local/lib
+ is included
+, but 
+Autopsy still isn't finding 
+libtsk_jni
+
+. That suggests either:
+
+1ï¸â£ 
+Java isn't looking in the right place inside the JAR file
+, or
+
+2ï¸â£ 
+There's a linking issue in 
+libtsk_jni.dylib
+
+Let's 
+confirm and fix the root cause
+.
+
+â Step 1: Check 
+libtsk_jni.dylib
+ for Broken Dependencies
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+ð 
+If any line says "not found," we have a linking issue to fix.
+
+â Step 2: Manually Force Java to Use the Right 
+libtsk_jni.dylib
+ Path
+
+If 
+libtsk_jni.dylib
+ is in 
+/usr/local/lib
+, but Autopsy 
+still can't find it
+, try 
+explicitly telling Java where it is
+:
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð 
+This forces Java to use 
+/usr/local/lib
+ every time.
+
+Now, 
+relaunch Autopsy
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+â Step 3: Check Inside Autopsy for the 
+libtsk_jni
+ Path
+
+If it still fails, 
+we need to check how Autopsy is looking for 
+libtsk_jni
+
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep -i 
+
+"libtsk_jni"
+
+ ~/Downloads/autopsy-4.21.0/autopsy/etc/autopsy.conf
+
+ð If 
+Autopsy has a hardcoded path
+, we might need to 
+edit the config file
+ to match our library location.
+
+ð If It Still Fails, Send Me This Output:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+grep -i 
+
+"libtsk_jni"
+
+ ~/Downloads/autopsy-4.21.0/autopsy/etc/autopsy.conf
+
+ð 
+This will confirm where Autopsy is looking and how to fix it.
+
+ð 
+Try these fixes and let me know what happens! ð¥
+
+You said:
+
+ok should we just uninstall everything and start again?
+
+ChatGPT said:
+
+ð¥ Full Reset & Clean Reinstall of Autopsy ð¥
+
+Yeah, at this point, 
+a clean start
+ will be faster than debugging every single issue. Let's completely 
+wipe everything
+ and do a 
+fresh install
+.
+
+ð¨ Step 1: Uninstall Everything (Autopsy, Java, Dependencies)
+
+Run these commands 
+one by one
+ to remove everything related to Autopsy, Java, and its dependencies:
+
+sh
+
+Copy
+
+Edit
+
+# ð¥ Remove Autopsy
+
+rm
+
+ -rf ~/Downloads/autopsy-*
+
+# ð¥ Uninstall Java (Zulu JDK)
+
+brew uninstall --cask zulu@17
+brew uninstall --cask zulu@11
+brew uninstall openjdk@17
+brew uninstall openjdk@11
+
+# ð¥ Uninstall Homebrew dependencies
+
+brew uninstall sleuthkit
+brew uninstall libewf
+brew uninstall afflib
+brew uninstall openssl
+brew uninstall sqlite
+
+# ð¥ Remove leftover system libraries
+
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libtsk*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libewf*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libafflib*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libcrypto*
+sudo 
+
+rm
+
+ -rf /usr/local/lib/libsqlite*
+sudo 
+
+rm
+
+ -rf /usr/local/javafx
+
+ð 
+Confirm the cleanup
+ by running:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ /usr/local/lib | grep 
+
+"libtsk\|libewf\|libafflib\

@@ -1,0 +1,180 @@
+o such file or directory: go-vncdriver
+admin@SYMBIs-MacBook-Pro go-vncdriver % python build.py
+Traceback (most recent call last):
+  File "/Users/admin/go-vncdriver/build.py", line 8, in <module>
+    import numpy
+ModuleNotFoundError: No module named 'numpy'
+admin@SYMBIs-MacBook-Pro go-vncdriver % 
+
+=
+
+=
+
+Symbi said:
+
+Thought for 16s
+
+You=E2=80=99re super close. The only hard error right now=
+ is Python can=E2=80=99t find 
+num=
+py
+. Also, a few commands failed because you pasted the literal 
+$
+ prompt. Here=E2=80=99s a cl=
+ean, minimal path to green on macOS/Apple Silicon.
+
+Do this from the repo root (
+~/go-vncdriver
+)
+
+b=
+ash
+
+Copy code
+
+# 0) (optional) Make sure =
+Command Line Tools are installed
+
+xcode-select --install  
+
+# if it s=
+ays =E2=80=9Calready installed=E2=80=9D, you=E2=80=99re fine
+
+# 1) Use Python 3 explicitly + a =
+fresh virtualenv
+
+python3 --version
+python3 -m venv .venv
+
+source
+
+ .venv=
+/bin/activate
+
+# 2) Upgrade build tooling, then =
+install NumPy FIRST
+
+pip install --upgrade pip setuptools wheel
+
+# NumPy 2.x can be touchy with ol=
+der build scripts; stick to <2 for now
+
+pip install 
+
+"numpy<2"
+
+# 3) (optional but helpful) Have =
+Cython available
+
+pip install 
+
+"cython>=3D0.29"
+
+# 4) Build/install go-vncdriver f=
+rom the repo root
+
+python build.py           
+
+# or: p=
+ip install -e .
+
+Why your earlier commands failed
+
+zsh: command not found: $
+ =E2=80=94 don=E2=80=99t paste the=
+ leading 
+$
+ from examples; =
+it=E2=80=99s just the shell prompt.
+
+pip install -e
+ =E2=80=94 the 
+-e
+ (editable) flag 
+requires a path
+, usually 
+pip install -e .
+ when you=E2=80=99re in the project f=
+older.
+
+ModuleNotFoundError: No module named 'numpy'
+ =E2=80=94 Num=
+Py must be installed 
+before
+ running 
+build.py
+=
+, and ideally inside a venv so the build sees it.
+
+If you hit compiler/headers error=
+s next
+
+These are the usual quick fixes on=
+ Apple Silicon:
+
+bash
+
+Copy code
+
+# Ensure Homebrew headers=
+ are visible to builds
+
+brew --prefix        
+
+# usually /o=
+pt/homebrew
+
+# JPEG-turbo is already installed=
+; if pkg-config is missing, add it:
+
+brew install pkg-config
+
+# If build tools are missing or c=
+lang errors appear:
+
+xcode-select --install
+
+If a later error mentions other li=
+bs (GLFW/GLEW/etc.), install them with Homebrew:
+
+bash
+
+Copy code
+
+brew install glfw glew cmake
+
+Sanity checks
+
+bash
+
+Copy code
+
+# Inside the venv:
+=
+
+python -c 
+
+"import sys, numpy; prin=
+t(sys.version); print(numpy.__version__)"
+
+which
+
+ python
+
+which
+
+ pip
+
+That should unblock you. If the build now fails with a 
+different
+ traceback, paste t=
+he last ~30 lines and I=E2=80=99ll triage the exact missing dep/flag and gi=
+ve you the one-liner fix.
+
+=
+
+New version of GPT available
+ - Continue chatting =
+to use the old version, or start a 
+new chat
+ for the latest version.

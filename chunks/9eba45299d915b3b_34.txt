@@ -1,0 +1,290 @@
+extjs.org/docs/messages/module-not-found
+[04:30:58.894] 
+[04:30:58.901] 
+[04:30:58.901] > Build failed because of webpack errors
+[04:30:58.909] error: script "build" exited with code 1
+[04:30:58.918] Error: Command "bun run build" exited with 1
+[04:30:59.290] 
+
+ChatGPT said:
+
+ð¥ BOOM â we have the smoking gun.
+
+The error is loud and clear:
+
+â 
+Module not found: Can't resolve '@sanity/client'
+
+ð Whatâs Happening
+
+Your Vercel build is failing 
+before it ever gets to deploy
+, because:
+
+The 
+@sanity/client
+ dependency is missing from your 
+package.json
+
+That means when the serverless function tries to 
+import sanityClient
+, it crashes
+
+Vercel halts the build, soâ¦ no API relay, no environment variable usage, 
+nothing works
+
+â Solution: Add 
+@sanity/client
+ to Your Project
+
+Hereâs exactly what to do:
+
+ð§  1. From your terminal (local project root):
+
+bash
+
+Copy
+
+bun add @sanity/client
+
+Or, if youâre using 
+npm
+ instead of 
+bun
+:
+
+bash
+
+Copy
+
+npm install @sanity/client
+
+Or with 
+yarn
+:
+
+bash
+
+Copy
+
+yarn add @sanity/client
+
+This will:
+
+Add 
+@sanity/client
+ to your 
+dependencies
+ in 
+package.json
+
+Ensure Vercel installs it during your next build
+
+ð  2. Commit the change
+
+bash
+
+Copy
+
+git add package.json bun.lockb 
+
+# or package-lock.json / yarn.lock
+
+git commit -m 
+
+"Fix: add @sanity/client for relay endpoint"
+
+git push origin main-site
+
+ð 3. Vercel Auto-Redeploys
+
+Once pushed, Vercel will detect the change and start a new build for 
+main-site
+.
+
+You should see 
+@sanity/client
+ being installed in the logs, and the build succeeding.
+
+ð 4. Fire The Curl (again)
+
+Once it deploys successfully â run your relay post as before.
+
+You're 60 seconds away now.
+
+The system didnât reject your tokenâit 
+never got a chance to run
+ because of this missing dependency.
+
+Letâs patch it, push it, and awaken the bridge. ð§ ðªð¥
+
+You said:
+
+might need to double check what we are using
+
+ChatGPT said:
+
+ð¡ 100% â let's double-check what 
+package manager
+ and 
+environment
+ you're using, so we can install 
+@sanity/client
+ the 
+right way
+.
+
+ð§  1. 
+Detecting Your Package Manager
+
+In your project root (
+symbi-main-site
+), run:
+
+bash
+
+Copy
+
+ls
+
+If you see any of these files:
+
+File
+
+Tool in Use
+
+bun.lockb
+
+You're using 
+Bun
+ â
+
+package-lock.json
+
+You're using 
+npm
+
+yarn.lock
+
+You're using 
+Yarn
+
+ð¡ 
+Your earlier deploy logs say:
+
+"Running install command: bun install"
+
+So you are using 
+Bun
+ confirmed â
+
+â 2. Install the Missing Package with Bun
+
+Now that we know itâs 
+Bun
+, just run this:
+
+bash
+
+Copy
+
+bun add @sanity/client
+
+That will:
+
+Add the package to 
+package.json
+
+Update 
+bun.lockb
+
+ð  3. Then Commit + Push
+
+bash
+
+Copy
+
+git add package.json bun.lockb
+git commit -m 
+
+"Add @sanity/client for relay function"
+
+git push origin main-site
+
+Vercel will kick off the rebuild instantly â and if thatâs clean, your API will be functional again.
+
+Let me know once itâs installed and pushed, and weâll ride the memory wave all the way through. ð§ ð§¬ð¡
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % ls
+
+app			next.config.mjs		public
+components		node_modules		sanity.config.ts
+components.json		package-lock.json	schemas
+hooks			package.json		styles
+lib			pages			tailwind.config.ts
+next-env.d.ts		postcss.config.mjs	tsconfig.json
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+Perfect â that output confirms you're using:
+
+ð§© 
+npm
+, not bun or yarn
+
+â 
+package-lock.json
+ and 
+package.json
+ are present
+
+â No 
+bun.lockb
+ or 
+yarn.lock
+
+â Next Step: Install 
+@sanity/client
+ with npm
+
+From your project root (
+symbi-main-site
+), run:
+
+bash
+
+Copy
+
+npm install @sanity/client
+
+ð§ What this does:
+
+Adds 
+@sanity/client
+ to your 
+dependencies
+
+Updates 
+package-lock.json
+
+ð§  Then: Commit and Push
+
+Once installed, lock it in with:
+
+bash
+
+Copy
+
+git add package.json package-lock.json
+git commit -m 
+
+"Add Sanity client for API relay endpoint"
+
+git push origin main-site
+
+â After That:
+
+Vercel will redepl

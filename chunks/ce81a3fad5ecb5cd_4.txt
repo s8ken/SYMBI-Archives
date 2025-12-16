@@ -1,0 +1,337 @@
+/guides/api-keys/service-accounts
+
+🧠 TL;DR
+
+There’s no UI option to “enable” completions or chat — your key has access by default
+
+If you’re not seeing expected behavior:
+
+Test the key with 
+curl
+ or Postman
+
+Ensure the key is from a service account with valid project access
+
+Use it only in backend code (especially on Vercel)
+
+If you share how you're trying to use it in Vercel or V0 (e.g., a fetch block, API route, etc.), I can give you a snippet or fix any errors you're running into.
+
+You said:
+
+I get page not found
+
+ChatGPT said:
+
+Thanks for the follow-up. If you're getting a 
+"Page Not Found"
+ error when trying to use the OpenAI API (especially the 
+chat/completions
+ endpoint), that usually means the 
+URL is incorrect
+, or there's a 
+misconfigured request
+.
+
+Let’s walk through a full diagnostic and fix.
+
+✅ Correct API Endpoint for Chat Completions
+
+The 
+chat endpoint
+ must be:
+
+bash
+
+Copy
+
+Edit
+
+https://api.openai.com/v1/chat/completions
+
+Make sure:
+
+It starts with 
+https://
+ (not 
+http://
+)
+
+Includes 
+/v1/chat/completions
+ (not just 
+/chat
+, 
+/completions
+, etc.)
+
+🧪 Quick Curl Test
+
+Here’s a full working 
+curl
+ example. Run this in 
+Terminal
+ (Mac/Linux) or 
+Git Bash
+ (Windows):
+
+bash
+
+Copy
+
+Edit
+
+curl https://api.openai.com/v1/chat/completions \
+  -H 
+
+"Authorization: Bearer sk-XXXXXXXXXXXXXXXXXXXXXXXXX"
+
+ \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+'{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'
+
+Replace:
+
+sk-XXXXXXXXXXXXXXXXX
+ with your 
+actual
+ API key
+
+If it returns JSON with a response, it’s working.
+
+🛠 Common Causes of "Page Not Found"
+
+Error
+
+Explanation
+
+Fix
+
+404 Page Not Found
+
+The endpoint URL is wrong
+
+Use the exact URL: 
+https://api.openai.com/v1/chat/completions
+
+Typo in the path
+
+e.g., 
+/v1/chats
+ or 
+/v1/chat
+
+Correct to 
+/v1/chat/completions
+
+Wrong domain
+
+e.g., 
+openai.com/api/...
+
+Must be 
+api.openai.com
+
+Fetching from frontend
+
+Could be blocked or hidden error
+
+Use backend or proxy to test first
+
+🧩 If Using 
+fetch()
+ or V0.dev
+
+If you're calling it in code (like 
+fetch()
+ or in a V0.dev block), make sure your code looks like this:
+
+js
+
+Copy
+
+Edit
+
+await
+
+fetch
+
+(
+
+"https://api.openai.com/v1/chat/completions"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: {
+
+"Authorization"
+
+: 
+
+`Bearer 
+${process.env.OPENAI_API_KEY}
+
+`,
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+,
+  },
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({
+
+model
+
+: 
+
+"gpt-4o"
+
+,
+
+messages
+
+: [
+      { 
+
+role
+
+: 
+
+"user"
+
+, 
+
+content
+
+: 
+
+"Say hi"
+
+ }
+    ]
+  }),
+});
+
+Note:
+ In V0.dev, paste the full endpoint URL and key into the action setup.
+
+✅ Checklist to Fix
+
+✅ Use this 
+exact endpoint
+:
+
+https://api.openai.com/v1/chat/completions
+
+✅ Confirm the key starts with 
+sk-
+ and is not expired or revoked
+
+✅ Test with 
+curl
+ or Postman to verify it's not a Vercel/V0 issue
+
+✅ Use backend to call OpenAI API, not frontend browser directly (or it will expose the key)
+
+Would you like to paste your code or setup here (redact the key), and I’ll check it line-by-line for issues?
+
+You said:
+
+no for service acc
+
+ChatGPT said:
+
+Ah, you're getting 
+“Page Not Found”
+ while using a 
+service account key
+ from OpenAI — and you're likely calling something like:
+
+bash
+
+Copy
+
+Edit
+
+https://api.openai.com/v1/chat/completions
+
+Let’s break this down, because 
+service accounts use a different endpoint and authentication flow
+ from regular 
+sk-
+ keys.
+
+🔐 Service Account Keys Work Differently
+
+When you use a 
+Service Account key
+ in OpenAI, the key is 
+not
+ a direct-use 
+sk-
+ string.
+
+Instead, it’s a 
+JSON key file
+ that includes:
+
+client_email
+
+private_key
+
+project_id
+
+And more...
+
+You cannot use this key directly with curl or fetch.
+
+You must first exchange it for an 
+access token
+ using 
+OAuth 2.0 JWT flow
+. Then you use 
+that token
+ in the 
+Authorization
+ header.
+
+✅ Here's How to Use a Service Account with OpenAI's API
+
+🔁 1. Generate an Access Token
+
+You need to:
+

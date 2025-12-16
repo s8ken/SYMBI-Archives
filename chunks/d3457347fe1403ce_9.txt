@@ -1,0 +1,367 @@
+hb=
+oard online;
+
+Two design partners signed with pi=
+lot SOW;
+
+Incident runbook (key compromise, revo=
+cation surge) approved.
+
+=
+
+Appendices
+
+A. Controls Matrix =E2=
+=80=93 Compliance Mapping (v0.9)
+
+This matrix maps Symph=
+ony Trust Framework capabilities to regulatory/control frameworks. Certific=
+ations are 
+
+deployment=E2=80=91dependent
+
+;=
+ this table indicates how features 
+
+support
+
+ compliance evidence.
+
+Contr=
+ol Area
+
+Capability
+
+Evidence/Artif=
+act
+
+Notes
+
+EU AI =
+Act =E2=80=93 Art. 9 (Risk Mgmt)
+
+Versioned po=
+licy engine; signed audit events; risk register
+
+=
+policyVersion
+
+, signed 
+
+AuditEvent
+
+; risk log entries
+
+Maintain trace from=
+ decision =E2=86=92 policy =E2=86=92 inputs digest.
+
+EU AI Act =E2=80=93 Art. 10 (Data & Data Governance)
+
+Data minimization in VC claims; deterministic ca=
+nonicalization; revocation
+
+VC schemas; selective claim=
+s; StatusList reference
+
+Full selective disclosure plan=
+ned (BBS+/SD=E2=80=91JWT, P1).
+
+EU AI =
+Act =E2=80=93 Art. 13 (Transparency)
+
+tr=
+ust/verify
+
+ API returning rationale & evidence refs
+
+API responses with 
+
+rationale[]
+
+, 
+
+evidenceRefs[]
+
+Pair with UI explanations for human=E2=80=91understandable outputs.
+
+EU AI Act =E2=80=93 Art. 14 (Human Overs=
+ight)
+
+Right=E2=80=91to=E2=80=91disconnect pil=
+lar; policy overrides with audit
+
+Oversight events; ope=
+rator approval logs
+
+Provide break=E2=80=91glass policy=
+ + cooldowns.
+
+GDPR =E2=80=93 Art. 5/2=
+5 (Data Min./Privacy by Design)
+
+Minimal PII i=
+n credentials; pseudonymous DIDs
+
+Data flow diagrams; V=
+C field review; DPIA annex
+
+Keep DID methods configurab=
+le per tenant.
+
+SOC 2 =E2=80=93 CC2.1 =
+Change Mgmt
+
+Versioned policies; code review o=
+n trust modules
+
+Git history; change approvals; CI atte=
+stations
+
+Require 2=E2=80=91person review on scoring/cr=
+ypto.
+
+SOC 2 =E2=80=93 CC3.2 Risk Asse=
+ss.
+
+Threat model; anomaly detection on score =
+gaming
+
+Threat model doc; anomaly alerts
+
+Tie alerts to incident handbook.
+
+SOC 2 =E2=80=93 CC6.x Access Controls
+
+KMS=
+=E2=80=91backed key custody; RBAC for trust ops
+
+KMS ke=
+y policies; RBAC config; access reviews
+
+Enforce break=
+=E2=80=91glass logging.
+
+ISO/IEC 27001=
+ A.8 Crypto Controls
+
+Ed25519/secp256k1; key r=
+otation; compromise runbook
+
+KMS rotation logs; key inv=
+entory; runbook
+
+Pin crypto libs + SBOM.
+
+ISO/IEC 42001 (AI Mgmt)
+
+Metrics/KPIs; model cards for scoring
+
+KPI dashboard=
+ exports; scoring model card
+
+Review fairness/impact qu=
+arterly.
+
+Controls Evidence=
+ Pack (to maintain):
+
+Controls Matrix (this doc), Data Flow DFDs, DPIA/TRA, Risk Register, In=
+cident Runbook, Key Inventory & Rotations, CI/CD attestations, Test Vec=
+tor Pack, Pilot SOWs.
+
+B. Example DID Documents & Verifiable Credentials (fi=
+xtures)
+
+B1. 
+
+did:web
+
+ (enterprise=E2=80=91friendly)
+
+{
+
+"@context"
+: [
+"https://www.w3.org/ns/did/v1"
+],
+
+"id"
+: 
+"di=
+d:web:agents.symbi.example"
+,
+
+"verificationMethod"
+: [
+
+ =
+   {
+
+"id"
+:=
+
+"#auth-1"
+,
+
+    =
+
+"type"
+: 
+"JsonWebKe=
+y2020"
+,
+
+"c=
+ontroller"
+: 
+"did:web:agents.symbi.example"
+,
+
+"publicKey=
+Jwk"
+: {
+"kty"
+:
+=
+"OKP"
+,
+"crv"
+:
+"=
+Ed25519"
+,
+"x"
+:
+=
+"<base64url>"
+}
+
+    }
+
+  ],
+
+"=
+authentication"
+: [
+"#auth-1"
+],
+
+"assertionMethod"
+: [
+"#auth-1"
+],
+
+"service"
+: [
+
+    {
+"id"
+:
+"#trust"
+,=
+
+"type"
+:
+"TrustVerific=
+ation"
+,
+"serviceEndpoint"
+:
+"https://agents.symbi.example/trust"
+}
+
+  ]
+
+}
+
+B2. 
+
+did:key
+
+ =
+(stateless)
+
+=
+
+{
+
+"@context"
+: [
+"https://w=
+ww.w3.org/ns/did/v1"
+],
+
+"id"
+: 
+"did:key:z6MksExample..."
+,
+
+"verificationMet=
+hod"
+: [
+
+    {
+"id=
+"
+:
+"#z6MksExample"
+,
+"type"
+:
+"Ed25519VerificationKey2020"
+,
+"controller"
+:
+"d=
+id:key:z6MksExample..."
+,
+"publicKeyMultibase"=
+
+:
+"zExample"
+}
+
+  ],
+
+"authenticat=
+ion"
+: [
+"#z6MksExample"
+],
+
+"assertionMethod"
+: [
+"#z6MksExample"
+]
+
+}
+
+=
+
+B3. Trust Declaration VC=
+ (JSON=E2=80=91LD)
+
+{
+
+"@context"
+: [
+
+"https://www.w3.org/2018/credentials/v1"
+,
+
+"https://w3id.=
+org/security/suites/ed25519-2020/v1"
+,
+
+  =
+
+"https://symbi.example/contexts/trust/v1"
+
+  ],
+
+"type"
+: [
+"VerifiableCredential"=
+
+, 
+"Tr

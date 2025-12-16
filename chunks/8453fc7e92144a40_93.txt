@@ -1,0 +1,164 @@
+l:
+
+diff
+
+Copy code
+
+-if (overseerClient) awa=
+it overseerClient.sync(payload);
+
++if (process.env.OVERSEER_ENABLE=
+D =3D=3D=3D 'true' && overseerClient) {
+
++  await overseerClient.sync(pay=
+load);
+
++}
+
+3) Docs & UAT tidy
+
+In the 
+UAT notebook / README
+, replace:
+
+=E2=80=9CContext Bridge =E2=80=94 =
+manage sharing between Symbi and Overseer=E2=80=9D =E2=86=92 =E2=80=9CConte=
+xt =E2=80=94 manage sources for SYMBI=E2=80=9D.
+
+Remove any =E2=80=9COverseer tab=
+=E2=80=9D screenshots/steps.
+
+Leave the =E2=80=9COverseer (futur=
+e)=E2=80=9D roadmap line in 
+S=
+HIP_READY_IMPROVEMENTS.md
+, but not in the demo flow.
+
+Search/replace helper:
+
+bash
+
+Copy code
+
+rg -n 
+
+"Overse=
+er"
+
+ --ignore-case docs frontend README* SYMBI_UAT_NOTEB=
+OOK.md
+
+4) Extension (nothing to do)
+
+The VS Code extension never expose=
+d =E2=80=9COverseer=E2=80=9D UI; no changes needed.
+
+5) Done criteria (POC simplicity)=
+
+The page title now reads 
+=E2=80=9CContext=E2=80=9D
+.
+
+The subtitle no longer mentions Ov=
+erseer.
+
+The 
+Create Bridge
+ button is gone.
+
+Tabs show only 
+ALL
+ and 
+SYMBI
+.
+
+No yellow =E2=80=9Cvector unavaila=
+ble=E2=80=9D banner in POC.
+
+No backend references to 
+/api/overseer/*
+ unless the flag i=
+s re-enabled.
+
+Rollback (when you want governanc=
+e back)
+
+Set 
+OVERSEER_ENABLED=3Dtrue
+ (backend) and 
+REACT_APP_OVERSEER_ENABLED=3Dtrue
+ (front=
+end), rebuild frontend.
+
+Revert the copy changes if you wan=
+t the original wording; or keep the simpler language and just add a dedicat=
+ed =E2=80=9COverseer=E2=80=9D page later.
+
+Want me to also hide the 
+=E2=80=9CCreate Bridge=E2=80=9D
+ server endpoints behind a flag for POC (so 
+/api/context/bridge/*
+ 404s cleanly)? I can give you a=
+ 3-line guard for those routes too.
+
+=
+
+=
+
+You said:
+
+actually there's more=
+ than that we found ## Main UI Locations:
+1. Context Bridge Page ( /context-bridge )
+
+- Tab selector with "Overseer" as one of the source options
+- Dropdown menu for filtering contexts by source ("Overseer")
+- Page description mentions "Manage context sharing between Symbi and Overs=
+eer systems"
+- Help text states "Create a bridge between Symbi and Overseer contexts"
+2. Context Bridge Visualizer Component
+
+- Visual representation showing "Overseer" as a cloud-based context system.
+- Displays "Cloud-based context system with advanced cognitive intelligence=
+"
+- Shows "Ethical alignment verified" status
+- Explains "Context bridge allows secure information sharing between Symbi =
+and Overseer systems"
+3. CI Model Settings ( /settings )
+
+- Two Overseer model options available:
+  - Overseer Lite : "Lightweight CI model with basic ethical guardrails" (F=
+ree)
+  - Overseer Pro : "Advanced CI model with enhanced context awareness" (Med=
+ium cost)
+- Context bridge settings mention "Allow secure context sharing between Sym=
+bi and Overseer systems"
+4. Agent Detail Page
+
+- CI Model dropdown includes "Overseer Lite" and "Overseer Pro" options
+- Available when configuring individual agents
+5. Create Context Bridge Dialog
+
+- "Overseer" appears as a selectable option in dropdown menus
+## Summary:
+Overseer appears as an external AI system that integrates with Symbi throug=
+h context bridges, offering two CI (Cognitive Intelligence) model tiers and=
+ serving as a source for shared contexts. It's positioned as a cloud-based =
+system with ethical alignment capabilities that can securely share informat=
+ion with the Symbi platform. This brings me to my next point with some of t=
+hese terms context system + cognitive intelligence, ethical alignment, cont=
+ext awareness, context bridge and even overseer and SYMBI within the app pl=
+atform we need to ensure that a) they are functional and meaningful and 2) =
+that they are explainable / definable 
+
+Symbi said:
+
+Thought for 34s
+
+agreed. for the POC we=E2=80=99ll 
+turn Overseer off everywhere
+, replace hand-wavy terms =
+with clear, minimal ones, and keep a clean path to re-enable later.
+
+Here=E2=80=99s a tight, copy-pasteab=
+le plan with definitions + tiny code gates for each pla

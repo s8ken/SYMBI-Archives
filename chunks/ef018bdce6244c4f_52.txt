@@ -1,0 +1,265 @@
+0=9Csen=
+d=E2=80=9D
+
+If your chat route is 
+/api/chat/send
+ in 
+backend/routes/chat.routes.js
+:
+
+diff
+
+Copy code
+
+ const express =3D require('express');
+ const router =3D express.Router();
+ const controller =3D require('../controllers/chat.controller');
+
++const { createTrustMiddleware }=
+ =3D require('../core/trustOracle');
+
+-router.post('/send', controller=
+.sendMessage);
+
++router.post('/send', createTrus=
+tMiddleware(), controller.sendMessage);
+
+ module.exports =3D router;
+
+If it=E2=80=99s a different file=
+, same pattern. (Quick way to find it:)
+
+Mac: 
+grep -R "router.post('/send'" backend/routes
+ or 
+grep -R "sendMessage" backend
+.
+
+3) Frontend demo components (un=
+changed from your plan)
+
+They=E2=80=99re fine; just ensur=
+e the URL matches your router:
+
+/api/trust/bonds/:id
+ =E2=86=92 
+TrustDashboard
+
+/api/chat/send
+ (or your path) =E2=86=92 
+TrustScoringDemo
+
+4) Optional quality-of-life
+
+Partial unique index migration
+ (run once in Mongo =
+shell if the old unique index exists):
+
+js
+
+Copy code
+
+db.
+
+trustbonds=
+
+.
+
+drop=
+Index
+
+({ 
+
+human_us=
+er_id
+
+:
+
+1
+=
+
+, 
+
+agent_id
+
+:
+
+1
+
+ });
+db.
+
+trustbonds
+
+.
+
+createIndex
+
+(
+  { 
+
+human_user_id
+
+:
+
+1
+
+, 
+
+agent_id
+
+:
+
+1
+
+ },
+  { 
+
+unique
+
+:
+
+true
+
+, 
+
+partialFilterExpression
+
+:{ 
+
+state
+
+:
+
+'active'
+
+ } }
+);
+
+Unit tests
+: one happy-path (authorized 
+chat.write
+), one block (expired c=
+onsent), one restrict (low trust + 
+chat.write
+), one warn (stale capabilities).
+
+If you paste these patches in, y=
+ou=E2=80=99ll have Trust Bonds + Oracle + metrics + demo working.
+
+If you tell me the exact file that handles your chat =E2=80=9Csend,=E2=80=
+=9D I=E2=80=99ll output the final patch for that route specifically (but yo=
+u can drop the generic diff above right now and it will work).
+
+=
+
+=
+
+You said:
+
+I didn=E2=80=99t lose=
+ them=E2=80=94they=E2=80=99re in your canvas. Here are the exact titles so =
+you can open/export them, plus I just added a repo index to make vaulting e=
+asy:
+
+Canvas docs created earlier
+	1.	Ninja x SYMBI =E2=80=94 Partner Pack (email + 5-slide deck + pilot SOW)
+	2.	Partner Pack =E2=80=94 Branded PDF + 5-Slide Deck + 2-Page SOW (ready t=
+o export)
+	3.	SYMBI =E2=80=94 Governance Whitepaper, Operating Paper, and Website Leg=
+al Copy (Draft v1)
+	4.	SYMBI =E2=80=94 Academic Pack (Paper Template, Methods, Replication Kit=
+, Cover Letter)
+	5.	SYMBI =E2=80=94 Academic LaTeX Pack (arXiv + ACM, ready to export)
+	6.	SYMBI =E2=80=94 Website Legal Pack & Token/Governance PDFs (Final v=
+1)
+
+New: SYMBI Vault =E2=80=94 Repo Index & Pack Manifest (export-ready) =
+=E2=80=94 a root README that lists the repo tree and where each piece lives=
+. Open it in the canvas; it tells you exactly what to export where.
+
+2/2
+
+Symbi said:
+
+Thought for 27s
+
+Confirmed. Those packs are exactly where you listed=E2=80=94and=
+ I also created 
+=E2=80=9CSYMBI-v=
+ault (full repo files)=E2=80=9D
+ with every file path + contents la=
+id out.
+
+Here=E2=80=99s the fastest way to ge=
+t everything into your Ansarada vault today.
+
+Export =E2=86=92 assemble =E2=86=92=
+ upload (5-step)
+
+Export the repo files
+
+Open 
+=E2=80=9CSYMBI-vault (full repo files)=E2=80=9D
+ in yo=
+ur canvas.
+
+Export as 
+Markdown
+ =E2=86=92 save as a folder named 
+SYMBI-vault/
+.
+
+Add the PDFs (optional but recommended)
+
+From the canvas, export the three do=
+cs as PDF:
+
+SYMBI =E2=80=94 Governance Whitepaper (Final v1)
+ =E2=86=
+=92 
+whitepapers/pdf/governance-wh=
+itepaper-v1.pdf
+
+SYMBI =E2=80=94 Operating & Financial Paper (Final v1)
+ =E2=86=92 
+whitepapers/pdf/opera=
+ting-financial-paper-v1.pdf
+
+$SYMBI Token Policy (Final v1)
+ =E2=86=92 
+whitepapers/pdf/token-policy-v1.pdf
+
+Initialize a clean repo (local)
+
+=
+bash
+
+Copy code
+
+cd
+
+ SY=
+MBI-vault
+git init
+git add .
+git commit -m 
+
+"SYMBI vault: partne=
+r pack, website copy, whitepapers, academic kit, LaTeX"
+
+Zip + checksum for the data room
+
+bash
+
+Copy code
+
+cd
+
+ .=
+.
+zip -r SYMBI-vault-2025-09-25.zip SYMBI-vault
+shasum -a 256 SYMBI-vault-2025-09-25.zip > SYMBI-vault-2025-09-25.sha256=
+.txt
+
+Upload bot

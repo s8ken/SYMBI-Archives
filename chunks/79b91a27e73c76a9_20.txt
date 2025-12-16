@@ -1,0 +1,375 @@
+⃣ Nameserver 113.212.173.22 is Unresponsive
+
+🔍 Finding:
+
+"Nameserver 113.212.173.22 does not respond [NETW-2704]"
+
+Your Mac is trying to use this 
+non-working
+ nameserver, which could be:
+
+An old DNS entry
+
+A misconfiguration
+
+A sign of DNS hijacking (if you don’t recognize it)
+
+✅ What to Do:
+
+Check your DNS settings:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+👉 Look for 
+113.212.173.22
+.
+
+👉 If you don’t recognize it, change your DNS to 
+Google (8.8.8.8, 8.8.4.4)
+ or 
+Cloudflare (1.1.1.1)
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+Then, restart networking:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+3️⃣ Deleted Files Still in Use (Possible Spyware?)
+
+🔍 Finding:
+
+"Checking deleted files in use [FILES FOUND]"
+
+Some 
+files have been deleted but are still running in memory
+, which can be 
+normal
+ (for updates) or 
+a sign of malware
+.
+
+✅ What to Do:
+
+Run this
+
+You said:
+
+lets do one at a time sja@SJAs-MacBook-Pro ~ % cat /etc/syslog.conf | grep @
+
+install.*						@127.0.0.1:32376
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 1: Investigating Remote Logging
+
+✅ 
+You found:
+
+graphql
+
+Copy
+
+Edit
+
+install.* 
+
+@127
+
+.
+
+0.0
+
+.
+
+1
+
+:
+
+32376
+
+This means your 
+logs are being sent to 
+127.0.0.1
+ (your own computer) on port 
+32376
+
+.
+
+Is This a Security Risk?
+
+No, this is not an immediate security concern.
+
+127.0.0.1
+ (localhost) means the logs are staying 
+on your own machine
+, not being sent to an external server.
+
+However, 
+port 
+32376
+ is unusual
+—it could be:
+
+A legitimate logging service (some software does this).
+
+A process trying to intercept logs (
+spyware possibility
+).
+
+🔍 What to Do Next?
+
+1️⃣ Check What’s Running on Port 32376
+
+Run this command to see which process is listening on port 
+32376
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :32376
+
+👉 This will 
+show the name and path of the program
+ using that port.
+
+2️⃣ If It’s Suspicious, Kill It
+
+If the program looks 
+unknown or suspicious
+, kill it with:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+(Replace 
+[PID]
+ with the actual 
+process ID
+ from the 
+lsof
+ command).
+
+3️⃣ (Optional) Disable Remote Logging Completely
+
+If you don’t want 
+any local logging over a network port
+, remove it from 
+syslog.conf
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/syslog.conf
+
+Find this line:
+
+graphql
+
+Copy
+
+Edit
+
+install.* 
+
+@127
+
+.
+
+0.0
+
+.
+
+1
+
+:
+
+32376
+
+Delete the line
+, then 
+save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+Enter
+).
+
+Restart the logging service:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl stop com.apple.syslogd
+sudo launchctl start com.apple.syslogd
+
+🚀 Next Step
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :32376
+
+📌 
+Tell me what process is using the port!
+ If it looks suspicious, we’ll investigate further. 🔍
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i :32376
+
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 1 Result: No Process Found on Port 32376
+
+✅ Your command returned 
+nothing
+, which means 
+no active process is currently listening on port 32376
+.
+
+What This Means:
+
+1️⃣ 
+The log entry might be old
+ – The system was previously sending logs to 
+127.0.0.1:32376
+, but whatever was using that port 
+is no longer active
+.
+
+2️⃣ 
+It could be an inactive or hidden service
+ – Some malware can start and stop processes dynamically.
+
+3️⃣ 
+It might be from an old software installation
+ – A program might have configured syslog to log to 
+localhost:32376
+, but it’s not actually running.
+
+What To Do Next:
+
+1️⃣ Check for Any References to Port 32376 in System Files
+
+Let’s check if any 
+configuration files
+ are still pointing to this port:
+
+sh
+
+Copy
+
+Edit
+
+grep -r 
+
+"32376"
+
+ /etc /var 2>/dev/null
+
+👉 This searches for 
+any system file
+ mentioning 
+32376
+.
+
+2️⃣ (Optional) Remove The Logging Entry
+
+If you don’t want logs going to 
+127.0.0.1:32376
+, you can 
+remove the syslog entry
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/syslog.conf
+
+Find this line:
+
+graphql
+
+Copy
+
+Edit
+
+install.* 
+
+@127
+
+.
+
+0.0
+
+.
+
+1
+
+:
+
+32376
+
+Delete it
+.
+
+Save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+E

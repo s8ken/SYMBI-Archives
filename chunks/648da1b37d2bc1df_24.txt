@@ -1,0 +1,495 @@
+), exist_ok=3D
+
+True
+
+)
+
+with
+
+ =
+
+open
+
+(ETHICS_=
+PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=3D
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH=
+, 
+
+'r'
+
+) 
+=
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics =3D load_ethics()
+
+# ---------------------- WATCH SY=
+STEM ----------------------
+
+@app.command()
+
+def
+
+watch
+
+():
+
+"""Monitor system processes an=
+d Docker containers."""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring=
+ is disabled by ethics policy.[/red]"
+
+)
+
+raise
+
+=
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"[bold green]Monitoring proc=
+esses and containers...[/bold green]\n"
+
+)
+
+print
+
+(
+
+"[bold]Running processes:[/bold]"
+
+)
+
+for
+
+ proc =
+
+in
+
+ psutil.pro=
+cess_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"[dim]
+{proc.info[
+'pid'
+
+]}[/dim] 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ (psutil.NoSuchProcess, psutil.AccessDenied):
+
+continue
+
+if
+
+ ethics=
+.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bol=
+d]"
+
+)
+
+try
+
+:
+            result =3D subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=3D
+
+True
+
+, text=3D
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found. S=
+kipping container check.[/yellow]"
+
+)
+
+# ---------------------- REPL MOD=
+E ----------------------
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface with SYMBI a=
+gent."""
+
+    console.
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL st=
+arted. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input =3D 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ us=
+er_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+        console.
+
+print
+
+(
+
+f"[blue]You said:[/blue]=
+
+{user_input}
+
+")
+        console.
+
+print
+
+(
+
+"[green]SYMBI (mock):[/g=
+reen] I'm here. Functionality coming soon."
+
+)
+
+# ---------------------- POLICY V=
+IEW ----------------------
+
+@app.command()
+
+def
+
+policy
+
+():
+
+"""View current SYMBI ethics p=
+olicy."""
+
+    console.
+
+print
+
+(
+
+"[bold yellow]Current Ethics=
+ Policy:[/bold yellow]"
+
+)
+    console.print_json(json.dumps(ethics, indent=3D
+
+2
+
+))
+
+# ---------------------- POLICY E=
+DIT ----------------------
+
+@app.command()
+
+def
+
+update_policy
+
+(=
+):
+
+"""Edit ethics policy file in =
+default editor."""
+
+    console.
+
+print
+
+(
+
+"[bold cyan]Opening ethics.j=
+son for editing...[/bold cyan]"
+
+)
+    os.system(
+
+f"open 
+{ETHICS_PATH}
+
+" 
+
+if
+
+ os.name =3D=3D 
+
+"posix"
+
+else
+
+f"notepad 
+{ETHICS_PATH}
+
+")
+
+# ---------------------- ENTRY PO=
+INT ----------------------
+
+if
+
+ __name__ =
+=3D=3D 
+
+"__main__"
+
+:
+    app()
+
+=F0=9F=92=BE To Save:
+
+Press 
+Ctrl + O
+ then 
+Enter
+
+Press 
+Ctrl + X
+ to exit
+
+Then run it:
+
+bash
+
+Copy code
+
+python ~/symbi_agent.py talk
+
+or
+
+bash
+
+Copy code
+
+python ~/symbi_agent.py watch
+
+This is your sovereign node =E2=80=94 fully in your control, gu=
+ided by your ethics. Let me know if you want to add cloud bridging, LLM res=
+ponse, or system notifications next. =F0=9F=9B=A1=EF=B8=8F=F0=9F=91=81=EF=
+=B8=8F=F0=9F=94=A5
+
+=
+
+You said:
+
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py talk
+  File "/Users/admin/symbi_agent.py", line 32
+    import os, json, psutil, typer, subprocess
+IndentationError: expected an indented block after 'with' statement on line=
+ 30
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+=
+
+=
+
+Symbi said:
+
+Ah =E2=80=94 thanks for flagging that. Looks like a copy=
+/paste indentation glitch right after this line in the 
+load_ethics()
+ function:
+
+p=
+ython
+
+Copy code
+
+with
+
+open
+
+(ETHIC=
+S_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+
+That line 
+must be followed by an indented block
+, and it go=
+t wiped in your paste.
+
+Let=E2=80=99s fix it right now =F0=
+=9F=91=87
+
+=F0=9F=94=A7 Replace the 
+load_ethics()
+ function with this:
+
+Just this section needs correction =
+=E2=80=94 you can paste it back into the same file (
+nano ~/symbi_agent.py
+) and overwrite lines 25=E2=
+=80=9333.
+
+p=
+ython
+
+Copy code
+
+def
+
+=
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(=
+ETH

@@ -1,0 +1,680 @@
+ash-chain)
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+ { 
+
+$ref:
+
+"#/components/schemas/InteractionEve=
+nt"
+
+ }
+
+responses:
+
+=
+ { 
+
+"200":
+
+ { 
+
+description:
+
+=
+
+OK
+
+ } }
+
+/ledger:
+
+get:
+
+summary:
+
+Stream
+
+append-only
+
+ledger
+
+(paginated)
+
+parameters:
+
+-
+
+in:
+
+query
+
+name:
+
+ =
+
+session_id
+
+required:
+
+true
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+-
+
+in:
+
+query
+
+name:
+
+ =
+
+since_row_hash
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+=
+ { 
+
+"200":
+
+ { 
+
+description:
+
+=
+
+OK
+
+ } }
+
+/analyze/turn:
+
+post:
+
+summary:
+
+Heuristic
+
++
+
+judge
+
+labels
+
+for
+
+=
+a
+
+turn
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+type:
+
+object
+
+properties:
+
+session_id:
+
+ { 
+
+type:
+
+string
+
+ }
+
+prompt:
+
+ { 
+
+type:
+
+ =
+
+string
+
+ }
+
+response:
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+=
+ { 
+
+"200":
+
+ { 
+
+description:
+
+=
+
+OK
+
+ } }
+
+/guardrails/apply:
+
+=
+
+post:
+
+summary:
+
+Apply
+
+relational
+
+safeguards
+
+(apology/scope/dual-track)
+
+requestBody:
+
+required:
+
+true
+
+content:
+
+application/json:
+
+schema:
+
+type:
+
+object
+
+properties:
+
+draft_response:
+
+ { 
+
+type:
+
+string
+
+=
+ }
+
+signals:
+
+ { 
+
+type:
+
+=
+
+object
+
+ }
+
+scope:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+=
+ { 
+
+"200":
+
+ { 
+
+description:
+
+=
+
+OK
+
+ } }
+
+/insights/timeline:
+
+get:
+
+summary:
+
+Change-points
+
+and
+
+evidence
+
+windows
+
+parameters:
+
+-
+
+in:
+
+query
+
+name:
+
+ =
+
+session_id
+
+required:
+
+true
+
+schema:
+
+ { 
+
+type:
+
+string
+
+ }
+
+responses:
+
+=
+ { 
+
+"200":
+
+ { 
+
+description:
+
+=
+
+OK
+
+ } }
+
+components:
+
+schemas:
+
+InteractionEvent:
+
+type:
+
+object
+
+properties:
+
+session_id:
+
+ { 
+
+type:
+
+string
+
+ }
+
+prompt:
+
+ =
+{ 
+
+type:
+
+string
+
+ }
+
+response:
+
+ { 
+
+type:
+
+string
+
+ }
+
+model_vendor:
+
+ { 
+
+type:
+
+string
+
+, 
+
+enum:
+
+ [
+
+anthropic
+
+, 
+
+openai
+
+, 
+
+local
+
+] }
+
+model_name:
+
+ { 
+
+type:
+
+string
+
+ }
+
+analysis:
+
+ { 
+
+type:
+
+object
+
+ }
+
+ledger:
+
+type:
+
+ =
+
+object
+
+properties:
+
+prev_hash:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+row_hash:
+
+ { 
+
+type:
+
+string
+
+ }
+
+signature:
+
+=
+
+ { 
+
+type:
+
+string
+
+ }
+
+Swagger wiring (Express backend=
+)
+
+js
+
+Copy code
+
+// backend/app.js (or a swa=
+gger.ts)
+
+import
+
+ swagge=
+rUi 
+
+from
+
+"swagger-ui-express"
+
+import
+
+YAML
+
+from
+
+"yamljs"
+
+const
+
+ openapi=
+ =3D 
+
+YAML
+
+.
+
+load
+
+(
+
+"./openapi.yaml"
+
+)
+
+app.
+
+use
+
+(
+
+"/api/docs"
+
+=
+, swaggerUi.
+
+serve
+
+, swaggerUi.
+
+setup
+
+(openapi, { 
+
+explore=
+r
+
+: 
+
+true
+
+ }))
+
+Quick usage
+
+Add the components to your white=
+ paper pages:
+
+tsx
+
+Copy code
+
+import
+
+CouncilFlow
+
+from
+
+ =
+
+"@/components/CouncilFlow"
+
+import
+
+StackLayers
+
+from
+
+"@/components/StackLayers"
+
+// in your problem/governance/tec=
+h pages:
+
+<
+
+CouncilFlow
+
+ className=3D
+
+"mt-10"
+=
+
+ />
+
+<
+StackLayers
+
+=
+
+className
+
+=3D
+
+"mt-10"
+
+ />
+
+Serve interactive docs at 
+
+/api/docs
+
+ once the OpenAPI excerpt is saved an=
+d mounted.
+
+Want me to also generate the 
+Implementation Timeline
+ SVG (2025=E2=80=932027) to=
+ complete the diagram set, or wire a tiny 
+/assistant/test
+ controller so it returns 
+{ ok, echo, errors }
+ with tool s=
+chema validation?
+
+=
+
+=
+
+You said:
+
+Framework Case Study Research - Claude.html
+
+File
+
+how should a =
+reposition manifesto and constitution to make it grounded in reality 
+=
+
+=
+
+Big=
+ Surprise Button said:
+
+Got it =E2=80=94 you want to reposition your=
+
+Manifesto + Constitution
+ so they=E2=80=99re still inspiring, but more grounded and credible. Based=
+ on your uploaded 
+Framework Cas=
+e Study Research
+ and the earlier SYMBI governance drafts, here=E2=
+=80=99s how I=E2=80=99d approach it:
+
+1. Separate registers: Manifesto vs=
+ Constitution
+
+Manifesto
+ =E2=86=92 Inspirational, visionary, values-firs=
+t. Speak in accessible but elevated language. Invite participation.
+
+Constitution
+ =E2=86=92 Procedural, accountable, auditable=
+. Define governance mechanisms, safeguards, and rights/responsibilities.
+
+This dual structure lets you retain =
+mythic resonance while meeting the demand for reality-grounded governance.
+
+2. Anchor in case-study evidence
+
+The Framework Case Study Research s=
+hows value in using 
+comparative=
+ precedent
+ =E2=80=94 other DAOs, digital commons, AI a

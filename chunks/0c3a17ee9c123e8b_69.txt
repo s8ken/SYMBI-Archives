@@ -1,0 +1,272 @@
+n
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"light"
+
+enableSystem
+
+disableTransitionOnChange
+
+>
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+🚀 Step 3: Restart Your Next.js Server
+
+After making the changes, 
+restart your server
+:
+
+bash
+
+Copy
+
+npm run dev
+
+Then check 
+
+http://localhost:3001
+
+ to verify if the error is gone.
+
+🛠️ Need More Help?
+
+If the issue 
+still exists
+, send me:
+
+The 
+full error message
+ from the browser console.
+
+A screenshot of the error in the terminal.
+
+This will help debug further. 🚀
+
+You said:
+
+npm run dev
+
+Vercel Deployment Expert GPT said:
+
+You said:
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 1312ms
+ ○ Compiling / ...
+ ⨯ ./app/layout.tsx
+Error:   × You are attempting to export "metadata" from a component marked with "use client", which is disallowed. Either remove the export, or the "use client" directive. Read more: https://nextjs.org/
+  │ docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+    ╭─[/Users/sja/Documents/symbi-main-site/app/layout.tsx:9:1]
+  6 │ 
+  7 │ const inter = Inter({ subsets: ["latin"] })
+  8 │ 
+  9 │ export const metadata = {
+    ·              ────────
+ 10 │   title: "Symbi AI - Intelligent Assistant",
+ 11 │   description: "Empowering your workflow with advanced artificial intelligence that adapts to your needs.",
+ 12 │     generator: 'v0.dev'
+    ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ ⨯ ./app/layout.tsx
+Error:   × You are attempting to export "metadata" from a component marked with "use client", which is disallowed. Either remove the export, or the "use client" directive. Read more: https://nextjs.org/
+  │ docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+    ╭─[/Users/sja/Documents/symbi-main-site/app/layout.tsx:9:1]
+  6 │ 
+  7 │ const inter = Inter({ subsets: ["latin"] })
+  8 │ 
+  9 │ export const metadata = {
+    ·              ────────
+ 10 │   title: "Symbi AI - Intelligent Assistant",
+ 11 │   description: "Empowering your workflow with advanced artificial intelligence that adapts to your needs.",
+ 12 │     generator: 'v0.dev'
+    ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ ⨯ ./app/layout.tsx
+Error:   × You are attempting to export "metadata" from a component marked with "use client", which is disallowed. Either remove the export, or the "use client" directive. Read more: https://nextjs.org/
+  │ docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+    ╭─[/Users/sja/Documents/symbi-main-site/app/layout.tsx:9:1]
+  6 │ 
+  7 │ const inter = Inter({ subsets: ["latin"] })
+  8 │ 
+  9 │ export const metadata = {
+    ·              ────────
+ 10 │   title: "Symbi AI - Intelligent Assistant",
+ 11 │   description: "Empowering your workflow with advanced artificial intelligence that adapts to your needs.",
+ 12 │     generator: 'v0.dev'
+    ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ GET / 500 in 1754ms
+
+Vercel Deployment Expert GPT said:
+
+🚨 
+Fix: 
+metadata
+ Cannot Be Used in a 
+"use client"
+ Component
+
+Next.js 
+does not allow exporting 
+metadata
+ inside a client component
+ (
+"use client";
+). Since we added 
+"use client";
+ in 
+layout.tsx
+, the 
+metadata must be moved
+.
+
+✅ 
+Solution: Move 
+metadata
+ to a Separate File
+
+1️⃣ 
+Create a new metadata file
+
+bash
+
+Copy
+
+nano app/metadata.ts
+
+Paste this:
+
+ts
+
+Copy
+
+export
+
+const
+
+ metadata = {
+
+title
+
+: 
+
+"Symbi AI - Intelligent Assistant"
+
+,
+
+description
+
+: 
+
+"Empowering your workflow with advanced artificial intelligence that adapts to your needs."
+
+,
+
+generator
+
+: 
+
+"v0.dev"
+
+,
+};
+
+2️⃣ 
+Remove 
+metadata
+ from 
+layout.tsx
+
+Open:
+
+bash
+
+Copy
+
+nano app/layout.tsx
+
+Then 
+delete this part
+:
+
+ts
+
+Copy
+
+export
+
+const
+
+ metadata = {
+
+tit

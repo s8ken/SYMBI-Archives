@@ -1,0 +1,274 @@
+ts instead of replacing the entire file.
+
+ð Specific File Actions
+
+File
+
+Replace or Merge?
+
+Notes
+
+components/theme-provider.tsx
+
+â Replace
+
+If the project has a different 
+theme-provider.tsx
+, compare & merge any differences.
+
+app/layout.tsx
+
+â ï¸ Merge
+
+Check for additional 
+<head>
+ metadata or custom components before replacing.
+
+app/page.tsx
+
+â Replace
+
+If your uploaded 
+page.tsx
+ is the main page, replacing should be fine.
+
+public/globals.css
+
+â ï¸ Merge
+
+If there are extra styles in the existing file, combine them.
+
+tailwind.config.ts
+
+â ï¸ Merge
+
+Ensure any existing Tailwind settings (e.g., plugins, colors) are kept.
+
+3ï¸â£ How to Merge Safely
+
+If you want to compare files 
+easily
+, use one of these methods:
+
+ð Method 1: Visual Code Editor (Recommended)
+
+Open 
+VS Code
+.
+
+Open both versions of the file side by side.
+
+Copy any important parts over before replacing.
+
+ð Method 2: Terminal (
+diff
+ command for Mac/Linux)
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+diff ~/Documents/symbi/app/layout.tsx ~/Downloads/symbi/app/layout.tsx
+
+This shows the differences.
+
+ð Method 3: Online Diff Checker
+
+Copy both file contents.
+
+Use an online tool like 
+diffchecker.com
+ to compare.
+
+ð Final Step:
+
+Once merged or replaced
+, run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+and 
+check your site locally before pushing to GitHub & Vercel
+.
+
+Let me know if you need help merging any files! ð
+
+You said:
+
+BuildError@http://localhost:3000/_next/static/chunks/%5Broot%20of%20the%20server%5D__3a40d6d2._.js:17247:50
+react-stack-bottom-frame@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:12388:33
+renderWithHooks@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:3402:42
+updateFunctionComponent@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:4726:36
+beginWork@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:5358:47
+runWithFiberInDEV@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:631:28
+performUnitOfWork@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7947:114
+workLoopSync@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7840:57
+renderRootSync@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7823:25
+performWorkOnRoot@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7558:225
+performWorkOnRootViaSchedulerTask@http://localhost:3000/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:8386:26
+performWorkUntilDeadline@http://localhost:3000/_next/static/chunks/node_modules_beb00741._.js:1462:72
+
+ChatGPT said:
+
+This error suggests that your Next.js app is encountering a 
+build-time rendering issue
+ due to a possible problem in the server-side rendering (SSR) process.
+
+ð Steps to Debug & Fix the Issue
+
+1ï¸â£ Check the Detailed Error Message
+
+Sometimes, Next.js hides the 
+actual
+ error message behind these stack traces.
+
+Try running the app in development mode with more debugging:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn dev
+
+ð 
+Look at the terminal output
+âthe error should show more details there.
+
+2ï¸â£ Ensure Next.js and Dependencies Are Installed Correctly
+
+Since you copied files, ensure all dependencies are properly installed:
+
+bash
+
+Copy
+
+Edit
+
+npm install
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn install
+
+3ï¸â£ Check for Issues in 
+layout.tsx
+
+Since this error often happens due to issues in the main layout file, open your 
+
+app/layout.tsx
+
+ and check:
+
+â Ensure Youâre Using the Correct Imports
+
+Your layout file should look something like this:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+type
+
+ { 
+
+Metadata
+
+ } 
+
+from
+
+"next"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+import
+
+"./globals.css"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"@/components/theme-provider"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+const
+
+metadata
+
+: 
+
+Metadata

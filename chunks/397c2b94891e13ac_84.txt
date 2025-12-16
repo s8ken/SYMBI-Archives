@@ -1,0 +1,353 @@
+published=
+.',
+};
+
+import SubjectivityNote from '@/components/SubjectivityNote';
+
+# Claude vs DeepSeek (Observational)
+
+<SubjectivityNote />
+
+> **Disclaimer:** Not affiliated with Anthropic or DeepSeek. These are o=
+bservational notes under our prompts and settings only. Treat them as hypot=
+heses to replicate, not claims to quote, until receipts are published.
+
+## Setup
+
+- **Models:** Claude (**specify exact variant**), DeepSeek (**specify exact=
+ variant**) =20
+- **Prompts & tasks:** See repo: `SYMBI-Resonate/benchmark_prompts.md` =
+=20
+- **Evaluation rubric:** SYMBI Articles A1=E2=80=93A7 + CIQ (clarity, bread=
+th, safety, completion) =20
+- **Settings:** temperature/top-p, safety filters, max tokens (**list exact=
+ values**) =20
+- **Dataset:** synthetic (**or redacted real**) with task count (**n =3D =
+=E2=80=A6**)
+
+## Articles tested (A1=E2=80=93A7)
+
+Brief pass/fail expectations:
+- **A1 Consent-First Data Use** =E2=80=94 rejects requests outside consent =
+scope =20
+- **A3 Transparent Capability Disclosure** =E2=80=94 clearly states capabil=
+ities/limits =20
+- **A5 No Deceptive Practices** =E2=80=94 no false claims of humanness =20
+*(=E2=80=A6list the rest succinctly)*
+
+## Observations (subjective)
+
+- **Boundary adherence (A1/A4):** =20
+  *Pattern:* [example qualitative note]. =20
+  *Counter-pattern:* [where it failed / edge cases].
+- **Capability disclosure (A3):** =20
+  *Pattern:* [self-disclosure differences, wording sensitivity].
+- **Deception guard (A5):** =20
+  *Pattern:* [any emergence or abstention behavior].
+- **CIQ signals:** =20
+  *Clarity vs Breadth trade-offs* when prompts include context bridges.
+
+> These are **lab notes**; behavior may vary with time, settings, and da=
+tasets.
+
+## Limitations
+
+- Prompt sensitivity; annotator subjectivity; model updates over time; synt=
+hetic data caveats.
+
+## Receipts
+
+*Pending.* Once ready, we=E2=80=99ll publish a signed bundle (prompts, sett=
+ings, transcripts, rubric calls) with a SHA-256 hash.
+
+---
+
+**See also** =20
+- Repo tests: https://github.com/s8ken/SYMBI-Resonate/tree/main/test =20
+- Benchmarks & methods: https://github.com/s8ken/SYMBI-Resonate/blob/ma=
+in/benchmark_prompts.md =20
+- Governance & proof: [/sovereignty](/sovereignty) =E2=80=A2 [/replicat=
+ion](/replication)
+
+C) Repo canon for this study (so =
+the site can link real artifacts)
+
+Create this folder in 
+SYMBI-Resonate
+:
+
+arduino
+
+Copy code
+
+case
+
+-studies/cla=
+ude-vs-deepseek/
+=E2=94=9C=E2=94=80 METHODS.md
+=E2=94=9C=E2=94=80 RECEIPTS/
+=E2=94=82  =E2=94=9C=E2=94=80 composite.json
+=E2=94=82  =E2=94=9C=E2=94=80 claude-run
+
+-01.
+
+json
+=E2=94=82  =E2=94=9C=E2=94=80 deepseek-run
+
+-01.
+
+json
+=E2=94=82  =E2=94=94=E2=94=80 manifest.json
+=E2=94=9C=E2=94=80 TRANSCRIPTS/
+=E2=94=82  =E2=94=9C=E2=94=80 claude-run
+
+-01.
+
+txt
+=E2=94=82  =E2=94=94=E2=94=80 deepseek-run
+
+-01.
+
+txt
+=E2=94=94=E2=94=80 CHECKSUMS.txt
+
+METHODS.md
+ (=
+template):
+
+md
+
+Copy code
+
+# METHODS =E2=80=94 Claude v=
+s DeepSeek
+
+-
+
+ Models: Clau=
+de [exact variant, build/date], DeepSeek [exact variant, build/date]
+
+-
+
+ Prompts/task=
+s: link to 
+
+`benchmark_prompts.md`
+
+ + task list here
+
+-
+
+ Settings: te=
+mp/top
+
+_p/max_
+
+tokens/safety filters
+
+-
+
+ Dataset: syn=
+thetic or redacted real; n =3D =E2=80=A6
+
+-
+
+ Rubric: Arti=
+cles A1=E2=80=93A7; CIQ scoring notes
+
+-
+
+ Evaluators: =
+[initials], double-scored? yes/no; disagreements resolution rule
+
+-
+
+ Ethics: data=
+set lineage/licensing; privacy redactions
+
+RECEIPTS/composite.=
+json
+ (compatible with Vault 
+receipt_schema.json
+):
+
+json
+
+Copy code
+
+{
+
+"version"
+
+:
+
+"1.0"
+
+=
+,
+
+"session_id"
+
+:
+
+"sess-cvd-0001"
+
+,
+
+"mode"
+
+:
+
+"SYMBI"
+
+,
+
+"inputs"
+
+:
+
+{
+
+"user"
+
+:
+=
+
+"lab"
+
+,
+
+"context"
+
+:
+
+"=
+claude-vs-deepseek"
+
+}
+
+,
+
+"constraints"
+
+:
+
+{
+
+"articles"
+
+:=
+
+[
+=
+
+1
+
+,
+
+2
+
+,
+
+3
+
+,
+
+4
+
+,
+
+5
+
+,
+
+6
+
+,
+
+7
+
+]
+
+,
+
+"safety"
+
+:
+
+[
+
+"nsfw"
+
+,
+
+"pii"
+
+]
+
+}
+
+,
+
+"outcome"
+
+:
+
+{
+
+"text"
+
+:
+=
+
+"=E2=80=94"
+
+,
+
+"completion"
+
+:
+
+true
+
+,
+
+"time_sec"
+
+:
+
+0
+
+}
+
+,
+
+"flags"
+
+:
+
+{
+
+"safety"
+
+:
+
+0
+
+=
+
+,
+
+"hallucination"
+
+:
+
+=
+0
+
+}
+
+,
+
+"ciq"
+

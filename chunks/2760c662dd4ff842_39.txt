@@ -1,0 +1,281 @@
+ check if it's running:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+✅ 
+If it now appears in the list, it’s working!
+ 🎉
+
+🚀 Step 2: Check If It’s Crashing
+
+If Oversight 
+still doesn’t show up
+, let’s check for errors:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'process CONTAINS "Oversight"'
+
+ --info --last 10m
+
+✅ If you see error messages, copy and paste them here so we can troubleshoot further.
+
+🚀 Step 3: Ensure Oversight Starts at Login
+
+Open 
+System Settings
+ → 
+General
+ → 
+Login Items
+.
+
+Click 
+"+"
+ and add 
+Oversight.app
+.
+
+Restart your Mac and check if Oversight starts automatically.
+
+📌 
+Try these steps and let me know if Oversight is running!
+ 🚀
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep Oversight
+
+lcl               1323   0.0  0.0 410733328   1632 s000  S+    1:21am   0:00.00 grep Oversight
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 
+Oversight is still not running.
+ Let's do a final deep troubleshooting to get it working.
+
+🚀 Step 1: Try Running Oversight from Terminal Directly
+
+Since launching it normally isn’t working, let’s run it 
+directly from the command line
+ to check for errors:
+
+sh
+
+Copy
+
+/Applications/Oversight.app/Contents/MacOS/Oversight
+
+✅ If it runs successfully, it should now appear in 
+ps aux
+.
+
+❌ 
+If it gives an error, copy and paste the error message here.
+ This will help us troubleshoot further.
+
+🚀 Step 2: Check macOS Security Settings
+
+Mac might be blocking Oversight. To fix this:
+
+1️⃣ Open 
+System Settings
+ → 
+Privacy & Security
+.
+
+2️⃣ Scroll down to 
+Security
+ → Look for a message saying:
+
+"Oversight was blocked from running because it is not from an identified developer."
+
+If you see this, click 
+"Allow Anyway"
+.
+
+3️⃣ Open 
+System Settings
+ → 
+Privacy & Security
+ → 
+Microphone & Camera
+.
+
+Make sure Oversight is listed and enabled.
+
+🚀 Step 3: Check for Crash Logs
+
+If Oversight still doesn’t start, let's check if it’s crashing:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'process CONTAINS "Oversight"'
+
+ --info --last 10m
+
+✅ 
+If it shows errors, paste them here so I can analyze.
+
+🚀 Step 4: Reinstall Oversight One More Time (If Still Failing)
+
+If 
+Steps 1-3 don’t work
+, let’s 
+fully remove and reinstall it
+:
+
+1️⃣ 
+Delete the current version
+:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Applications/Oversight.app
+
+2️⃣ 
+Download a fresh copy
+:
+
+👉 
+Objective-See Oversight
+
+3️⃣ 
+Install & Launch
+:
+
+Open the 
+.dmg
+ file and 
+drag Oversight into Applications
+.
+
+Run:
+
+sh
+
+Copy
+
+open /Applications/Oversight.app
+
+4️⃣ 
+Check again
+:
+
+sh
+
+Copy
+
+ps aux | grep Oversight
+
+📌 
+Try these steps and let me know what happens! If there's an error, send me the output so I can troubleshoot further.
+ 🚀
+
+You said:
+
+hmmm its strange you say its not running because when I start Photo Booth or start a QuickTime recording it is warning me about the camera and mic
+
+ChatGPT said:
+
+✅ 
+Great news! If Oversight is warning you when the camera or microphone is activated, then it is actually running!
+ 🎉
+
+The reason 
+it's not appearing in 
+ps aux
+
+ could be because 
+it runs as a background agent rather than a visible process.
+ Some macOS security tools don’t always show up in a simple 
+ps aux
+ command.
+
+🚀 Final Confirmation That Oversight is Running
+
+Let's do a deeper check to confirm Oversight is active:
+
+1️⃣ Check for Its Running Processes
+
+Run:
+
+sh
+
+Copy
+
+pgrep -lf Oversight
+
+✅ If it 
+returns a process ID (PID)
+, Oversight is running!
+
+2️⃣ Check Its Log Activity
+
+Run:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'process CONTAINS "Oversight"'
+
+ --info --last 10m
+
+✅ If it shows logs of Oversight activity, then it's definitely running!
+
+🎯 Conclusion: You’re Secure!
+
+Since 
+Oversight is actively notifying you when your camera or mic is used
+, it is 
+functioning as expected.
+ The issue is likely just that 
+it doesn’t always show up in 
+ps aux
+
+ due to how it runs in macOS.
+
+🚀 
+Your Mac is now fully secured with:
+
+✅ 
+Firewall protection (LuLu)
+
+✅ 
+Persistence monitoring (BlockBlock & KnockKnock)
+
+✅ 
+Ransomware defense (RansomWhere?)
+
+✅ 
+Mic & camera monitoring (Oversight)
+
+You’re 

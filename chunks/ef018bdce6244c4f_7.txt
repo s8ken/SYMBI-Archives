@@ -1,0 +1,191 @@
+o
+
+Reasoned for 5m 2s
+
+Below =
+is a concise, form=E2=80=91ready statement you can paste into X=E2=80=99s =
+=E2=80=9CDescribe all of your use cases of X=E2=80=99s data and API=E2=80=
+=9D field, followed by a fuller appendix with technical/operational detail.=
+ It is written to be clearly compliant with X=E2=80=99s policies and conser=
+vative about scope, while still supporting SYMBI=E2=80=99s mission.
+
+Form=E2=80=91ready description (con=
+cise)
+
+Organization / product:
+ SYMBI (symbi.world) =E2=80=94 a p=
+rotocol for relational intelligence and conversation quality.
+
+Intent:
+ Read a small v=
+olume of 
+public
+ posts about SY=
+MBI to (a) respond from our official account and (b) generate 
+aggregate
+ conversation=E2=80=91health metri=
+cs (CIQ) for research and product telemetry. Optionally post updates from o=
+ur official handle.
+
+Read use cases (public data only):
+
+Brand & community listening:
+ recent search for mentio=
+ns of =E2=80=9CSYMBI,=E2=80=9D =E2=80=9Csymbi.world,=E2=80=9D and campaign =
+hashtags to route replies from our official account.
+
+Conversation=E2=80=91quality analytics (aggregate only):
+ =
+derive non=E2=80=91identifying metrics (e.g., volume by hour, language dist=
+ribution, topic/hashtag co=E2=80=91occurrence) to study how relational prom=
+pts spread. We store Tweet IDs and derived aggregates; we re=E2=80=91hydrat=
+e text as needed.
+
+Safety triage for our handle:
+ simple keyword rules to =
+surface abusive replies aimed at our account for human review.
+
+Write use cases (our account only):
+
+4) 
+Programmatic posting:
+ publish release notes, research calls, and campaign updates from 
+@symbi_world
+ (no user imp=
+ersonation; no DM automation).
+
+What we will 
+not
+=
+ do:
+
+=E2=80=93 No scraping outside official APIs, per X Terms; no attempts to by=
+pass rate limits. 
+
+X Careers
+
+=E2=80=93 
+No model training o=
+r fine=E2=80=91tuning on X content
+, per the updated Developer Agre=
+ement. 
+
+TechCrunch
+
++1
+
+=
+
+=E2=80=93 No targeted advertising, credit/housing/employment decisions, fac=
+e recognition, or sensitive=E2=80=91attribute inference.
+
+=E2=80=93 No resale or sharing of raw content; only aggregated metrics may =
+be shared publicly.
+
+Data handling:
+
+=E2=80=93 Store 
+Tweet IDs / U=
+ser IDs
+, timestamps, public metrics, and derived, non=E2=80=91reve=
+rsible aggregates.
+
+=E2=80=93 Cache full Tweet text briefly for QA; re=E2=80=91hydrate on displ=
+ay; honor removals/permissions changes by re=E2=80=91hydrating at view=E2=
+=80=91time and purging cached text.
+
+=E2=80=93 Encrypt at rest; access audited; principle of least privilege.
+
+Endpoints (initial):
+ recent search; Tweet/User lookup;=
+ posting from our account (OAuth 2.0).
+
+Tier:
+ Start on Basic=
+/Pro depending on rate needs; 
+no
+ enterprise firehose.
+
+Appendix (expanded, for your reco=
+rds or reviewer follow=E2=80=91up)
+
+1) Exact data we read
+
+Tweets (public):
+
+id
+, 
+text
+, =
+
+created_at
+, 
+author_id
+, 
+lang
+, 
+possibly_sensitive
+, 
+pub=
+lic_metrics
+ (like/retweet/quote counts), 
+referenced_tweets
+, 
+entities.hashtags
+, 
+entities.urls
+.
+
+Users (public):
+
+id
+, 
+username
+, 
+name
+ (for attribution=
+ when we reply from 
+@symbi_wo=
+rld
+).
+
+Expansions:
+
+author_id
+, 
+referenced_=
+tweets.id
+.
+
+Volume:
+ low and bursty; a few thousand reads/month ini=
+tially.
+
+Storage & retention:
+ We persist IDs + derived aggr=
+egates (counts, co=E2=80=91occurrence graphs). We avoid long=E2=80=91term s=
+torage of raw text; where needed for QA, we cache briefly and re=E2=80=91hy=
+drate on render so removals propagate. Deletions/permission changes are res=
+pected via re=E2=80=91hydration and cache purge.
+
+2) Exact actions we write
+
+Post from our official handle
+ (release notes, event no=
+tices, research invitations, and =E2=80=9C/proof=E2=80=9D challenges).
+
+No
+ posting on behalf of end users (no 3=E2=80=91legged=
+ flows at launch).
+
+No
+ automation of DMs.
+
+Rate=E2=80=91limited
+ cadence to avoid spam patterns.
+
+3) Compliance & policy alignm=
+ent
+
+No scraping; API=E2=80=91only access.
+ We will not acc

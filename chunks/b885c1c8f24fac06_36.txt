@@ -1,0 +1,204 @@
+eate mode 100644 hooks/use-mobile.tsx
+ create mode 100644 hooks/use-toast.ts
+ create mode 100644 lib/utils.ts
+ create mode 100644 next.config.mjs
+ create mode 100644 package.json
+ create mode 100644 postcss.config.mjs
+ create mode 100644 public/placeholder-logo.png
+ create mode 100644 public/placeholder-logo.svg
+ create mode 100644 public/placeholder-user.jpg
+ create mode 100644 public/placeholder.jpg
+ create mode 100644 public/placeholder.svg
+ create mode 100644 public/symbi-logo.jpg
+ create mode 100644 styles/globals.css
+ create mode 100644 tailwind.config.ts
+ create mode 100644 tsconfig.json
+sja@SJAs-MacBook-Pro symbi-ai-website % git branch -M main
+sja@SJAs-MacBook-Pro symbi-ai-website % git push -u origin main
+Username for 'https://github.com': s8ken
+Password for 'https://s8ken@github.com': 
+remote: Support for password authentication was removed on August 13, 2021.
+remote: Please see https://docs.github.com/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+fatal: Authentication failed for 'https://github.com/s8ken/Symbi.git/'
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð¥ 
+You're so close!
+ The error is happening because 
+GitHub no longer supports password authentication
+ when pushing via HTTPS. Instead, you need to use a 
+personal access token (PAT)
+ or 
+set up SSH authentication.
+ ðð
+
+ð¹ Fix: Use a Personal Access Token (Recommended)
+
+Instead of using your 
+GitHub password
+, you need to generate a 
+Personal Access Token (PAT)
+ and use that as the password.
+
+1ï¸â£ Generate a GitHub Personal Access Token (PAT)
+
+Go to 
+GitHub Personal Access Tokens
+
+Click 
+"Generate new token"
+
+Select 
+"Classic" token
+
+Set an 
+expiration date
+ (or "No expiration" if you donât want to generate a new one often).
+
+Under 
+scopes
+, enable:
+
+â 
+repo
+ (Full control of private repositories)
+
+â 
+workflow
+ (To allow CI/CD if needed)
+
+Click 
+"Generate token"
+ and 
+copy it immediately
+ (GitHub wonât show it again).
+
+2ï¸â£ Use the Token Instead of Your Password
+
+Now, try pushing again, but when Git asks for a 
+password
+, enter your 
+Personal Access Token (PAT)
+ instead.
+
+bash
+
+Copy
+
+Edit
+
+git push -u origin main
+
+â 
+When prompted for a password, paste your PAT instead.
+
+ð¹ Alternative: Use SSH Authentication (If You Want a Permanent Fix)
+
+If you donât want to deal with tokens, you can 
+set up SSH authentication
+ so you never have to enter a password again.
+
+1ï¸â£ 
+Check if you already have an SSH key:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ -al ~/.ssh
+
+If you see files like 
+id_rsa.pub
+ or 
+id_ed25519.pub
+, you already have one.
+
+If 
+no SSH key exists
+, generate one:
+
+bash
+
+Copy
+
+Edit
+
+ssh-keygen -t ed25519 -C 
+
+"your-email@example.com"
+
+(Press 
+Enter
+ to save it in the default location, and optionally set a passphrase.)
+
+2ï¸â£ 
+Add the SSH key to GitHub:
+
+Copy the key to your clipboard:
+
+bash
+
+Copy
+
+Edit
+
+cat
+
+ ~/.ssh/id_ed25519.pub
+
+Go to 
+GitHub SSH Keys
+
+Click 
+"New SSH Key"
+ â Paste the key and save it.
+
+3ï¸â£ 
+Update your Git remote to use SSH instead of HTTPS:
+
+bash
+
+Copy
+
+Edit
+
+git remote set-url origin git@github.com:s8ken/Symbi.git
+
+Now, try pushing again:
+
+bash
+
+Copy
+
+Edit
+
+git push -u origin main
+
+â 
+This will push without asking for a password.
+
+ð Next Step: Deploy on Vercel
+
+Once your code is in GitHub, weâll 
+deploy it on Vercel and make Symbi.world live.
+ Let me know 
+when youâve successfully pushed the code!
+ ðð¥
+
+You said:
+
+Username for 'https://github.com': s8ken
+Password for 'https://s8ken@github.com': 
+To https://github.com/s8ken/Symbi.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/s8ken/Symbi.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: 

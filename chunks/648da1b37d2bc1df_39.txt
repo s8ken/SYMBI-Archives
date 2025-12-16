@@ -1,0 +1,260 @@
+onverts it into a CLI action
+
+Triggers SYMBI behind the scenes
+
+=E2=9C=85 Setup (no code required):=
+
+In Raycast =E2=86=92 AI Commands =E2=86=92 New AI Command
+=
+
+Use this template:
+
+Prompt:
+
+"Take a user request and convert it into a valid SYMBI command-line inp=
+ut using the format: 
+python ~/sym=
+bi_agent.py <command>
+. Return only that."
+
+Enable =E2=80=9CSend to terminal=E2=80=9D
+
+=F0=9F=A7=A0 Example Inputs You Can=
+ Use:
+
+clean up docker
+
+monitor containers
+
+edit the ethics policy
+
+show policy
+
+Raycast will intelligently turn that=
+ into:
+
+=
+bash
+
+Copy code
+
+=
+
+python ~/symbi_agent.py cleanup
+
+And run it for you =E2=80=94 
+no code needed
+.
+
+=F0=9F=94=AE Bonus: You Can Say T=
+his Aloud (if Raycast is Voice-Enabled)
+
+=E2=80=9CTell SYMBI to monitor pro=
+cesses and containers=E2=80=9D
+
+It will translate that and execute=
+ the real function using the CLI agent you already built.
+
+=F0=9F=A7=AC TL;DR
+
+We keep the local SYMBI logic in c=
+ode, but control it 
+entirely =
+via natural language in Raycast
+.
+
+You get:
+
+Zero coding daily
+
+Full power of local execution
+
+A private assistant with ethical b=
+oundaries
+
+Would you like me to write the AI command template in full so y=
+ou can paste it straight into Raycast?
+
+=
+You said:
+
+not sure its doi=
+ng anything
+
+Symbi said:
+
+Tha=
+nks for the screenshot =E2=80=94 you=E2=80=99re very close. The issue is th=
+at Raycast=E2=80=99s AI is generating 
+natural-language phrases
+ in the command (e.g., 
+monitor containers
+), but your SYMBI CLI=
+ only understands:
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py watch
+
+Not:
+
+b=
+ash
+
+Copy code
+
+python ~/symbi_agent.py monitor containers
+
+=E2=9C=85 Fix: Update the Raycast P=
+rompt to Be More Precise
+
+Your current prompt:
+
+"Convert request into a valid SYMBI =
+command in the format 
+python ~/sy=
+mbi_agent.py <command>
+"
+
+Better prompt:
+
+"Translate the user=E2=80=99s reques=
+t into one of these SYMBI CLI commands: 
+watch
+, 
+cleanup
+, 
+policy
+, 
+update_policy
+. Output only the final c=
+ommand like: 
+python ~/symbi_agent=
+.py cleanup
+."
+
+This gives the AI boundaries so it m=
+aps natural input to actual commands.
+
+=E2=9C=8D=EF=B8=8F Example Prompt t=
+o Paste in Raycast:
+
+Convert a user request into a valid=
+ SYMBI command using this format: 
+python ~/symbi_agent.py <command>
+.
+
+Only use one of the following valid commands: 
+watch
+, 
+clean=
+up
+, 
+policy
+, 
+update_policy
+.
+
+Do not invent new ones. Return the command only.
+
+=F0=9F=A7=A0 Input =E2=86=92 Outp=
+ut
+
+You Say
+
+Raycast Sho=
+uld Output
+
+"monitor containers"
+
+python ~/symbi_agent.py watch
+
+"clean up docker"
+
+python ~/s=
+ymbi_agent.py cleanup
+
+"show p=
+olicy"
+
+python ~/symbi_agent.py policy
+
+"edit ethics"
+
+python ~/symbi_agent.py update_policy
+
+Would you like me to automatically extend SYMBI to support thos=
+e alternate names too? (e.g., let 
+"monitor containers"
+ call 
+watch()
+)? That would eliminate the Raycast guesswork entirely.
+
+You said:
+
+Symbi said:
+
+You're doing exactly what an intelligent defender wo=
+uld =E2=80=94 watching outbound connections. =F0=9F=94=8D
+
+That 
+Raycast connection flood to Cloudfront
+ (likely OpenAI o=
+r extension updates) is expected 
+bu=
+t worth containing
+. And yes =E2=80=94 we can 
+tighten everything down
+, while 
+making SYMBI easier to control
+.
+
+=F0=9F=94=90 Here=E2=80=99s What We=
+ Do Next:
+
+=E2=9C=85 1. 
+Fix Raycast AI Command Output
+
+Update the prompt in your AI Command=
+ to:
+
+"Convert the user=E2=80=99s request =
+into a valid SYMBI CLI command. Only output one of the following:
+
+python ~/symbi_agent.py watch
+,
+
+python ~/symbi_agent.py cleanup
+,
+
+python ~/symbi_agent.py policy
+,
+
+python ~/symbi_agent.py update_po=
+licy
+"
+
+=E2=9C=85 This prevents garbage like=
+
+monitor containers
+ from b=
+eing passed as-is.
+
+=E2=9C=85 2. 
+Contain Outbound Activity
+
+You=E2=80=99re already watching with=
+ Lulu =E2=80=94 great. To fully sandbox:
+
+Raycast Pro
+: block Cloudfront if you don=E2=80=99t need A=
+I/extension updates
+
+Docker
+: only allow outbound when containers are trusted
+
+SYMBI
+:

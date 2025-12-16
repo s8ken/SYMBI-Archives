@@ -1,0 +1,262 @@
+ameserver
+
+â 
+You confirmed that 
+113.212.173.22
+ is listed under 
+resolver #1
+ in 
+scutil --dns
+
+, meaning your Mac 
+is using this nameserver
+.
+
+ð What Does This Mean?
+
+1ï¸â£ 
+If you donât recognize 
+113.212.173.22
+
+, it could be:
+
+A 
+manually configured DNS server
+ (possibly from an app or VPN).
+
+A 
+hijacked DNS setting
+ (if malware modified your network settings).
+
+2ï¸â£ 
+If you didnât set this DNS manually
+, itâs best to 
+remove it
+ and set your DNS to a 
+trusted provider (Google or Cloudflare).
+
+Step 2A: Reset DNS to a Trusted Provider
+
+ð¹ 
+Set Google DNS (
+8.8.8.8, 8.8.4.4
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+ð¹ 
+OR Set Cloudflare DNS (
+1.1.1.1, 1.0.0.1
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1
+
+Step 2B: Flush DNS Cache
+
+After changing the DNS, 
+clear the old settings
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 2C: Verify the Fix
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+Check if 
+113.212.173.22
+ is gone!
+ If it still appears, we might need to investigate further.
+
+ð Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+ð If itâs still there, weâll check for hidden configurations. If itâs gone, we move to the 
+next investigation (deleted files still in use).
+ ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo killall -HUP mDNSResponder
+
+sja@SJAs-MacBook-Pro ~ % scutil --dns
+
+DNS configuration
+
+resolver #1
+  nameserver[0] : 113.212.173.22
+  nameserver[1] : 113.212.168.1
+  nameserver[2] : 192.168.68.1
+  if_index : 22 (en4)
+  flags    : Request A records
+  reach    : 0x00000002 (Reachable)
+
+resolver #2
+  domain   : local
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300000
+
+resolver #3
+  domain   : 254.169.in-addr.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300200
+
+resolver #4
+  domain   : 8.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300400
+
+resolver #5
+  domain   : 9.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300600
+
+resolver #6
+  domain   : a.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300800
+
+resolver #7
+  domain   : b.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 301000
+
+DNS configuration (for scoped queries)
+
+resolver #1
+  nameserver[0] : 113.212.173.22
+  nameserver[1] : 113.212.168.1
+  nameserver[2] : 192.168.68.1
+  if_index : 22 (en4)
+  flags    : Scoped, Request A records
+  reach    : 0x00000002 (Reachable)
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 2: DNS Nameserver 
+113.212.173.22
+ is Still Present ð¨
+
+Even after changing the DNS settings, 
+the unwanted nameserver is still there.
+ This suggests it may be:
+
+Manually configured by a hidden process or script.
+
+Set by your router (forcing devices to use it).
+
+A sign of a network-level hijack (if unknown to you).
+
+ð  Fixing This â Let's Try a Stronger Reset
+
+We need to 
+manually override all network connections.
+
+1ï¸â£ Force-Remove the Bad DNS Setting
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi empty
+
+ð This 
+removes all DNS servers
+ from Wi-Fi.
+
+Now, 
+add back trusted DNS servers
+ (Google DNS as an example):
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+If you're on 
+Ethernet
+, do the same for it:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+2ï¸â£ Check If the Unwanted DNS is Gone
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+Is 
+113.212.173.22
+ still there?
+ If so, we need to 
+dig deeper.
+
+3ï¸â£ Inve

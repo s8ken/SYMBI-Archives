@@ -1,0 +1,706 @@
+eader=E2=80=A6 (keep the skip-link) */}
+
+<
+m=
+ain
+
+id
+
+=3D
+
+"main"
+
+role
+
+=3D
+
+"main"
+
+tabIndex
+
+=3D
+
+{-1}
+
+ref
+
+=3D
+
+{mainRef}
+
+>
+        {children}
+
+</
+=
+main
+
+>
+      {/* =E2=80=A6Footer=E2=80=A6 */}
+
+</>
+
+  );
+}
+
+Remove any extra 
+ro=
+le=3D"main"
+ from page components.
+ Each page should begin wi=
+th a clear 
+<h1>
+ in=
+side that 
+<main>
+.
+
+C) Mobile responsive tweaks (mino=
+r)
+
+Bump tap targets & wrap overflowing toolbars
+
+css
+
+Copy code
+
+/* frontend/src/index.css *=
+/
+
+button
+
+, =
+
+.btn
+
+, =
+
+a
+
+.button-like
+
+ {
+
+min-height
+
+: 
+
+44px
+
+; 
+
+/* WCAG target */
+
+min-width
+
+=
+: 
+
+44px
+
+;
+}
+
+@media
+
+ (
+
+max-width
+
+: 
+
+480px
+
+) {
+
+.toolbar
+
+, 
+
+.metrics-grid
+=
+
+ {
+
+flex-wrap
+
+: wrap;
+
+gap
+
+: 
+
+8px
+
+;
+  }
+
+.card
+
+ {
+
+padding
+
+=
+: 
+
+12px
+
+;
+  }
+}
+
+MUI breakpoints example
+
+jsx
+
+Copy code
+
+// Example container using =
+MUI
+
+import
+
+ { 
+
+Box
+
+ } 
+
+from
+
+'@mui/material'
+
+;
+
+export
+
+function
+
+MetricsGrid
+
+(
+
+{ children }
+
+) {
+
+return
+
+ (
+
+<=
+
+Box
+
+sx
+
+=3D
+
+{{
+
+display:
+
+=
+ '
+
+grid
+
+',
+
+gap:
+
+2
+
+,
+
+gridTemplateColumns:
+
+ { 
+
+xs:
+
+ '
+
+1fr
+
+', 
+
+sm:
+
+ '
+
+1fr
+
+1fr
+
+', 
+
+=
+md:
+
+ '
+
+repeat
+
+(
+
+3
+
+, 
+
+1fr
+
+)' },
+      }}
+    >
+      {children}
+
+</
+Bo=
+x
+
+>
+  );
+}
+
+D) Backend (already in Fix Pack v=
+1, reaffirm)
+
+Keep 
+/api/health
+ JSON endpoint.
+
+Helmet + HSTS + CSP already added=
+=E2=80=94leave on.
+
+Playwright updates (to flip the r=
+emaining reds)
+
+1) Assert unique main landmark & H1
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js (add)
+
+test
+
+(=
+
+'single main landmark and visible =
+h1'
+
+, 
+
+async
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/'
+
+);
+
+const
+
+ mains=
+ =3D 
+
+await
+
+ pa=
+ge.
+
+locator
+
+(
+
+'main[role=3D"main"]'
+=
+
+).
+
+count
+
+();
+
+expect
+
+(mains).
+
+toBe
+
+(
+
+1
+
+);
+
+await
+
+expect
+
+(pag=
+e.
+
+getByRole
+
+=
+
+(
+
+'heading'
+
+, { 
+
+level
+
+: 
+
+1
+
+ })).
+
+toBeVisible
+
+();
+});
+
+2) First invalid field receives focus
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js (add)
+
+test
+
+(=
+
+'form moves focus to first invalid=
+ field'
+
+, 
+
+asyn=
+c
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/login'
+
+);
+
+await
+
+ page.=
+
+getByRole
+
+(
+
+'button'
+
+,=
+ { 
+
+name
+
+: 
+=
+
+/sign in/i
+
+ }).
+=
+
+click
+
+();
+
+const
+
+ activ=
+eId =3D 
+
+await
+
+=
+ page.evaluate(
+
+() =3D>
+=
+
+document=
+
+.
+
+activeEleme=
+nt
+
+?.
+
+id
+
+ || 
+
+''
+
+=
+
+);
+
+expect
+
+([
+
+'email'
+
+,
+
+'password'
+
+]).
+
+toContain
+
+(activeId);
+});
+
+3) Mobile tap target check
+
+js
+
+Copy code
+
+// tests/e2e/accessibility.s=
+pec.js (add)
+
+test
+
+(=
+
+'primary CTA has >=3D44px tap t=
+arget on mobile'
+
+, 
+
+async
+
+ ({ page }) =3D> {
+
+await
+
+ page.=
+
+setViewportSize
+
+({ 
+
+width
+
+: 
+
+375
+
+, 
+
+height
+
+: 
+
+=
+
+667
+
+ });
+
+await
+
+ page.=
+
+goto
+
+(=
+
+'/'
+
+);
+
+const
+
+ box =
+=3D 
+
+await
+
+ pag=
+e.
+
+getByRole
+
+=
+
+(
+
+'button'
+
+, { 
+
+name
+
+: 
+
+/get started|start pilot/i
+
+ }).
+
+boundingBox
+
+();
+
+expect
+
+(box?.
+
+height
+
+).
+
+toBeGreaterThanOrEqu=
+al
+
+(
+
+44
+
+);
+
+expect
+
+(box?.
+
+width
+
+).
+
+toBeGreaterThanOrEqua=
+l
+
+(
+
+44
+
+);
+});
+
+CI gates & flake control (fas=
+t)
+
+In 
+playwright.config.js
+:
+
+js
+
+Copy code
+
+retries
+
+: pr=
+ocess.
+
+env
+
+.
+
+CI
+
+ ? 
+
+2
+
+ : 
+
+0
+
+,
+
+reporter
+
+: [[
+
+'html'
+
+], [
+
+'line'
+
+]],
+
+Split suites: 
+test:e2e:fast
+ (accessibility + security + AP=
+I) =E2=86=92 gate PRs. Run full matrix nightly.
+
+Artifact retention: 
+screenshot: 'only-on-failure', video: 'retain=
+-on-failure'
+.
+
+Expected outcome
+
+Accessibility:
+ those 3 tests flip green (focus, main l=
+andmark, tap targets).
+
+Mobile:
+ minor wrapping & target size removes flaki=
+ness on small screens.
+
+Overall pass rate:
+
+=E2=86=92 90%+
+ on the next run, with clear residuals on=
+ly where content is still evolving.
+
+If you want, I can package these i=
+nto PR-ready patch blocks (file-by-file diffs with paths you shared), but t=
+he snippets above are ready to paste.
+
+=
+
+=
+
+You said:
+
+=E2=8F=BA =F0=9F=93=8A Fix Pack v2 Test Results Summary
+
+  Based on the Playwright test results, here's the comprehensive
+  overview:
+
+  =F0=9F=8E=AF Overall Test Results
+
+  - Total Tests: 305 tests (up from 290)
+  - =E2=9C=85 Passed: 224 tests (73.4% success rate)
+  - =E2=9D=8C Failed: 81 tests (26.6% fai

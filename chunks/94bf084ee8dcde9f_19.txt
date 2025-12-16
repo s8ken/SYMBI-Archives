@@ -1,0 +1,224 @@
+is one
+
+ChatGPT said:
+
+The file contains 
+a lot of network and DNS logs
+, but I don't see any obvious streaming-related domains (like Twitch, YouTube Live, or YouStream). The logs mainly show 
+Apple system processes, local network changes, and DNS service updates.
+
+ð  Next Step: Extract Only Streaming-Related Entries
+
+Since this file contains 
+a lot of general network activity
+, let's 
+filter only for potential livestreaming services
+ so we donât have to go through unnecessary data.
+
+â Run This Command in Terminal:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d | grep -iE 
+
+"twitch|youtube|stream|rtmp|webrtc|hls|live"
+
+This will:
+
+Remove unnecessary system messages.
+
+Show only DNS queries related to 
+streaming, RTMP, WebRTC, or live broadcasts.
+
+ð© What to Do Next
+
+1ï¸â£ 
+Run the command above in Terminal.
+
+2ï¸â£ 
+If the list is long, save it to a file and upload it here:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d | grep -iE 
+
+"twitch|youtube|stream|rtmp|webrtc|hls|live"
+
+ > ~/Desktop/filtered_streaming_logs.txt
+
+3ï¸â£ 
+Let me know what results you get!
+
+ð¨ If this still doesnât show anything, weâll take another approach by checking 
+browser history and network uploads instead.
+
+You said:
+
+the material itself if pornographic in nature and this is designed as a doxing or reaction video attempt - it will not be on major platforms 
+
+ChatGPT said:
+
+Understoodâthis makes things more complex because it means the 
+livestream was likely sent to a private or obscure platform
+, not mainstream services like 
+Twitch or YouTube Live.
+
+We need to take a 
+different approach
+ to 
+find where the data was sent
+ and 
+how they maintained access.
+
+ð  Step 1: Look for Unknown Streaming Servers
+
+Since this was not on 
+major platforms
+, we need to find 
+any unknown IPs or domains
+ that may have received the stream.
+
+â Run This in Terminal to Extract Suspicious Connections
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d | grep -iE 
+
+"live|stream|rtmp|cdn|video|upload"
+
+ð 
+What to Look For:
+
+Unknown domain names
+ (not Twitch, YouTube, or known websites).
+
+CDN services
+ (content delivery networks that store video).
+
+Raw IP addresses
+ instead of domain names (suggesting a private server).
+
+ð© 
+If you see anything strange, copy it here, and Iâll help analyze it.
+
+ð¥ Step 2: Check for Hidden Remote Access (To Maintain Streaming)
+
+Since this has been happening 
+for months
+, they likely 
+maintained access to your Mac
+.
+
+â Run This to Check for Remote Access:
+
+sh
+
+Copy
+
+sudo netstat -an | grep LISTEN
+
+ð 
+Look for Suspicious Open Ports:
+
+5900
+ â VNC (Remote Screen Sharing)
+
+22
+ â SSH (Remote Terminal Access)
+
+443, 5223
+ â Apple iCloud Sync & Remote Access
+
+Any unknown ports
+
+ð¨ 
+If a strange port is open, it may be how they controlled your Mac.
+
+ð© Next Steps
+
+1ï¸â£ 
+Run the DNS search (
+log show --predicate 'DNS' | grep "stream"
+).
+
+2ï¸â£ 
+Run the remote access check (
+netstat -an | grep LISTEN
+).
+
+3ï¸â£ 
+Copy any unknown IPs, ports, or domains here, and Iâll help analyze them.
+
+This will 
+help track where the video was sent
+ and 
+how they kept control of your device.
+ Let me know what you find! ð¨
+
+You said:
+
+streams 1.2.rtf
+
+File
+
+ChatGPT said:
+
+Your logs contain 
+a lot of Apple system activity
+ (related to video processing, wallpapers, Photos, and videoconferencing), but I donât see any 
+clear evidence of livestreaming to an external service
+ yet.
+
+Key Findings So Far:
+
+1ï¸â£ 
+Apple VideoConference & CoreMedia Processes
+
+This suggests 
+video was processed
+, but it doesnât confirm streaming.
+
+It could be 
+FaceTime, QuickTime, or a third-party app accessing the camera.
+
+2ï¸â£ 
+No Obvious Streaming Platforms Found
+
+No 
+RTMP, WebRTC, or external livestreaming servers
+ were found.
+
+This suggests the 
+streaming was either hidden or logs were cleared.
+
+ð¨ Next Step: Find Out I

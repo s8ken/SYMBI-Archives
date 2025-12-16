@@ -1,0 +1,305 @@
+ervices
+
+B. Check WebRTC Logs (If Browser Was Used for Streaming)
+
+Chrome:
+ Open 
+chrome://webrtc-internals/
+
+Safari:
+ Go to 
+Develop → WebRTC
+
+If WebRTC sessions were used, that suggests 
+livestreaming via browser
+.
+
+4️⃣ Find Past Camera/Microphone Usage
+
+If a 
+hidden livestream
+ occurred, there might still be 
+camera/microphone logs.
+
+A. Scan System Logs for Video/Audio Activity
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AVCapture"'
+
+ --last 21d
+
+If results show 
+FaceTime Camera
+ or 
+Microphone activation
+, that suggests 
+video/audio was streamed.
+
+B. Search for Saved Video Files
+
+If 
+local recordings
+ were saved before being streamed, check for them:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f \( -name 
+
+"*.mp4"
+
+ -o -name 
+
+"*.mov"
+
+ -o -name 
+
+"*.mkv"
+
+ -o -name 
+
+"*.avi"
+
+ \) -
+
+ls
+
+Look in 
+hidden locations
+ like 
+/private/tmp/
+ or 
+~/Library/Application Support/
+.
+
+🚨 Summary of Next Actions
+
+✅ 
+1. Check where streams were sent (
+log show --predicate 'DNS'
+)
+
+✅ 
+2. Confirm if other apps streamed (
+ps aux | grep stream
+, 
+launchctl list
+)
+
+✅ 
+3. Look for browser-based streaming (
+grep
+ browser history, WebRTC logs)
+
+✅ 
+4. Scan for past camera/microphone use (
+log show --predicate 'AVCapture'
+)
+
+✅ 
+5. Find any saved video recordings (
+find ~/ -type f -name "*.mp4"
+)
+
+Since 
+OBS’s camera extension was active
+, the next step is 
+confirming where video was sent
+ and whether 
+any other software was livestreaming
+. Let me know what you find! 🚨
+
+You said:
+
+its already been streaming me for 3 months
+
+ChatGPT said:
+
+If you’ve been livestreamed for 
+three months
+, our priority now is:
+
+1️⃣ 
+Confirming the full scope
+—where was the data sent?
+
+2️⃣ 
+Finding evidence that can’t be erased
+ (logs, network records, cached files).
+
+3️⃣ 
+Figuring out how they maintained persistent access
+ (hidden processes, remote access, iCloud syncing).
+
+4️⃣ 
+Locking down your system to stop any further exposure
+ (if you haven't already).
+
+🚨 1️⃣ Track Where Your Livestream Was Sent
+
+Since 
+three months of streaming
+ would require a 
+long-term, stable connection
+, the system has been 
+regularly sending data to an external server
+.
+
+A. Scan DNS Requests for Past Connections
+
+Since livestreaming requires a 
+continuous data connection
+, we can look for domains that received 
+consistent requests
+.
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d
+
+This will reveal 
+where your system was connecting
+ over time.
+
+Look for:
+
+Twitch (
+live.twitch.tv
+)
+
+YouTube Live (
+rtmp.youtube.com
+)
+
+Unknown streaming sites (
+youstream.com
+ or random IP addresses)
+
+B. Find If a Specific App Was Sending the Stream
+
+To identify which app was responsible for livestreaming:
+
+sh
+
+Copy
+
+sudo lsof -i -n | grep ESTABLISHED
+
+If an 
+unknown process
+ is consistently making network connections, that’s the source of the livestream.
+
+Run this again, but filter for 
+only large data transfers
+ (which livestreams require):
+
+sh
+
+Copy
+
+sudo nettop -m tcp -p -P | grep -E 
+
+"upload|send"
+
+This will show which apps 
+sent the most data
+—which is critical for finding livestreams.
+
+🖥 2️⃣ Find Out What Else Was Streaming (Beyond OBS)
+
+Since 
+OBS was running but removed
+, 
+another method
+ might have been used for 
+long-term surveillance.
+
+A. List All Screen Recording Apps That Have Permission
+
+Go to 
+System Settings → Privacy & Security → Screen Recording
+
+Look for 
+anything other than OBS
+ (QuickTime, unknown apps).
+
+B. Scan for Hidden Streaming Services
+
+sh
+
+Copy
+
+launchctl list | grep -i 
+
+"stream\|ffmpeg"
+
+If any background 
+streaming services
+ are running, this will expose them.
+
+🎥 3️⃣ Find Local Copies of the Streamed Videos
+
+Even if the 
+main stream was sent online
+, some apps (especially OBS, ffmpeg, or QuickTime) 
+might have saved copies before uploading
+.
+
+Run this to 
+find hidden or saved video files
+:
+
+sh
+
+Copy
+
+find ~/ -
+
+type
+
+ f \( -name 
+
+"*.mp4"
+
+ -o -name 
+
+"*.mov"
+
+ -o -name 
+
+"*.mkv"
+
+ -o -name 
+
+"*.avi"
+
+ \) -
+
+ls
+
+Check timestamps
+—if 

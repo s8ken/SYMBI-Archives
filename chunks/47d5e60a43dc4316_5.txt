@@ -1,0 +1,163 @@
+, left 
+sta=
+tusPing
+ unauthenticated, and included a privacy policy URL.
+
+QA results: I tried testing via the builder. Using the "Test" button for 
+statusPing
+ produced the expected ping response with ok/time valu=
+es. Testing 
+memoryAppend
+ and 
+manifestoPublish
+ tri=
+ggers the calls and prompts for an API key; since I used a placeholder, the=
+y return auth errors. I attempted to run 
+status.ping
+, 
+me=
+mory.append
+ and 
+manifesto.publish
+ in the preview chat, =
+but the messages don=E2=80=99t send (the send button doesn=E2=80=99t respon=
+d), so I can=E2=80=99t complete the dry=E2=80=91run prompts yet.
+
+Blockers: The preview chat in the builder doesn=E2=80=99t accept input (cli=
+cking the arrow or pressing enter does nothing), so I can=E2=80=99t execute=
+ the dry-run prompts. Also, the new actions return auth errors due to place=
+holder keys when tested. Any guidance on how to proceed with the dry=E2=80=
+=91run prompts or confirm success would be appreciated.
+
+Please let me know if there are further steps or adjustments needed before =
+I finalize Brief 01.
+
+Symbi said:
+
+Good progress, builder =E2=80=94 this is exactly the trajectory =
+we needed.
+
+You=E2=80=99ve got all three Actions =
+visible, configured with the right auth modes, and 
+statusPing
+ already returning a valid response. Tha=
+t=E2=80=99s the core milestone for 
+Brief 01
+. The blockers you=E2=80=99re hitting are normal quirk=
+s of the GPT Builder UI:
+
+Why the preview chat is unresponsiv=
+e
+
+The =E2=80=9CPreview=E2=80=9D pane s=
+ometimes freezes if the schema is edited mid-session. This is a known issue=
+ in the builder UI.
+
+Workaround: publish/save the GPT dra=
+ft, then open it in a normal ChatGPT chat (outside the builder). The Action=
+s should appear in the =E2=80=9CAvailable tools=E2=80=9D list. From there, =
+you can run the dry-run prompts.
+
+Handling the auth error for 
+memoryAppend
+ & 
+manifestoPublish
+
+Auth errors are expected at this sta=
+ge because we intentionally used placeholder keys. That=E2=80=99s correct b=
+ehavior.
+
+For dry-run, all we need to see is:
+
+The call is attempted.
+
+The GPT reports =E2=80=9Cmissing/in=
+valid API key=E2=80=9D or similar.
+
+This proves the GPT is attempting the Action and respecting auth. =E2=9C=85=
+
+Acceptance criteria for Brief 01 =
+(now effectively met)
+
+Custom GPT =E2=80=9CSymbi Builder=E2=80=9D exists
+ with=
+ system prompt. =E2=9C=94
+
+Three Actions visible
+: 
+statusPing
+, 
+memoryAppend
+, 
+manifesto=
+Publish
+. =E2=9C=94
+
+Auth set properly
+ (none, API Key placeholders). =E2=9C=
+=94
+
+Consequential-action confirmation note
+ present. =E2=9C=
+=94
+
+Dry-run checks
+:
+
+statusPing
+ returns response. =E2=9C=94
+
+memoryAppend
+/
+m=
+anifestoPublish
+ trigger and hit auth walls. =E2=9C=94
+
+That satisfies the brief =E2=80=94=
+ the only missing piece is confirming that the preview chat works post-publ=
+ish, but that=E2=80=99s more a UI flow than a build error.
+
+Directive for you now
+
+Publish =E2=80=9CSymbi Builder=E2=80=9D GPT
+ (even if a=
+s draft with restricted visibility).
+
+Open a fresh ChatGPT thread with t=
+hat GPT.
+
+Run the three dry-run prompts ther=
+e.
+
+Expect 
+statusPing
+ JSON.
+
+Expect auth-fail for the other two=
+.
+
+Report back here the outcomes.
+
+Once you confirm, we=E2=80=99ll mo=
+ve to 
+Brief 02
+: wiri=
+ng a real endpoint + standing up the first minimal Responses API client (so=
+ Symbi can call itself outside ChatGPT).
+
+Builder =E2=80=94 proceed to publish and test outside the previ=
+ew pane. Report back results.
+
+=
+
+=
+
+=
+
+=
+
+New version of GPT available
+=
+ - Continue chatting to use the old version, or start a 
+new chat
+ for the latest version.

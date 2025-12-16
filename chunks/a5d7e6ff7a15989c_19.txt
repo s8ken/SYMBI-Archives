@@ -1,0 +1,208 @@
+sed 112 (delta 25), pack-reused 0 (from 0)
+Receiving objects: 100% (113/113), 926.05 KiB | 6.13 MiB/s, done.
+Resolving deltas: 100% (26/26), done.
+From https://github.com/s8ken/Symbi
+ * branch            main       -> FETCH_HEAD
+ * [new branch]      main       -> origin/main
+error: The following untracked working tree files would be overwritten by merge:
+	.DS_Store
+	.gitignore
+	app/globals.css
+	app/layout.tsx
+	app/page.tsx
+	components.json
+	components/theme-provider.tsx
+	components/ui/accordion.tsx
+	components/ui/alert-dialog.tsx
+	components/ui/alert.tsx
+	components/ui/aspect-ratio.tsx
+	components/ui/avatar.tsx
+	components/ui/badge.tsx
+	components/ui/breadcrumb.tsx
+	components/ui/button.tsx
+	components/ui/calendar.tsx
+	components/ui/card.tsx
+	components/ui/carousel.tsx
+	components/ui/chart.tsx
+	components/ui/checkbox.tsx
+	components/ui/collapsible.tsx
+	components/ui/command.tsx
+	components/ui/context-menu.tsx
+	components/ui/dialog.tsx
+	components/ui/drawer.tsx
+	components/ui/dropdown-menu.tsx
+	components/ui/form.tsx
+	components/ui/hover-card.tsx
+	components/ui/input-otp.tsx
+	components/ui/input.tsx
+	components/ui/label.tsx
+	components/ui/menubar.tsx
+	components/ui/navigation-menu.tsx
+	components/ui/pagination.tsx
+	components/ui/popover.tsx
+	components/ui/progress.tsx
+	components/ui/radio-group.tsx
+	components/ui/resizable.tsx
+	components/ui/scroll-area.tsx
+	components/ui/select.tsx
+	components/ui/separator.tsx
+	components/ui/sheet.tsx
+	components/ui/sidebar.tsx
+	components/ui/skeleton.tsx
+	components/ui/slider.tsx
+	components/ui/sonner.tsx
+	components/ui/switch.tsx
+	components/ui/table.tsx
+	components/ui/tabs.tsx
+	components/ui/textarea.tsx
+	components/ui/toast.tsx
+	components/ui/toaster.tsx
+	components/ui/toggle-group.tsx
+	components/ui/toggle.tsx
+	components/ui/tooltip.tsx
+	components/ui/use-mobile.tsx
+	components/ui/use-toast.ts
+	hooks/use-mobile.tsx
+	hooks/use-toast.ts
+	lib/utils.ts
+	next.config.mjs
+	package-lock.json
+	package.json
+	postcss.config.mjs
+	public/Symbi Logo.jpg
+	public/placeholder-logo.png
+	public/placeholder-logo.svg
+	public/placeholder-user.jpg
+	public/placeholder.jpg
+	public/placeholder.svg
+	public/symbi-logo.jpg
+	styles/globals.css
+	tailwind.config.ts
+	tsconfig.json
+Please move or remove them before you merge.
+Aborting
+sja@SJAs-MacBook-Pro symbi-ai-website % 
+
+ChatGPT said:
+
+ð¨ Issue: "Untracked working tree files would be overwritten by merge"
+
+Git is 
+preventing the pull
+ because your local project contains files that already exist in the 
+GitHub repository
+, and it doesnât want to overwrite them automatically.
+
+No worriesâletâs fix this step by step! ð
+
+â Solution 1: Force Overwrite Local Files with GitHub Version
+
+If you 
+want to keep the GitHub version of your files
+ (overwriting your local changes), run:
+
+bash
+
+Copy
+
+Edit
+
+git fetch origin
+git reset --hard origin/main
+
+ð¹ 
+This will replace your local files with GitHubâs latest version
+.
+
+Then, continue:
+
+bash
+
+Copy
+
+Edit
+
+git pull origin main
+git add .
+git commit -m 
+
+"Synced with GitHub"
+
+git push origin main
+
+â Now your local project and GitHub should be in sync.
+
+â Solution 2: Keep Your Local Files & Overwrite GitHub Version
+
+If you 
+want to keep your local files
+ and 
+overwrite the ones in GitHub
+, follow these steps:
+
+Step 1: Backup Your Local Files (Just in Case)
+
+Run this to copy your local files into a backup folder:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ ~/Desktop/symbi-backup
+
+cp
+
+ -R * ~/Desktop/symbi-backup/
+
+â Now, your files are safely backed up in 
+Desktop/symbi-backup
+.
+
+Step 2: Force Git to Accept Your Local Files
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Keeping local files and overwriting GitHub"
+
+git push origin main --force
+
+â This 
+forces GitHub to accept your local version
+ and 
+overwrites the remote repo
+.
+
+ð¥ Step 3: Deploy to Vercel
+
+Now, deploy your project:
+
+bash
+
+Copy
+
+Edit
+
+vercel --prod
+
+If Vercel asks:
+
+"Set up and deploy 
+~/Documents/symbi-ai-website
+?"
+
+â Press 
+N
+ (No), since it's already

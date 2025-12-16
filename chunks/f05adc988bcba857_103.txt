@@ -1,0 +1,327 @@
+eck depending on what you're trying to confirm:
+
+â 
+1. To View/Edit Content in Sanity Studio
+
+Go to:
+
+ð 
+http://localhost:3000/studio
+
+(Or port 3001 if thatâs the one running.)
+
+Steps:
+
+Log in with your Sanity account.
+
+In the left menu, click 
+Page
+ under âDocuments.â
+
+You should see the "test page title" entry.
+
+Click into it to see/edit the title and content blocks.
+
+â 
+2. To See the Content Rendered on Your Site (Frontend)
+
+Go to:
+
+ð 
+http://localhost:3000
+
+(Or again, 3001 depending on which one is active.)
+
+This will show the frontend rendering
+. You're checking:
+
+Is the title (
+test page title
+) being shown?
+
+Is any content from the Sanity editor being rendered?
+
+ð¤ 
+3. If You Donât See Content Yet
+
+Letâs check if your 
+app/page.tsx
+ has this basic integration:
+
+Example code:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { getPage } 
+
+from
+
+"@/lib/sanity"
+
+import
+
+ { 
+
+PortableText
+
+ } 
+
+from
+
+"@portabletext/react"
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+()
+
+return
+
+ (
+
+<
+main
+
+className
+
+=
+
+"container mx-auto py-10"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-4xl font-bold mb-4"
+
+>{page.title}
+
+</
+h1
+
+>
+
+<
+PortableText
+
+value
+
+=
+
+{page.content}
+
+ />
+
+</
+main
+
+>
+  )
+}
+
+If 
+PortableText
+ isn't installed yet:
+
+bash
+
+Copy
+
+Edit
+
+npm install @portabletext/react
+
+Let me know which step you're on and what youâre seeing â Iâll guide you through the rest ð¥
+
+You said:
+
+yes its still there but I am wondering where I see the main site that's rendering http://localhost:3000
+
+ChatGPT said:
+
+Ah, gotcha â you're asking:
+
+Where do I find and edit the content thatâs rendering on 
+http://localhost:3000
+ â the main site?
+
+Hereâs how to break that down:
+
+ð The main site at 
+http://localhost:3000
+ is rendered from:
+
+â 
+app/page.tsx
+
+This file is your homepage component, and it contains the JSX that builds out the full landing page â hero section, what/why/who sections, footer, etc.
+
+ð§  Youâve connected Sanity CMS â so now the goal is:
+
+Start replacing hardcoded content in 
+app/page.tsx
+
+ (like 
+"Meet Symbi..."
+, 
+"What We Offer"
+, etc.)
+
+with dynamic content fetched from Sanity.
+
+ð§­ Where to look/edit now
+
+You said:
+
+?
+
+ChatGPT said:
+
+Great question â hereâs your path forward ð¥
+
+â 
+Where you're currently seeing content:
+
+Rendered on
+: 
+
+http://localhost:3000
+
+Controlled by
+: 
+app/page.tsx
+
+Currently hardcoded
+: All the sections (Hero, What, Why, Who, etc.) are still static content written directly in JSX.
+
+â 
+Where your CMS content lives:
+
+In 
+Sanity Studio
+ at 
+
+http://localhost:3000/studio
+
+Youâve created documents like:
+
+page
+ â with 
+title
+ and 
+content
+ rich text
+
+â 
+Where to go next:
+
+Now that youâve wired up the Sanity client and 
+getPage()
+ fetch works:
+
+ð¯ You want to replace 
+hardcoded content
+ in 
+app/page.tsx
+ with 
+Sanity-powered content
+ from 
+getPage()
+.
+
+ð§ Quick Checklist
+
+Make sure your Sanity schema is set up
+ to include all fields youâll need â e.g., 
+heroTitle
+, 
+heroDescription
+, 
+sections
+, etc.
+
+Update your GROQ query
+ in 
+lib/sanity.ts
+ to fetch that data.
+
+Replace static JSX content
+ in 
+app/page.tsx
+ with dynamic variables from 
+const page = await getPage()
+.
+
+Want me to help scaffold the GROQ query + dynamic JSX bindings?
+
+I can refactor your 
+getPage
+ function and 
+app/page.tsx
+ to load Sanity content live. Just say the word ð
+
+You said:
+
+I don't know what any of that mean :( wasn't this the low code cloud option
+
+ChatGPT said:
+
+You're absolutely right â and no stress! ð You 
+did choose the low-code cloud option
+, and youâve already done the hard part: wiring up the Sanity CMS into your Next.js site. ðª
+
+Letâs simplify whatâs happening and what you need to do next:
+
+ð§  Quick Concept: What You Have
+
+Area
+
+What it Does
+
+Where it Is
+
+Sanity Studio
+
+Your visual editor (CMS)
+
+http://localhost:3000/studio
+
+Next.js Website
+
+What people see on your site
+
+http://localhost:3000
+
+Sanity Data
+
+Lives in the CMS and can 

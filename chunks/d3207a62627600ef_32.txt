@@ -1,0 +1,262 @@
+database
+
+sudo freshclam
+
+# Run full system scan and log results
+
+sudo clamscan -r --bell --
+
+log
+
+=/var/log/clamav/daily_scan.log /
+
+# Remove old logs (older than 7 days)
+
+find /var/log/clamav/ -
+
+type
+
+ f -name 
+
+"*.log"
+
+ -mtime +7 -
+
+exec
+
+rm
+
+ {} \;
+
+3️⃣ 
+Save & exit:
+
+Press 
+CTRL + X
+, then 
+Y
+, then 
+ENTER
+.
+
+🚀 Step 2: Make the Script Executable
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ +x /usr/local/bin/daily_clamav_scan.sh
+
+📌 This allows the script to be executed.
+
+🚀 Step 3: Schedule the Script to Run Daily
+
+We will use 
+cron
+ (macOS’s task scheduler) to run this script every day at 
+midnight
+.
+
+1️⃣ Open the cron editor:
+
+sh
+
+Copy
+
+Edit
+
+crontab -e
+
+2️⃣ Add this line 
+at the bottom
+ of the file:
+
+ruby
+
+Copy
+
+Edit
+
+0
+
+0
+
+ * * * 
+
+/usr/local
+
+/bin/daily
+
+_clamav_scan.sh
+
+📌 
+This means:
+ Run the scan 
+every day at 12:00 AM
+.
+
+3️⃣ 
+Save & exit:
+
+If using 
+nano
+, press 
+CTRL + X
+, then 
+Y
+, then 
+ENTER
+.
+
+🚀 Step 4: Verify the Cron Job is Active
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+crontab -l
+
+📌 You should see:
+
+ruby
+
+Copy
+
+Edit
+
+0
+
+0
+
+ * * * 
+
+/usr/local
+
+/bin/daily
+
+_clamav_scan.sh
+
+✅ 
+If it appears, your daily virus scan is now scheduled!
+ 🎉
+
+🚀 Step 5: View Scan Logs (Check Results)
+
+To see if ClamAV has detected anything, you can check the log:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /var/log/clamav/daily_scan.log
+
+📌 This will show the 
+latest scan results
+.
+
+✅ Your Mac Now Has a Daily Automated Virus Scan!
+
+🔹 
+Runs every day at midnight
+
+🔹 
+Updates virus definitions before scanning
+
+🔹 
+Logs results in 
+/var/log/clamav/daily_scan.log
+
+🔹 
+Deletes logs older than 7 days to save space
+
+🚀 
+Let me know if you want any tweaks, or if this is all set!
+ 🔒🎉
+
+You said:
+
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+"/tmp/crontab.WpoOn8ERZG" 0L, 0B
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+It looks like your 
+crontab file is empty
+, meaning no scheduled tasks are currently set. Let's fix that! 🚀
+
+🛠 Step 1: Add the Daily ClamAV Scan Job
+
+1️⃣ If you're inside the 
+empty crontab editor
+, press 
+i
+ (
+to enter INSERT mode
+ in 
+vi
+, if using 
+nano
+, you can type directly).
+
+2️⃣ Paste this line:
+
+ruby
+
+Copy
+
+Edit
+
+0
+
+0
+
+ * * * 
+
+/usr/local
+
+/bin/daily
+
+_clamav_scan.sh
+
+📌 
+This tells the system to run the scan every day at midnight.
+
+3️⃣ 
+Save & Exit the Cront

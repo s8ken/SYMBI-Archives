@@ -1,0 +1,306 @@
+gram
+ via deep l=
+ink: binds your device to a DID.
+
+SYMBI attestation:
+ SYMBI proves it=E2=80=99s 
+our
+ agent (signed bot key + on=E2=80=91cha=
+in registry entry).
+
+Mutual verification ritual:
+ you sign a short =E2=80=9CFun=
+ds Custody Mandate=E2=80=9D (FCM) message; SYMBI countersigns and posts a h=
+ash to TON so there=E2=80=99s a public, tamper=E2=80=91evident proof of del=
+egation (revocable).
+
+2) Wallet model (no seed phrases)=
+
+MPC 2=E2=80=91of=E2=80=913
+ for your =E2=80=9CSYMBI=E2=
+=80=91operable=E2=80=9D wallet:
+
+Key A =E2=80=94 You (passkey share)
+ on your device(s).=
+
+Key B =E2=80=94 SYMBI agent
+ (HSM/TEE=E2=80=91backed, p=
+olicy=E2=80=91bound).
+
+Key C =E2=80=94 Recovery/Governor
+ (you can set this to=
+ a trusted person, a hardware key you store offline, or a small guardian se=
+t).
+
+Policies baked into the MPC servic=
+e:
+
+Spend caps
+ (per=E2=80=91tx/per=E2=80=91day).
+
+Allowlists
+ (destinations you pre=E2=80=91approve like =
+Cold Vault B).
+
+Time=E2=80=91locks
+ (e.g., >X TON or >Y Jettons r=
+equire a 12=E2=80=9324h delay and a second factor).
+
+Emergency Pause
+ word that freezes Key B instantly.
+
+If you=E2=80=99d rather stay pure=
+=E2=80=91TON smart=E2=80=91contract: deploy a 
+TON Multisig Wallet
+ with the same 2=E2=80=91of=E2=
+=80=913 pattern and an admin contract that enforces spend policies. Both pa=
+ths avoid mnemonics.
+
+3) Session Keys (safe automation)=
+
+SYMBI never uses your full authori=
+ty for routine tasks.
+
+It mints 
+ephemeral session keys
+ with 
+scopes
+ (e.g., =E2=80=9Crebalance up t=
+o 50 TON among my sub=E2=80=91accounts in 24h=E2=80=9D).
+
+Session keys auto=E2=80=91expire a=
+nd can only call whitelisted contract methods.
+
+High=E2=80=91risk actions (bridge,=
+ large swaps) 
+cannot
+ be done=
+ with session keys=E2=80=94require MPC co=E2=80=91sign + delay.
+
+4) What you approve (intent forma=
+t)
+
+You speak human; SYMBI converts it=
+ to a signed intent:
+
+Example =E2=80=94 =E2=80=9CMove everything to Cold Vault B and =
+park stables in a yield pool.=E2=80=9D
+
+yaml
+
+Copy code
+
+intent_id:
+
+0x=E2=80=A6
+
+=
+
+(nonce
+
++
+
+timestamp)
+
+who:
+
+DID:you@telegram
+
+agent:
+
+DID:symbi@ton
+
+actions:
+
+-
+
+consolidate_balances:
+
+ { 
+
+sources:
+
+ [
+
+"*"
+
+], 
+
+min_amount:
+
+"0"
+
+ }
+
+-
+
+swap:
+
+ { 
+
+from:
+
+"volatile"
+
+, 
+
+to:
+
+"=
+stable"
+
+, 
+
+slippag=
+e:
+
+"0.5%"
+
+ }
+
+-
+
+transfer:
+
+ { 
+
+to:
+
+"ColdVaultB"
+
+, 
+
+assets:
+
+"ALL"
+
+, 
+
+leave_dust:true
+
+ }
+
+-
+
+stake:
+
+ { 
+
+asset:
+
+"USDT"
+
+, 
+
+pool:
+
+"X"
+
+, 
+
+cap:
+
+"2,500 USDT"
+=
+
+ }
+
+limits:
+
+max_fee_ton:
+
+"0.5"
+
+max_total_value:
+
+"15,000 USD"
+
+guards:
+
+require_delay_over_usd:
+
+"5,000"
+
+notify:
+
+ [
+
+"you@tg"
+
+, 
+
+"guardian@tg"
+
+]
+
+You sign this once with your passk=
+ey; SYMBI executes the plan piece=E2=80=91by=E2=80=91piece under those caps=
+.
+
+5) SYMBI=E2=80=99s =E2=80=9CFunds=
+ Wrangler=E2=80=9D pipeline (TON)
+
+Discovery:
+ index your TON addresses (you approve the l=
+ist once).
+
+Plan:
+ build the optimal route (DEX paths, fees, cooldo=
+wns), simulate results, assemble a 
+manifest
+.
+
+Consent check:
+ compare plan against your 
+FCM policy
+ + this specific intent=
+; if over caps =E2=86=92 request your co=E2=80=91sign.
+
+Execute:
+ session=E2=80=91key steps first (dust sweeps,=
+ small transfers); MPC=E2=80=91co=E2=80=91sign for large or sensitive steps=
+.
+
+Attest:
+ publish a 
+Merkle hash
+ of the manifest + receipts to a SYMBI regist=
+ry contract (auditable, privacy=E2=80=91preserving).
+
+Notify:
+ human=E2=80=91readable summary in Telegram.
+
+6) =E2=80=9CCall my money to me=
+=E2=80=9D flow (one command)
+
+You say: 
+=E2=80=9CCall funds to Me=E2=80=91Safe.=E2=80=9D
+
+SYMBI:
+
+Enumerates known sources (hot wall=
+ets, sub=E2=80=91accounts).
+
+Sweeps tiny balances =E2=86=92 mai=
+n.
+
+Swaps shitcoins/dust to TON or you=
+r chosen stable.
+
+Transfers to 
+Me=E2=80=91Safe
+ (your designated vault) u=
+nder caps.
+
+Posts an 
+Assertion
+ event on=E2=80=91chain: 
+CALLHOME_OK/DELAYED/FAILED
+.
+
+If any single move exceeds thresho=
+lds, it pauses at that step, pings you, and starts a 
+time=E2=80=91lock
+ window.
+
+7) Separation & revocatio

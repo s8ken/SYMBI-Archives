@@ -1,0 +1,231 @@
+
+ = 
+
+await
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page" && title == "Homepage"][0]`
+
+)
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black text-white items-center justify-center p-8"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-6xl font-bold mb-4"
+
+>{data.title}
+
+</
+h1
+
+>
+      {data.image?.asset?.url && (
+
+<
+Image
+
+src
+
+=
+
+{data.image.asset.url}
+
+alt
+
+=
+
+"Homepage image"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg mb-4"
+
+        />
+      )}
+
+<
+p
+
+className
+
+=
+
+"text-xl text-center max-w-xl"
+
+>{data.content}
+
+</
+p
+
+>
+
+</
+div
+
+>
+  )
+}
+
+✅ Step 4: Restart Server
+
+Just to make sure everything’s synced:
+
+bash
+
+Copy
+
+npm run dev
+
+Then go to:
+
+http://localhost:3000
+
+ → 
+Your homepage should now show content from Sanity
+
+http://localhost:3000/studio
+
+ → Use this to edit your content 🎉
+
+🎯 Next Up (Optional)
+
+💬 Want to add AI-powered editing to Sanity Studio?
+
+📄 Want to support multiple pages (like About, Contact)?
+
+🌍 Want this published live on symbi.world?
+
+Let me know what you'd love next ✨
+
+You said:
+
+do I run npm run dev
+
+Vercel Deployment Expert GPT said:
+
+Yes! 🚀 
+Run the following command to start your local server:
+
+bash
+
+Copy
+
+npm run dev
+
+Then check:
+
+📌 
+Homepage:
+
+http://localhost:3000
+
+ (Should now pull content from Sanity)
+
+📌 
+Sanity Studio:
+
+http://localhost:3000/studio
+
+ (Use this to edit content)
+
+✅ Next Steps (If Everything Works)
+
+Confirm that the homepage content is loading from Sanity
+
+Try 
+editing the homepage in Sanity Studio
+ and see the changes reflected live
+
+Let me know if you want 
+additional pages, AI editing, or deployment
+ 🎉
+
+🚀 You're so close! Run it and let me know what happens! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi % npm run dev
+
+> symbi@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+   ▲ Next.js 15.2.3 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 829ms
+ GET /favicon.ico 200 in 560ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 980ms
+ GET /apple-touch-icon-precomposed.png 404 in 1084ms
+ GET /apple-touch-icon.png 404 in 1085ms
+ ○ Compiling / ...
+ ✓ Compiled / in 524ms
+ GET / 200 in 573ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 26ms
+ ○ Compiling /studio/[[...index]] ...
+ ✓ Compiled /studio/[[...index]] in 4.1s
+ ⨯ ./node_modules/@sanity/insert-menu/dist/index.js:7:1
+Module not found: Can't resolve 'react-is'
+   5 | import startCase from "lodash/startCase.js";
+   6 | import { useReducer, useState } from "react";
+>  7 | import { isValidElementType } from "react-is";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | function getSchemaTypeIcon(schemaType) {
+   9 |   const referenceIcon = isReferenceSchemaType(schemaType) && (schemaType.to ?? []).length === 1 ? schemaType.to[0].icon : void 0;
+  10 |   return schemaType.icon ?? schemaType.type?.icon ?? referenceIcon;
+
+https://nextjs.org/docs/messages/module-not-found
+
+./node_modules/@sanity/ui/dist/_chunks-es/_visual-editing.mjs:6:1
+Module not found: Can't resolve 'react-is'
+  4 | import { ThemeProvider as ThemeProvider$1, useTheme as useTheme$1, css, styled, keyframes } from "styled-components";
+  5 | import { buildTheme, createColorTheme as createColorTheme$1, hexToRgb as hexToRgb$1, hslToRgb as hslToRgb$1, multiply as multiply$1, parseColor as parseColor$1, rgbToHex as rgbToHex$1, rgbToHsl as rgbToHsl$1, rgba as rgba$1, screen as screen$1, getTheme_v2, getScopedTheme } from "@sanity/ui/theme";
+> 6 | import ReactIs, { isValidElementType } from "react-is";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { SpinnerIcon, CheckmarkIcon, RemoveIcon, ChevronDownIcon, CloseIcon, ChevronRightIcon } from "@sanity/icons";
+  8 | import { detectOverflow, flip, offset, shift, arrow, hide, useFloating, autoUpdate } from "@floating-ui/react-dom";
+  9 | import { motion, AnimatePresence } from "framer-motion";
+
+https://nextjs.org/docs/messages/module-not-found

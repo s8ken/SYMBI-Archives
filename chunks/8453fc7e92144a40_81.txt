@@ -1,0 +1,425 @@
+url -s -X POST 
+
+$API
+
+/api/assistant/thread/create \
+
+  -H 
+
+"Authorization: 
+
+$JWT
+
+"
+
+ | jq -r 
+
+'.thread.id'
+
+)
+
+echo
+
+"THREAD_ID=3D
+
+$THREAD_ID
+
+"
+
+# =
+Message to latest assistant (omitting assistantId)
+
+curl
+
+-s=
+
+-X
+ POST 
+$API=
+
+/api/assistant/message \
+
+-H
+
+"Authorization: 
+
+$JWT
+
+"
+
+-H
+
+"Content-Type: application/j=
+son"
+ \
+
+-d
+
+'{
+
+    "threadId": "'
+
+"
+
+$THREAD_ID
+
+"
+
+'",
+
+    "message": "Summarize the Bridge design in 4 bullets.",
+
+    "session_id": "conv:&=
+lt;CONV_ID>"
+
+=
+  }'
+ | jq
+
+Bridge=
+ (multi=E2=80=91agent orchestrate + dry=E2=80=91run dispatch)
+
+# Orchestrate
+
+curl
+
+-s=
+
+-X
+ POST 
+$API=
+
+/api/bridge/orchestrate \
+
+-H
+
+"Authorization: 
+
+$JWT
+
+"
+
+-H
+
+"Content-Type: application/j=
+son"
+ \
+
+-d
+
+'{
+
+    "task":"Add per-message trust overlays + receipts",
+
+    "agents":["codex"=
+,"v0","trae"]
+
+  =
+}'
+ | jq 
+'.proposals[0]'
+
+# D=
+ispatch (dry=E2=80=91run)
+
+# Replace proposal_id below from the orchestrate result
+
+curl
+
+-s
+
+-X
+ POST 
+$API
+/api/bridge/dispatch \
+
+=
+
+-H
+
+"Authorization:=
+
+$JWT
+
+"
+=
+
+-H
+
+"Content-Type: a=
+pplication/json"
+ \
+
+-d
+
+'{
+
+    "agent_key":"codex",
+
+    "proposal":{"proposal_id":"<PRO=
+POSAL_ID>"},
+
+=
+    "context":{"session_id":"conv:<CONV_ID>"}
+
+  }'
+ | jq
+
+Socket.IO (JWT handshake quick check)
+=
+
+//=
+ save as scripts/socket-check.mjs and run with: node scripts/socket-check.m=
+js
+
+import { io } from 'socket.io-client';
+=
+
+const API =3D process.env.API || 'http://localhost:5=
+000';
+
+const JWT =3D (process.env.JWT || '').rep=
+lace(/^Bearer\s+/, '');
+
+const CONV =3D process.=
+env.CONV_ID || '<CONV_ID>';
+
+const s =3D i=
+o(API, { auth: { token: JWT } });
+
+s.on('connect=
+', ()=3D>{ console.log('connected', s.id); s.emit('joinConversation', CO=
+NV); });
+
+s.on('connect_error', e =3D> consol=
+e.error('connect_error', e.message));
+
+=
+
+3) Enterprise Secu=
+rity
+
+JWT required & RBAC sample
+
+curl
+
+-s
+
+-o
+ /dev/null 
+-w=
+
+"%{http_code}\n"
+
+$API
+/api/trust | head 
+-n1
+
+# expect 401 without JWT
+
+Helmet/CORS/rate limit headers
+
+curl
+
+=
+-sI
+
+$API
+/healthz | egrep 
+-i
+
+'content-security-policy|x-f=
+rame-options|x-content-type-options|referrer-policy'
+
+Webhook HMAC
+
+BODY
+=3D
+'{"type"=
+:"message","data":{}}'
+
+SIG
+=3D
+$(echo -n 
+
+"
+
+$BODY
+
+"
+
+ | openssl dgst -sha256 -hmac 
+=
+
+"
+
+$WEBHOOK_SECRET
+
+"
+
+ -binary | xxd -=
+p -c 256)
+
+curl
+
+-s
+
+-X
+ POST 
+$API
+/ap=
+i/webhooks/sky/dummy \
+
+-H
+
+"x-symbi-signature: 
+
+$SIG
+
+"
+
+-H
+
+"Content-Type: application/json"
+ \
+
+-d
+
+"
+
+$BODY
+
+"
+ | jq
+
+Ledger integrity (tamper=E2=80=91evident)
+
+curl
+
+-s
+
+"
+
+$API
+
+/api/ledger/verify?session_id=3Dconv:<CONV_ID>"
+
+-H
+
+"Authorization: 
+
+$JWT
+
+"
+ | jq
+
+=
+
+4) Observability
+
+curl
+
+-s
+
+$API
+/healthz | jq
+
+curl
+
+-s
+
+$API
+/readyz | jq
+
+# If /metrics available:
+
+curl
+
+-s
+
+$API
+/metrics | head
+
+5) Sophistica=
+ted Architecture (quick UAT)
+
+VS Code extension
+
+: F5 =E2=86=92 "SYMBI: S=
+et API Base" =E2=86=92 
+
+http://localhost:5000
+
+, "SYMBI: Save SYMBI_API_KEY" =E2=86=92 your JWT =E2=86=92 run "Rou=
+ndtable" and "Verify Ledger".
+
+Context C=
+apsules
+
+: in the Conversation UI, set 
+
+Goals / Tone / Constraints / Tags
+
+, save, send a =
+message=E2=80=94reply honors capsule.
+
+T=
+rust Overlays
+
+: in Conversation UI, see 
+
+Pivot / Change% / Stance / Row=E2=80=91hash
+
+ ch=
+ips at header and under each message.
+
+6) 5=E2=80=91Minute Stakeholder Demo
+
+Dashboard =E2=86=
+=92 
+
+Roundtable
+
+: "Ship per=E2=80=
+=91message trust overlays & receipts". Show proposals + scores; dry=E2=
+=80=91run dispatch.
+
+Assistants =E2=86=92 
+
+Use Most Recent
+
+ =E2=86=92 Edit model t=
+o 
+
+gpt-4o
+
+, tweak instructions; Save.
+
+Conversations =E2=86=92 open a thread =E2=86=92=
+
+Capsule panel
+
+: set Goals "clari=
+ty", Tone "co=E2=80=91creator", Constraints "no clinical register"; Save.
+
+Send a message =E2=86=92 observe capsule honored=
+; TrustChips show stable state.
+
+Trigger a discl=
+osure =E2=86=92 see 
+
+Pivot
+
+ chip +=
+ stance change + hash snippet; run 
+
+ledger/verify
+
+.
+
+VS Code extension: "Roundtable" &=
+amp; "Verify Ledger".
+
+Postman Collection (v2.1)
+
+Import the JSON below into Post

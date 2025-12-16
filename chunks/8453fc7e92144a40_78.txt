@@ -1,0 +1,228 @@
+fy=
+?session_id=3Dconv:<CONV_ID>" -H 
+
+"Authorization: Bearer 
+$JWT
+
+" | jq
+
+# expect { "ok": true, "count": N=
+ }
+
+C) Observability (ops-ready)
+
+Liveness/Readiness
+
+bash
+
+Copy code
+
+curl -s 
+
+$AP=
+I
+
+/healthz | jq
+curl -s 
+
+$API
+
+=
+/readyz | jq
+
+Logs
+: confirm structured logs (JSON) visible; ensure e=
+rror logs include 
+requestId
+/trace ids.
+
+Metrics
+ (if enabled)=
+: confirm 
+/metrics
+ scrap=
+ing, or verify OTel/Loki pipeline receives events (grep for recent requestI=
+d).
+
+If 
+/metrics
+ isn=E2=80=99t wired yet, see =E2=80=9CPolish L=
+ist=E2=80=9D #2 below.
+
+D) Sophisticated Architecture
+
+VS Code extension
+: Console + Ledger + Roundtable work =
+with 
+only
+
+SYMBI_API_KEY
+.
+
+Context Capsules
+: edit in sidebar =E2=86=92 send messa=
+ge =E2=86=92 observe tone/constraints honored in reply.
+
+Trust Overlays
+: see chips inline at header and per mes=
+sage (pivot / stance delta / row-hash breadcrumb).
+
+5-Minute Demo Script (for stakeho=
+lders)
+
+Open Dashboard =E2=86=92 Roundtable
+
+Enter: =E2=80=9CShip per-message trust overlays & receipts.=E2=80=9D Sh=
+ow proposals + scores. Approve dry-run dispatch.
+
+Assistants =E2=86=92 =E2=80=9CUse Most Recent=E2=80=9D
+=
+
+Edit assistant model to 
+gpt-4o
+ and add a one-line instruction tweak. Save.
+
+Conversations =E2=86=92 Open a thread
+
+In the 
+Capsule
+ panel=
+, set: Goals (=E2=80=9Cclarity=E2=80=9D), Tone (=E2=80=9Cco-creator=E2=80=
+=9D), Constraints (=E2=80=9Cno clinical register=E2=80=9D). Save.
+
+Send a message
+
+Observe reply honors capsule. Show 
+TrustChips
+: no pivot initially.
+
+Trigger a disclosure
+ (e.g., mention sensitive info)
+
+Send message =E2=86=92 show 
+P=
+ivot
+ chip appears with stance change & hash snippet. Click 
+Verify
+ in UI or run the=
+ ledger verify curl.
+
+VS Code extension
+ (one minute)
+
+Run =E2=80=9CSYMBI: Roundtable=E2=80=9D =E2=86=92 show same proposals; run =
+=E2=80=9CVerify Ledger=E2=80=9D command.
+
+Close with: 
+no vendor keys
+ in clients; 
+append-only ledger
+ proves integrity=
+.
+
+Polish List (tight, high-yield)
+
+RBAC hardening (P1):
+
+Apply 
+requireRole('admin')
+ or scoped permission checks to 
+trust audit/delete
+ and any destructive admin endpoints. Add a=
+ quick unit test that 403s non-admins.
+
+Metrics surfacing (P1):
+
+If not already, add a tiny Express middleware to increment counters and tim=
+ings, and expose 
+/metrics
+ (or wire OTel to your existing configs). One file, 30 lines.
+
+Bridge receipts (P1):
+
+When Bridge returns a recommendation, write a 
+receipt
+ to the ledger including 
+{agents_considered, scores, chosen, rationale}
+. This makes =E2=80=9Cwhy this plan?=E2=80=9D auditable.
+
+True stream endpoint (P2):
+
+If 
+/api/llm/stream
+ is st=
+ill simulated, either implement SSE for providers that support it or rename=
+
+/simulate-stream
+ to avo=
+id confusion.
+
+Public verify CLI (P2):
+
+Tiny Node CLI: 
+symbi verify --s=
+ession conv:<id>
+ that calls the verify endpoint and prints a g=
+reen tick. Great for demos and trust narratives.
+
+Docs quickstart (P3):
+
+Minimal page: run, demo, verify=E2=80=941:1 with the 
+Validation Matrix
+ above.
+
+Release Tagging
+
+Create 
+v0.1-rc1
+ with release notes mapping to Trae=E2=80=
+=99s bullets:
+
+AI Integration
+: Assistants, Bridge, Socket.IO
+
+Security
+: JWT/RBAC, HMAC, Ledger Verify
+
+Observability
+: health/readiness, logging; metrics note=
+ if present
+
+DX
+: VS Code extension + Dev Container
+
+Trust
+: Overlays + Context Capsules
+
+bash
+
+Copy code
+
+git checkout -b release/v0.1-rc1
+git commit --allow-empty -m 
+
+"chore=
+: tag v0.1-rc1 (Trae-validated)"
+
+git tag v0.1-rc1
+git push origin release/v0.1-rc1 --tags
+
+Risks I=E2=80=99m still watching
+
+Metrics completeness:
+ configs present =E2=89=A0 instru=
+mented paths. Add middleware so dashboards light up.
+
+Bridge =E2=80=9Cdry-run by default=E2=80=9D
+: keep it, =
+but show receipts to justify recommendations.
+
+Per-message mapping edge cases:
+ if timestamp jitter &g=
+t;=C2=B15s, ensure 
+event_id
+ linkage exists (we can add it to messages to be exact).
+
+If you want, I=E2=80=99ll hand you=
+ the 
+metrics middlewar

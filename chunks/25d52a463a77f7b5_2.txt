@@ -1,0 +1,304 @@
+n't hav=
+e built-in Dune support). Rate limits on Dune's free tier (e.g., 100 execut=
+ions/day) might need a paid plan for production. Start with Dune's free API=
+ tier for prototyping.
+
+If t=
+his is for a specific use case (e.g., querying Symbiotic data), or if you'd=
+ like a full code example/demo, provide more details!
+
+=
+
+27 web pages
+
+=
+
+=
+
+yes i waj=
+t to know howbthey comolmeny each other or if wr go it alone
+
+=
+
+Thought for 11s
+
+How SYMBI-Symphony and Du=
+ne.com Complement Each Other (or When to Go It Alone)
+
+Base=
+d on the current state of both tools (as of October 2025), there's no out-o=
+f-the-box integration between SYMBI-Symphony=E2=80=94an AI agent orchestrat=
+ion framework=E2=80=94and Dune.com=E2=80=94a blockchain data analytics plat=
+form. However, they complement each other exceptionally well in a modular s=
+etup, especially for crypto/AI workflows. I'll break it down: their synergi=
+es, a practical integration flow, and scenarios where you'd use one solo.
+
+Why They Complement Each Other
+
+Core Str=
+engths Align Perfectly
+:
+
+SYMBI-Sy=
+mphony
+: Excels at 
+orchestrating AI agents
+=E2=80=94think m=
+ulti-agent swarms for tasks like decision-making, automation, and monitorin=
+g. Its Agent SDK handles workflows, auth (e.g., JWT for secure API calls), =
+and observability (logging/tracing for debugging agent runs).
+
+Dune.com=
+
+: Shines as a 
+data powerhouse
+ for on-chain analytics, wit=
+h SQL queries across 60+ chains, real-time Sim APIs, and no-code dashboards=
+. It's great for raw data extraction (e.g., TVL trends, transaction volumes=
+) but lacks built-in AI smarts for interpretation or automation.
+
+Together=
+
+: SYMBI agents can "pull" Dune data as input, process it with AI (=
+e.g., LLMs for anomaly detection), and output actions (e.g., alerts or trad=
+es). This creates a "data-to-decision" pipeline: Dune feeds facts, SYMBI ad=
+ds intelligence and scale. Result? Automated crypto insights without manual=
+ dashboard-hopping.
+
+Key Syne=
+rgies
+:
+
+Data Enr=
+ichment
+: SYMBI agents query Dune via API, then enrich with externa=
+l AI (e.g., predict DeFi risks from tx data).
+
+Scalabil=
+ity & Security
+: SYMBI's RBAC/MFA secures Dune API keys across =
+agents; its monitoring tracks query performance to optimize costs.
+
+Real-Tim=
+e Workflows
+: Dune's low-latency endpoints pair with SYMBI's concur=
+rent tasks for live monitoring (e.g., agent swarm alerting on whale movemen=
+ts).
+
+Ecosyste=
+m Fit
+: SYMBI's TypeScript/Node.js stack integrates easily with Dun=
+e's REST APIs, and both are open/extensible for custom blockchain apps.
+
+Practical Integration Flow (Building on the Ear=
+lier Example)
+
+Exte=
+nd the "BlockchainDataAgent" from before into a full complementary workflow=
+:
+
+Data Age=
+nt (Dune-Focused)
+: Fetches raw metrics.
+
+TypeScript
+
+=
+
+Copy
+
+// I=
+n SYMBI-Symphony AgentConfig
+
+tasks: [
+=
+
+  {
+
+    name: 
+
+'queryDune'
+
+,
+
+    endpoint: 
+
+'https://api.dune.com/api/v=
+1/query/123456/execute'
+
+,  
+
+// Your sa=
+ved Dune query ID
+
+    method: 
+
+'POST'
+
+,
+
+    headers: { =
+
+'X-Dune-API-Key'
+
+: 
+
+process
+
+.
+
+env
+
+.
+
+DUNE_KEY
+
+ },
+
+    onSucces=
+s
+
+: (
+
+data
+
+)=
+
+=3D>
+
+ { 
+
+/* Pass to next agent */
+
+ }
+
+  }
+
+]
+
+=
+
+Analysis=
+ Agent (SYMBI-Orchestrated AI)
+: Processes Dune output.
+
+TypeScri=
+pt
+
+Copy
+
+cons=
+t
+
+ analysisConfig
+
+:
+
+ AgentConfig
+
+ =
+=3D
+
+ {
+
+  id: 
+
+'ai-analyzer'
+
+,
+
+  type: 
+=
+
+'llm-workflow'
+
+,
+
+  inputs: [
+
+'duneData'
+
+],  
+
+// From previous agent
+
+  tasks: [
+
+    {
+
+      name: 
+
+'analyze'
+
+,
+
+      llmPrompt=
+: 
+
+'Analyze this Dune data =
+for anomalies: {duneData}. Output: risk score (0-10).'
+
+,
+
+      onOutp=
+ut
+
+: (
+
+insights
+
+) 
+
+=3D>
+
+ sdk
+
+.
+
+triggerAlert
+
+(
+
+insights
+
+)  =
+
+// SYMB=
+I's alerting
+
+    }
+
+  ]
+
+};
+
+sdk
+
+.
+
+chainAgents
+
+(
+
+dataAgentConfig
+
+, 
+
+analysisConfig
+
+);  
+
+// Orchestra=
+te sequence
+
+Run &=
+; Monitor
+: 
+sdk=
+.orchestrateWorkflow()
+ kicks it off, with SYMBI tracing the full cha=
+in for debugging.
+
+This=
+ setup turns Dune's static queries into dynamic AI-driven actions=E2=80=94e=
+.g., auto-ge

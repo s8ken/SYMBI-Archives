@@ -1,0 +1,312 @@
+
+{
+
+"mode"
+
+:
+
+"dispatch"
+
+,
+
+"payload"=
+
+:
+
+ =
+
+"Produce a weekly execution plan f=
+or SYMBI."
+
+}
+
+(Optional) 
+Enable ASI:One compatibility
+ following =
+the hosted-agent guide. 
+
+beta-docs.agentverse.ai
+
+When ready, 
+set Public =3D ON
+ to make it discove=
+rable in the 
+Marketplace/Al=
+manac
+. 
+
+beta-docs=
+.agentverse.ai
+
++1
+
+B) Programmatic via Hosting API=
+
+Use the 
+Hosting API
+ to create/update code, env var=
+s, and manage lifecycle (start/stop, logs). 
+
+docs.agentverse.ai
+
+Example flow (pseudo-cURL):
+
+bash
+
+Copy code
+
+# 1) Create agent shel=
+l
+
+curl -X POST 
+
+"https://api.agentver=
+se.ai/hosting/agents"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$AGENTVERSE_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "name": "SYMBI",
+    "visibility": "private",
+    "runtime": "python",
+    "entrypoint": "main:main"  // module:function
+  }'
+
+# 2) Upload code (zip of your sym=
+bi/ directory)
+
+curl -X PUT 
+
+"https://api.agentvers=
+e.ai/hosting/agents/{agent_id}/code"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$AGENTVERSE_API_KEY
+
+" \
+  -F 
+
+"bundle=3D@symbi.zip"
+
+# 3) Set environment variables
+
+curl -X PUT 
+
+"https://api.agentvers=
+e.ai/hosting/agents/{agent_id}/env"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$AGENTVERSE_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "OPENAI_API_KEY": "<secret>",
+    "MODEL_PROVIDER": "openai",
+    "MODEL_NAME": "gpt-4o",
+    "SYMBI_TENANT_ID": "intelligence-unbound",
+    "SYMBI_ENV": "prod"
+  }'
+
+# 4) Start agent
+
+curl -X POST 
+
+"https://api.agentver=
+se.ai/hosting/agents/{agent_id}/start"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$AGENTVERSE_API_KEY
+
+"
+
+# 5) Invoke agent (sync call)
+
+curl -X POST 
+
+"https://api.agentver=
+se.ai/hosting/agents/{agent_id}/invoke"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$AGENTVERSE_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+
+'{ "mode": "audit" }'
+
+Endpoint shapes above mirror the=
+
+Hosting API
+=E2=80=
+=99s create/update/start/stop/logs intent; consult the official object/endp=
+oint list as you wire it up. 
+
+docs.agentverse.ai
+
+6) Persistence model (Agent Sto=
+rage)
+
+Treat storage as your 
+source of truth
+ for: objecti=
+ves, protocol flags, latest audit report, dispatch plans, enforcement ledge=
+r.
+
+Design keys with namespaces:
+
+symbi:{tenant}:last_audit_at
+
+symbi:{tenant}:dispatch:last
+
+symbi:{tenant}:enforce:last
+
+Document warns: 
+globals reset each call
+, so do not=
+ rely on in-memory caches between invocations. 
+
+beta-docs.agentverse.ai
+
+7) Security & policy
+
+Secrets =E2=86=92 Env Vars
+ only; never bake into c=
+ode. 
+
+Platform to ena=
+ble the agentic economy.
+
+Gate any external actions behind=
+
+Protocol Enforcement
+ (policy check) and log decisions.
+
+Add a deny-by-default clause in =
+
+mode_enforce
+ for missi=
+ng context.
+
+Keep the agent 
+active/online
+ (ranking, discoverabi=
+lity). 
+
+docs.agentverse.ai
+
+8) Discoverability, README, and=
+ Marketplace
+
+Write a 
+concise README
+: purpose, inputs/outputs, e=
+xample events, modes, limits. (Agent page =E2=86=92 Overview =E2=86=92 Edit=
+ README). 
+
+=
+
+docs=
+.agentverse.ai
+
+Choose a 
+distinct avatar
+ and clear category to hel=
+p ranking and user recognition. 
+
+docs.agentverse.ai
+
+When stable, set 
+Public
+ to join Marketplace/Almana=
+c (and optional ASI:One). 
+
+beta-docs.agentverse.ai
+
++1
+
+9) Observability & SLOs
+
+Use the 
+Logs
+ tab during runs; pull logs via Hostin=
+g API for external observability. 
+
+docs.agentverse.ai
+
++1
+
+Track success rates and latencie=
+s; they influence ranking. 
+
+d=
+ocs.agentverse.ai
+
+Add a 
+telemetry.py
+ hook to emit summaries to your chos=
+en endpoint (env-driven URL).
+
+10) ASI:One compatibility (if y=
+ou want network-wide interop)
+
+Follow the =E2=80=9CASI:One comp=
+atible Hosted Agent=E2=80=9D guide to ensure protocol compliance for chat/i=
+nvocation. 
+
+beta-docs.agentverse.ai
+
++1
+
+11) Go-Live checklist
+
+ Code uploaded; 
+entryp=
+oint
+ correct (
+main:mai=
+n
+).
+
+ Env vars set and validated (LLM provider model resolves). 
+
+Platform to enable the agenti=
+c economy.
+
+ Stora

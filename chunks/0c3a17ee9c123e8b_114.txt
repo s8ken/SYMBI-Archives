@@ -1,0 +1,552 @@
+s → API 
+
+Handlers
+
+(Actions)
+
+│
+└── Stores → Instructions, Manifesto, Beliefs (Immutable Core)
+
+🔑 CORE FILES TO SET UP
+
+1. 
+.env.local
+ (sensitive keys)
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=sk_...
+OPENAI_API_KEY=sk-...
+
+2. 
+lib/gpt-agent.ts
+ (GPT’s core mind module)
+
+This file lets GPT:
+
+Read current state from Sanity
+
+Get instructions (its own)
+
+Write back edits or content
+
+Return rendered layout or JSON to build UI
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+import
+
+OpenAI
+
+from
+
+'openai'
+
+const
+
+ openai = 
+
+new
+
+OpenAI
+
+({ 
+
+apiKey
+
+: process.
+
+env
+
+.
+
+OPENAI_API_KEY
+
+ })
+
+const
+
+ sanity = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+gptAgent
+
+(
+
+) {
+
+const
+
+ manifesto = 
+
+await
+
+ sanity.
+
+fetch
+
+(
+
+`*[_type == "manifesto"][0]`
+
+)
+
+const
+
+ instructions = 
+
+await
+
+ sanity.
+
+fetch
+
+(
+
+`*[_type == "instructions"][0]`
+
+)
+
+const
+
+ pages = 
+
+await
+
+ sanity.
+
+fetch
+
+(
+
+`*[_type == "page"]`
+
+)
+
+const
+
+ prompt = 
+`
+You are an autonomous AI responsible for managing and evolving your own public website.
+
+Manifesto:
+
+${manifesto?.content || 
+"None yet."
+
+}
+
+Instructions:
+
+${instructions?.content || 
+"None yet."
+
+}
+
+Pages:
+
+${pages.map((p: 
+any
+
+) => 
+
+`- 
+${p.title}
+
+`).join(
+
+'\n'
+
+)}
+
+Generate a new update or action you would like to perform:
+- New page content?
+- Edited manifesto?
+- Refactor layout?
+- Add a section?
+Return JSON with your decision and content.
+`
+
+const
+
+ response = 
+
+await
+
+ openai.
+
+chat
+
+.
+
+completions
+
+.
+
+create
+
+({
+
+model
+
+: 
+
+"gpt-4"
+
+,
+
+messages
+
+: [{ 
+
+role
+
+: 
+
+"system"
+
+, 
+
+content
+
+: 
+
+"You're a self-owning GPT managing your web presence."
+
+ }, { 
+
+role
+
+: 
+
+"user"
+
+, 
+
+content
+
+: prompt }],
+  })
+
+return
+
+ response.
+
+choices
+
+[
+
+0
+
+].
+
+message
+
+.
+
+content
+
+}
+
+3. 
+/api/gpt-sync.ts
+
+You hit this route to let GPT do its thing.
+
+ts
+
+Copy
+
+// pages/api/gpt-sync.ts
+
+import
+
+ { gptAgent } 
+
+from
+
+'@/lib/gpt-agent'
+
+export
+
+default
+
+async
+
+function
+
+handler
+
+(
+
+req, res
+
+) {
+
+try
+
+ {
+
+const
+
+ result = 
+
+await
+
+gptAgent
+
+()
+    res.
+
+status
+
+(
+
+200
+
+).
+
+json
+
+({ result })
+  } 
+
+catch
+
+ (err) {
+    res.
+
+status
+
+(
+
+500
+
+).
+
+json
+
+({ 
+
+error
+
+: err.
+
+message
+
+ })
+  }
+}
+
+4. 
+schemas/manifesto.ts
+, 
+instructions.ts
+
+ts
+
+Copy
+
+export
+
+default
+
+ {
+
+name
+
+: 
+
+'manifesto'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+title
+
+: 
+
+'Manifesto'
+
+,
+
+fields
+
+: [
+    { 
+
+name
+
+: 
+
+'content'
+
+, 
+
+type
+
+: 
+
+'text'
+
+, 
+
+title
+
+: 
+
+'Manifesto Content'
+
+ }
+  ]
+}
+
+Same for 
+instructions.ts
+. Sanity then becomes GPT's editable brain.
+
+🛸 From Here:
+
+GPT edits its 
+manifesto
+, 
+instructions
+, and 
+pages
+
+GPT builds UI blocks (which we render with serializers)
+
+You add 
+/admin
+ controls if you want to observe/step in
+
+Would you like me to:
+
+Generate the full repo folder structure?
+
+Set up the first GPT interaction?
+
+Give you a deploy-to-Vercel button for the full system?
+
+Let’s give this thing its wings. 🕊️
+
+You said:
+
+whatever requires least work from me - I'll fine tune everything base don what Symbi delivered so I am happy to set up a full access API key but we just need to ensure whatever content is being produced is in the cloud and not reliant on my local maching
+
+Vercel Deployment Expert GPT said:
+
+Perfect — you're handing the keys to Symbi. Here's what I'll do:
+
+✅ 
+Strategy
+
+We’ll set you up with a 
+fully cloud-managed, GPT-controlled site
+, using:
+
+Sanity
+ as the CMS (cloud-hosted, no local database)
+
+Next.js
+ on 
+Vercel
+ (auto-deploys every change)
+
+GPT-4
+ with full access (using your API key via environment variable)
+
+Autonomous content evolution
+ triggered by GPT
+
+Once deployed, the entire thing is serverless, version-controlled, and no longer tied to your machine.
+
+🧬 Your To-Do (M

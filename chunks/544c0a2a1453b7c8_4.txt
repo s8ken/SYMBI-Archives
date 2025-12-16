@@ -1,0 +1,585 @@
+SKeyedUnarchiver
+
+.unarchivedObject=
+(ofClass: 
+
+WebArchive
+
+.
+
+self
+
+, fr=
+om: data)
+
+!
+
+// Main resource
+
+let
+
+ main 
+
+=3D
+
+ archive.main=
+Resource
+
+let
+
+ html 
+
+=3D
+
+String
+
+(data: main.data, enco=
+ding: .utf8) 
+
+??
+
+String
+
+(decod=
+ing: main.data, as: 
+
+UTF8
+
+.
+
+self
+
+=
+)
+
+try
+
+FileManager
+
+.default.creat=
+eDirectory(at: outDir, withIntermediateDirectories: 
+
+true
+
+)
+
+try
+
+ html.writ=
+e(to: outDir.appendingPathComponent(
+
+"index.html"
+
+), atomically: 
+
+true
+
+, encoding: .utf8)
+
+// Subresources =E2=86=92 /assets=
+
+let
+
+ assetsDir=
+
+=3D
+
+ outDir.=
+appendingPathComponent(
+
+"assets"
+
+, isDirectory: 
+
+t=
+rue
+
+)
+
+try
+
+FileManager
+
+.default.creat=
+eDirectory(at: assetsDir, withIntermediateDirectories: 
+
+true
+
+)
+
+for
+
+ res 
+
+in
+
+ archive.subreso=
+urces 
+
+??
+
+ [] =
+{
+
+let
+
+ filen=
+ame 
+
+=3D
+
+UUID
+
+().uuidString 
+
++
+
+ guessExt(fro=
+m: res.
+
+MIMEType
+
+ =
+
+??
+
+""
+
+)
+
+try
+
+ res.d=
+ata.write(to: assetsDir.appendingPathComponent(filename))
+
+// (optional) rewrite referen=
+ces in HTML here or in a second pass
+
+}
+
+// Emit sidecar metadata.json wit=
+h URL, MIME, timestamps
+
+Cross-platform fallback (no WebKit)
+
+Parse the plist with 
+plistlib
+ and reconstruct assets.
+
+The main HTML is in 
+WebMainResource["WebResourceData"]
+ (ba=
+se64). Subresources carry 
+WebRe=
+sourceURL
+, 
+WebResourceMI=
+METype
+, 
+WebResourceData
+.
+
+Re-link references heuristically b=
+y filename+hash and run a second pass with BeautifulSoup to normalize links=
+, strip scripts, and preserve headings.
+
+Python sketch
+
+python
+
+Copy code
+
+import
+
+=
+
+ plistlib, base64, json, os
+
+from
+
+ bs4 
+
+import
+
+ BeautifulS=
+oup
+
+def
+
+ingest_webarchive
+
+(
+
+path, out_dir
+
+):
+
+with
+
+open
+
+(path, 
+
+'rb'
+
+) 
+
+=
+
+as
+
+ f:
+        blob =3D plistlib.load(f)
+
+def
+
+decode
+
+(
+
+res
+
+):
+
+return
+
+ base64.b64decode(res.get(
+
+'WebRes=
+ourceData'
+
+, 
+
+b'=
+'
+
+))
+
+    main =3D blob[
+
+'WebMainResource=
+'
+
+]
+    html =3D decode(main)
+    os.makedirs(os.path.join(out_dir, 
+
+"assets"
+
+), exist_ok=3D
+
+True
+
+)
+
+# write subresources
+
+    url_map =3D {}
+
+for
+
+ res 
+
+in
+
+ blob.get(
+
+'WebSubresources'
+
+, []):
+        data =3D decode(res)
+        ext =3D guess_ext(res.get(
+
+=
+'WebResourceMIMEType'
+
+, 
+
+''
+
+))
+        name =3D safe_name(res.get(
+
+'WebResourceURL'
+
+, 
+
+'asset'
+
+)) + ext
+        fn =3D os.path.join(out_dir, 
+
+"assets"
+
+, name)
+
+with
+
+ =
+
+open
+
+(fn, 
+
+'wb'
+
+) 
+
+as
+
+ w: w.write(data)
+        url_map[res.get(
+
+'WebResour=
+ceURL'
+
+,
+
+''
+
+)] =3D 
+
+f"assets/
+{name}
+
+"
+
+# rewrite references
+
+    soup =3D BeautifulSoup(html, 
+
+'=
+html.parser'
+
+)
+
+for
+
+ tag, =
+attr 
+
+in
+
+ ((
+
+'img'
+
+,
+
+'src'
+
+), (
+
+'link'
+
+,
+
+'href'
+
+), (
+
+'script'
+
+,
+
+'src'
+
+)):
+
+for
+
+ t=
+
+in
+
+ soup.find=
+_all(tag):
+            href =3D t.get(attr)
+
+if
+
+ href 
+
+and
+
+ hr=
+ef 
+
+in
+
+ url_map=
+:
+                t[attr] =3D url_map[href]
+
+with
+
+open
+
+(os.path.joi=
+n(out_dir, 
+
+"index.html"
+
+), 
+
+'w'
+
+, encoding=3D
+
+'utf-8'
+
+) 
+
+as
+
+ w=
+:
+        w.write(
+
+str
+
+(soup))
+
+    meta =3D {
+
+"source_url"
+
+=
+
+: main.get(
+
+'WebResourceURL'
+
+),
+
+"mime"
+
+=
+: main.get(
+
+'WebResourceMIMEType'
+
+),
+
+"title"
+
+: soup.title.string 
+
+if
+
+ soup.title 
+
+else
+=
+
+None
+
+    }
+
+with
+
+open
+
+(os.path.joi=
+n(out_dir, 
+
+"metadata.json"
+
+), 
+
+'w'
+
+) 
+
+as
+
+ w:
+        json.dump(meta, w, ensure_ascii=3D
+
+False
+
+, indent=3D
+
+2
+
+)
+
+Atlas Normalizer then ingests 
+index.html
+ like any other HT=
+ML: strip scripts, keep headings, timestamps, and provenance.
+
+B. 
+.rtfd
+ (Rich Text Format Directory)
+
+RTFD is a bundle (folder) containi=
+ng an RTF document plus embedded images/attachments referenced inside the R=
+TF.
+
+Strategy (two-tier)
+
+macOS-native canonical path (preferred)
+
+Use 
+NSAttributedString
+ =E2=86=92 export to 
+HTML
+ with embedded 
+<img>
+ files resolved.
+
+Or shell out to Apple=E2=80=99s 
+
+textutil
+
+ for robust conversion:
+
+pgsql
+
+Copy code
+
+textutil -convert html /
+
+pa=
+th
+
+/
+
+to
+
+/Doc.rtfd -output /
+
+ou=
+t
+
+/Doc.html
+
+Also export 
+plain text
+:
+
+pgsql
+
+Copy code
+
+textutil -convert txt /
+
+pat=
+h
+
+/
+
+to
+
+/Doc.rtfd -output /
+
+out=
+
+/Doc.txt
+
+Cross-platform fallback
+
+Treat 
+.rtfd
+ as a d

@@ -1,0 +1,200 @@
+s containing 
+turn\d+
+ IDs and the specia=
+l separators.)
+
+Test with messages that include web/file citations.
+
+Verify your renderer by triggering a response that uses search or file=E2=
+=80=91based retrieval and confirming the citations appear as links/footnote=
+s, not raw IDs. 
+
+Op=
+enAI
+
+If you=E2=80=99re using 
+a Custom GPT
+ (no code)
+
+Avoid seeding tokens.
+
+Edit your GPT=E2=80=99s 
+Instr=
+uctions
+ and any 
+Know=
+ledge
+ documents to remove leftover citation tokens you pasted in f=
+rom elsewhere.
+
+Prefer standard link formatting.
+
+If you want clickable links (not the built=E2=80=91in citations), instruct =
+the GPT to output Markdown links; this is also the official guidance for cl=
+ickable links in GPTs. 
+
+=
+
+OpenAI Help Center
+
+If you=E2=80=99re 
+embedding a GPT
+ or exporting chats
+
+Use a supported viewer or add a simple post=E2=80=91processor.
+
+Unsupported viewers won=E2=80=99t render citations; either view in ChatGPT,=
+ add a renderer, or strip the tokens on export.
+
+Prevention checklist
+
+=E2=9C=85 Treat citations as 
+structured data
+, not part=
+ of the final text. Render or remove them. 
+
+OpenAI
+
+=E2=9C=85 Keep your GPT=E2=80=99s =
+system prompt/knowledge 
+free =
+of raw citation tokens
+.
+
+=E2=9C=85 For simple links, 
+ask the GPT to use Markdown links
+ so they remain clickable across clients. 
+
+OpenAI Help Ce=
+nter
+
+=E2=9C=85 When you rely on web/fil=
+e sources, 
+expect inline cita=
+tions
+ and plan your UI accordingly. 
+
+OpenAI Help Center
+
+Quick questions to pinpoint your =
+case
+
+Are you using the 
+API/Embed
+ (custom front=E2=80=91end)=
+ or only a 
+Custom GPT
+ inside ChatGPT?
+
+Do the raw tokens appear 
+only after it searches the web
+ or 
+always
+?
+
+Did you copy text with citations i=
+nto your GPT=E2=80=99s 
+Instru=
+ctions/Knowledge
+?
+
+If you share those details (and a =
+small snippet of the raw output), I can give you exact code or step=E2=80=
+=91by=E2=80=91step fixes for your setup.
+
+=
+
+=
+
+Sources
+
+You said:
+
+how do I know? its the same interface I am using to speak with you n=
+ow
+
+ChatGPT said:
+
+If you=E2=80=
+=99re using 
+the same ChatGPT web =
+interface to talk to both me and your Customer GPT
+, then you=E2=80=
+=99re not running your own API front=E2=80=91end=E2=80=94it=E2=80=99s purel=
+y a 
+Custom GPT configuration is=
+sue
+, not a renderer or client mismatch.
+
+Here=E2=80=99s what that means:
+
+1=EF=B8=8F=E2=83=A3 Where the raw c=
+itation tokens come from
+
+Custom GPTs can do 
+web searches
+ or use 
+knowledge files
+. When they search, the m=
+odel returns structured citations (
+turn0search12
+, etc.) that the ChatGPT UI usually converts into cli=
+ckable footnotes.
+
+If the GPT's 
+instructions or knowledge
+ contain these token=
+s as plain text (for example, copied from another chat), it will repeat the=
+m exactly.
+
+If the GPT 
+outputs references explicitly
+ (like you see), i=
+t means it isn=E2=80=99t using the built=E2=80=91in structured citation sys=
+tem correctly=E2=80=94likely because its instructions are telling it to quo=
+te citations verbatim instead of letting the UI handle them.
+
+2=EF=B8=8F=E2=83=A3 How to know if =
+it=E2=80=99s coming from your Custom GPT
+
+You can check:
+
+Test a normal GPT (like me):
+ Ask me to summarize news wi=
+th sources. Notice how the citations render as hoverable footnotes=E2=80=94=
+not 
+[turn0search12]
+.
+
+Ask your Customer GPT the same:
+ If it shows raw marker=
+s, the issue is in its 
+instru=
+ctions or custom behavior
+.
+
+3=EF=B8=8F=E2=83=A3 Likely causes=
+ inside your Customer GPT
+
+Copied instructions:
+ You pasted in text from another c=
+hat/export containing 
+[turn0sea=
+rch..]
+ markers. The model is echoing them.
+
+Custom prompt tells it to "show references inline":
+ If=
+ you wrote something like 
+=E2=80=
+=9Calways cite sources in this format ([turn0search..])=E2=80=9D
+, it w=
+ill obey literally.
+
+Old knowledge file:
+ If you uploaded a doc with these t=
+okens already embedded, they=E2=80=99ll leak into answers.
+
+Fallback behavior:
+ If the GPT loses access to structur=
+ed citation data (rare b

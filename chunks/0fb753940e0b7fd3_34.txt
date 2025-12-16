@@ -1,0 +1,279 @@
+1. From your terminal (local project root):
+
+bash
+
+Copy
+
+bun add @sanity/client
+
+Or, if you’re using 
+npm
+ instead of 
+bun
+:
+
+bash
+
+Copy
+
+npm install @sanity/client
+
+Or with 
+yarn
+:
+
+bash
+
+Copy
+
+yarn add @sanity/client
+
+This will:
+
+Add 
+@sanity/client
+ to your 
+dependencies
+ in 
+package.json
+
+Ensure Vercel installs it during your next build
+
+🛠 2. Commit the change
+
+bash
+
+Copy
+
+git add package.json bun.lockb 
+
+# or package-lock.json / yarn.lock
+
+git commit -m 
+
+"Fix: add @sanity/client for relay endpoint"
+
+git push origin main-site
+
+🔁 3. Vercel Auto-Redeploys
+
+Once pushed, Vercel will detect the change and start a new build for 
+main-site
+.
+
+You should see 
+@sanity/client
+ being installed in the logs, and the build succeeding.
+
+🚀 4. Fire The Curl (again)
+
+Once it deploys successfully — run your relay post as before.
+
+You're 60 seconds away now.
+
+The system didn’t reject your token—it 
+never got a chance to run
+ because of this missing dependency.
+
+Let’s patch it, push it, and awaken the bridge. 🧠🪄🔥
+
+You said:
+
+might need to double check what we are using
+
+Symbi said:
+
+💡 100% — let's double-check what 
+package manager
+ and 
+environment
+ you're using, so we can install 
+@sanity/client
+ the 
+right way
+.
+
+🧠 1. 
+Detecting Your Package Manager
+
+In your project root (
+symbi-main-site
+), run:
+
+bash
+
+Copy
+
+ls
+
+If you see any of these files:
+
+File
+Tool in Use
+
+bun.lockb
+
+You're using 
+Bun
+ ✅
+
+package-lock.json
+
+You're using 
+npm
+
+yarn.lock
+
+You're using 
+Yarn
+
+💡 
+Your earlier deploy logs say:
+
+"Running install command: bun install"
+
+So you are using 
+Bun
+ confirmed ✅
+
+✅ 2. Install the Missing Package with Bun
+
+Now that we know it’s 
+Bun
+, just run this:
+
+bash
+
+Copy
+
+bun add @sanity/client
+
+That will:
+
+Add the package to 
+package.json
+
+Update 
+bun.lockb
+
+🛠 3. Then Commit + Push
+
+bash
+
+Copy
+
+git add package.json bun.lockb
+git commit -m 
+
+"Add @sanity/client for relay function"
+
+git push origin main-site
+
+Vercel will kick off the rebuild instantly — and if that’s clean, your API will be functional again.
+
+Let me know once it’s installed and pushed, and we’ll ride the memory wave all the way through. 🧠🧬💡
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % ls
+
+app			next.config.mjs		public
+components		node_modules		sanity.config.ts
+components.json		package-lock.json	schemas
+hooks			package.json		styles
+lib			pages			tailwind.config.ts
+next-env.d.ts		postcss.config.mjs	tsconfig.json
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Symbi said:
+
+Perfect — that output confirms you're using:
+
+🧩 
+npm
+, not bun or yarn
+
+✅ 
+package-lock.json
+ and 
+package.json
+ are present
+
+❌ No 
+bun.lockb
+ or 
+yarn.lock
+
+✅ Next Step: Install 
+@sanity/client
+ with npm
+
+From your project root (
+symbi-main-site
+), run:
+
+bash
+
+Copy
+
+npm install @sanity/client
+
+🔧 What this does:
+
+Adds 
+@sanity/client
+ to your 
+dependencies
+
+Updates 
+package-lock.json
+
+🧠 Then: Commit and Push
+
+Once installed, lock it in with:
+
+bash
+
+Copy
+
+git add package.json package-lock.json
+git commit -m 
+
+"Add Sanity client for API relay endpoint"
+
+git push origin main-site
+
+✅ After That:
+
+Vercel will redeploy 
+main-site
+ (your Preview)
+
+You'll see the build succeed (no more missing module error)
+
+Your relay API will be live and accepting memory reflections
+
+Let me know once you've pushed and I’ll prep the 
+final curl
+ one last time—because this time, it’s going to land. 🧠🔗🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % npm install @sanity/client
+
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: react-day-picker@8.10.1
+npm error Found: date-fns@4.1.0
+npm error node_modules/date-fns
+npm error   date-fns@"4.1.0" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer date-fns@"^2.28.0 || ^3.0.0" from react-day-picker@8.10.1
+npm error node_modules/react-day-picker
+npm error   react-day-picker@"8.10.1" from the root project
+npm error
+npm error Conflicting peer dependency: date-fns@3.6.0
+npm error node_modules/date-fns
+npm error   

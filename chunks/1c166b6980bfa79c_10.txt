@@ -1,0 +1,237 @@
+=E2=9C=85 Normal: Signed by 
+Apple Inc.
+
+=F0=9F=9A=A9 Suspicious: Signed by =
+unknown developer or authority.
+
+Inspect entitlements
+ (once decoded):
+
+=E2=9C=85 Normal: Limited to app-s=
+pecific permissions.
+
+=F0=9F=9A=A9 Suspicious:
+
+com.apple.private.*
+ (reserved entitlements).
+
+Full keychain/device access.
+
+Always-on background execution.
+
+Cross-check device profiles
+:
+
+In macOS/iOS settings =E2=86=92 
+Profiles & Device Management
+.
+
+=E2=9C=85 Normal: Only Apple or tr=
+usted developer profiles.
+
+=F0=9F=9A=A9 Suspicious: Unknown p=
+rofiles you never installed.
+
+Look for persistence vectors
+:
+
+Attackers sometimes add a maliciou=
+s provisioning profile to maintain long-term access.
+
+=F0=9F=9B=A1=EF=B8=8F Security St=
+atus
+
+This file appears 
+clean at surface-level
+ (no obvious r=
+ogue data in strings).
+
+Real check requires 
+provisioning profile extraction
+ wi=
+th Apple tools.
+
+=F0=9F=91=89 Do you want me to 
+guide you through checking your system profiles directly
+ (in macOS/iOS settings), so you can quickly see if any suspicious prov=
+isioning profiles are active on your device? 
+
+You said:
+
+yes
+
+Symbi said:
+
+Perfect =E2=80=94 here=E2=80=99s how you can 
+manually check for suspicious provisioning profi=
+les
+ on your Mac or iOS device. This will give you a 
+frontline defense check
+ without need=
+ing deep forensic tools.
+
+=F0=9F=96=A5=EF=B8=8F On macOS
+
+Open System Settings (Ventura/Monterey/Sequoia)
+
+Go to 
+System Settings
+ =E2=86=92 
+Privacy & Security
+.
+
+Scroll down and look for 
+Profiles
+ (sometimes under =E2=80=
+=9CProfiles & Device Management=E2=80=9D).
+
+Check installed profiles
+:
+
+=E2=9C=85 Normal: No profiles at all=
+ (most Macs don=E2=80=99t have any).
+
+=E2=9C=85 Normal: Company MDM profil=
+e (if managed by employer).
+
+=F0=9F=9A=A9 Suspicious: Any unknown=
+ profile granting device management or app installation rights.
+
+Inspect details
+:
+
+Look at 
+issuer
+ (should be Apple or your org).
+
+Check 
+entitlements/permissions
+ granted.
+
+=F0=9F=9A=A9 Red flag: Camera/mic al=
+ways allowed, unrestricted network, or =E2=80=9CRoot Certificate=E2=80=9D i=
+nstalled from non-Apple source.
+
+=F0=9F=93=B1 On iOS (iPhone/iPad)
+
+Open Settings
+ =E2=86=92 
+General
+.
+
+Scroll down to 
+VPN & Device Management
+ (older ver=
+sions: =E2=80=9CProfiles & Device Management=E2=80=9D).
+
+Check installed profiles
+:
+
+=E2=9C=85 Normal: None.
+
+=E2=9C=85 Normal: Work/school MDM =
+if expected.
+
+=F0=9F=9A=A9 Suspicious: Unknown d=
+eveloper profiles, especially if they allow installing apps outside App Sto=
+re.
+
+Look for =E2=80=9CRoot Certificates=E2=80=9D
+:
+
+Go to 
+Settings
+ =E2=86=92 
+General
+ =E2=86=92 
+About
+ =E2=86=92 
+Certificate Trust Settings
+.
+
+=E2=9C=85 Normal: Only Apple syste=
+m roots.
+
+=F0=9F=9A=A9 Suspicious: Any non-A=
+pple root CA you didn=E2=80=99t add.
+
+=F0=9F=94=8E What To Do If You Fi=
+nd One
+
+If you see a suspicious profile:
+
+Tap/click it =E2=86=92 
+Remove Profile
+.
+
+Rotate AppleID and system password=
+s.
+
+Consider reinstalling OS if you=E2=
+=80=99re unsure of system integrity.
+
+=E2=9C=85 This manual check tells =
+you quickly if a hacker used a 
+rogue provisioning profile
+ to gain persistence on your device.
+
+=F0=9F=91=89 Do you want me to also prepare a 
+command-line method
+ (using 
+profiles
+ command on macOS) so you =
+can dump all profiles and verify them against trusted issuers?
+
+You said:
+
+.CFUserTextEncoding
+
+File
+
+httpstorages.sqlite-shm
+
+File
+
+htt=
+pstorages.sqlite-wal
+
+File
+
+httpstorages.sqlite-shm
+
+File
+
+Symbi said:
+
+I see you=E2=80=99ve uploaded three new system-level fi=
+les related to 
+HTTP storage and e=
+ncoding state
+. Let=E2=80=99s break them down:
+
+1. 
+.CFUserTextEncoding
+
+A tiny config file created in each u=
+ser=E2=80=99s home directory on macOS.
+
+Purpose:
+ Stores your preferred text encoding and language=
+.
+
+=E2=9C=85 Normal: It usually just co=
+ntains something like 
+0x1F5:0x0:0=
+x0
+ (encoding IDs).
+
+Risk:
+ Very low =E2=80=94 not a hacking vector. Just user =
+preferences.
+
+2. 
+httpstorages.sqlite-s=
+hm
+
+3. 
+httpstorages.sq

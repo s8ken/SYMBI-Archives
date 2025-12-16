@@ -1,0 +1,225 @@
+opy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+
+**Step 4: (
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME="/opt/homebrew/opt/openjdk@11"
+echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"' >> ~/.zshrc
+source ~/.zshrc
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+2/2
+
+ChatGPT said:
+
+It seems like Autopsy isn't recognizing the installed Java runtime. Let's go through a 
+systematic fix
+.
+
+Step 1: Verify Java 11 is Installed
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+/opt/homebrew/opt/openjdk@11/bin/java -version
+
+If this works, then Java 11 is installed but not being detected globally.
+
+If this fails, reinstall Java 11:
+
+sh
+
+Copy
+
+Edit
+
+brew reinstall openjdk@11
+
+Step 2: Manually Set Java 11
+
+Try forcing Java 11 using:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+java -version
+
+If this doesnât work, forcefully set it:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/opt/homebrew/opt/openjdk@11"
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+java -version
+
+Now, verify the output. It 
+must
+ show 
+Java 11
+.
+
+Step 3: Check If Java is Registered with macOS
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+Then retry:
+
+sh
+
+Copy
+
+Edit
+
+/usr/libexec/java_home -V
+
+Ensure 
+Java 11
+ appears in the list.
+
+Step 4: Force Autopsy to Use Java 11
+
+Try running:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome /opt/homebrew/opt/openjdk@11
+
+Or if that fails:
+
+sh
+
+Copy
+
+Edit
+
+./autopsy --jdkhome 
+
+"
+$JAVA_HOME
+
+"
+
+If this still doesnât work, let me know what 
+
+java -version
+
+ outputs! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % /opt/homebrew/opt/openjdk@11/bin/java -version
+
+openjdk version "11.0.26" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 11.0.26+0)
+OpenJDK 64-Bit Server VM Homebrew (build 11.0.26+0, mixed mode)
+sja@SJAs-MacBook-Pro bin % brew reinstall openjdk@11
+
+==> Downloading https://ghcr.io/v2/homebrew/core/openjdk/11/manifests/11.0.26-1
+Already downloaded: /Users/sja/Library/Caches/Homebrew/downloads/6a8d64b799ebc12fb74bf0c886fde0f73187fd5fb76e1504c919a9ee75feb7e8--openjdk@11-11.0.26-1.bottle_manifest.json
+==> Fetching openjdk@11
+==> Downloading https://ghcr.io/v2/homebrew/core/openjdk/11/blobs/sha256:1d8776a
+Already downloaded: /Users/sja/Library/Caches/Homebrew/downloads/566c48b1de86ea41dd60bd4913a0b063d13a7c7d3e06413c8e089e5d501e2575--openjdk@11--11.0.26.arm64_sequoia.bottle.1.tar.gz
+==> Reinstalling openjdk@11 
+==> Pouring openjdk@11--11.0.26.arm64_sequoia.bottle.1.tar.gz
+==> Caveats
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+openjdk@11 is keg-only, which means it was not symlinked into /opt

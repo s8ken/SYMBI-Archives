@@ -1,0 +1,826 @@
+nst
+
+ val =
+=3D 
+
+await
+
+ vsc=
+ode.
+
+window
+
+.
+
+showInputBox
+
+=
+
+({
+
+prompt
+
+: 
+
+"Set SYMBI API base URL"
+
+=
+
+,
+
+value
+
+: 
+
+getApiBase
+
+=
+() || 
+
+"http://localhost:5000"
+
+  });
+
+if
+
+ (!val) 
+
+return
+
+;
+
+await
+
+ vscod=
+e.
+
+workspace
+
+.=
+
+getConfiguration
+
+(
+
+"symbi"
+
+).
+
+update
+
+(
+
+"apiBase"
+
+, val, vscode.
+
+ConfigurationT=
+arget
+
+.
+
+Worksp=
+ace
+
+);
+  vscode.
+
+window
+
+.
+
+showInformationMessag=
+e
+
+(
+
+`symbi.apiBa=
+se set to 
+${val}
+
+`);
+}
+
+src/net.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+"vscode"
+
+;
+
+export
+
+function
+
+getApiBase
+
+(
+
+): 
+
+string
+
+ | 
+
+undefined
+
+ {
+
+return
+
+ vsco=
+de.
+
+workspace
+
+=
+.
+
+getConfiguration
+
+(
+
+"symbi"
+
+=
+
+).
+
+get
+
+&=
+lt;
+
+string
+
+>=
+;(
+
+"apiBase"
+
+) |=
+| process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+;
+}
+
+export
+
+async
+
+=
+
+function
+
+fetchJson
+
+(
+
+path: 
+string
+
+, ctx: vscode.ExtensionContext, init: RequestInit =
+=3D {}) {
+
+const
+
+ base =
+=3D 
+
+getApiBase
+
+();
+
+if
+
+ (!base) =
+
+throw
+
+=
+
+new
+
+Error
+
+(
+
+"API base not configured (symbi.apiBase)"
+
+);
+
+const
+
+headers
+
+: 
+
+Record
+
+<
+
+string
+
+, 
+
+string
+
+> =3D { ...(init.=
+
+headers
+
+as
+
+any
+
+) };
+
+const
+
+ token=
+ =3D 
+
+await
+
+ ct=
+x.
+
+secrets
+
+.
+
+get
+
+(
+
+"SYMBI_API_KEY"
+
+);
+
+if
+
+ (token) =
+headers.
+
+Authorization
+
+ =3D 
+
+`Bearer 
+${token}
+
+`;
+  headers[
+
+"Content-Type"
+
+] =3D headers[
+
+"Content-T=
+ype"
+
+] || 
+
+"appl=
+ication/json"
+
+;
+
+const
+
+ res =
+=3D 
+
+await
+
+fetch
+
+(ba=
+se + path, { ...init, headers });
+
+if
+
+ (!res.
+
+ok
+
+) {
+
+const
+
+ tex=
+t =3D 
+
+await
+
+ r=
+es.
+
+text
+
+().
+
+catch
+
+(
+
+() =3D>
+
+""
+
+);
+
+throw
+
+new
+
+Error
+
+(
+
+`
+${res.status}
+=
+
+${res.statusTe=
+xt}
+
+${text}
+
+`.
+
+trim
+
+());
+  }
+
+return
+
+ res.=
+
+json
+
+(=
+);
+}
+
+export
+
+async
+
+=
+
+function
+
+saveToken
+
+(
+
+ctx: vscode.ExtensionContext
+
+) {
+
+const
+
+ val =
+=3D 
+
+await
+
+ vsc=
+ode.
+
+window
+
+.
+
+showInputBox
+
+=
+
+({
+
+prompt
+
+: 
+
+"Enter SYMBI_API_KEY (stored securely =
+in VS Code Secret Storage)"
+
+,
+
+password
+
+: 
+
+true
+
+, 
+
+ignoreFocusOut
+
+: 
+
+true
+
+  });
+
+if
+
+ (!val) 
+
+return
+
+;
+
+await
+
+ ctx.
+
+secrets
+
+.
+
+store
+
+(
+
+"SYMBI_API_KEY"
+
+, v=
+al);
+  vscode.
+
+window
+
+.
+
+showInformationMessag=
+e
+
+(
+
+"SYMBI_API_K=
+EY saved to Secret Storage."
+
+);
+}
+
+src/ledgerView.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+"vscode"
+
+;
+
+import
+
+ { fetc=
+hJson } 
+
+from
+
+ =
+
+"./net"
+
+;
+
+export
+
+class
+
+=
+
+SymbiLedgerProvider
+
+implements
+
+ vsc=
+ode.
+
+TreeDataProvider
+
+<vscode.
+
+TreeItem
+
+> {
+
+private
+
+ _on=
+DidChangeTreeData =3D 
+
+new
+
+ vscode.
+
+EventEmitter=
+
+<
+
+void
+
+>();
+
+readonly
+
+ on=
+DidChangeTreeData =3D 
+
+=
+this
+
+.
+
+_onDidC=
+hangeTreeData
+
+.
+
+event
+
+;
+
+constructor
+
+(
+
+private
+
+ ctx: vscode.ExtensionContext) {}
+
+refresh
+
+(
+
+){ 
+
+this
+
+.
+
+_onDidChangeTreeData
+
+.
+
+fire
+
+(); }
+
+async
+
+getChildren
+
+(element?: vscode.
+
+TreeItem
+
+): 
+
+Promise
+
+<vscode.
+
+Tree=
+Item
+
+[]> {
+
+if
+
+ (!elem=
+ent) {
+
+// root: recent sessions
+
+try
+
+ {
+
+const
+
+=
+ res =3D 
+
+await
+
+fetchJson
+
+=
+
+(
+
+"/api/sessions/recent?limit=
+=3D50"
+
+, 
+
+this
+
+.
+
+c=
+tx
+
+);
+
+const
+
+=
+
+ids
+
+: 
+
+string
+
+[] =3D res.
+
+items
+
+ || [];
+
+return
+
+ ids.
+
+map
+
+(
+
+id
+
+ =3D> {
+
+const
+
+ item =3D 
+
+new
+
+ vscode.
+
+TreeItem
+
+(id, vscode.
+
+TreeItemCo=
+llapsibleState
+
+.
+
+None
+
+);
+          item.
+
+contextValue
+
+ =3D 
+
+"session"
+
+;
+          item.
+
+tooltip
+
+ =3D 
+
+"Click command 'SYM=
+BI: Verify Ledger' to check chain"
+
+;
+
+return
+
+ item;
+        });
+      } 
+
+catch
+
+=
+ {
+
+return
+
+ [
+
+new
+
+ vscode=
+.
+
+TreeItem
+
+(
+
+"No sessions or server offline"
+
+)];
+      }
+    }
+
+return
+
+ []=
+;
+  }
+
+getTreeItem
+
+(
+
+element
+
+=
+: vscode.
+
+TreeItem
+
+): vscode.
+
+TreeItem
+
+ {
+
+return
+
+ el=
+ement;
+  }
+}
+
+src/webviewHtml.ts
+
+ts
+
+Copy code
+
+export
+
+function
+
+getConsoleHtml
+
+(
+
+): 
+
+string
+
+ {
+
+return
+
+`<!doctype html>
+<html>
+<head>
+<meta charset=3D"utf-8">
+<style>
+  body { font: 12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;=
+ margin:0; }
+  .wrap { padding: 12px; }
+  textarea { width: 100%; height: 96px; box-sizing: border-box; }
+  button { margin-top: 6px; }
+  pre { white-space: pre-wrap; background: #111; color: #ddd; padding: 8px;=
+ border-radius: 6px; }
+  .error { color: #c33; }
+</style>
+</head>
+<

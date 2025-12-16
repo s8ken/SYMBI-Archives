@@ -1,0 +1,183 @@
+.
+
+Cinemati=
+c Video
+: Blur effects and slow-motion pans.
+
+Motion P=
+hotos
+: Short video clips attached to stills (requires Android 8+ a=
+nd HDR on).
+celsoazevedo.com
+=
+
+The =
+app's package name is 
+com.google.android.Go=
+ogleCamera
+ (not the Photos one, which I'll cover below). It's excl=
+usive to Pixel phones in its official form due to hardware optimizations, b=
+ut community developers create 
+GCam ports
+=E2=80=94modified APKs that adapt it for non-Pixel Android devices (=
+e.g., Samsung, Xiaomi, Oppo). These ports enable features like Super Res Zo=
+om and 60fps video on incompatible hardware, but compatibility varies (chec=
+k Camera2 API support via apps like Camera2 API Probe).
+
+play.google.c=
+om
+
++3 =
+more
+
+Download=
+ and Versions
+: Official Pixel Camera is on Google Play (free, ~100=
+MB). Ports (e.g., from devs like BSG, Arnova8G2, or BigKaka) are available =
+from sites like celsoazevedo.com or gcamapk.io (latest stable: 9.6.19 as of=
+ September 2025). Third-party apps like "GCamera: GCam & HD Pro Photos"=
+ mimic it but aren't official.
+
+play.google.com
+
++3 more
+
+Pros/Con=
+s
+: Exceptional photo quality (e.g., 50MP high-res on Pixel 8 Pro),=
+ but ports may crash on older Android versions (needs 8.0+) or require twea=
+ks for video playback (use Google Photos for full Motion Photo support).
+
+google-camera.en.softonic.com
+
+celsoazevedo.com
+
+Security=
+ Note
+: Ports are unofficial=E2=80=94download from trusted sources =
+to avoid malware. GCam isn't open-source, so mods rely on reverse-engineeri=
+ng.
+celsoazevedo.com
+
+Connection to com.google.android.apps.photos (G=
+oogle Photos)
+
+The =
+package 
+com.google.android.apps.photos
+ is for 
+Google Photos
+, Google'=
+s cloud-based gallery and editing app=E2=80=94not the camera itself. Howeve=
+r, it's deeply integrated with GCam:
+celsoazevedo.com
+
+GCam saves photos/videos to Google Photo=
+s by default for editing, backups, and features like Motion Photos (which o=
+nly play fully in Photos; other galleries show static images).
+celsoazevedo.com
+
+On ports, Google Photos is often require=
+d to view RAW files or astrophotography results properly.
+
+If you're seeing this package in GCam co=
+ntexts, it's likely because ports mimic Pixel behavior, pulling in Photos f=
+or storage/processing.
+
+With=
+out Google Photos, some GCam features (e.g., viewing last photo via the app=
+'s button) fail=E2=80=94leading to tools like the GitHub repo below.
+
+GitHub Repo: lukaspieper/gcam-services-provider=
+
+This=
+ open-source project
+github.com
+ provides a light=
+weight 
+Gcam Services Provider
+ app =
+to run GCam ports on devices 
+without Google=
+ Play Services
+ (e.g., de-Googled ROMs like GrapheneOS or LineageOS=
+). It's not a full Play Services replacement (like microG) but fakes only t=
+he minimal APIs GCam needs, avoiding security risks like signature spoofing=
+.
+github.com
+
+Purpose
+: Enables GCam on privacy-focused setups by simulating dependencies=
+ (e.g., for photo viewing). Since April 2023, GrapheneOS has native GCam su=
+pport via a built-in shim, so this app is mainly for the "view last photo" =
+button without installing Google Photos.
+github.com
+
+How It W=
+orks
+: The app (no UI/icon) intercepts GCam's API calls to Google s=
+ervices, providing stubs for core functions. It requires no internet, stora=
+ge, or root access=E2=80=94purely local simulation.
+
+Key Feat=
+ures and Flavors
+:
+
+=
+
+Flavor
+
+Features
+
+Best Fo=
+r
+
+Incompatibilities
+=
+
+Basic
+
+Core GCam runtime (no photo viewer).
+
+Minimal setups without GSF/microG.
+
+GSF, microG.
+
+=
+
+Photos=
+only
+
+Photo-viewing button support.
+
+GrapheneOS wi=
+th sandboxed Play Services.
+
+Google Photos.
+
+Photos
+
+=
+
+Combines Basic + Photosonly.
+
+Full de-Googled use.
+
+GS=
+F, microG, Google Photos.
+
+Installa=
+tion
+:
+
+Download APK from GitHub Releases (e.g.,=
+ latest v1.0.1) or F-Droid (de.lukaspieper.gcam.services).
+github.com
+
+Install via ADB or file manager (no Play=
+ Store).
+
+Manage via Android Settings > Apps (n=
+o launcher icon).
+
+Test with a GCam port; uninstall if conf=

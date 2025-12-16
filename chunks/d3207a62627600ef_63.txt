@@ -1,0 +1,249 @@
+cess is re-opening them
+
+3️⃣ 
+macOS itself is forcing these ports to stay active
+
+🚨 
+We need to find out what’s REALLY behind these ports and shut it down.
+
+🚀 Step 1: Identify the Exact Processes Still Using These Ports
+
+Since 
+Control Center and 
+rapportd
+ were blocked
+, let’s find out 
+what is still using these ports
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :5000
+sudo lsof -i :7000
+sudo lsof -i :49190
+
+📌 
+This will tell us what process is keeping these ports open.
+
+📌 
+Post the results here
+ so we can determine if this is 
+another system process or something suspicious.
+
+🚀 Step 2: Check If These Ports Are Used by macOS Services
+
+Since 
+disabling and blocking services didn’t close these ports
+, 
+we need to check if they are tied to system daemons.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -E 
+
+"5000|7000|49190"
+
+📌 
+If any system service is tied to these ports, we’ll disable it manually.
+
+🚀 Step 3: Check If These Ports Are Used by Remote Access Tools
+
+Some system processes 
+may have been hijacked
+ or 
+another process is running alongside Control Center
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"remote|control|rapportd"
+
+📌 If 
+anything unexpected appears,
+ we will disable and remove it.
+
+🚀 Step 4: Temporarily Block These Ports at the Kernel Level
+
+If 
+we can’t find the cause yet
+, we can **manually block the ports
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i :5000
+sudo lsof -i :7000
+sudo lsof -i :49190
+
+COMMAND    PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ControlCe 3117  sja   10u  IPv4 0x6437a099213ae576      0t0  TCP *:commplex-main (LISTEN)
+ControlCe 3117  sja   11u  IPv6 0x422e0a3e953c8b09      0t0  TCP *:commplex-main (LISTEN)
+COMMAND    PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ControlCe 3117  sja    8u  IPv4 0xd07a58213fa9f367      0t0  TCP *:afs3-fileserver (LISTEN)
+ControlCe 3117  sja    9u  IPv6 0x54590600c4428d54      0t0  TCP *:afs3-fileserver (LISTEN)
+COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+rapportd 3070  sja    8u  IPv4 0x5b5a0e32dcadbb46      0t0  TCP *:49190 (LISTEN)
+rapportd 3070  sja    9u  IPv6 0x5e601b664d770bca      0t0  TCP *:49190 (LISTEN)
+sja@SJAs-MacBook-Pro ~ % 
+
+2/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Control Center (
+ControlCe
+) & 
+rapportd
+ Are STILL Running – Let's Remove Them Completely
+
+Even after blocking them in the firewall, 
+Control Center (
+ControlCe
+) and 
+rapportd
+ have restarted and are still keeping ports open
+ 🚨.
+
+📌 
+What's Happening?
+
+1️⃣ 
+macOS is forcing these services to stay active.
+
+2️⃣ 
+System processes are auto-relaunching them.
+
+3️⃣ 
+The only way to fully stop them is to remove or block them at the system level.
+
+🚀 Step 1: Kill These Processes Again
+
+First, stop them 
+before trying to remove them
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 3117
+sudo 
+
+kill
+
+ -9 3070
+
+📌 
+This will forcefully terminate Control Center & 
+rapportd
+ again.
+
+🚀 Step 2: Check If They Are Being Restarted by macOS Services
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -E 
+
+"control|rapportd"
+
+📌 
+If they appear in the list, macOS is restarting them automatically.
+
+📌 
+Post the results here
+ so we know 
+which service is responsible.
+
+🚀 Step 3: Manually Disable Their Auto-Restart Services
+
+Since 
+launchctl disable
+
+didn’t stop them
+, we will try again with 
+manual service removal
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo launchctl bootout system /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+📌 
+If you see an error like "Boot-out failed: Input/output error," we will need to delete them manually.
+
+🚀 Step 4: Delete Their Auto-Launch Files
+
+If the above command 
+fails
+, manually delete the launch files:
+
+1️⃣ 
+Check if the files exist:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ /System/Library/LaunchAgents | grep -E 
+
+"control|rapportd"
+
+2️⃣ 
+Try deleting them:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm

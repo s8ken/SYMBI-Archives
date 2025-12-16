@@ -1,0 +1,804 @@
+tyle
+
+=3D
+
+"margin:.5rem 0 1=
+rem 1.25rem;font-size:.9rem;color:#3f3f46"
+
+>
+
+<
+li
+
+>Get Demo Receipt =E2=80=94 server signs a rec=
+eipt (Ed25519)
+
+</
+li
+
+>
+
+<
+li
+
+>Verify in Browser =E2=80=94 opens verifier wi=
+th receipt preloaded
+
+</
+li
+
+>
+
+<
+li
+
+>Click Verify =E2=80=94 checks 
+
+<
+em
+
+>entry_hash
+
+</
+em
+
+> + signature
+
+</
+li
+
+>
+
+</
+ol
+
+>
+
+<
+div
+
+style
+
+=3D
+
+"display:flex;ga=
+p:.5rem;flex-wrap:wrap"
+
+>
+
+<
+but=
+ton
+
+id
+
+=3D
+
+"mintBtn"
+
+class
+
+=3D
+
+"btn"
+
+&=
+gt;Get Demo Receipt
+
+</
+button
+
+>
+
+<
+but=
+ton
+
+id
+
+=3D
+
+"verifyBtn"
+
+class
+
+=3D
+
+"btn"
+
+>Verify in Browser
+
+</
+button
+
+>
+
+<
+a
+
+class
+
+=3D
+
+"btn"
+
+href
+
+=
+=3D
+
+"/.well-known/ycq-receipt-pubke=
+y"
+
+target
+=
+
+=3D
+
+"_blank"
+
+rel
+
+=
+=3D
+
+"noopener"
+
+&=
+gt;Public Verify Key
+
+</
+a
+
+>
+
+<
+a
+
+class
+
+=3D
+
+"btn"
+
+href
+
+=
+=3D
+
+"/metrics-methodology"
+
+>View Methodology
+
+</
+a
+
+>
+
+</
+div
+
+>
+
+<
+texta=
+rea
+
+id
+
+=3D
+
+"receiptBox"
+
+placeholder
+
+=3D
+
+"Demo receipt JSO=
+N appears here=E2=80=A6"
+
+style
+
+=3D
+
+"margin-top:.75rem;width:100%;min-height:200px;font-family:ui-monospace,=
+ SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',=
+ monospace;font-size:.85rem;background:#fafafa;border:1px solid #e5e7eb;bor=
+der-radius:.75rem;padding:.75rem"
+
+>
+
+</
+textarea
+
+>
+
+</
+div
+
+>
+
+<
+script
+
+>
+
+(
+
+function
+
+(
+
+){
+
+const
+
+ mintB=
+tn =3D 
+
+document
+=
+
+.
+
+getElementB=
+yId
+
+(
+
+'mintBtn'
+
+);
+
+const
+
+ verif=
+yBtn =3D 
+
+document
+
+.
+
+getElemen=
+tById
+
+(
+
+'verifyB=
+tn'
+
+);
+
+const
+
+ box =
+=3D 
+
+document
+
+.
+
+getElementById=
+
+(
+
+'receiptBox'
+
+);
+
+function
+
+b64u
+
+(
+
+s
+
+){ 
+
+return
+
+btoa
+
+(
+
+unescape
+
+(
+
+encodeURIComponent
+
+(s))).
+
+replace
+
+(
+
+/=3D+$/
+
+,
+
+''
+
+).
+
+replace
+
+(
+
+/\+/g
+
+,
+
+'-'
+
+).
+
+replace
+
+(
+
+/\//g
+
+,
+
+=
+'_'
+
+); }
+
+  mintBtn.
+
+addEventListene=
+r
+
+(
+
+'click'
+
+, 
+
+async
+
+ () =3D> {
+    mintBtn.
+
+disabled
+
+ =3D 
+
+true
+
+; mintBtn.
+
+textContent
+=
+
+ =3D 
+
+'Minting=E2=80=
+=A6'
+
+;
+
+try
+
+ {
+
+const
+
+ r=
+es =3D 
+
+await
+
+ =
+
+fetch
+
+=
+(
+
+'/api/receipts/demo'
+
+, {
+
+method
+
+: =
+
+'POST'
+
+,
+
+headers
+
+:=
+ {
+
+'content-type'
+
+: 
+
+'application/json'
+
+},
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ 
+
+actor
+
+:
+
+'demo@ycq'
+
+, 
+
+intent
+
+:
+
+'verify-demo'
+
+, 
+
+inputs
+
+:{
+
+q
+
+:
+
+'hello'
+
+}, 
+
+out=
+puts
+
+:{
+
+a
+
+:
+
+'hi!'
+
+} })
+      });
+
+const
+
+ t=
+xt =3D 
+
+await
+
+ =
+res.
+
+text
+
+();
+
+if
+
+(!res=
+.
+
+ok
+
+) 
+=
+
+throw
+
+new
+
+Error
+
+(
+
+'HTTP '
+
++res.
+
+status
+
++
+
+' '
+
++txt);
+      box.
+
+value
+
+ =3D txt;
+
+try
+
+ { 
+
+localStorage
+
+.
+
+setItem
+
+(
+
+'ycq_last_receipt'
+
+, txt); } 
+
+catch
+
+ {}
+      mintBtn.
+
+textContent
+=
+
+ =3D 
+
+'Get Demo Receip=
+t'
+
+;
+    } 
+
+catch
+
+(e=
+){
+      box.
+
+value
+
+ =3D 
+
+'Error: '
+
+ + (e.
+
+message
+
+ || e);
+      mintBtn.
+
+textContent
+=
+
+ =3D 
+
+'Get Demo Receip=
+t'
+
+;
+    } 
+
+finally
+
+=
+ {
+      mintBtn.
+
+disabled
+
+ =3D 
+
+false
+
+;
+    }
+  });
+
+  verifyBtn.
+
+addEventListe=
+ner
+
+(
+
+'click'
+
+, 
+
+() =3D>
+
+ {
+
+const
+
+ v =
+=3D box.
+
+value
+
+.
+
+trim
+
+();
+
+if
+
+(!v){ 
+
+alert
+
+(=
+
+'Mint a demo receipt first'
+=
+
+); 
+
+return
+
+; }
+
+const
+
+ has=
+h =3D 
+
+'#r=3D'
+
+ =
++ 
+
+b64u
+
+(v);
+
+window
+
+.
+
+open
+
+(
+
+'/verifier.html'
+
+ + hash, 
+
+'_blank'
+
+, 
+
+'noopener'
+
+);
+  });
+})();
+
+</
+script=
+
+>
+
+<
+style
+
+>
+
+.btn
+
+{
+
+padding
+
+:.
+
+6rem
+
+ .
+
+9rem
+
+;
+
+=
+
+border-radius
+
+:.
+
+75rem
+
+;
+
+border
+
+:
+
+1px
+
+ solid 
+
+#e5e7eb
+
+;
+
+background
+
+:
+
+#fff
+
+;
+
+cursor
+
+:pointer;
+
+text-decoration
+
+:none;
+
+color
+
+:inherit}
+
+.btn
+
+:hover
+
+{
+
+=
+
+background
+
+:
+
+=
+
+#f5f5f5
+
+}
+
+</
+style
+
+>
+
+That=E2=80=99s it =E2=80=94 plug either option in and you=E2=80=
+=99ll have 
+Get Demo Receipt =
+=E2=86=92 Verify in Browser
+ working on 
+/demo
+, with =E2=80=9CHow to verify=E2=80=9D steps a=
+nd links to 
+Methodology
+ and the 
+Public Verify Key=
+
+.
+
+=
+
+Thinking
+
+New version of GPT available
+ - Continue chatting to use th=
+e old version, or start a 
+new ch=
+at
+ for the latest version.

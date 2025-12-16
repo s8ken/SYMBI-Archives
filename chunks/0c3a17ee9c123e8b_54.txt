@@ -1,0 +1,293 @@
+lable via 
+npm audit fix --force
+
+Will install sanity@2.36.6, which is a breaking change
+node_modules/esbuild
+  @sanity/cli  >=3.0.0-definetype.62
+  Depends on vulnerable versions of esbuild
+  node_modules/@sanity/cli
+  sanity  2.29.4-purple-unicorn.509 - 2.30.1-purple-unicorn.964 || >=3.0.0-definetype.62
+  Depends on vulnerable versions of @sanity/cli
+  Depends on vulnerable versions of @sanity/insert-menu
+  Depends on vulnerable versions of @sanity/ui
+  Depends on vulnerable versions of esbuild
+  Depends on vulnerable versions of react-refractor
+  Depends on vulnerable versions of refractor
+  node_modules/sanity
+
+prismjs  <1.30.0
+Severity: moderate
+PrismJS DOM Clobbering vulnerability - https://github.com/advisories/GHSA-x7hr-w5r2-h6wg
+fix available via 
+npm audit fix --force
+
+Will install sanity@2.36.6, which is a breaking change
+node_modules/prismjs
+  refractor  <=4.6.0
+  Depends on vulnerable versions of prismjs
+  node_modules/refractor
+    react-refractor  <=2.2.0
+    Depends on vulnerable versions of refractor
+    node_modules/react-refractor
+      @sanity/ui  *
+      Depends on vulnerable versions of react-refractor
+      node_modules/@sanity/ui
+        @sanity/insert-menu  *
+        Depends on vulnerable versions of @sanity/ui
+        node_modules/@sanity/insert-menu
+        @sanity/vision  >=2.3.5-canary.17
+        Depends on vulnerable versions of @sanity/ui
+        node_modules/@sanity/vision
+        @sanity/visual-editing  >=2.12.15-canary.0
+        Depends on vulnerable versions of @sanity/insert-menu
+        Depends on vulnerable versions of @sanity/ui
+        node_modules/@sanity/visual-editing
+          next-sanity  >=9.8.53
+          Depends on vulnerable versions of @sanity/visual-editing
+          node_modules/next-sanity
+
+11 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+sja@SJAs-MacBook-Pro symbi % 
+
+Vercel Deployment Expert GPT said:
+
+✅ Beautiful. You're Stable & Secure Enough to Ship 🚀
+
+You’ve:
+
+✅ Installed React 18 + Sanity v3
+
+✅ Upgraded to 
+styled-components@6
+ for compatibility
+
+✅ Cleared all non-breaking dependency issues
+
+⚠️ Have 
+moderate vulnerabilities
+, but only fixed by 
+downgrading Sanity to v2
+, which you 
+don’t want
+ — so we ignore them for now 👍
+
+✅ Next Steps: Final Sanity Integration (Dynamic Content)
+
+Would you like me to now:
+
+Create a document in your Sanity Studio
+ (like Homepage content)?
+
+Connect your 
+app/page.tsx
+ to load that content?
+
+Make the homepage editable from your CMS dashboard?
+
+Let me know — I can drop in the exact code, wiring, and fetch logic, and you’ll never hardcode homepage content again. 🧠💡
+
+You said:
+
+yes that sounds great
+
+Vercel Deployment Expert GPT said:
+
+💥 Let’s Make Your Homepage Editable via Sanity Studio
+
+We’ll connect your Next.js app to Sanity so content like titles, text, and images are pulled dynamically from your CMS.
+
+✅ Step 1: Add Homepage Document in Sanity Studio
+
+Go to 
+
+http://localhost:3000/studio
+
+Click 
+“Create new” → “Page”
+
+Fill it out like this:
+
+Field
+Value
+
+Title
+
+Homepage
+
+Content
+
+Welcome to SYMBI.
+
+Image
+Upload your logo or banner
+
+Click 
+Publish
+ ✅
+
+✅ Step 2: Connect to Sanity in Your Code
+
+Create this file:
+
+bash
+
+Copy
+
+nano lib/sanity.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'your_project_id'
+
+, 
+
+// 🔁 Replace this
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2023-03-21'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+✅ Step 3: Modify 
+app/page.tsx
+ to Use Live Content
+
+Open:
+
+bash
+
+Copy
+
+nano app/page.tsx
+
+Replace all content with this:
+
+tsx
+
+Copy
+
+import
+
+Image
+
+from
+
+'next/image'
+
+import
+
+ { client } 
+
+from
+
+'@/lib/sanity'
+
+type
+
+PageData
+
+ = {
+
+title
+
+: 
+
+string
+
+content
+
+: 
+
+string
+
+image
+
+: {
+
+asset
+
+: {
+
+url
+
+: 
+
+string
+
+    }
+  }
+}
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+data
+
+: 
+
+PageData

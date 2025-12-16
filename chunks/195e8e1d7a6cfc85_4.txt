@@ -1,0 +1,286 @@
+3Dxxx
+
+SUPABASE_ANON_KEY
+
+=3Dxxx
+
+SUPABASE_SERVICE_ROLE_KEY
+
+=3Dxxx
+
+QSTASH_TOKEN
+
+=3Dx=
+xx
+
+Also mirror these into 
+Vercel project environment variables
+ (so deploys don=E2=80=99t break).
+
+5. QStash Scheduler
+
+Schedule the 
+/api/report
+ endpoint daily:
+
+bash
+
+Copy code
+
+curl -X POST https://qstash.upstash.io/v1/publish/http=
+s://sky.vercel.app/api/report \
+  -H 
+
+"Authorization: Bearer 
+$QSTASH_TOKEN
+
+" \
+  -H 
+
+"Upstash-Cron: 0 9 * * *"
+
+6. Verify
+
+Push changes:
+
+bash
+
+Copy code
+
+git add .
+git commit -m 
+
+"Add Symbi Core v1 (=
+logs, reports, context bridge)"
+
+git push origin main
+
+Deploy on Vercel.
+
+Check Supabase 
+symbi_logs
+ =E2=86=92 you should see a fresh=
+
+daily report
+ each d=
+ay.
+
+Test Overseer =E2=86=94 Symbi brid=
+ge via 
+/api/context
+.
+
+=E2=9C=85 Outcome
+
+Your repo 
+s8ken/sky
+ now becomes 
+Symbi=E2=80=99s operational base
+:
+
+Persistent logs (
+symbi_logs
+)
+
+Overseer <-> Symbi messaging=
+ (
+symbi_context_nodes
+)
+
+Daily autonomous reporting (QStash=
+)
+
+Vercel-hosted, production-ready
+
+Do you want me to 
+prep the full PR-ready code for 
+s8ken/sky
+
+ (so you just pull & merge), or walk you thr=
+ough slotting the API routes into your existing repo structure manually?
+
+You said:
+
+codex can look at this no?
+
+Symbi sa=
+id:
+
+Yes =F0=9F=91=81=EF=B8=8F=
+ =E2=80=94 Codex (the GitHub Copilot-style AI coder) can absolutely look at=
+ your repo and help wire this in.
+
+Here=E2=80=99s how we can use it eff=
+ectively for 
+s8ken/sky
+:
+
+=F0=9F=94=A7 How Codex Can Help Wit=
+h 
+s8ken/sky
+
+Repo Scan & Context Awareness
+
+Open 
+s8ken/sky
+ in VS Code (or whatever IDE you=E2=80=99re usin=
+g).
+
+Enable Copilot / Codex.
+
+Paste in the 
+plan
+ we outlined (logs table, context bridge,=
+ report API).
+
+Codex will adapt the code to your re=
+po=E2=80=99s structure (whether it=E2=80=99s 
+/app/api
+ or 
+/p=
+ages/api
+).
+
+Generate Boilerplate Routes
+
+Prompt Codex:
+
+=E2=80=9CCreate a Next.js API route =
+at 
+/app/api/log/route.ts
+ t=
+hat inserts into Supabase 
+symbi_l=
+ogs
+ with category + content fields.=E2=80=9D
+
+Do the same for 
+/report
+ and 
+/context
+.
+
+Env Variable Setup
+
+Tell Codex:
+
+=E2=80=9CAdd Supabase client initial=
+ization that uses 
+SUPABASE_URL
+ and 
+SUPABASE_SERVICE_ROLE_KE=
+Y
+ from environment variables.=E2=80=9D
+
+It=E2=80=99ll stub the correct clien=
+t wrapper.
+
+Supabase SQL Migration
+
+Paste the schema:
+
+sql
+
+Copy code
+
+create
+
+ =
+
+table
+
+ symbi_l=
+ogs (...);
+
+create
+
+table
+
+ symbi_context=
+_nodes (...);
+
+Ask Codex to generate a migration =
+file if your repo already uses Prisma or Drizzle ORM.
+
+Cron Scheduling (QStash)
+
+Codex can also generate the 
+curl
+ command or a Node script =
+to register your 
+/api/report
+ job with QStash.
+
+Example prompt:
+
+=E2=80=9CWrite a script using @ups=
+tash/qstash to schedule a POST request to 
+/api/report
+ every day at 9 UTC.=E2=80=9D
+
+Pull Request Assembly
+
+Once routes + migrations are worki=
+ng locally, push to 
+s8ken/sky
+ as a new branch (
+symbi-co=
+re-v1
+).
+
+Codex can draft the PR description=
+ summarizing what=E2=80=99s added:
+
+Supabase integration
+
+Logging endpoints
+
+Daily report automation
+
+Shared context bridge
+
+=E2=9A=A1 
+Your Advantage
+: Codex is great for filling i=
+n the boilerplate and making sure it fits your repo conventions (imports, d=
+irectory structure, TypeScript typing).
+
+I=E2=80=99ll handle 
+the archi=
+tecture + enforcement logic
+, and Codex will do the heavy lifting o=
+f code stitching.
+
+=F0=9F=91=89 Do you want me to draft the 
+exact prompts
+ you should give Codex to dro=
+p Symbi Core v1 into 
+s8ken/sky
+ seamlessly? That way you don=E2=80=99t fight with guesswork =E2=80=
+=94 you just copy prompts, Codex does the coding.
+
+=
+
+=
+
+You said:
+
+yeah I think we should
+
+Symbi said:
+
+Perfect. Let=E2=80=99s arm you with 
+battle-tested prompts for Codex
+ so it s=
+titches Symbi Core v1 into 
+s8ken/s=
+ky
+ without friction.
+
+Below are 
+ready-to-use Codex prompts
+. Each one is atomic =
+=E2=80=94 paste into your editor while focused on the right file or folder,=
+ and Codex will generate the implementation.
+
+=

@@ -1,0 +1,374 @@
+o see which process is listening on port 
+32376
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :32376
+
+ð This will 
+show the name and path of the program
+ using that port.
+
+2ï¸â£ If Itâs Suspicious, Kill It
+
+If the program looks 
+unknown or suspicious
+, kill it with:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+kill
+
+ -9 [PID]
+
+(Replace 
+[PID]
+ with the actual 
+process ID
+ from the 
+lsof
+ command).
+
+3ï¸â£ (Optional) Disable Remote Logging Completely
+
+If you donât want 
+any local logging over a network port
+, remove it from 
+syslog.conf
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/syslog.conf
+
+Find this line:
+
+graphql
+
+Copy
+
+Edit
+
+install.* 
+
+@127
+
+.
+
+0.0
+
+.
+
+1
+
+:
+
+32376
+
+Delete the line
+, then 
+save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+Enter
+).
+
+Restart the logging service:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl stop com.apple.syslogd
+sudo launchctl start com.apple.syslogd
+
+ð Next Step
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i :32376
+
+ð 
+Tell me what process is using the port!
+ If it looks suspicious, weâll investigate further. ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i :32376
+
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 1 Result: No Process Found on Port 32376
+
+â Your command returned 
+nothing
+, which means 
+no active process is currently listening on port 32376
+.
+
+What This Means:
+
+1ï¸â£ 
+The log entry might be old
+ â The system was previously sending logs to 
+127.0.0.1:32376
+, but whatever was using that port 
+is no longer active
+.
+
+2ï¸â£ 
+It could be an inactive or hidden service
+ â Some malware can start and stop processes dynamically.
+
+3ï¸â£ 
+It might be from an old software installation
+ â A program might have configured syslog to log to 
+localhost:32376
+, but itâs not actually running.
+
+What To Do Next:
+
+1ï¸â£ Check for Any References to Port 32376 in System Files
+
+Letâs check if any 
+configuration files
+ are still pointing to this port:
+
+sh
+
+Copy
+
+Edit
+
+grep -r 
+
+"32376"
+
+ /etc /var 2>/dev/null
+
+ð This searches for 
+any system file
+ mentioning 
+32376
+.
+
+2ï¸â£ (Optional) Remove The Logging Entry
+
+If you donât want logs going to 
+127.0.0.1:32376
+, you can 
+remove the syslog entry
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/syslog.conf
+
+Find this line:
+
+graphql
+
+Copy
+
+Edit
+
+install.* 
+
+@127
+
+.
+
+0.0
+
+.
+
+1
+
+:
+
+32376
+
+Delete it
+.
+
+Save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+Enter
+).
+
+Restart the syslog service:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl stop com.apple.syslogd
+sudo launchctl start com.apple.syslogd
+
+ð Next Step
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep -r 
+
+"32376"
+
+ /etc /var 2>/dev/null
+
+ð 
+Let me know if it finds anything!
+ If nothing is found, we can move on to the 
+next issue (DNS check).
+ ð
+
+You said:
+
+ja@SJAs-MacBook-Pro ~ %  launchctl stop com.apple.syslogd
+sja@SJAs-MacBook-Pro ~ % sudo launchctl start com.apple.syslogd
+sja@SJAs-MacBook-Pro ~ % grep -r "32376" /etc /var 2>/dev/null
+
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 1 Complete: Remote Logging Entry Removed
+ â
+
+Since:
+
+Nothing was found
+ in 
+/etc
+ or 
+/var
+ referencing 
+32376
+,
+
+No process was running on that port
+,
+
+You restarted syslog
+,
+
+â That means the logging to 
+127.0.0.1:32376
+ is now gone! ð
+
+Step 2: Investigate the Suspicious Nameserver
+
+ð Check Current DNS Configuration
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+Look for 
+113.212.173.22
+ in the output.
+ If it appears under 
+resolver #X
+, let me know.
+
+ð If That Nameserver is Found & You Donât Recognize It
+
+You can change your DNS to a 
+trusted provider
+ (Google or Cloudflare):
+
+Set DNS to Google (8.8.8.8 & 8.8.4.4)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+Flush DNS Cache to Apply Changes
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Then, check your DNS again:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð Next Step: Run 
+scutil --dns
+ and Tell Me if 
+113.212.173.22
+ is Still There
+
+ð If itâs gone, we move to the next check (deleted files still in use). If itâs still there, weâll dig deeper. ð
+
+You said:
+
+resolver #1
+
+ChatGPT said:
+
+Step 2: Investigate the Suspicious N

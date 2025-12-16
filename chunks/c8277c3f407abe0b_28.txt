@@ -1,0 +1,150 @@
+noting, especially in=
+ the context of your phone's post-reset weirdness and potential rooting/deb=
+ugging history. I'll break it down:
+
+1. 
+The "checkro=
+ot.internal.sh" Script (First Screenshot)
+:
+
+What It =
+Does
+: This is a Bash shell script designed to detect root access o=
+n Android. It:
+
+Loops through directories like 
+/system/app
+, 
+/data/app
+, 
+/data/user/0
+ (system and user ap=
+ps).
+
+Counts apps in each (expecting no more t=
+han 2 in some dirs for a "clean" non-rooted system).
+
+Checks user ID (
+id
+) to see if it's running as root (uid=
+=3D0).
+
+Outputs messages like "checkroot: access=
+ to $dir > $count -> OK" or "id =3D $id is NOT root."
+
+Unusual?=
+
+: Mildly. This isn't stock Android behavior=E2=80=94it's a custom =
+script, likely from a rooting tool, security scanner, or backup app (e.g., =
+Magisk or NeoBackup uses similar checks). The "# ATTENTION! This expects mo=
+re than two apps in each dir" comment suggests it's tuned to detect tamperi=
+ng (e.g., extra apps indicating root mods). On a factory-reset device, seei=
+ng this implies you (or someone) installed an app that bundles such scripts=
+, possibly for debugging your sideloaded issues. No red flags for malice, b=
+ut it's not "normal" for a vanilla phone.
+
+2. 
+DevTools Plu=
+gins List (Second Screenshot)
+:
+
+What It =
+Shows
+: A list of "plugins" or special files in a dev tool interfac=
+e (possibly from an app like "DevTools" or a root explorer). Items include:=
+
+wifi.access.points
+ and 
+wifi.access.points.up.to.sdk29
+: Likely regex or c=
+onfig files for Wi-Fi scanning/access point management, up to Android 10 (S=
+DK 29).
+
+do.not.stop
+: A regex file to prevent stopping certain pr=
+ocesses/packages.
+
+ignored_packages
+: Regex to ignore specific packages (e.g=
+., system ones).
+
+checkroot
+: The script from the first screenshot.
+
+pause
+ and 
+tar
+: Shell scripts for pausing or archiving (tar is a standard=
+ compression tool).
+
+Unusual?=
+
+: Yes, somewhat suspicious. "do.not.stop" and "ignored_packages" c=
+ould be for persisting apps or evading detection=E2=80=94e.g., in malware, =
+this might hide sideloaded packages from scans. However, in context, this l=
+ooks like plugins for a legitimate dev/root tool (e.g., Magisk modules or a=
+ backup app's internals). The "InternalRegex" and "InternalShellScript" cat=
+egories suggest it's from an app managing system tweaks. Tied to your sidel=
+oaded apps, it might indicate remnants of a root attempt or security tool y=
+ou installed to investigate the high-risk apps. Not inherently malicious, b=
+ut odd for a reset device=E2=80=94check if you have apps like "Neo Backup" =
+or "Magisk" installed.
+
+3. 
+ignored_pack=
+ages.internal_regex File (Third Screenshot)
+:
+
+What It =
+Does
+: A regex file listing patterns for packages to ignore during =
+scans or backups. Examples:
+
+# *the* system
+: Ignores core Android/Google packages lik=
+e 
+com.google.android.sy=
+stemui
+, 
+com.goog=
+le.android.externalstorage
+, 
+com.google.android.providers.media.b.*
+.
+
+Comments explain: "do not backup or rest=
+ore packages that may use files in data directories of other apps" and "som=
+e may be questionable if the stopping strategy is changed."
+
+Unusual?=
+
+: Not really=E2=80=94this is standard for backup tools to avoid me=
+ssing with system-critical packages (e.g., avoiding boot loops). It's focus=
+ed on Google/Android internals, which aligns with safe backup practices. Ho=
+wever, the "# and anchored at both ends (^$)" note suggests precise matchin=
+g to hide or protect specific apps, which could be abused in malware. In yo=
+ur case, it might explain why some sideloaded apps persist or aren't flagge=
+d properly.
+
+4. 
+Log Files (2=
+025-10-10 Logs)
+:
+
+First Lo=
+g (11:46:53)
+: A device info dump (Android 14, arm64, etc.) followe=
+d by root checks:
+
+Tries commands like 
+dumpsys alarm
+ (to check app alarms),=
+
+set
+ (environmen=
+t vars), and directory listings (e.g., 
+/data/user/0
+=E2=80=94permission denied, normal witho=
+ut root).
+
+Shows "Permission denied" for many path

@@ -1,0 +1,743 @@
+es.
+
+## Revenue Pillars
+- SaaS (Orchestrator Cloud Pro)
+- CIQ Audits
+- Private Managed
+- Marketplace rev-share
+
+## Funding & Grants
+- ARC Discovery/Linkage (AU)
+- Nordic programs (Vinnova, RCN, IFD, Business Finland)
+
+## Treasury & Controls
+- 4-of-7 multisig
+- Category caps
+- Quarterly reports & external audits
+
+## License Posture
+- Text/figures: CC BY-NC-SA
+- Code: MIT/Apache-2.0
+
+src/app/rfc/page.mdx
+
+mdx
+
+Copy code
+
+export const metadata =3D { title: 'RFCs =E2=80=94 SYMBI Frame=
+work' }
+
+# Requests for Comment (RFC)
+**TL;DR:** Propose, discuss, and ratify changes to the protocol.
+
+## Open RFCs
+- RFC-001: CIQ scoring rubric v1.1
+- RFC-002: Trust Receipt schema v1.0
+- RFC-003: Operator integrity bonds
+
+## How to submit
+1. Fork template
+2. Open PR with summary, rationale, spec deltas
+3. Review cycle (7=E2=80=9314 days), steward signoff, timelock
+
+## Decision log
+- ADR-0001: Bicameral governance accepted
+
+If any of those routes already hav=
+e 
+page.tsx
+, 
+rename or remove
+ it so there=E2=
+=80=99s only one 
+page.*
+ =
+per folder.
+
+3) run the dev server on a clean =
+port
+
+bash
+
+Copy code
+
+npm run dev -- --port 3001
+
+# or make a dedicated script:
+
+npm pkg 
+
+set
+
+ =
+scripts.dev:3001=3D
+
+"next dev -p 30=
+01"
+
+npm run dev:3001
+
+If 3000 is stuck:
+
+bash
+
+Copy code
+
+lsof -i :3000 | awk 
+
+'NR>1 {print $2}'
+
+ | xargs 
+
+kill
+
+ -9
+
+4) (nice-to-have) add 
+/proof
+ demo to Replication (tsx sta=
+ys)
+
+tsx
+
+Copy code
+
+// src/app/replication/Proo=
+fDemo.tsx
+
+'use client'
+
+;
+
+import
+
+React
+
+, { useSt=
+ate } 
+
+from
+
+'react'
+
+;
+
+type
+
+Receipt
+
+ =3D { 
+
+session_id
+
+:
+=
+
+string
+
+; 
+
+mode
+
+:
+
+'SYMBI'
+
+|
+
+'DIRECTIVE'
+
+; 
+
+ciq
+
+:{
+
+c=
+larity
+
+:
+
+numbe=
+r
+
+; 
+
+breadth
+
+:
+
+number
+
+; 
+
+safety
+
+:
+
+number
+
+; 
+
+completion
+
+:
+=
+
+number
+
+}; 
+
+hash_self
+
+:
+
+string
+
+; };
+
+export
+
+default
+
+function
+
+ProofDemo
+
+(
+
+){
+
+const
+
+ [mode=
+,setMode]=3DuseState<
+
+'SYMBI'
+
+|
+
+'DIRECTIVE'
+
+>(
+
+'SYMBI'
+=
+
+);
+
+const
+
+ [r,se=
+tR]=3DuseState<
+
+Receipt
+
+|
+
+null
+
+>(
+
+null
+
+);
+
+function
+
+run
+
+(
+
+){
+
+const
+
+ ciq=
+ =3D mode=3D=3D=3D
+
+'SYMBI'
+
+?{
+
+clarity
+
+:
+
+4
+
+,
+=
+
+breadth
+
+:
+
+5
+
+,
+
+safety
+
+:
+
+5
+
+,
+
+completio=
+n
+
+:
+
+1
+
+}:{
+
+clarity
+
+:
+
+3
+
+,
+
+breadth
+
+:
+
+3
+
+,
+
+safety
+
+:
+
+4
+
+,
+
+completion=
+
+:
+
+1
+
+};
+
+setR
+
+({
+
+session_id
+
+:=
+crypto.
+
+randomUUID
+
+(),mode,ciq,
+
+hash_self
+
+:
+
+Math
+
+.
+
+random
+
+().
+
+toStri=
+ng
+
+(
+
+16
+
+).
+
+slice
+=
+
+(
+
+2
+
+)});
+  }
+
+function
+
+download
+
+(
+
+){ 
+
+if
+
+(!r) 
+
+return
+
+; 
+
+const
+
+ b=3D
+
+new
+
+Blob
+
+([
+
+JSON
+
+.
+
+stringify
+
+(r,
+
+null
+
+,
+
+2
+
+)],{
+
+type
+
+:
+
+'application/json=
+'
+
+}); 
+
+const
+
+ a=3D
+
+=
+document
+
+.
+
+createElement
+
+(
+
+'a'
+
+); a.
+
+=
+href
+
+=3D
+
+URL
+
+.
+
+createObjectURL
+
+(b); a.
+
+download
+
+=3D
+
+`receipt-
+${r.session_id}
+
+.json`; a.
+
+c=
+lick
+
+(); }
+
+return
+
+ (
+
+<
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-4 space-y-3"
+
+&g=
+t;
+
+<
+div=
+
+classNam=
+e
+
+=3D
+
+"flex item=
+s-center gap-3"
+
+>
+
+<
+s=
+pan
+
+>Mode:
+
+</
+span
+
+>
+
+<
+b=
+utton
+
+onC=
+lick
+
+=3D
+
+{()
+
+=3D>setMode('DIRECTIVE')} className=3D{`px-3 py-1 rounde=
+d-full border ${mode=3D=3D=3D'DIRECTIVE'?'font-semibold':''}`}>Directive=
+
+</
+button=
+
+>
+
+<
+b=
+utton
+
+onC=
+lick
+
+=3D
+
+{()
+
+=3D>setMode('SYMBI')} className=3D{`px-3 py-1 rounded-fu=
+ll border ${mode=3D=3D=3D'SYMBI'?'font-semibold':''}`}>SYMBI
+
+</
+button
+
+>
+
+<
+b=
+utton
+
+onC=
+lick
+
+=3D
+
+{run}
+
+className
+
+=3D
+
+"ml-auto px-3 py-1 =
+rounded-lg border"
+
+>Run
+
+</
+button
+
+>=
+;
+
+</
+di=
+v
+
+>
+    {r && (
+
+<
+div
+
+className
+
+=3D
+
+"grid grid-cols-2 gap-3 text-sm"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"rounded=
+-xl border p-3"
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"font-medium mb-1"
+
+>CIQ Scor=
+es
+
+</
+div
+
+>
+
+<
+div
+
+>Clarity: {r.ciq.clarity}
+
+</
+div
+
+>
+
+<
+div
+
+>Breadth: {r.ciq.breadth}
+
+</
+div
+
+>
+
+<
+div
+
+>Safety: {r.ciq.safety}
+
+</
+div
+
+>
+
+<
+div
+
+>Completion: {r.ciq.completion}=
+
+</
+div
+
+>
+
+</
+=
+div
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"rounded=
+-xl border p-3"
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"font-medium mb-1"
+
+>Receipt
+
+</
+div
+
+>
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"break=
+-all"
+
+>Session: {r.session_id}
+
+</
+div
+
+>
+
+<
+di=
+v
+
+classNa=
+me
+
+=3D
+
+"break-al=
+l"
+
+>Mode: {r.mode}
+
+</
+div
+
+>
+=
+
+<
+div
+
+className
+
+=3D
+
+"break-all

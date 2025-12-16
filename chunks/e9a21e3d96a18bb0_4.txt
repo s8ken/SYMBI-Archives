@@ -1,0 +1,310 @@
+d
+
+]
+
+properties:
+
+human_id:
+
+ { 
+
+type:
+
+string
+
+ }
+
+agent_id:
+
+ { 
+
+type:
+
+string
+
+ }
+
+consent_envelope_id:
+
+ { 
+
+type:
+
+string
+
+ }
+
+5) Real=E2=80=91time contracts (S=
+ocket.io)
+
+Namespaces/rooms
+
+room:user:{userId}
+ =E2=80=93 personal events
+
+room:bond:{bondId}
+ =E2=80=93 trust updates per bond
+
+room:agent:{agentId}
+ =E2=80=93 agent telemetry
+
+Events
+
+Client=E2=86=92Server: 
+chat:send {conversation_id, text}
+
+Server=E2=86=92Client: 
+chat:msg {message_id, text, sender}
+=
+
+Server=E2=86=92Client: 
+trust:update {bond_id, score, state, delta=
+, reason}
+
+Server=E2=86=92Client: 
+compliance:violation {bond_id, code, sever=
+ity, at}
+
+Heartbeats: 
+presence {entity_id, last_seen}
+
+Ack & retries
+: all emits carry 
+request_id
+; server responds with 
+{request_id, ok}
+ or 
+{error}
+.
+
+6) Security, Privacy, Compliance
+
+JWT + Refresh
+ with rotation and 
+token reuse detection
+.
+
+2FA (TOTP)
+ for admins/operators; recovery codes; IP/de=
+vice alerts.
+
+Password hashing
+: Argon2id (preferred) or bcrypt with =
+strong cost.
+
+Rate limits
+: 
+express-rate-limit
+ (per-IP + per-user) + 
+slowdown
+ strategies; 
+WAF
+ at edge.
+
+Helmet/CSP
+: strict CSP; disallow inline where possible=
+.
+
+Field encryption
+: emails, names, tokens; server-side l=
+ibsodium; or Mongo FLE.
+
+E2EE option
+ for sensitive chat segments with user-held=
+ key (future).
+
+Consent enforcement
+ at Gate: redact or reject where o=
+ut-of-scope.
+
+Audit logging
+: immutable append-only; rotate to co=
+ld storage; alert on anomalous patterns.
+
+Data retention
+: default 365d for conversations; co=
+nfigurable; 
+right to erasur=
+e
+ path.
+
+Backups
+: Atlas daily + PITR; automated recovery te=
+sts monthly.
+
+Secrets
+: Vercel/host env secrets; no keys in code;=
+ scoped keys per service; periodic rotation.
+
+Sentry/OTEL
+ tracing; PII scrubbing in logs.
+
+7) Implementation Plan (12 week=
+s) =E2=80=94 milestones & exit checks
+
+Weeks 1=E2=80=932: Core backend + DB
+
+Repo scaffold (Turbo/PNPM or Yar=
+n).
+
+Mongoose models; indexes; FLE wi=
+ring; seed scripts.
+
+Auth (register/login, refresh ro=
+tation), TOTP, role model.
+
+Exit
+: Postman tests pass; unit tests =E2=89=A580% =
+for auth; CRUD for agents & bonds.
+
+Weeks 3=E2=80=934: Trust Protocol APIs
+
+Declarations, consent envelopes,=
+ bond lifecycle, score engine v1.
+
+Trust Gate middleware integrated=
+ globally.
+
+Exit
+: Create/activate/suspend flow works; trust ev=
+ents fire; decay job runs nightly.
+
+Weeks 5=E2=80=936: Real-time + Chat
+
+Socket.io server + Redis adapter=
+; rooms & events.
+
+Chat pipeline to 
+SYMBI GPT API
+ with injected scope=
+s; SSE fallback.
+
+Exit
+: Live trust meter updates on boundary tests; =
+out-of-scope prompts enforced.
+
+Weeks 7=E2=80=938: User & Agent Ops
+
+Profile & preferences; agent=
+ analytics, compliance submission.
+
+Admin policy dashboard (threshol=
+ds, required scopes).
+
+Exit
+: Role-based access verified; policy changes p=
+ropagate within 1 min.
+
+Weeks 9=E2=80=9310: Dashboards + Notifications
+
+Trust analytics (per user/agent,=
+ trends); personal trust network graph.
+
+Email/webhook notifications for =
+trust events.
+
+Exit
+: Scheduled reports; webhook signature validat=
+ion; unsubscribe paths.
+
+Weeks 11=E2=80=9312: Prod readiness
+
+E2E tests (Playwright) for core =
+journeys; k6 load tests to SLOs.
+
+Observability, alerts (p95 laten=
+cy, error rate), backup drills.
+
+Security review: secrets scan, d=
+ependency audit, OWASP baseline.
+
+Exit
+: Go=E2=80=91live checklist signed; on=E2=80=
+=91call runbook; incident simulation completed.
+
+8) Code Scaffold (key files)
+
+bash
+
+Copy code
+
+/apps/web (Next.js 14)
+/apps/api (Express + TS)
+/packages/shared (types, schemas)
+/infra (docker, compose, k6, terraform later)
+
+Express bootstrap (excerpt)
+
+ts
+
+Copy code
+
+// apps/api/src/server.ts
+
+import
+
+ expres=
+s 
+
+from
+
+'express'
+
+;
+
+import
+
+ cors 
+
+from
+
+'cors'
+
+; 
+
+import
+
+ helmet 
+
+from
+
+'helmet'
+
+;
+
+import
+
+ rateLi=
+mit 
+
+from
+
+'express-rate-limit'
+
+;
+
+import
+
+ { auth=
+Router } 
+
+from
+
+=
+
+'./routes/auth'
+
+;
+
+import
+
+ { trus=
+tRouter } 
+
+from
+
+'./routes/trust'
+
+;
+
+im

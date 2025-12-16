@@ -1,0 +1,218 @@
+Starting...
+ â Ready in 1177ms
+ â Compiling /_not-found ...
+ â Compiled /_not-found in 1149ms (584 modules)
+ GET /_next/static/webpack/f10779d835e4cbe9.webpack.hot-update.json 404 in 1307ms
+ â  Fast Refresh had to perform a full reload due to a runtime error.
+ â Compiled in 85ms (296 modules)
+ â  Fast Refresh had to perform a full reload due to a runtime error.
+ â¨¯ ./sanity.config.ts
+Module parse failed: Identifier 'siteSettings' has already been declared (5:7)
+| import { deskTool } from 'sanity/desk';
+| import { visionTool } from '@sanity/vision';
+> import siteSettings from './schemas/siteSettings';
+| import page from './schemas/page';
+| export default defineConfig({
+
+Import trace for requested module:
+./sanity.config.ts
+./app/studio/[[...index]]/page.tsx
+ â Compiling /studio/[[...index]] ...
+ â¨¯ ./sanity.config.ts
+Module parse failed: Identifier 'siteSettings' has already been declared (5:7)
+| import { deskTool } from 'sanity/desk';
+| import { visionTool } from '@sanity/vision';
+> import siteSettings from './schemas/siteSettings';
+| import page from './schemas/page';
+| export default defineConfig({
+
+Import trace for requested module:
+./sanity.config.ts
+./app/studio/[[...index]]/page.tsx
+ GET /studio 500 in 203ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/sja/Documents/symbi-main-site/.next/cache/webpack/client-development-fallback/2.pack.gz_' -> '/Users/sja/Documents/symbi-main-site/.next/cache/webpack/client-development-fallback/2.pack.gz'
+
+ChatGPT said:
+
+ð¨ You're Seeing This Error:
+
+vbnet
+
+Copy
+
+Edit
+
+Module
+
+ parse failed: Identifier 
+
+'siteSettings' has already been declared
+
+This means your 
+sanity.config.ts
+ file 
+imports 
+siteSettings
+ twice
+, likely due to a copy-paste or merge conflict.
+
+â 
+Fix the Duplicate Import
+
+ð Step 1: Open 
+sanity.config.ts
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+ð§ Step 2: Look for This:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+;
+...
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+; 
+
+// ð´ duplicate!
+
+â Step 3: Remove the Duplicate
+
+Your imports should look like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+And your schema config should be:
+
+ts
+
+Copy
+
+Edit
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+},
+
+â Step 4: Save and Exit
+
+In 
+Nano
+:
+
+Ctrl + X
+ â 
+Y
+ â 
+Enter
+
+ð Step 5: Restart the Server
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then visit:
+
+ð 
+
+http://localhost:3001/studio
+
+â What Should Happen:
+
+The 
+500 error disappears
+
+The 
+Sanity Studio loads
+ with your 
+siteSettings
+ and 
+page
+ schemas
+
+Let me know when you're in! We'll then connect your logo or text to be fully CMS-powered ð¥
+
+You said:
+
+sja/Documents/symbi-main-site/node_modules/next/dist/shared/lib/error-source.js|webpack from pack: Error: invalid bit length repeat
+<w> [webpack.cache.PackFileCacheStrategy] Restoring failed for Compilation/codeGeneration|/Users/sja/Documents/symbi-main-site/node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[7].oneOf[3].use[1]!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/client/components/react-dev-overlay/pages/ErrorBoundary.js|webpack from pack: Error: invalid bit length repeat
+<w> [webpack.cache.PackFileCacheStrategy] Restoring failed for Compilation/codeGeneration|/Users/sja/Documents/symbi-main-site/node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[7].oneOf[3].use[1]!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/clien

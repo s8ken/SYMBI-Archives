@@ -1,0 +1,327 @@
+y; composite CIQ =
+=3D mean z=E2=80=91score across subscales.
+
+Automation:
+
+ heuristic proxies (e.g., completion, =
+time=E2=80=91to=E2=80=91complete, policy flags) + human raters for subjecti=
+ve subscales.
+
+5. Methods =E2=80=94 /proof A/B=
+
+Design:
+
+ randomized within=E2=80=91subject A/B switching 
+
+Directive
+
+ vs 
+
+SYMBI
+
+ at task level.
+
+Tasks:
+
+ two enterprise workflows (support triage; RFP draft).=
+
+Sample:
+
+ N conver=
+sations/tasks per condition (power analysis below).
+
+Procedure:
+
+ instrument logs =E2=86=92 ran=
+domize toggle =E2=86=92 collect CIQ + operational metrics.
+
+Receipts:
+
+ per=E2=80=91interaction=
+ signed JSON (hash=E2=80=91chain); exported to SIEM.
+
+6. Analysis Plan (preregistered)
+
+Primary endpoints:
+
+ =CE=94CIQ,=
+ =CE=94Completion, =CE=94Safety violations, =CE=94Time=E2=80=91to=E2=80=91c=
+omplete.
+
+Stats:
+
+ p=
+aired t=E2=80=91tests or Wilcoxon; Holm=E2=80=91Bonferroni correction; effe=
+ct sizes (Cohen=E2=80=99s d).
+
+Power:
+
+ with d=3D0.35, =CE=B1=3D.05, power=3D.8 =E2=86=92 n=E2=
+=89=88100 tasks/condition (calc included).
+
+Robustness:
+
+ cluster=E2=80=91robust SEs by user; m=
+ixed models for heterogeneity.
+
+7. Results (te=
+mplate)
+
+Table: mean=C2=B1=
+sd per subscale; p=E2=80=91values; effect sizes.
+
+Figure: waterfall of CIQ deltas; time=E2=80=91to=E2=80=91complete reducti=
+on; violation counts.
+
+Text: =E2=89=A515% improv=
+ement in =E2=89=A52 metrics; confidence intervals.
+
+=
+
+8. Discussion
+
+Impli=
+cations for safety, governance, portability across models; limits of rubric=
+; generalizability to other domains.
+
+9. Ethic=
+s & Limitations
+
+Data =
+minimization; no PII exfiltration; rater instructions; known biases; prereg=
+ link.
+
+10. Availability
+
+Code, prompts, and replication kit at 
+
+symbi.world/proof
+
+; OSF preregistration l=
+ink; arXiv preprint DOI upon upload.
+
+Referenc=
+es (placeholder)
+
+Constitu=
+tional AI; CI research; auditing frameworks; governance tokens (non=E2=80=
+=91financial rights).
+
+2) Replication Kit (README)
+
+C=
+ontents
+
+/pr=
+ompts/
+
+ directive and SYMBI prompt templates.
+
+=
+
+/protocol/
+
+ Articles, schemas, g=
+uardrails.
+
+/receipts/
+
+=
+ JSON schema with sample signed receipts.
+
+/metrics/
+
+ CIQ rubric (PDF) + rater form (CSV) + code f=
+or proxies.
+
+/analysis/
+
+ Jupyter notebooks (power, stats, plots).
+
+/ethics/
+
+ consent script + DPA template + IRB checklis=
+t.
+
+Quick start
+
+python -m=
+ venv venv && source venv/bin/activate
+
+=
+pip install -r requirements.txt
+
+python run_ab.p=
+y --tasks data/tasks.csv --mode both --out out/
+
+Receipt schema (excerpt)
+
+=
+
+{
+
+"v=
+ersion"
+: 
+"1.0"
+,
+
+"session_id"
+: 
+"..."
+,
+
+"mod=
+e"
+: 
+"SYMBI|DIRECTIVE"
+,
+
+"inputs"
+: {
+"user"
+: 
+"..."
+, 
+"context"
+: 
+"..."
+},
+=
+
+"constraints"
+: {
+"articles"
+: [
+1
+,
+2
+,
+3
+], 
+"safety"
+: [
+"nsfw"
+,
+"pii"
+]},
+
+"outcome"
+: {
+"text"
+: 
+"..."
+, 
+"completion"
+: 
+true
+, 
+"time_s=
+ec"
+: 
+42
+},
+
+"flags"
+: {
+"safety=
+"
+: 
+0
+, 
+"halluc=
+ination"
+: 
+0
+},
+
+"ciq"
+: {
+"clar=
+ity"
+: 
+4
+, 
+"bre=
+adth"
+: 
+5
+, 
+"sa=
+fety"
+: 
+5
+, 
+"co=
+mpletion"
+: 
+1
+},
+
+"hash_prev"
+: 
+"..."
+,
+
+"hash_=
+self"
+: 
+"..."
+,
+
+"signature"
+: 
+=
+"ed25519:..."
+
+}
+
+3) Pr=
+eregistration Template (OSF)
+
+Hypotheses:
+
+ SYMBI > Directive on CIQ c=
+omposite and at least two subscales; fewer safety violations; shorter time=
+=E2=80=91to=E2=80=91complete.
+
+Design:
+
+ randomized within=E2=80=91subject; task=E2=80=91level =
+crossover.
+
+Sample size & power:
+
+ as in =C2=A76; stopping rules; exclusion criteria.
+
+Measures:
+
+ CIQ rubric +=
+ operational metrics; inter=E2=80=91rater calibration protocol.
+
+Analysis:
+
+ primary/secondary =
+endpoints; corrections; robustness checks.
+
+Ethics:
+
+ data handling; consent; privacy.
+
+4) Cover Let=
+ter (journal/conference)
+
+Subject:
+
+ Submission: =E2=80=9CRelationship over Computation: =
+=E2=80=A6=E2=80=9D
+
+We submit an empirical and architectural=
+ contribution introducing 
+
+SYMBI
+
+,=
+ a protocol and proof framework for relational intelligence. We preregister=
+ our analysis, release a full replication kit, and demonstrate consistent g=
+ains over directive p

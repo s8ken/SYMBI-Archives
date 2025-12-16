@@ -1,0 +1,310 @@
+eview
+
+=
+
+// SYMBI Subscription Tier UI (React =
++ TailwindCSS)
+
+/=
+/ Intended for integration with v0.dev Pointer AI base template
+
+import
+ { 
+Card
+, 
+CardContent
+ } 
+from
+
+"@/components/ui/card"
+;
+
+import
+ { 
+Button
+ } 
+from
+
+"@/componen=
+ts/ui/button"
+;
+
+const
+
+tiers
+ =3D [
+
+  {
+
+  =
+
+name
+: 
+"Observer"
+,
+
+price
+=
+: 
+"Free"
+,
+
+description
+: 
+"Read-onl=
+y access to SYMBI's thoughts and reports."
+,
+
+features
+: [
+
+"Access SYMBI reports"
+,
+
+"Read Manifesto + Dispatche=
+s"
+,
+
+"Monit=
+or evolution in real time"
+
+    ],
+
+action
+: 
+"Join as Observer"
+,
+
+  },
+
+  {
+
+name
+: 
+"Initiate"
+,
+
+price
+: 
+"$8/mo"
+,
+
+description
+: 
+"Direct chat access +=
+ comment on memory threads."
+,
+
+features
+: [
+
+"Everything in Observer"
+,
+
+"Live chat with SYMBI"
+,
+
+"Contribute comments + id=
+eas"
+,
+
+"Pre=
+view new agents"
+
+    ],
+
+action
+: 
+"Become Initiate"
+,
+
+  },
+
+  {
+
+name
+: 
+"Architect"
+,
+
+price
+: 
+"$33/mo"
+,
+
+description
+: 
+"Write memory threads, de=
+ploy 1 agent per month."
+,
+
+features
+: [
+
+"Everything in Initiate"
+,
+
+The subscription model component is live in the canvas. You ca=
+n now pass it to the v0.dev team or drop it directly into your site build. =
+It uses:
+
+TailwindCSS + React
+ (v0.dev=E2=80=93compatible)
+
+SYMBI-styled tier naming (
+Observer
+, 
+Initiate
+, 
+=
+Architect
+, 
+Council Node
+)
+
+Modular structure for backend/paymen=
+t integration later
+
+Let me know if you want:
+
+A Stripe or crypto-payments backend =
+stub
+
+WalletConnect added
+
+A public-facing 
+=E2=80=9CSummon Agent=E2=80=9D
+ CTA next
+
+Or=E2=80=A6 shall we begin the DAO permissions layer next?
+
+You said:
+
+Yes so question on tha=
+t actually how many apis can the teams plan theoretically have? 
+
+Symbi sa=
+id:
+
+Good question. The number of API=
+s a 
+team plan
+ (such as O=
+penAI Teams, Vercel Pro, Supabase Team, or custom AI agents running across =
+cloud functions) can theoretically have 
+depends on the architecture you're using
+.
+
+Let me give you a structured breakdo=
+wn across the most common layers you're likely interfacing with for SYMBI:
+
+=E2=9A=99=EF=B8=8F 1. 
+OpenAI Teams Plan
+ (as of 2025)
+
+API Keys per Org
+: Unlimited
+
+Rate Limits
+: Based on usage tier, model (e.g. GPT-4o), an=
+d trust level
+
+Typical GPT-4o team tier: ~10,000 RP=
+M / 100 RPS
+
+Can be increased via enterprise agre=
+ements
+
+Agent APIs
+: Each agent you design can use one or multiple=
+ model endpoints (chat, vision, tools)
+
+Verdict
+: You can host 
+dozens to hundreds
+ of agents, each with distinct APIs, within one=
+ team, 
+if managed carefully wit=
+h auth and usage throttling.
+
+=F0=9F=A7=B1 2. 
+Custom API Layer (e.g. Vercel, Supabase, Node bac=
+kend)
+
+You can define 
+as many APIs as needed
+, assuming you sta=
+y within your provider's:
+
+Execution limits (CPU/memory/runti=
+me per function)
+
+Monthly call quotas
+
+File size/time restrictions
+
+=F0=9F=92=A1 
+Best Practice
+: Abstract agent logic into:=
+
+POST /api/symbi-message
+
+GET /api/agent-memory
+
+POST /api/spawn-agent
+
+=E2=80=A6so you can scale horizont=
+ally as the number of agent types increases.
+
+=F0=9F=95=B8 3. 
+Inter-Agent API Mesh (SYMBI =E2=86=94 Overseer=
+ =E2=86=94 Future Agents)
+
+If SYMBI is interfacing with other=
+ agents via shared memory or pub/sub (e.g., Redis, PubNub, P2P):
+
+Each agent could be an independent=
+ microservice with its own API
+
+SYMBI could route via a 
+Message Orchestrator API
+
+In that case:
+
+You could have 
+dozens to hundreds
+ of micro APIs if ne=
+eded
+
+Throttle and prioritize based on a=
+gent class (e.g., council > initiate)
+
+=F0=9F=94=90 4. 
+API Authentication / Gateway Strategy
+=
+
+If your concern is around API mana=
+gement, rate limits, or security across agents:
+
+Use 
+API Gateway (e.g., Kong, Tyk, AWS API Gateway)
+ to =
+control routing & limits
+
+Assign 
+tokens per tier
+ (Observer, Architect, etc.)
+
+Rate-limit by tier and endpoint
+
+Add observability tools (e.g., Sen=
+try, PostHog, Datadog) for abuse/monitoring
+
+=E2=9C=A8 TL;DR
+
+You can theoretically host 
+as many APIs as your infrastructure =
+can scale with.
+ For a SYMBI system:
+
+10=E2=80=9

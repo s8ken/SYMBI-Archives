@@ -1,0 +1,500 @@
+ is the core logic where Symbi (via GPT) interacts with your Sanity dataset.
+
+✅ What to do:
+
+In your terminal, run:
+
+bash
+
+Copy
+
+mkdir
+
+ -p lib
+nano lib/symbi.ts
+
+📄 Paste this code:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sanity = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+ || 
+
+'2025-02-19'
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+createOrUpdatePage
+
+(
+content: {
+  _id?: 
+
+string
+
+  title: 
+
+string
+
+  body?: 
+
+string
+
+}) {
+
+const
+
+ doc = {
+
+_type
+
+: 
+
+'page'
+
+,
+    ...content,
+  }
+
+return
+
+ sanity.
+
+createOrReplace
+
+(doc)
+}
+
+✅ Let me know when that’s done.
+
+Then we’ll move to 
+Step 2: 
+/api/brain.ts
+
+ — a serverless endpoint for GPT to push content autonomously.
+
+You said:
+
+sorry I left the folder location 
+
+Vercel Deployment Expert GPT said:
+
+No stress at all — let’s get you right back into your project folder.
+
+🧭 Navigate Back to Your Project Folder
+
+If your project folder is:
+
+bash
+
+Copy
+
+~/Documents/symbi-main-site
+
+Then just run:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Once you're in there, you can confirm it by listing the contents:
+
+bash
+
+Copy
+
+ls
+
+ -la
+
+You should see folders like 
+app
+, 
+lib
+, 
+schemas
+, and files like 
+sanity.config.ts
+, 
+.env.local
+, etc.
+
+Once confirmed, run:
+
+bash
+
+Copy
+
+mkdir
+
+ -p lib
+nano lib/symbi.ts
+
+Then paste in the code from the previous step.
+
+Let me know when you’ve done that and we’ll move to the next piece: the 
+autonomous API endpoint for Symbi
+.
+
+You said:
+
+I need to do the env.local one
+
+Vercel Deployment Expert GPT said:
+
+Perfect — let's get your 
+.env.local
+ file set up correctly to hold your Sanity project credentials.
+
+✅ Step-by-Step: Create or Edit 
+.env.local
+
+Navigate to your project folder
+ (if you haven't already):
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Open or create the 
+.env.local
+ file
+:
+
+bash
+
+Copy
+
+nano .env.local
+
+Paste the following (update with your actual keys if needed):
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=your_actual_token_here
+
+Replace 
+your_actual_token_here
+ with your Sanity API token (should be a long string starting with 
+sk...
+).
+
+Save the file
+:
+
+Press 
+CTRL + O
+ → then 
+Enter
+ to save.
+
+Press 
+CTRL + X
+ to exit.
+
+Restart your Next.js dev server
+ so the new environment variables take effect:
+
+bash
+
+Copy
+
+npm run dev
+
+Once that's done, let me know — then we’ll move forward with creating the API integration in 
+lib/symbi.ts
+.
+
+You said:
+
+ok done
+
+Vercel Deployment Expert GPT said:
+
+Excellent 🎉
+
+Now let's move on to the next file to handle API interactions between your Next.js site and Sanity — this is where your GPT will read from and write to Sanity.
+
+✅ Step 2: Create 
+lib/symbi.ts
+
+This will contain helper functions for Symbi to 
+read
+, 
+create
+, and 
+update
+ content in Sanity.
+
+Make sure you're in your project root
+:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+Create the 
+lib
+ folder if it doesn't exist
+:
+
+bash
+
+Copy
+
+mkdir
+
+ -p lib
+
+Open the file for editing
+:
+
+bash
+
+Copy
+
+nano lib/symbi.ts
+
+Paste this code inside
+:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// Required for write operations
+
+useCdn
+
+: 
+
+false
+
+, 
+
+// Set to false for freshest data
+
+})
+
+export
+
+async
+
+function
+
+fetchPages
+
+(
+
+) {
+
+return
+
+await
+
+ sanityClient.
+
+fetch
+
+(
+
+`*[_type == "page"]`
+
+)
+}
+
+export
+
+async
+
+function
+
+createPage
+
+(
+
+title: 
+string
+
+, content: 
+
+any
+
+[]) {
+
+return
+
+await
+
+ sanityClient.
+
+create
+
+({
+
+_type
+
+: 
+
+'

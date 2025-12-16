@@ -1,0 +1,390 @@
+ons"
+
+tools:
+
+-
+
+rag.retrieve:
+
+ { 
+
+index:
+
+"ycq"
+
+, 
+
+top_k:
+
+6
+
+ }
+
+-
+
+web.fetch:
+
+ { 
+
+=
+
+allowlist:
+
+ [
+
+"ycq.tld"
+
+,
+
+"ycq.example"
+
+] }
+
+policies:
+
+models:
+
+ [
+
+"gpt-4.1-mini"
+
+,
+
+"gpt-4o-mini"
+
+,
+
+"claude-3.7-sonnet"
+
+]
+
+max_input_tokens:
+
+8_000
+
+max_output_tokens:
+
+1_500
+
+cost_ceiling_usd:
+
+1.00
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+receipt_fields:
+
+ [
+
+model
+
+, 
+
+tool_ids
+
+, 
+
+sdk_version
+
+, 
+
+policy_id
+
+, 
+
+input_hash
+
+, 
+
+output_hash
+
+, 
+
+timestamp
+
+]
+
+storage:
+
+kv_namespace:
+
+ =
+
+"ycq-agent"
+
+history_ttl_minutes:
+
+=
+
+120
+
+Repo agent manifest
+
+yaml
+
+Copy code
+
+name:
+
+ycq-repo-agent
+
+triggers:
+
+github:
+
+events:
+
+ [
+
+pull_request
+
+, 
+
+push
+
+, 
+
+issues
+
+]
+
+tools:
+
+-
+
+gh.list_prs
+
+-
+
+gh.diff
+
+-
+
+lint.run
+
+-
+
+risk.score
+
+-
+
+propose.patch
+
+# gated; requires human-OK
+
+policies:
+
+allow_comment:
+
+=
+
+true
+
+allow_push:
+
+false
+
+# human-in-the-loop
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+attach_receipt_to_comment:
+
+true
+
+Next steps (pick your lane)
+
+If you want AgentVerse:
+
+I=E2=80=99ll draft the initial 
+
+agent.py
+
+ for one site agent using the Hosted Ag=
+ ents template (with storage calls and receipt signing).
+
+We=E2=80=99ll clone it to the othe=
+r two sites and adapt the crawl/allow-lists.
+
+Then I=E2=80=99ll template the rep=
+o agent (Mailbox style if needed).
+
+If you want ElizaOS:
+
+I=E2=80=99ll scaffold a project wi=
+th 
+6 agents
+, 
+trust middleware
+, and 
+RAG + GitHub plugins
+.
+
+We=E2=80=99ll deploy to your prefe=
+rred cloud and point DNS.
+
+Which route do you prefer for v1 (=
+AgentVerse, ElizaOS, or hybrid: AV for site agents + ElizaOS for repo agent=
+s)?
+
+=
+
+Sources
+
+You said:
+
+plus fetchai
+
+ChatGPT said:
+
+Thought for 13s
+
+=
+
+Perf=
+ect=E2=80=94let=E2=80=99s fold 
+Fe=
+tch.ai=E2=80=99s Agentverse
+ into the plan and make this a clean, c=
+loud-first multi-agent setup that still preserves your SYMBI trust layer (s=
+igned receipts, hash-chained audit).
+
+Below is a pragmatic architecture + =
+rollout that uses 
+Agentverse Ho=
+sted Agents
+ for your three public sites (ycq, gammatria, symbi.wor=
+ld) and 
+Mailbox/Proxy patterns
+ for your repo agents. I=E2=80=99m citing the specific Agentverse d=
+ocs so everything is reproducible.
+
+Target topology
+
+3 Site Agents (Hosted)
+ =E2=80=94 one each for 
+ycq
+, 
+gammatria
+, 
+symbi.world
+
+Live in Agentverse as 
+Hosted Agents
+ (no infra to manage). =
+Hosted agents are cloud-managed, reset globals per call, and rely on 
+Agent Storage
+ for memory/sta=
+te. 
+
+Platform to enable the agentic economy.
+
++1
+
+Optional: give each agent a 
+Web3 Agent Name
+ / domain for e=
+asy addressing & discoverability. 
+
+Platform to enable the=
+ agentic economy.
+
+Allowed to use 
+full Python stdlib
+ + the Agentverse 
+allowed imports
+ set (now =
+broadly supported). 
+
+Platform to enable the agentic economy.
+
+3 Repo Agents (Local + Mailbox or Proxy)
+ =E2=80=94 one=
+ per codebase
+
+Run continuously on your own infra=
+ (Railway/Fly/VM/K8s) so they can watch PRs/commits.
+
+Connect to Agentverse with 
+Mailbox
+ if they go offline =
+(messages buffered) or 
+Proxy
+ if they=E2=80=99re always-on and you want marketplace visibility. =
+
+Platform to enable the agentic economy.
+
++2
+
+Platform to enable the agent=
+ic economy.
+
++2
+
+SYMBI Trust Layer
+ (shared)
+
+Every agent call emits a 
+signed receipt
+ (Ed25519), inc=
+luding: 
+model
+, 
+tool_ids
+, 
+sdk_version
+, 
+policy_id
+, 
+inp=
+ut_hash
+, 
+output_hash
+, 
+timestamp
+.
+
+Receipts are hash-chained and expo=
+rted to your 
+Prometheus/Grafa=
+na
+ dashboards (your existing observability story).
+
+Data & policy flow
+
+Ingest & RAG for each site
+
+External crawler (cron on your inf=
+ra) builds embeddings for each website; writes to your vector store.
+
+Hosted agents only 
+retrieve
+ (RAG) at query time; they =
+keep 
+short session memory
+ in Agent Storage. (Hosted agents are stateless across calls unless yo=
+u use storage.) 
+
+Platform to enable the agenti=
+c economy.
+
+Governance / least-privilege
+
+Per-agent 
+policy JSON
+ (model allow-list, token budget,=
+ domain allow-list for web fetch, rate limits).
+
+Trust middleware s

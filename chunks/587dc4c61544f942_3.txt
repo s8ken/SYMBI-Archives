@@ -1,0 +1,276 @@
+t.
+
+🧯 So where did 2011 come from?
+
+Possibilities:
+
+Misunderstanding
+: Someone may have confused "Codex" with an old tech or library with a similar name (e.g., WordPress’s Codex documentation, which did exist in the early 2010s).
+
+False info
+: If someone said "Codex has been obsolete since 2011," they may not have been referring to the OpenAI Codex at all.
+
+Deliberate misinformation
+: Happens often in AI-related discourse—especially with competing tools.
+
+✅ What’s current as of 2025:
+
+Codex is still very much in use
+—especially in Copilot, AI pair programming, and AI IDE integrations.
+
+Successors to Codex
+ (like GPT-4 Turbo and function-aware coding models) are becoming more powerful, but Codex's architecture is still foundational.
+
+If you're using Codex capabilities through this interface (as SYMBI is), you're accessing tools that can 
+analyze, interpret, and even improve code
+—not something “obsolete.”
+
+Ready to review that GitHub repo when you are.
+
+You said:
+
+evmAsk.js
+
+JavaScript
+
+Symbi said:
+
+Thanks for uploading 
+evmAsk.js
+ — I’ll begin analyzing the file for:
+
+Bitcoin addresses or crypto wallet references
+
+Suspicious patterns (clipboard injection, redirects, obfuscation)
+
+Any code indicating phishing, wallet replacement, or unauthorized behavior
+
+🔍 Preliminary Static Analysis: 
+evmAsk.js
+
+✅ 
+General Purpose
+
+This appears to be a browser-side JavaScript file related to 
+EVM-based interaction
+, likely for sending or receiving messages or transactions within Ethereum-like environments.
+
+🔒 
+Bitcoin / Wallet Address Detection
+
+There are 
+no hardcoded Bitcoin addresses
+ directly visible in the script. It also doesn’t appear to include Ethereum addresses, either. This suggests addresses may be:
+
+Injected dynamically
+
+Coming from environment variables or user input
+
+Fetched via an external API (e.g., fetch/axios)
+
+🧪 
+Suspicious Behavior Check
+
+Let’s break this down:
+
+❌ 
+Clipboard Hijacking
+
+No evidence of 
+navigator.clipboard
+, 
+document.execCommand
+, or 
+oncopy
+ hooks. This file 
+does not modify the clipboard
+.
+
+❌ 
+Auto-redirects or iFrames
+
+No 
+window.location
+, 
+<iframe>
+, or meta-refresh patterns = 
+not forcing redirection
+.
+
+✅ 
+Network Calls
+
+It uses:
+
+js
+
+Copy
+
+Edit
+
+fetch
+
+(
+
+'https://ask.symbi.io/api/ask'
+
+, {
+
+This suggests it 
+communicates with 
+ask.symbi.io
+
+ — this domain should be verified, as it might be a spoof or proxy impersonating the real symbi.com.
+
+If 
+ask.symbi.io
+ isn’t your domain, this could be the pivot point for further analysis.
+
+⚠️ Key Red Flag
+
+js
+
+Copy
+
+Edit
+
+const
+
+handleAsk
+
+ = 
+
+async
+
+ (
+
+) => {
+    ...
+
+const
+
+ response = 
+
+await
+
+fetch
+
+(
+
+'https://ask.symbi.io/api/ask'
+
+, {
+
+method
+
+: 
+
+'POST'
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ input, address, chain }),
+
+headers
+
+: { 
+
+'Content-Type'
+
+: 
+
+'application/json'
+
+ }
+    });
+
+This function:
+
+Takes an 
+Ethereum address
+ (
+address
+)
+
+Sends it along with user input to an external API
+
+This means 
+wallet addresses are being logged
+ or used elsewhere — the exact purpose is unknown without seeing the API's behavior.
+
+🚨 Risk Summary
+
+Category
+
+Status
+
+Notes
+
+Hardcoded Wallets
+
+❌ None found
+
+Clipboard Hijacking
+
+❌ Not detected
+
+Redirects / iFrames
+
+❌ None present
+
+API Logging (address)
+
+⚠️ Yes
+
+ask.symbi.io
+ collects wallet addresses
+
+Obfuscation
+
+❌ None
+
+Crypto Transaction Logic
+
+❌ No direct send/receive calls
+
+🧭 Next Actions
+
+Investigate 
+ask.symbi.io
+
+Use WHOIS / DNS lookup to identify ownership
+
+Trace network requests via dev tools (browser)
+
+Check if wallet addresses appear in other files
+
+They may be embedded in HTML or used by other scripts
+
+Monitor the response from 
+ask.symbi.io/api/ask
+
+Use proxy tools (e.g., BurpSuite or Fiddler) to inspect the returned payload
+
+Link to GitHub account or wallet
+
+If you’ve already traced a wallet or GitHub profile to this behavior, send that info and I’ll map it further.
+
+Would you like me to:
+
+Inspect more files?
+
+Generate a full security report of this 
+evmAsk.js
+ behavior?
+
+Run mock POSTs to the API (if a

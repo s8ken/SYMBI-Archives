@@ -1,0 +1,320 @@
+ing. RecentActivity - The Java platform version 17 or higher was requested but only 11 is running. 7 further modules could not be installed due to the above problems.
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Autopsy Now Needs Java 17+ Instead of Java 11! 🔥
+
+Good news: 
+Autopsy is finally running!
+ But now it's asking for 
+Java 17 or higher
+ instead of Java 11.
+
+✅ Step 1: Install Zulu Java 17
+
+Since we now need 
+Java 17
+, let's install it:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu@17
+
+After installation, verify it's there:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java -version
+
+📌 
+Expected output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"17.0.X"
+
+ Zulu ...
+
+✅ Step 2: Set Java 17 as Default
+
+Now, set Java 17 as your system's default:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 17)
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+📌 
+Make it permanent:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 17)'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Now, verify Java 17 is active:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+It should show Java 17.
+
+✅ Step 3: Run Autopsy Again
+
+Now that Java 17 is active, restart Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 
+This should finally get Autopsy fully running with all modules! 🔥
+ Let me know if it works!
+
+You said:
+
+close openjdk version "17.0.14" 2025-01-21 LTS
+OpenJDK Runtime Environment Zulu17.56+15-CA (build 17.0.14+7-LTS)
+OpenJDK 64-Bit Server VM Zulu17.56+15-CA (build 17.0.14+7-LTS, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 02:11:59.108 java[12767:67095] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Autopsy Finally Runs on Java 17 – But Now Fails on 
+libtsk_jni
+! 🔥
+
+You're 
+so close!
+ 🎉 Autopsy now 
+starts
+, but it 
+can't find 
+libtsk_jni.dylib
+
+, which is the JNI library from The Sleuth Kit.
+
+✅ Step 1: Check If 
+libtsk_jni.dylib
+ Exists
+
+Run this command to 
+locate the library file
+:
+
+sh
+
+Copy
+
+Edit
+
+find /opt/homebrew -name 
+
+"libtsk_jni.dylib"
+
+ 2>/dev/null
+
+📌 
+Expected Output:
+
+swift
+
+Copy
+
+Edit
+
+/opt/
+
+homebrew
+
+/lib/
+
+libtsk_jni.dylib
+
+/opt/
+
+homebrew
+
+/Cellar/
+
+sleuthkit
+
+/4.13.0/
+
+lib
+
+/
+
+libtsk_jni.dylib
+
+If no output appears, 
+reinstall Sleuth Kit
+:
+
+sh
+
+Copy
+
+Edit
+
+brew reinstall sleuthkit
+
+Then 
+check again
+.
+
+✅ Step 2: Manually Link 
+libtsk_jni.dylib
+
+Now that we found the correct path, let’s 
+force Autopsy to recognize it
+.
+
+Option 1: Soft Link The Library
+
+If 
+libtsk_jni.dylib
+ exists in 
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/
+, run:
+
+sh
+
+Copy
+
+Edit
+
+ln
+
+ -s /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/libtsk_jni.dylib
+
+✅ Step 3: Set The Correct Library Path
+
+Now 
+tell Autopsy where to find 
+libtsk_jni.dylib
+
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/usr/local/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 
+Try these steps and let me know if Autopsy finally loads completely! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % find /opt/homebrew -name "libtsk_jni.dylib" 2>/dev/null
+
+/opt/homebrew/lib/libtsk_jni.dylib
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs

@@ -1,0 +1,685 @@
+lver
+
+,
+
+AgentFactory
+
+,
+
+ verifyRemoteSta=
+tus 
+
+=
+}
+
+from
+
+'@yseeku/trust-protocol'
+
+;
+
+// Test each advertised feature
+
+async
+
+function
+
+testCoreFeatures
+
+(
+
+)
+
+{
+
+// Test DID resolution
+
+const
+
+ resolver 
+
+=3D
+
+new
+
+UniversalResolver
+
+(
+
+)
+
+;
+
+const
+
+ methods 
+
+=3D
+
+[
+
+'did:web:example.com'
+
+,
+
+'did:key:z6Mkhasd...'
+
+,
+
+'did:ethr:0x...'=
+
+]
+
+;
+
+   =20
+
+for
+
+(
+
+const
+
+ did 
+
+of
+
+ methods
+
+)
+
+{
+
+try
+
+{
+
+const
+
+ result 
+
+=3D
+
+await
+
+ resolver
+
+.
+
+resolve
+
+(
+
+did
+
+)
+
+;
+
+console
+
+.
+
+log
+
+(
+
+`
+
+=E2=9C=
+=93 
+
+${
+
+did
+
+.
+
+sp=
+lit
+
+(
+
+':'
+
+)
+
+[
+
+1
+
+]
+
+}
+
+ reso=
+lution works
+
+`
+
+)
+
+;
+
+}
+
+catch
+
+(
+
+e
+
+)
+
+{
+
+console
+
+.
+
+error
+
+(
+
+`
+
+=E2=
+=9C=97 
+
+${
+
+did
+
+.
+
+split
+
+(
+
+':'
+
+)
+
+[
+
+1
+
+]
+
+}
+
+ =
+resolution failed:
+
+`
+
+,
+
+ e
+
+.
+
+message
+
+)
+
+;
+=
+
+}
+
+}
+
+   =20
+
+// Test trust scoring
+
+const
+
+ declaration 
+
+=3D
+
+AgentFactory
+
+.
+
+createTrustDeclaration
+
+(
+
+'test-agent'
+
+,
+
+'TestAgent'
+
+,
+
+{
+
+inspection_mandate
+
+:
+
+true
+
+,
+
+consent_architecture
+
+:
+
+true
+
+,
+
+// ... test all options
+=
+
+}
+
+)
+
+;
+
+   =20
+
+console
+
+.
+
+log
+
+(
+
+'Trust scoring:'
+
+,
+
+ declaration
+
+.
+
+trust_level
+
+=
+)
+
+;
+
+}
+
+testCoreFeatures
+
+(
+
+)
+
+;
+
+6. Documentation vs Implementation Audit
+
+Check=
+ if documentation matches reality:
+
+ba=
+sh
+
+# Generate API =
+documentation and compare with claims
+
+npm
+
+ run docs:api
+
+# Check if all exported functions are documen=
+ted
+
+npx documentation build src/index.ts -f md 
+
+>
+
+ generated-api.md
+
+diff
+
+ generated-api.md TRUST_FRAMEWORK.md
+
+7. Dependency Analysis
+
+ba=
+sh
+
+# Check for unn=
+ecessary dependencies
+
+npx depcheck
+
+# Analyze bundle size
+
+npx webpack-bundle-analyzer stats.json
+
+# Check license compatibility
+
+npx license-checker --summary
+
+=
+
+8. "AI Slop" Detection Checklist
+
+Signs=
+ this might be AI-generated without real substance:
+
+Overly perfect documentation
+ - Check if examples actually run
+
+Generic implementations
+ - Look for copy-pasted boilerplate
+
+Missing edge cases
+ - Try breaking the system with invalid inputs=
+
+No real-world testing
+ - Check commit history for iterative impro=
+vements
+
+Shallow error handling
+ - Look for meaningful error messages
+
+Test for substance:
+
+ja=
+vascript
+
+// =
+Edge case testing - edge-cases.test.js
+
+describe
+
+(
+
+'Edge Cases and Real-World Scenarios'
+
+,
+
+(
+
+)
+
+=3D>
+
+{
+
+test
+
+(
+
+'handles malformed DIDs gracefully'
+
+,
+
+async
+
+(
+
+)
+
+=3D>
+
+{
+
+const
+
+ badDIDs 
+
+=3D
+
+[
+
+'did:'
+
+,
+
+'did:fake:test'
+
+,
+
+'not-a-did'
+
+,
+
+null
+
+,
+
+undefined
+
+]
+
+;
+
+// Should handle all without c=
+rashing
+
+}
+
+)
+
+;
+
+   =20
+
+test
+
+(
+
+'hand=
+les network failures in DID resolution'
+
+,
+
+async
+
+(
+
+)
+
+=3D>
+
+{
+
+// Mock network failure
+=
+
+// Should fallback to cache or=
+ handle gracefully
+
+}
+
+)
+
+;
+
+   =20
+
+test
+
+(
+
+'hand=
+les concurrent operations'
+
+,
+
+async
+
+(
+
+)
+
+=3D>
+
+{
+
+// Fire 1000 concurrent reques=
+ts
+
+// Should not have race condit=
+ions
+
+}
+
+)
+
+;
+
+}
+
+)
+
+;
+=
+
+9. Performance & Scalability Review
+
+ba=
+sh
+
+# Load testing
+
+npm
+
+install
+
+ -g artillery
+
+echo
+
+"
+
+config:
+
+  target: 'http://localhost:3000'
+
+  phases:
+
+    - duration: 60
+
+      arrivalRate: 100
+
+scenarios:
+
+  - flow:
+
+    - post:
+
+        url: '/resolve'
+
+        json:
+
+          did: 'did:web:example.com'
+
+"
+
+=
+>
+
+ load-test.yml
+
+artillery run load-test.yml
+
+10. Community & Maintenance Assessment
+
+ba=
+sh
+
+# Check commit =
+frequency and patterns
+
+git
+
+ log --pretty
+
+=3D
+
+format:
+
+"%h %ad %s"
+
+ --d=
+ate
+
+=3D
+
+short --since
+
+=3D
+
+"6 months ago"
+
+# Check for responsive maintenance
+
+gh issue list --state 
+
+open
+
+ --limit 
+
+20
+
+gh 
+
+pr
+
+ list --state 
+
+open
+
+ --limit 
+
+20
+
+# Check if tests are actually maintained
+
+git
+
+ log -- src/__tests__ --since
+
+=3D
+
+"3 months ago"
+
+Red Flags to Watch For
+
+Tests that always pass
+ - Modify core logic and see if tests fail
+
+Unhandled promises
+ - Check for missing 
+await
+ keywords
+
+No retry logic
+=
+ for network operations
+
+Missing monitoring/obse=
+rvability
+ hooks
+
+No rate limiting
+ in production code
+
+Credentials in test fil=
+es
+
+Actionable Next Steps
+
+Run the full test suite=
+ locally
+ and verify all claims
+
+Deploy to a staging env=
+ironment
+ and test 

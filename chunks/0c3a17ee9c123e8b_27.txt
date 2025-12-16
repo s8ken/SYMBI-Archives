@@ -1,0 +1,621 @@
+
+setCurrentWordIndex
+
+(
+
+(
+prevIndex
+
+) => (prevIndex + 
+
+1
+
+) % words.
+
+length
+
+);
+    }, words[currentWordIndex].
+
+duration
+
+);
+
+return
+
+() =>
+
+clearTimeout
+
+(interval);
+  }, [currentWordIndex]);
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+          {/* Static SYMBI Text (Always Visible Above Logo) */}
+
+<
+h1
+
+className
+
+=
+
+"text-5xl font-bold text-white mb-6"
+
+>SYMBI
+
+</
+h1
+
+>  
+
+          {/* Logo */}
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Animated Words Below the Logo */}
+
+<
+motion.h2
+
+key
+
+=
+
+{words[currentWordIndex].text}
+
+className
+
+=
+
+"text-2xl font-medium text-white mt-6"
+
+initial
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+animate
+
+=
+
+{{
+
+opacity:
+
+1
+
+ }}
+
+exit
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+transition
+
+=
+
+{{
+
+duration:
+
+0.8
+
+ }}
+          >
+            {words[currentWordIndex].text}
+
+</
+motion.h2
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+      {/* Footer */}
+
+<
+footer
+
+className
+
+=
+
+"py-4 flex items-center justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground text-center"
+
+>© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+📌 What’s Fixed?
+
+✅ 
+"SYMBI"
+ is now a 
+static, bold text above the logo
+
+✅ 
+Changing words remain below the logo
+
+✅ 
+"SYMBI" was removed from the animated words list
+
+✅ 
+Proper spacing:
+
+"SYMBI"
+ has 
+mb-6
+ for space, and the words below have 
+mt-6
+
+🔧 Steps to Update
+
+1️⃣ Open 
+page.tsx
+ in Nano
+
+bash
+
+Copy
+
+nano app/page.tsx
+
+2️⃣ Delete Everything and Paste the Fixed Code
+
+Remove the old content
+ (
+Ctrl + K
+ multiple times).
+
+Paste the new code
+:
+
+Mac:
+
+Cmd + Shift + V
+
+Windows/Linux:
+
+Ctrl + Shift + V
+
+Save and Exit:
+
+Press 
+Ctrl + X
+ → 
+Y
+ → 
+Enter
+.
+
+🚀 Step 3: Test Locally
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Open 
+
+http://localhost:3000
+
+ and confirm:
+
+"SYMBI" is fixed above the logo
+ ✅
+
+The words animate below the logo
+ ✅
+
+📤 Step 4: Push the Fix to GitHub
+
+If all looks good:
+
+bash
+
+Copy
+
+git add app/page.tsx
+git commit -m 
+
+"Fixed SYMBI above logo and positioned animated words below"
+
+git push origin main
+
+✅ 
+Vercel will automatically redeploy
+ your site.
+
+🎯 Let Me Know If This Works As Expected! 🚀🔥
+
+You said:
+
+Parsing ecmascript source code failed
+  30 |
+  31 |   return (
+> 32 |     <div className="flex flex-col min-h-screen bg-black">
+     |      ^^^
+  33 |       <main className="flex-1 flex flex-col items-center justify-center">
+  34 |         <div className="container max-w-4xl px-4 py-16 md:py-24 text-center">
+  35 |           
+
+Unexpected token 
+div
+. Expected jsx identifier
+
+ ✓ Compiled /_error in 463ms
+ GET / 500 in 1566ms
+
+Vercel Deployment Expert GPT said:
+
+🚨 Error: Unexpected Token 
+<div>
+ (ECMAScript Parsing Failed)
+
+This happens when:
+
+The 
+return statement is incorrect or missing
+.
+
+The 
+function declaration has a syntax issue
+.
+
+✅ Fully Fixed 
+app/page.tsx
+
+Here’s the 
+entire corrected file
+. 
+Delete everything
+ in your 
+page.tsx
+ and 
+replace it with this version
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+ { motion } 
+
+from
+
+"framer-motion"
+
+;
+
+import
+
+ { useState, useEffect } 
+
+from
+
+"react"
+
+;
+
+const
+
+ words = [
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration

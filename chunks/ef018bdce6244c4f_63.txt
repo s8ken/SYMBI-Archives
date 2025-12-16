@@ -1,0 +1,1063 @@
+ontext
+
+ =3D context; req.
+
+trustE=
+valuation
+
+ =3D evaluation;
+
+return
+
+next
+
+();
+  }
+
+catch
+
+(e){
+
+return
+
+ re=
+s.
+
+status
+
+(
+
+500
+
+).
+
+json
+
+({ 
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:
+
+'Trust evaluation failed'
+
+, 
+
+message
+
+:e.
+
+message
+
+ });
+  }
+};
+
+async
+
+=
+
+function
+
+buildTrustContext
+
+(
+
+req
+
+){
+
+const
+
+ verb =
+=3D (req.
+
+method
+
+||
+
+'get'
+
+).
+
+toLowerCase
+
+();
+
+const
+
+ route=
+Tail =3D (req.
+
+route
+
+ && req.
+
+route
+
+.
+
+path
+
+) ? 
+
+String
+
+(req.
+
+route
+
+.
+
+path
+
+) : (req.
+
+path
+
+||
+
+''
+
+);
+
+const
+
+ actio=
+n =3D 
+
+`
+=
+${verb}
+
+.
+
+=
+${routeTail.split(
+'/'
+
+).filter(
+
+Boolean
+
+).pop()||
+
+'unknown'
+
+}`;
+
+const
+
+ ctx =
+=3D {
+
+userId
+
+: req.=
+
+user
+
+?.
+
+_id
+
+ || req.
+=
+
+user
+
+?.
+
+=
+
+id
+
+,
+
+agentId
+
+: req=
+.
+
+agent
+
+?.
+
+_id
+
+,
+    action,
+
+scopes
+
+: req.=
+
+body
+
+?.
+
+scopes
+
+ || req.
+
+query
+
+?.
+
+scopes
+
+,
+
+data
+
+: req.
+
+body
+
+,
+
+encrypted
+
+: r=
+eq.
+
+secure
+
+,
+
+reqProto
+
+: re=
+q.
+
+protocol
+
+,
+
+headers
+
+: req=
+.
+
+headers
+
+,
+
+auditEnabled
+
+=
+: 
+
+true
+
+,
+
+logEntry
+
+: {
+
+requestId
+
+:=
+ req.
+
+get
+
+?.(
+
+'x-request-id'
+
+)=
+ || crypto.
+
+randomUUID
+
+(),
+
+timestamp
+
+:=
+
+new
+
+Date
+
+(),
+
+method
+
+: re=
+q.
+
+method
+
+, 
+
+path
+
+: req.
+
+path
+
+, 
+
+ip
+
+: req.
+
+ip
+
+, 
+
+userAgent
+
+: req.
+
+get
+
+?.(
+
+'User-Agent'
+
+)
+    }
+  };
+
+const
+
+ bondI=
+d =3D req.
+
+body
+
+?.
+
+bondId
+
+ |=
+| req.
+
+params
+
+=
+?.
+
+bondId
+
+;
+
+if
+
+ (bondId)=
+{
+
+try
+
+ {
+
+const
+
+ b=
+ond =3D 
+
+await
+
+=
+
+TrustBond
+
+.
+
+findById
+
+=
+
+(bondId);
+
+if
+
+ (bon=
+d){ ctx.
+
+bond
+
+=
+ =3D bond; ctx.
+
+bondId
+
+ =3D bondId; }
+    } 
+
+catch
+
+ (=
+e) { 
+
+console
+
+.
+
+error
+
+(
+
+'Bond lookup failed'
+
+, { bondId, 
+
+err
+
+: e.
+
+message
+
+ }); }
+  }
+
+return
+
+ ctx;
+}
+
+module
+
+.
+
+exports
+
+=
+ =3D { 
+
+TRUST_ARTICLES
+
+, 
+
+TrustOr=
+acle
+
+, createTrustMiddleware, buildTrustContext };
+
+backend/controllers/trustBonds.=
+controller.js
+
+js
+
+Copy code
+
+const
+
+TrustBond
+
+=
+ =3D 
+
+require
+
+=
+(
+
+'../models/TrustBond'
+
+);
+
+exports
+
+.
+
+createBond
+
+ =3D 
+
+async
+
+ (req, re=
+s) =3D> {
+
+try
+
+ {
+
+const
+
+ { a=
+gentId, scope, consentEnvelope } =3D req.
+
+body
+
+;
+
+const
+
+ exp=
+iresAt =3D scope?.
+
+duration
+
+ ? 
+
+new
+
+Date
+
+(
+
+Date
+
+.
+
+now
+
+=
+() + scope.
+
+duration
+
+*
+
+86400000
+
+) : scope?.
+
+expiresAt
+
+;
+
+const
+
+ bon=
+d =3D 
+
+new
+
+TrustBond
+
+({
+
+human_user_id
+
+: req.
+
+user
+
+?.
+
+_id
+
+ || re=
+q.
+
+user
+
+?.
+
+id
+
+,
+
+agent_id
+
+: =
+agentId,
+
+state
+
+: 
+
+'active'
+
+,
+
+scope
+
+: { .=
+..scope, expiresAt },
+
+consent_envelope
+
+=
+
+: consentEnvelope
+    });
+    bond.
+
+calculateTrustSc=
+ore
+
+();
+
+await
+
+ bon=
+d.
+
+save
+
+();
+    res.
+
+status
+
+(
+
+201
+
+)=
+.
+
+json
+
+=
+({ 
+
+success
+
+:
+
+true
+
+, 
+
+data
+
+: bond });
+  } 
+
+catch
+
+ (e)=
+ { res.
+
+status
+
+(
+
+500
+
+).=
+
+json
+
+(=
+{ 
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:e.
+
+message
+
+ }); }
+};
+
+exports
+
+.
+
+getBond
+
+ =3D 
+
+async
+
+ (req, res) =
+=3D> {
+
+const
+
+ bond =
+=3D 
+
+await
+
+TrustBond
+
+.
+
+findById
+
+(req.
+
+params
+
+.
+
+id
+
+);
+
+if
+
+ (!bond) =
+
+return
+
+ res.
+
+status
+
+(=
+
+404
+
+).
+
+json
+
+({ 
+=
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:
+
+'Not found'
+
+ });
+  res.
+
+json
+
+({ 
+
+success
+
+:=
+
+true
+
+, 
+=
+
+data
+
+:bond });
+};
+
+exports
+
+.
+
+updateBond
+
+ =3D 
+
+async
+
+ (req, re=
+s) =3D> {
+
+const
+
+ bond =
+=3D 
+
+await
+
+TrustBond
+
+.
+
+findById
+
+(req.
+
+params
+
+.
+
+id
+
+);
+
+if
+
+ (!bond) =
+
+return
+
+ res.
+
+status
+
+(=
+
+404
+
+).
+
+json
+
+({ 
+=
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:
+
+'Not found'
+
+ });
+
+Object
+
+=
+.
+
+assign
+
+(bond, req.
+
+body
+
+);
+  bond.
+
+calculateTrustScor=
+e
+
+();
+
+await
+
+ bond.=
+
+save
+
+(=
+);
+  res.
+
+json
+
+({ 
+
+success
+
+:=
+
+true
+
+, 
+=
+
+data
+
+:bond });
+};
+
+exports
+
+.
+
+suspendBond
+
+ =3D =
+
+async
+
+ (req, r=
+es) =3D> {
+
+const
+
+ bond =
+=3D 
+
+await
+
+TrustBond
+
+.
+
+findById
+
+(req.
+
+params
+
+.
+
+id
+
+);
+
+if
+
+ (!bond) =
+
+return
+
+ res.
+
+status
+
+(=
+
+404
+
+).
+
+json
+
+({ 
+=
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:
+
+'Not found'
+
+ });
+
+await
+
+ bond.=
+
+suspend
+
+(req.
+
+body
+
+?=
+.
+
+reason
+
+ || 
+
+'suspended'
+
+, re=
+q.
+
+user
+
+?.
+
+_id
+
+ || req.
+
+user
+
+?.
+
+id
+
+);
+  res.
+
+json
+
+({ 
+
+success
+
+:=
+
+true
+
+, 
+=
+
+data
+
+:bond });
+};
+
+exports
+
+.
+
+revokeBond
+
+ =3D 
+
+async
+
+ (req, re=
+s) =3D> {
+
+const
+
+ bond =
+=3D 
+
+await
+
+TrustBond
+
+.
+
+findById
+
+(req.
+
+params
+
+.
+
+id
+
+);
+
+if
+
+ (!bond) =
+
+return
+
+ res.
+
+status
+
+(=
+
+404
+
+).
+
+js

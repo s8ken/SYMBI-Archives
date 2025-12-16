@@ -1,0 +1,251 @@
+st 
+a network issue, ISP rerouting, or a security concern
+.
+
+🛠 Next Step: Check if Your Mac Is Using a Proxy/VPN
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+scutil --proxy
+
+📌 
+Expected Result:
+
+If it says 
+"None"
+, your traffic isn’t being routed through a proxy.
+
+If there’s a proxy 
+you didn’t set up
+, we need to investigate further.
+
+🚀 
+Run the command and let me know what it says!
+
+You said:
+
+% This query was served by the APNIC Whois Service version 1.88.25 (WHOIS-AU2)
+
+user@Mes-MacBook-Pro ~ % 
+user@Mes-MacBook-Pro ~ % scutil --proxy
+
+<dictionary> {
+  ExceptionsList : <array> {
+    0 : *.local
+    1 : 169.254/16
+  }
+  FTPPassive : 1
+}
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🔍 Proxy Check Results: No Proxy Detected
+
+✅ 
+Your Mac is NOT using a proxy or VPN.
+
+The output only shows 
+standard exceptions
+ (
+*.local
+, 
+169.254/16
+), which are normal.
+
+No unexpected proxy settings
+ are redirecting your internet traffic.
+
+🛠 What This Means for Your Google Warning
+
+Since we’ve confirmed:
+
+✅ 
+No proxy or VPN is in use
+
+✅ 
+Your IP is registered to a real ISP (Wireline B and G / Beagle Internet)
+
+Google’s warnings could be caused by:
+
+A shared IP address
+ → If multiple users on this ISP triggered Google’s security systems.
+
+Recent unusual login attempts
+ → If your Google account was accessed from unexpected locations.
+
+Temporary ISP routing changes
+ → Your provider might have switched IPs dynamically.
+
+🛠 Next Step: Check Google’s Security Alerts Directly
+
+1️⃣ 
+Go to
+
+Google's Security Checkup
+
+2️⃣ Look for:
+
+Recent sign-ins from unknown locations
+
+Devices you don’t recognize
+
+Unusual third-party app access
+
+📌 
+Check Google’s security alerts and let me know what you find!
+ 🚀
+
+You said:
+
+alright how would we check what an iPhone on the same network has been doing?
+
+ChatGPT said:
+
+Good question! If you want to check what an 
+iPhone on the same network
+ has been doing, there are a few ways to monitor its 
+network activity, connections, and logs
+.
+
+🔍 Step 1: Check the iPhone’s Local Network Activity
+
+On your Mac, you can 
+monitor traffic from all devices on the network
+, including your iPhone.
+
+1️⃣ Run a Live Network Capture
+
+This will show 
+all network requests from devices on your Wi-Fi
+, including your iPhone.
+
+sh
+
+Copy
+
+sudo tcpdump -i en0 -c 100 -nn
+
+📌 
+What this does:
+
+Captures 
+100 real-time network packets
+ from all devices on your Wi-Fi.
+
+Shows 
+which external servers your iPhone is communicating with
+.
+
+✅ What to look for:
+
+Apple servers (e.g., 
+17.x.x.x
+)
+ → Normal iCloud, iMessage, App Store activity.
+
+Google, Facebook, Amazon
+ → Normal web services.
+
+Unknown or suspicious IPs
+ → Might need deeper investigation.
+
+🚀 
+Run this on your Mac and look for any traffic from your iPhone’s IP.
+
+🔍 Step 2: Find Your iPhone’s Local IP Address
+
+To identify your iPhone’s traffic, first find its 
+local IP address
+:
+
+📱 
+On your iPhone:
+
+Open 
+Settings > Wi-Fi
+
+Tap your 
+Wi-Fi network name
+
+Look under 
+IP Address
+ (should be something like 
+192.168.1.X
+)
+
+💻 
+On your Mac, verify it:
+
+sh
+
+Copy
+
+arp -a
+
+This lists all devices on your network and their IPs.
+
+Match the IP to your iPhone’s name.
+
+🔍 Step 3: Monitor Just Your iPhone’s Traffic
+
+Once you have your iPhone’s 
+local IP
+, use this command to capture 
+only
+ its traffic:
+
+sh
+
+Copy
+
+sudo tcpdump -i en0 host 192.168.1.X -nn
+
+(Replace 
+192.168.1.X
+ with your iPhone’s actual IP.)
+
+📌 
+What this does:
+
+Shows 
+only network traffic from your iPhone
+.
+
+Helps check if it’s sending unexpected data.
+
+🚀 
+Run this and let me know what you find!
+
+🔍 Step 4: Check the iPhone’s App & System Logs
+
+If you suspect 
+strange activity on the iPhone itself
+, we can look at logs directly from the device.
+
+📱 
+On the iPhone:
+
+Go to 
+Settings > Privacy & Security > Analytics & Improvements
+
+Tap 
+Analytics Data
+
+Look for recent logs from unknown apps or system crashes.
+
+📌 
+If anything looks suspicious, screenshot it and we’ll analyze it.
+
+🛠 Next Step: Start With the Network Capture
+
+1️⃣ Find your iPhone’s 
+IP address
+ (
+Settings 

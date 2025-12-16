@@ -1,0 +1,253 @@
+gate to your preferred directory (e.g., Desktop):
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+
+Create a new file named 
+toggle_airplay.sh
+:
+
+bash
+
+Copy
+
+Edit
+
+nano toggle_airplay.sh
+
+Paste the copied script into the editor.
+
+Save and exit:
+
+Press 
+Control + X
+, then 
+Y
+, and 
+Enter
+.
+
+Make the Script Executable:
+
+In Terminal, run:
+
+bash
+
+Copy
+
+Edit
+
+chmod
+
+ +x toggle_airplay.sh
+
+4ï¸â£ Run the Script to Disable AirPlay
+
+Navigate to the Script Location:
+
+If not already there, navigate to the directory containing the script:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+
+Execute the Script to Disable AirPlay:
+
+Run:
+
+toolbox.easeus.com
+
++10
+
+YouTube
+
++10
+
+elitemacx86.com
+
++10
+
+bash
+
+Copy
+
+Edit
+
+sudo ./toggle_airplay.sh 
+
+disable
+
+Enter your 
+administrator password
+ when prompted.
+
+Verify AirPlay Status:
+
+Check the status by running:
+
+bash
+
+Copy
+
+Edit
+
+./toggle_airplay.sh status
+
+The script should indicate that AirPlay is disabled.
+
+5ï¸â£ Create a New Snapshot and Bless It
+
+Create a New Snapshot:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo bless --folder /System/Volumes/Update/mnt/System/Library/CoreServices --bootefi --create-snapshot
+
+Restart Your Mac:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo reboot
+
+6ï¸â£ Re-enable SIP and Authenticated Root
+
+Restart Your Mac in Recovery Mode:
+
+Shut down your Mac.
+
+Press the power button and immediately hold down 
+Command (â) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Enable SIP and Authenticated Root:
+
+In Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+â ï¸ Caution:
+
+Disabling SIP and Authenticated Root reduces your system's security. Ensure you 
+re-enable
+ them after making the necessary changes to maintain protection against malicious software.
+
+If you encounter any issues or have further questions, feel free to ask!
+
+Sources
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % diskutil list
+
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *1.0 TB     disk0
+   1:             Apple_APFS_ISC Container disk1         524.3 MB   disk0s1
+   2:                 Apple_APFS Container disk3         994.7 GB   disk0s2
+   3:        Apple_APFS_Recovery Container disk2         5.4 GB     disk0s3
+
+/dev/disk3 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +994.7 GB   disk3
+                                 Physical Store disk0s2
+   1:                APFS Volume Macintosh HD - Data     23.5 GB    disk3s1
+   2:                APFS Volume Macintosh HD            11.2 GB    disk3s3
+   3:              APFS Snapshot com.apple.os.update-... 11.2 GB    disk3s3s1
+   4:                APFS Volume Preboot                 6.9 GB     disk3s4
+   5:                APFS Volume Recovery                1.0 GB     disk3s5
+   6:                APFS Volume VM                      20.5 KB    disk3s6
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Based on your current 
+diskutil list
+ output, the system volume you need to mount as writable is identified as:
+
+bash
+
+Copy
+
+Edit
+
+/dev/disk3s3
+
+When you follow the steps provided earlier to disable AirPlay (using Chrisgeo's script), ensure you use this exact identifier (`disk
+
+You said:
+
+zsh: permission denied: /dev/disk3s3
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The error you're getting (
+zsh: permission denied: /dev/disk3s3
+) happens because you're directly trying to execute or access a disk device instead of using it in the proper command.
+
+Here's how you correctly make the system volume writable step-by-step:
+
+1. Restart into Recovery Mode
+
+Apple Silicon (M1/M2)
+: Shut down, then press and hold the power button until "Loading startup options" appears. Select 
+Options
+, then 
+Continue
+.
+
+2. In Recovery, open Terminal:
+
+From the top menu bar:

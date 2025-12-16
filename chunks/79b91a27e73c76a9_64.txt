@@ -1,0 +1,301 @@
+t
+
+📌 
+If you get "Operation not permitted," SIP (System Integrity Protection) is blocking us.
+
+🚀 Step 5: Block Control Center & 
+rapportd
+ from Running
+
+If deletion doesn’t work, we 
+block execution
+ by making them unreadable:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+📌 
+This prevents these services from launching.
+
+🚀 Step 6: (Only If All Else Fails) Disable SIP, Remove Them, and Re-enable SIP
+
+If 
+SIP (System Integrity Protection) is preventing these services from being removed
+, we must 
+temporarily disable SIP
+.
+
+1️⃣ Reboot into macOS Recovery Mode
+
+Restart your Mac and hold 
+Command (⌘) + R
+ until you see the Apple logo.
+
+Go to Utilities → Terminal
+
+Disable SIP by running:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+Reboot normally
+
+2️⃣ Delete Control Center & 
+rapportd
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+📌 
+This removes the files and makes them unreadable.
+
+3️⃣ Re-enable SIP for Security
+
+After removing the files, 
+reboot into macOS Recovery Mode again
+, and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+📌 
+This turns SIP back on to protect your system again.
+
+🎯 Final Steps
+
+✅ 
+Try killing the processes & disabling them using 
+launchctl bootout
+
+✅ 
+If that fails, delete their auto-launch files
+
+✅ 
+If deletion is blocked, block them using 
+chmod 000
+
+✅ 
+If all else fails, disable SIP, remove them, and re-enable SIP
+
+🚀 
+Try these steps and let me know what happens! If they are STILL running, we’ll take it to the next level.
+ 🔥🔒
+
+You said:
+
+alright I'll need to disable sip and come back
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Understood! Disabling SIP is the Final Step – I’ll Be Here When You’re Back
+ 🚀🔒
+
+Since 
+SIP (System Integrity Protection) is preventing Control Center & 
+rapportd
+ from being removed
+, 
+disabling SIP temporarily is necessary
+ to fully delete them.
+
+📌 
+Quick Reminder of the Steps:
+
+1️⃣ 
+Reboot into macOS Recovery Mode
+ (
+Command ⌘ + R
+ during startup).
+
+2️⃣ 
+Open Terminal
+ from the Utilities menu.
+
+3️⃣ 
+Run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+4️⃣ 
+Restart your Mac normally.
+
+5️⃣ 
+Delete Control Center & 
+rapportd
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+sudo 
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+6️⃣ 
+Reboot back into Recovery Mode and re-enable SIP
+ for security:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+🚀 
+Once you’re back, run 
+netstat -an | grep LISTEN
+ again and let me know if the ports are FINALLY gone!
+ 🔥🔒
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo rm -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+Password:
+rm: /System/Library/LaunchAgents/com.apple.controlcenter.plist: Read-only file system
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Still Read-Only After Disabling SIP? Let’s Fix That!
+
+Even after 
+disabling SIP
+, macOS 
+still treats the filesystem as read-only
+ in some cases.
+
+🚀 
+Let's make the filesystem writable and remove the files again!
+
+🚀 Step 1: Remount System Drive as Writable
+
+Since macOS 
+mounts 
+/System
+ as read-only
+, we need to 
+remount it as writable
+ before deletion.
+
+Run this in 
+Recovery Mode
+ (if not already in Recovery Mode, reboot and hold 
+⌘ + R
+ to enter it):
+
+sh
+
+Copy
+
+Edit
+
+mount -uw /
+
+📌 
+This will make the system partition writable.
+
+🚀 Step 2: Delete Control Center & 
+rapportd
+ Auto-Launch Files
+
+Now, delete the files:
+
+sh
+
+Copy
+
+Edit
+
+rm
+
+ -rf /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+rm
+
+ -rf /System/Library/LaunchAge

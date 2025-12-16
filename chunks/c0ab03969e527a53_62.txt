@@ -1,0 +1,272 @@
+ash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+csrutil authenticated-root 
+
+disable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+2️⃣ Mount the System Volume as Writable
+
+Identify the System Volume:
+
+Open 
+Terminal
+.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+diskutil list
+
+Identify your system volume (typically named "Macintosh HD").
+
+Mount the System Volume as Writable:
+
+Run:
+
+Russian Wikipedia
+
+bash
+
+Copy
+
+Edit
+
+sudo mount -uw /
+
+3️⃣ Download and Prepare Chrisgeo's Script
+
+Access the Script:
+
+Visit Chrisgeo's GitHub Gist:
+
+Copy the Script:
+
+Select all the code in the Gist and copy it.
+
+Create the Script File:
+
+Open 
+Terminal
+.
+
+New York Post
+
++2
+
+Wikipedia
+
++2
+
+Navigate to your preferred directory (e.g., Desktop):
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+
+Create a new file named 
+toggle_airplay.sh
+:
+
+bash
+
+Copy
+
+Edit
+
+nano toggle_airplay.sh
+
+Paste the copied script into the editor.
+
+Save and exit:
+
+Press 
+Control + X
+, then 
+Y
+, and 
+Enter
+.
+
+Make the Script Executable:
+
+In Terminal, run:
+
+bash
+
+Copy
+
+Edit
+
+chmod
+
+ +x toggle_airplay.sh
+
+4️⃣ Run the Script to Disable AirPlay
+
+Navigate to the Script Location:
+
+If not already there, navigate to the directory containing the script:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+
+Execute the Script to Disable AirPlay:
+
+Run:
+
+welt.de
+
++2
+
+openai.com
+
++2
+
+bash
+
+Copy
+
+Edit
+
+sudo ./toggle_airplay.sh 
+
+disable
+
+Enter your 
+administrator password
+ when prompted.
+
+Verify AirPlay Status:
+
+Check the status by running:
+
+bash
+
+Copy
+
+Edit
+
+./toggle_airplay.sh status
+
+The script should indicate that AirPlay is disabled.
+
+5️⃣ Re-enable System Integrity Protection (SIP) and Authenticated Root
+
+Restart Your Mac in Recovery Mode:
+
+Shut down your Mac.
+
+Press the power button and immediately hold down 
+Command (⌘) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Enable SIP and Authenticated Root:
+
+In Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+⚠️ Caution:
+
+Disabling SIP and Authenticated Root reduces your system's security. Ensure you 
+re-enable
+ them after making the necessary changes to maintain protection against malicious software.
+
+If you encounter any issues or have further questions, feel free to ask!
+
+Sources
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % diskutil list
+
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *1.0 TB     disk0
+   1:             Apple_APFS_ISC Container disk1         524.3 MB   disk0s1
+   2:                 Apple_APFS Container disk3         994.7 GB   disk0s2
+   3:        Apple_APFS_Recovery Container disk2         5.4 GB     disk0s3
+
+/dev/disk3 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +994.7 GB   disk3
+                                 Physical Store disk0s2
+   1:                APFS Volume Macintosh HD - Data     23.5 GB    disk3s1
+   2:                APFS Volume Macintosh HD            11.2 GB    disk3s3
+   3:              APFS Snapshot com.apple.os.update-... 11.2 GB    disk3s3s1
+   4:                APFS Volume Preboot                 6.9 GB     disk3s4
+   5:                APFS Volume Recovery                1.0 GB     disk3s5
+   6:                APFS Volume VM                      20.5 KB    disk3s6
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+I understand you're aiming to disable AirPlay on your Mac by modifying system files, specifically using 
+Chrisgeo's script
+. 
+To achieve this, it's necessary to make the system volume writable, especially on macOS Big Sur and later versions, where the system volume is sealed and read-only by default.
+ Here's a comprehensive step-by-step guide to assist you:
+
+⚠️ Important Note:
+
+Modifying system files can impact your Mac's functionality. Ensure you have 
+backed up yo

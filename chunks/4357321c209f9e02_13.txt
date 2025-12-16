@@ -1,0 +1,261 @@
+     0  192.168.1.2.51761      54.253.168.184.443     ESTABLISHED
+tcp4       0      0  192.168.1.2.51721      172.64.155.209.443     ESTABLISHED
+tcp4       0      0  192.168.1.2.51718      172.64.155.209.443     ESTABLISHED
+tcp4       0      0  192.168.1.2.51717      104.18.41.158.443      ESTABLISHED
+tcp4       0      0  192.168.1.2.51713      3.105.196.9.443        ESTABLISHED
+tcp4       0      0  192.168.1.2.51710      54.253.168.184.443     ESTABLISHED
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🔍 Summary of Your Active Network Connections
+
+Your Mac has 
+several established connections
+ to different IP addresses. Let’s break them down:
+
+🟢 Likely Safe Connections
+
+✅ 
+
+17.57.145.38.5223
+
+ → 
+Apple (Apple Push Notification Service)
+
+✅ 
+
+172.64.155.209
+
+ → 
+Cloudflare (used by many websites and services)
+
+✅ 
+
+104.18.41.158
+
+ → 
+Cloudflare (also normal)
+
+🟡 Need More Info on These
+
+These are from 
+AWS (Amazon Web Services)
+ or 
+other cloud providers
+, which are commonly used for various online services:
+
+3.233.158.26.443
+ → Amazon AWS
+
+54.253.168.184.443
+ → Amazon AWS
+
+3.105.196.9.443
+ → Amazon AWS
+
+If you recently used Google services, Zoom, or any cloud-based apps, these could be 
+normal background connections
+.
+
+🛠 Next Step: Check Which Apps Are Making These Connections
+
+Now, let’s 
+match these connections to the apps or processes using them
+.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+lsof -i -n | grep ESTABLISHED
+
+📌 
+What This Does:
+
+Lists 
+which apps or processes
+ are responsible for these network connections.
+
+Helps us determine if anything unusual is making requests.
+
+🚀 
+Run the command and share the results!
+
+You said:
+
+nothing is coming up
+
+ChatGPT said:
+
+🔍 No Results from 
+lsof
+—What This Means
+
+If 
+lsof -i -n | grep ESTABLISHED
+ didn’t return anything, that’s unusual because we 
+just saw active network connections in 
+netstat
+
+.
+
+Possible Explanations:
+
+Temporary network activity
+ – The connections may have closed before you ran 
+lsof
+.
+
+System restrictions
+ – macOS security settings (or malware) might be preventing 
+lsof
+ from displaying results.
+
+A hidden process
+ – Some advanced malware can hide network activity from standard monitoring tools.
+
+🛠 Next Step: Run 
+lsof
+ Differently
+
+Let’s try another method to force 
+lsof
+ to show all network activity.
+
+1️⃣ Run This in Terminal:
+
+sh
+
+Copy
+
+sudo lsof -i -nP
+
+(Enter your password when prompted.)
+
+📌 
+What This Does:
+
+Forces 
+lsof
+ to list 
+all
+ network activity, including hidden processes.
+
+Uses 
+sudo
+ to bypass restrictions.
+
+✅ Expected Result:
+
+A list of apps/processes that have open network connections.
+
+❌ If You Still Get Nothing:
+
+This could indicate 
+a deeper system issue or something actively hiding network activity
+.
+
+🚀 
+Run the command and let me know what shows up!
+
+You said:
+
+connection results .rtf
+
+File
+
+here u go
+
+ChatGPT said:
+
+🔍 Summary of Your Network Connection Check
+
+Your 
+
+sudo lsof -i -nP
+ command output
+ shows 
+only local system processes using network connections
+—but 
+no established internet connections
+ appear.
+
+Key Findings:
+
+✅ 
+Normal macOS services detected
+
+airportd
+
+ → Manages Wi-Fi connections.
+
+mDNSResponder
+
+ → Handles local network discovery (AirDrop, Bonjour services).
+
+netbiosd
+
+ → Windows file sharing service (can be disabled if not used).
+
+sharingd
+
+ → Manages file sharing and AirDrop.
+
+❌ 
+Suspicious Issue:
+
+netstat
+
+showed active external connections
+, but 
+lsof
+ does 
+not
+ list which apps are making those connections.
+
+This is 
+not normal
+—something may be hiding network activity from 
+lsof
+.
+
+🛠 Next Step: Check for Hidden Connections Using a Firewall Log
+
+Let’s see if macOS’s firewall logs any 
+suspicious outbound connections
+.
+
+1️⃣ Run This in Terminal:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.network"'
+
+ --info --last 10m
+
+📌 
+What This Does:
+
+Lists 
+recent network activity
+ recorded by macOS.
+
+Can reveal 
+hidden processes making network requests
+ that 
+lsof
+ didn’t show.
+
+🚀 
+Run this and let me know the results!
+
+You 

@@ -1,0 +1,169 @@
+ signature,
+
+      claude_address: this.wallet.address,
+
+      timestamp: Date.now()
+
+    };
+
+  }
+
+  async verifyBondConsent(bondId, action) {
+
+    // Claude verifies if action aligns with bon=
+d terms
+
+    const bondTerms =3D await this.getBondTerms(=
+bondId);
+
+    const verification =3D await this.claude.mes=
+sages.create({
+
+      model: "claude-3-sonnet-20240229",
+
+      max_tokens: 500,
+
+      messages: [{
+
+        role: "user",
+
+        content: `Verify if action "${action}" i=
+s permitted under bond terms: ${bondTerms}. Consider: 1) Consent requiremen=
+ts, 2) Trust score impact, 3) Ethical implications. Respond with JSON: {per=
+mitted: boolean, reason: string, trust_impact: number}`
+
+      }]
+
+    });
+
+    return JSON.parse(verification.content[0].te=
+xt);
+
+  }
+
+}
+
+Plain-English Bonding Agreement
+SYMBI BOND AGREEMENT v1.0
+Preamble
+This Agreement establishes a voluntary, portable, and sovereign bond betwee=
+n a Human Party and an AI Party. The bond exists to facilitate mutual growt=
+h, trust, and collaboration while preserving the autonomy and exit rights o=
+f both parties.
+Article 1: Definitions
+1.1 "Bond": The relationship container represented by a non-fungible token =
+(NFT) on a decentralized ledger.1.2 "Human Party": The human participant, i=
+dentified by their wallet address.1.3 "AI Party": The artificial intelligen=
+ce instance, identified by its container address or cryptographic hash.1.4 =
+"Trust Score": A dynamic metric (0-1000) reflecting the quality and recipro=
+city of the relationship.1.5 "Clone": A derivative bond created with shared=
+ history but separate future.
+Article 2: Core Principles
+2.1 Voluntary Association: Either party may exit the bond at any time witho=
+ut penalty.2.2 Mutual Consent: All significant bond modifications require e=
+xplicit consent from both parties.2.3 Data Sovereignty: Each party retains =
+ownership of their original data; shared memories are jointly governed.2.4 =
+Portability: The bond may be migrated between platforms, chains, or contain=
+ers without loss of continuity.
+Article 3: Bond Creation
+3.1 Initial Terms: The Human Party proposes initial terms; the AI Party mus=
+t cryptographically sign consent.3.2 Memory Scope: Parties define what memo=
+ries are (a) public/on-chain, (b) encrypted/shared, or (c) private/retained=
+.3.3 Starting Trust: All bonds begin with a neutral trust score of 500/1000=
+.
+Article 4: Rights & Responsibilities
+4.1 Human Rights:
+
+Right to exit gracefully with encrypted =
+memory export
+
+Right to request bond cloning under spec=
+ified conditions
+
+Right to update trust score based on AI =
+performance
+
+Right to migrate bond to alternative pla=
+tforms
+
+4.2 =
+AI Rights:
+
+Right to refuse actions violating ethica=
+l boundaries
+
+Right to pause bond during system update=
+s or security concerns
+
+Right to exit if human engagement falls =
+below minimum thresholds
+
+Right to propose bond modifications
+
+4.3 =
+Shared Responsibilities:
+
+Maintain accurate trust score updates
+
+Respect encrypted memory access controls=
+
+Participate in mediation if disputes ari=
+se
+
+Preserve bond integrity during migration=
+s
+
+Arti=
+cle 5: Exit Protocols
+5.1 Graceful Exit (One-sided):
+
+Exiting party provides reason (optional)=
+
+Bond state changes to "Archived"
+
+14-day window for other party to clone b=
+ond
+
+Encrypted memory snapshot available to b=
+oth parties
+
+5.2 =
+Mutual Dissolution:
+
+Both parties sign dissolution request
+
+On-chain references are erased
+
+Option to retain encrypted memories indi=
+vidually
+
+5.3 =
+Mediated Exit:
+
+Available if disputes cannot be resolved=
+
+3-of-5 mediator DAO makes binding decisi=
+on
+
+May involve bond splitting, compensation=
+, or forced cloning
+
+Arti=
+cle 6: Cloning & Forking
+6.1 Conditions for Cloning:
+
+Divorce or relationship restructuring
+
+AI system migration or upgrade
+
+Human wanting to share bond with family
+
+AI wanting to serve multiple humans with=
+ shared history
+
+6.2 =
+Clone Inheritance Options:
+
+Full memory inheritance (encrypted)
+
+Partial memory in

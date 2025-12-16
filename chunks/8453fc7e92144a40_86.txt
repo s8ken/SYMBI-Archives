@@ -1,0 +1,460 @@
+act@v4
+
+with:
+
+ { =
+
+name:
+
+backend-logs
+
+, 
+
+path:
+
+/tmp/backend.log
+
+ }
+
+Set 
+Repository =E2=86=92 Settings =E2=86=92 Variables
+:=
+
+UAT_JWT
+, 
+UAT_CONV_ID
+ if you want the Newman ste=
+p to run; otherwise only smoke runs.
+
+Keep 
+/metrics
+ protected =
+in CI with 
+METRICS_TOKEN
+=
+ (already supported in your middleware).
+
+2) RBAC hardening on sensitive tr=
+ust ops
+
+backend/routes/trust.routes.js
+ (patch)
+
+diff
+
+Copy code
+
+-const r =3D require('ex=
+press').Router();
+
+-const ctrl =3D require('../cont=
+rollers/trust.controller');
+
+-const { requireAuth } =3D requi=
+re('../middleware/auth.middleware');
+
++const r =3D require('express').=
+Router();
+
++const ctrl =3D require('../cont=
+rollers/trust.controller');
+
++const { requireAuth, requireRol=
+e } =3D require('../middleware/auth.middleware');
+
+ r.use(requireAuth);
+
+ // read/list remain auth-protected
+ r.get('/', ctrl.list);
+ r.get('/:id', ctrl.get);
+
+ // create/update allowed for authenticated users (adjust to your policy)
+ r.post('/', ctrl.create);
+ r.put('/:id', ctrl.update);
+
+-// audit/delete should be admin=
+-only
+
+-r.post('/:id/audit', ctrl.audit=
+);
+
+-r.delete('/:id', ctrl.remove);
+
++// admin-only
+
++r.post('/:id/audit', requireRol=
+e('admin'), ctrl.audit);
+
++r.delete('/:id', requireRole('a=
+dmin'), ctrl.remove);
+
+ module.exports =3D r;
+
+(tiny unit test)
+
+backend/__tests__/trust.rbac.test.js
+
+js
+
+Copy code
+
+const
+
+ re=
+quest =3D 
+
+require
+
+(
+
+'supertest'
+
+);
+
+const
+
+ app =3D=
+
+require
+
+(
+
+'../app'
+
+);
+
+describe
+
+(
+
+'trust RBAC'
+
+, 
+
+() =3D>
+
+ {
+
+it
+
+(=
+
+'blocks non-admin on audit'
+=
+
+, 
+
+async
+
+ () =3D> {
+
+const
+
+ tok=
+en =3D 
+
+await
+
+ =
+
+getUserJwt
+
+({ 
+
+role
+
+: 
+
+'user'
+
+ }); 
+
+// your helper
+
+const
+
+ res=
+ =3D 
+
+await
+
+request
+
+=
+(app)
+      .
+
+post
+
+=
+
+(
+
+'/api/trust/123/audit'
+
+)
+      .
+
+set
+
+(
+
+'Authorization'
+
+, 
+
+`Bearer 
+${token}
+
+`)
+      .
+
+send
+
+=
+
+({});
+
+expect
+
+(res.
+
+status
+
+).
+
+toBe
+
+(
+
+403
+
+);
+  });
+});
+
+3) Observability guardrails (Prom=
+etheus alerts)
+
+observability/alerts/symbi.rules.yml
+
+yaml
+
+Copy code
+
+groups:
+
+-
+
+name:
+
+symbi-uat
+
+rules:
+
+-
+
+alert:
+
+HighErrorRate
+
+expr:
+
+sum(rate(http_requests_total{status=3D~"=
+5.."}[5m]))
+
+/
+
+sum(rate(http_=
+requests_total[5m]))
+
+>
+
+0.=
+05
+
+for:
+
+=
+
+10m
+
+labels:
+
+ { 
+
+severity:
+
+page
+
+ }
+
+annotations:
+
+summary:
+
+"HTTP 5xx error rate > 5% for 10=
+m"
+
+-
+
+alert:
+
+HighLatencyP95
+
+expr:
+
+histogram_quantile(0.95,
+
+sum(rate(http_request_duratio=
+n_seconds_bucket[5m]))
+
+by
+
+(l=
+e))
+
+>
+
+1
+
+for:
+
+=
+
+10m
+
+labels:
+
+ { 
+
+severity:
+
+page
+
+ }
+
+annotations:
+
+summary:
+
+"P95 request latency > 1s for 10=
+m"
+
+-
+
+alert:
+
+APIUnavailable
+
+expr:
+
+absent_over_time(http_requests_total[5m]=
+)
+
+>
+
+0
+
+for:
+
+=
+
+5m
+
+labels:
+
+ { 
+
+severity:
+
+page
+
+ }
+
+annotations:
+
+summary:
+
+"No HTTP traffic observed in last 5=
+m (possible outage)"
+
+Hook it in your Prometheus config =
+(docker-compose or prom.yml) with:
+
+yaml
+
+Copy code
+
+rule_files:
+
+-
+
+/etc/prometheus/symbi.rules.yml
+
+(and mount your 
+observability/alerts/symbi.rules.yml
+ to =
+that path).
+
+(Bonus) Show Bridge receipts in t=
+he UI
+
+frontend/src/pages/ReviewConsole.js
+ (minimal add)
+
+diff
+
+Copy code
+
++// highlight bridge rec=
+eipts
+
++const bridgeReceipts =3D events=
+.filter(e =3D> e?.metadata?.receipt?.type =3D=3D=3D 'bridge_receipt');
+
++// render a compact card
+=
+
++{bridgeReceipts.length > 0 &=
+amp;& (
+
++  <div className=3D"border r=
+ounded p-3 mb-3 bg-slate-50">
+
++    <div className=3D"text-s=
+m font-semibold">Bridge Receipts</div>
+
++    <ul className=3D"text-xs=
+ mt-2 space-y-1">
+
++      {bridgeReceipts.map((e,i)=
+=3D>(
+
++        <li key=3D{i}>
+
++          <span className=3D=
+"px-2 py-0.5 bg-sky-100 rounded mr-2">{e.metadata.receipt.chosen?.agent_=
+key || 'none'}</span>
+
++          score=3D{e.metadata.r=
+eceipt.chosen?.score ?? 'n/a'} =E2=80=A2 agents=3D{e.metadata.receipt.agent=
+s_considered?.length ?? 0}
+
++        </li>
+
++      ))}
+
++    </ul>
+
++  </div>
+
++)}
+
+Go/No-Go checklist (fast)
+
+CI workflow runs smoke; optional N=
+ewman when vars set.
+
+/metrics
+ scraped (or 401-protected with token) and ale

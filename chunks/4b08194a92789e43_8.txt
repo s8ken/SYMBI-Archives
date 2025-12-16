@@ -1,0 +1,250 @@
+detectSuspiciousActivity =3D (req, res, next) =3D> {
+
+const suspiciousPatterns =3D [
+
+/\b(union|select|insert|delete|drop|create|alter)\b/i, // SQ
+
+L injection
+
+/<script[^>]*>.*?<\/script>/gi, // XSS
+
+/javascript:/gi, // JavaScript protocol
+
+/\$\{.*\}/g, // Template injection
+
+/\.\.\//g // Path traversal
+
+];
+
+const checkString =3D JSON.stringify(req.body) + JSON.stringify(
+
+req.query) + JSON.stringify(req.params);
+
+for (const pattern of suspiciousPatterns) {
+
+if (pattern.test(checkString)) {
+
+logSecurityEvent('suspicious_input', {
+
+pattern: pattern.toString(),
+
+input: checkString.substring(0, 200)
+
+}, req);
+
+return res.status(400).json({
+
+success: false,
+
+error: 'Invalid input detected',
+
+message: 'Request contains potentially malicious content
+
+'
+
+});
+
+}
+
+}
+
+next();
+
+};
+
+// Content Type Validation
+
+const validateContentType =3D (allowedTypes =3D ['application/json']
+
+) =3D> {
+
+return (req, res, next) =3D> {
+
+if (req.method =3D=3D=3D 'GET' || req.method =3D=3D=3D 'DELETE') {
+
+return next();
+
+}
+
+const contentType =3D req.get('Content-Type');
+
+if (!contentType || !allowedTypes.some(type =3D> contentType.i
+
+ncludes(type))) {
+
+return res.status(415).json({
+
+success: false,
+
+error: 'Unsupported Media Type',
+
+message: 
+Content-Type must be one of: ${allowedTypes.jo
+
+in(', ')}
+
+});
+
+}
+
+next();
+
+};
+
+};
+
+// Request Size Limiter
+
+const requestSizeLimiter =3D (maxSize =3D '10mb') =3D> {
+
+return (req, res, next) =3D> {
+
+const contentLength =3D req.get('Content-Length');
+
+const maxBytes =3D parseSize(maxSize);
+
+if (contentLength && parseInt(contentLength) > maxBytes) {
+
+return res.status(413).json({
+
+success: false,
+
+error: 'Payload Too Large',
+
+message: 
+Request size exceeds ${maxSize} limit
+
+});
+
+}
+
+next();
+
+};
+
+};
+
+// Helper function to parse size strings
+
+function parseSize(size) {
+
+const units =3D { b: 1, kb: 1024, mb: 1024 * 1024, gb: 1024 * 10
+
+24 * 1024 };
+
+const match =3D size.toLowerCase().match(/^(\d+(?:\.\d+)?)(\w+)?
+
+$/);
+
+if (!match) return 0;
+
+return parseFloat(match[1]) * (units[match[2]] || 1);
+
+}
+
+module.exports =3D {
+
+// Security middleware
+
+securityHeaders,
+
+sanitizeInput,
+
+compression: compression(),
+
+// Rate limiting
+
+authRateLimit,
+
+apiRateLimit,
+
+trustDeclarationRateLimit,
+
+strictRateLimit,
+
+// RBAC and permissions
+
+requireRole,
+
+validateJWTScopes,
+
+// Input validation
+
+validationSchemas,
+
+handleValidationErrors,
+
+// Monitoring and logging
+
+requestLogger,
+
+logSecurityEvent,
+
+detectSuspiciousActivity,
+
+// Content validation
+
+validateContentType,
+
+requestSizeLimiter
+
+};
+
+(TraeAI-10) C:\Users\Stephen\Documents\trae_projects\SYMBI-SYMPH
+
+ONY [0:0] $
+
+(TraeAI-10) C:\Users\Stephen\Documents\trae_projects\SYMBI-SYMPH
+
+ONY [0:0] $ git push origin master
+
+Enumerating objects: 184, done.
+
+Counting objects: 100% (184/184), done.
+
+Delta compression using up to 4 threads
+
+Compressing objects: 100% (163/163), done.
+
+Writing objects: 100% (184/184), 215.12 KiB | 1.85 MiB/s, done.
+
+Total 184 (delta 24), reused 0 (delta 0), pack-reused 0 (from 0)
+
+remote: Resolving deltas: 100% (24/24), done.
+
+remote: This repository moved. Please use the new location:
+
+remote:   https://github.com/s8ken/Symbi-Website-Main.git
+
+remote: error: GH013: Repository rule violations found for refs/
+
+heads/master.
+
+remote:
+
+remote: - GITHUB PUSH PROTECTION
+
+remote:   =E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=
+=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=
+=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=
+=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=
+=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=
+=80=94
+
+remote:     Resolve the following violations before pushing agai
+
+n
+
+remote:
+
+remote:     - Push cannot contain secrets
+
+remote:
+
+remote:
+
+remote:      (?) Learn how to resolve a blocked push
+
+remote:      https://docs.github.com/code-security/secret-scanni
+
+ng/working-with-secret-scanning-and-push-protection/working-wit

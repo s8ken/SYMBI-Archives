@@ -1,0 +1,200 @@
+SharingSubscriber
+lcl               1074   0.0  0.0 410724112   1504 s000  S+    8:07am   0:00.00 grep -i screensharing
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: Remote Screen Sharing Process is Running
+
+The output shows that 
+
+ScreenSharingSubscriber.xpc
+ is running
+, which suggests that 
+a remote screen sharing process is active or recently attempted
+.
+
+What This Means:
+
+ScreenSharingSubscriber.xpc
+
+ is part of 
+Apple Remote Management and Screen Sharing services
+.
+
+This could mean 
+your system is set to allow screen sharing
+, or 
+someone attempted to access it remotely
+.
+
+ð¨ Step 2: Check If Screen Sharing is Enabled
+
+Now, letâs check if 
+Screen Sharing is currently allowed
+ on your Mac.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+sudo systemsetup -getremotelogin
+
+â 
+If it says "Remote Login: Off"
+, remote access via SSH is disabled.
+
+ð¨ 
+If it says "Remote Login: On"
+, SSH is enabled and could be a risk.
+
+ð¨ Step 3: Check for Remote Management (Apple Remote Desktop)
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -i remote
+
+â 
+If nothing appears
+, remote management is not actively running.
+
+ð¨ 
+If something appears
+, it means 
+Apple Remote Desktop (ARD) or another remote access service is enabled.
+
+Next Steps:
+
+Run 
+sudo systemsetup -getremotelogin
+
+ and tell me the output.
+
+Run 
+sudo launchctl list | grep -i remote
+
+ and tell me if anything appears.
+
+ð¨ 
+If we confirm remote access is active, weâll immediately disable it.
+ Let me know the results before we move forward!
+
+You said:
+
+off
+
+ChatGPT said:
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % ps aux | grep -i screensharing
+
+_rmd              1017   0.0  0.1 410735296  11344   ??  Ss    8:02am   0:00.10 /System/Library/PrivateFrameworks/RemoteManagement.framework/XPCServices/ScreenSharingSubscriber.xpc/Contents/MacOS/ScreenSharingSubscriber
+lcl               1074   0.0  0.0 410724112   1504 s000  S+    8:07am   0:00.00 grep -i screensharing
+lcl@LCLs-MacBook-Pro ~ % sudo systemsetup -getremotelogin
+
+Remote Login: Off
+lcl@LCLs-MacBook-Pro ~ % sudo systemsetup -getremotelogin
+
+Remote Login: Off
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl list | grep -i remote
+
+311	0	com.apple.mediaremoted
+-	0	com.apple.RemoteDesktop.PrivilegeProxy
+-	0	com.apple.dt.RemotePairingDataVaultHelper
+-	0	com.apple.RemotePairTool
+-	0	com.apple.testmanagerd.remote
+324	0	com.apple.remoted
+-	0	com.apple.xartstorageremoted
+1011	0	com.apple.remotemanagementd
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: Remote Access Services Are Present but Not Fully Active
+
+From your output, we can see:
+
+Screen Sharing Process is Running (
+ScreenSharingSubscriber.xpc
+)
+
+Even though 
+Remote Login (SSH) is OFF
+, this process suggests that 
+screen sharing or remote management was used or attempted.
+
+Multiple Remote Services Are Listed Under 
+launchctl
+
+com.apple.remotemanagementd
+
+ â This is Apple's 
+Remote Management service (ARD)
+, used for remote desktop control.
+
+com.apple.remoted
+
+ â This is a 
+background service for remote events and media control
+ (used by AirPlay, Siri, and external device control).
+
+com.apple.RemotePairTool
+
+ â Used for 
+pairing Apple devices remotely
+ (e.g., Sidecar, Universal Control).
+
+com.apple.RemoteDesktop.PrivilegeProxy
+
+ â Can be used by 
+Apple Remote Desktop for privileged operations.
+
+ð¨ Step 4: Check If Remote Management is Enabled in macOS Settings
+
+Before disabling anything, let's confirm if 
+Remote Management is actually enabled.
+
+1ï¸â£ Go to System Settings:
+
+Click 
+System Settings
+
+Go to 
+General > Sharing
+
+Check if 
+Remote Management
+ is ON or OFF.
+
+ð¨ 
+If 
+Remote Management
+ is ON, turn it OFF.
+
+ð¨ Step 5: Force Disable Remote Management Services
+
+If Remote Management was ON (or if we want to prevent it from running at all), we can 
+force disable it manually.
+
+Run This in Terminal to Stop Remote Management:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.remotemanagementd
+
+ð¹ 
+This removes the Remote Management daemon from the system
+ unt

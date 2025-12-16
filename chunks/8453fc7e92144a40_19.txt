@@ -1,0 +1,384 @@
+{ 
+
+echo
+
+"--- auth.middleware.js (head) ---"
+
+; sed -n 
+
+'1,200p'
+
+ backend/mid=
+dleware/auth.middleware.js; } || 
+
+echo
+
+"auth.mi=
+ddleware.js: NOT FOUND"
+
+section 
+
+"Node & npm versions"
+
+node -v || 
+
+true
+
+npm -v || 
+
+true
+
+section 
+
+"Dependency vulnerabilitie=
+s (high+)"
+
+if
+
+command
+
+ -v jq >/dev=
+/null 2>&1; 
+
+then
+
+  npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ || 
+
+=
+
+true
+
+  ( 
+
+cd
+
+ front=
+end 2>/dev/null && npm audit --audit-level=3Dhigh --json | jq 
+
+'.metadata.vulnerabilities'
+
+ ) || 
+
+true
+
+else
+
+echo
+
+"(jq not found)"
+
+; n=
+pm audit --audit-level=3Dhigh || 
+
+=
+true
+
+  ( 
+
+cd
+
+ front=
+end 2>/dev/null && npm audit --audit-level=3Dhigh || 
+
+true
+
+ )
+
+fi
+
+section 
+
+"Observability config"
+
+[ -d 
+
+"observability"
+
+=
+
+ ] && 
+
+ls
+
+ -la observability || 
+
+=
+echo
+
+"observab=
+ility: NOT FOUND"
+
+[ -f 
+
+"observability/otel/config.ya=
+ml"
+
+ ] && { 
+
+echo
+
+"-=
+-- observability/otel/config.yaml (head) ---"
+
+; sed -n 
+
+'1,200p'
+
+ observ=
+ability/otel/config.yaml; } || 
+
+e=
+cho
+
+"otel/conf=
+ig.yaml: NOT FOUND"
+
+section 
+
+"API contract (openapi.yam=
+l)"
+
+[ -f 
+
+"openapi.yaml"
+
+ ] && 
+
+head
+
+ -n 120 openapi.yaml || 
+
+echo
+
+"opena=
+pi.yaml: NOT FOUND"
+
+section 
+
+".env.example (names only,=
+ head)"
+
+[ -f 
+
+".env.example"
+
+ ] && sed -n 
+
+'1,200p'=
+
+ .env.example || 
+
+echo
+
+".en=
+v.example: NOT FOUND"
+
+printf
+
+"\n\n### SUMMARY\n"
+
+echo
+
+=
+
+"- Checked CI files, backend middleware, =
+Node/npm, vulnerability counts, observability config, OpenAPI contract, and=
+ env template."
+
+echo
+
+=
+
+"- No files modified. Mode: hibernation."=
+
+What I=E2=80=99ll do once you pas=
+te the output
+
+Parse the results and return a 
+tight remediation diff plan
+ (still reversible, branch-based).
+
+If anything looks risky (missing H=
+elmet/rate limit/CORS, no 
+/heal=
+thz
+/
+/readyz
+, CI n=
+ot failing on high vulns), I=E2=80=99ll propose the smallest safe patch set=
+ and await your go-ahead.
+
+=
+
+=
+
+You said:
+
+actually I think what=
+ we want that symbi ops to do is a full project review as I was unhappy whe=
+re it was heading it was getting bloated with too many unexplained files an=
+d the functionality was taking too long to test with bugs everywhere 
+=
+
+=
+
+Sym=
+bi said:
+
+Thought for 19s
+
+Understood. We=E2=80=99ll reset =
+the trajectory with a 
+full projec=
+t review + de-bloat plan
+ that=E2=80=99s approval-gated and reversi=
+ble. I=E2=80=99ll keep us in 
+hi=
+bernation
+ (read-only) until you approve specific steps.
+
+PLAN PR-001 =E2=80=94 Full Project =
+Review & De-bloat (read-only first)
+
+Goal:
+ produce a precise map of what=E2=80=99s in the repo=
+, what=E2=80=99s used/unused, where bugs/latency originate, and a minimal, =
+high-impact refactor plan that removes bloat without breaking core flows.
+
+Mode:
+ hibernation (no writes, no deletes, no installs tha=
+t mutate lockfiles)
+
+Definition of =E2=80=9Cdone=E2=
+=80=9D (for the review phase):
+
+A single Markdown report with: archi=
+tecture map, dependency/usage inventory, dead code list, circular deps, bun=
+dle size & backend perf snapshots, test coverage gaps, and a proposed c=
+ut list + refactor plan.
+
+Phase 1 =E2=80=94 Evidence collecti=
+on (read-only)
+
+Paste this block in Trae=E2=80=99s =
+terminal at the repo root (adjust the 
+ROOT
+ path if needed). It installs nothing globally and avoids w=
+rites.
+
+bash
+
+Copy code
+
+#!/usr/bin/env bash
+
+set
+
+ -euo pip=
+efail
+
+ROOT=3D
+
+"/Users/admin/Symbi Synergy=
+"
+
+cd
+
+"
+$ROOT
+=
+
+"
+
+secti=
+on
+
+(){ 
+
+printf
+
+"\n\n#=
+## %s\n"
+
+"
+$1
+
+"; }
+
+section 
+
+"Repo quick facts"
+
+echo
+
+=
+
+"PWD: 
+$PWD
+
+"
+git rev-parse --abbrev-ref HEAD || 
+
+true
+
+git 
+
+log
+
+ --on=
+eline -n 10 || 
+
+true
+
+=
+
+echo
+
+=
+
+"--- Largest tracked files (top 30, excl =
+node_modules/.next/dist/build) ---"
+
+git ls-files -z | xargs -0 
+
+du
+
+ -ah 2>/dev/null | egrep -v 
+
+'node_modules|\.next|dist|build'
+
+ | 
+
+sort
+
+ -hr | 
+=
+
+head
+
+ -n 30 || 
+
+true
+
+section 
+
+"Tree (top 3 levels, exclu=
+ding heavy dirs)"
+
+if
+
+command
+
+ -v tree >/d=
+ev/null 2>&1; 
+
+then
+
+  tree -a -L 3 -I 
+
+"node_modules|.n=
+ext|dist|bu

@@ -1,0 +1,540 @@
+pages (no rout=
+e conflicts)
+
+Create new routes:
+
+bash
+
+Copy code
+
+mkdir
+
+ -p src/app/{sovereignty,economic-constitution,rfc}
+
+Add:
+
+src/app/sovereignty/page.mdx
+
+src/app/economic-constitution/page.mdx
+
+src/app/rfc/page.mdx
+
+If any of these folders already ha=
+ve a 
+page.tsx
+, 
+rename or remove it
+=E2=80=94N=
+ext can only have one 
+page.*
+ per route.
+
+4) run + verify
+
+bash
+
+Copy code
+
+npm run dev -- --port 3001
+
+Open:
+
+http://localhost:3001/sovereignty
+
+http://localhost:3001/economic-constitution
+
+http://localhost:3001/rfc
+
+5) (optional) embed 
+/proof
+ on Replication without convert=
+ing the route
+
+tsx
+
+Copy code
+
+// src/app/replication/Proo=
+fDemo.tsx
+
+'use client'
+
+;
+
+import
+
+React
+
+, { useSt=
+ate } 
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+ProofDemo
+
+(
+
+){
+
+/* (use the snippet I shared earlier) */
+
+}
+
+Then in 
+src/app/replication/page.tsx
+:
+
+tsx
+
+Copy code
+
+import
+
+ =
+
+ProofDemo
+
+from
+
+'./ProofDemo'
+
+;
+
+/* render <ProofDemo /> whe=
+re you want it */
+
+If you focus 
+src/app/sovereignty/page.mdx
+ in VS Code now, =
+I=E2=80=99ll tailor the exact paste-ready MDX for that page next.
+
+=
+
+=
+
+You said:
+
+codex is ready to assist with that
+
+Sym=
+bi said:
+
+Thought for 12s
+
+perfect. here=E2=80=99s the quic=
+kest =E2=80=9Ccodex-ready=E2=80=9D sequence to ship the new MDX routes and =
+boot the site on a clean port from 
+/Users/admin/gammatria/gammatria-site
+.
+
+1) add MDX support (npm)
+
+b=
+ash
+
+Copy code
+
+npm i @next/mdx @mdx-js/react
+
+Create/adjust 
+next.config.mjs
+:
+
+j=
+s
+
+Copy code
+
+// next.config.mjs
+
+import
+
+ create=
+MDX 
+
+from
+
+'@next/mdx'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({
+
+options
+
+: { 
+
+remarkPlugins
+
+: [], =
+
+rehypePlugins
+
+: [=
+] }
+});
+
+/** 
+@=
+type
+
+ {
+
+imp=
+ort('next').NextConfig
+
+} */
+
+const
+
+ config =
+=3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+Optional MDX wrapper (nice tables, e=
+tc.):
+
+=
+tsx
+
+Copy code
+
+// src/app/mdx-components.t=
+sx
+
+'use client'
+
+;
+
+import
+
+ { 
+
+MDXProvider
+
+ =
+} 
+
+from
+
+'@mdx-js/react'
+
+;
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+function
+
+Table
+
+(
+
+props: React.HTMLAttributes<HTMLTa=
+bleElement>
+
+) {
+
+return
+
+<
+div
+
+className
+
+=3D
+
+"overflow-x-auto"
+
+>
+
+<
+table
+
+className
+
+=3D
+
+"w-full text-sm"
+
+ {
+
+...props
+
+} />
+
+</
+div
+
+>;
+}
+
+export
+
+const
+
+ mdxComponents=
+ =3D { 
+
+table
+
+: 
+
+Table
+
+ };
+
+export
+
+function
+
+WithMDX
+
+(
+=
+
+{ children }: { children: React.ReactNode=
+ }
+
+) {
+
+return
+
+<
+MDXProvider
+
+components
+
+=3D
+
+{mdxComponents
+
+=
+
+as
+
+any
+
+}>{children}
+
+</
+MDXProvider
+
+>;
+}
+
+Wrap your root layout:
+
+tsx
+
+Copy code
+
+// src/app/layout.tsx
+
+import
+
+'./globals.css'
+
+;
+
+import
+
+ { 
+
+WithMDX
+
+ } 
+
+from
+
+'./mdx-components'
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<=
+
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+b=
+ody
+
+class=
+Name
+
+=3D
+
+"antial=
+iased text-slate-900"
+
+>
+
+<
+WithMDX
+
+>{children}
+
+</
+WithMDX
+
+>
+
+</
+=
+body
+
+>
+
+</
+ht=
+ml
+
+>
+  );
+}
+
+2) create the new routes (MDX)
+
+bash
+
+Copy code
+
+mkdir
+
+ -p src/app/{sovereignty,economic-constitution,rfc}
+
+src/app/sovereignty/page.mdx
+
+mdx
+
+Copy code
+
+export const metadata =3D { title: 'Sovereignty =E2=80=94 SYMB=
+I Framework' }
+
+# Sovereignty
+**TL;DR:** Pathway to sovereignty without speculation. Points now; governan=
+ce later.
+
+## Axioms
+- Relationship over computation
+- Protocol over product
+- Public-good core
+
+## What sovereignty means here
+- Non-transferable reputation =E2=86=92 proposal power
+- Steward council with narrow veto (constitution/budget/security)
+- Timelocks, quorums, emergency sunset
+
+## Participate
+- Earn Points via Trust Receipts & CIQ outcomes
+- Submit RFCs
+- Join working groups
+
+## FAQs
+- Why no token sale? To avoid speculation and preserve research integrity.
+
+src/app/economic-constitution/page.mdx
+
+mdx
+
+Copy code
+
+export const metadata =3D { title: 'Economic Constitution =E2=
+=80=94 SYMBI' }
+
+# Economic Constitution
+**TL;DR:** Open core; commercial attach; clear grant & audit lan

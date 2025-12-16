@@ -1,0 +1,570 @@
+       detail =3D {
+
+"text"
+
+: (
+
+await
+
+ resp.aread()).decode(errors=3D
+
+"ignore"
+
+)[:
+
+2000
+
+]}
+        logger.error(
+
+"ASI %s %s - =
+payload_keys=3D%s error=3D%s"
+
+,
+                     resp.status_code, url, 
+
+list
+
+(payload.keys()), detail)
+        resp.raise_for_status()
+
+return
+
+ re=
+sp
+
+This will surface messages like =
+=E2=80=9CUnknown argument 
+reaso=
+ning
+=E2=80=9D, =E2=80=9CInvalid model=E2=80=9D, etc.
+
+2) Route to the 
+right
+ endpoint by feature flags
+
+Add a small resolver in 
+
+asi_adapter.py
+
+:
+
+python
+
+Copy code
+
+RESPONSES_ONLY_FIELDS =3D {
+
+"reasoning"
+
+, 
+
+"modalities"
+
+, 
+
+"audio"
+
+, 
+
+"tool_choice"
+
+}  
+
+# adjust to your use
+
+def
+
+choose_endpoint
+
+(
+
+payload: 
+dict
+
+, cfg: 
+
+dict
+
+) -> 
+
+str
+
+:
+
+# explicit override wins
+
+if
+
+ cfg.ge=
+t(
+
+"endpoint"
+
+) =
+
+in
+
+ {
+
+"chat_completions"
+
+, 
+
+"responses"
+
+}:
+
+return
+
+f"/v1/
+{
+'responses'
+
+=
+
+if
+
+ cfg[
+
+'endpoint'
+
+]=3D=3D
+
+'responses'
+
+else
+
+'chat/completions'
+
+}"
+
+# auto-detect: if payload use=
+s responses-only fields =E2=86=92 use /responses
+
+if
+
+any
+
+(k 
+
+in
+
+ payload 
+
+for
+
+ k 
+
+in
+
+ RESPONSES_ONLY_FIELDS):
+
+return
+
+"/v1/responses"
+
+return
+
+"/v1/chat/completions"
+
+=
+
+And build the payload accordingly =
+(don=E2=80=99t send 
+reasoning
+ to chat-completions).
+
+3) Keep two minimal payload build=
+ers (prevents schema cross-contamination)
+
+python
+
+Copy code
+
+def
+
+build_chat_payload
+
+(
+
+model, messages,=
+ max_tokens=3D
+512
+
+, t=
+emperature=3D
+
+0.3
+
+):
+
+return
+
+ {
+
+"model"
+
+: model,
+
+"messages"
+
+: messages,                 
+
+#=
+ [{role, content: str}]
+
+"max_tokens"
+
+=
+
+: max_tokens,
+
+"temperature"
+
+: temperature
+    }
+
+def
+
+build_responses_payload
+
+(
+
+model, prompt, max_outpu=
+t_tokens=3D
+512
+
+):
+
+return
+
+ {
+
+"model"
+
+: model,
+
+"input"
+
+: prompt,                      
+
+#=
+ string or array of parts
+
+"max_output_tokens"
+=
+
+: max_output_tokens
+    }
+
+Don=E2=80=99t mix fields between t=
+hem (e.g., 
+no
+
+reasoning
+ on chat-completions,=
+ and 
+no
+
+messages
+ if your provider=E2=80=99s =
+responses endpoint expects 
+inpu=
+t
+).
+
+4) Validate before send (fail fas=
+t, clear error)
+
+Add a tiny schema guard per endpoi=
+nt:
+
+python
+
+Copy code
+
+def
+
+validate_chat_payload=
+
+(
+
+p
+
+):
+
+assert
+
+isinstance
+
+(p.g=
+et(
+
+"messages"
+
+)=
+, 
+
+list
+
+) 
+
+and
+
+ p[
+
+"messages"
+
+], 
+
+"messages[] required"
+
+for
+
+ m 
+
+in
+
+ p[
+
+"messages"
+
+]:
+
+assert
+
+ m.get(
+
+"role"
+
+=
+) 
+
+in
+
+ {
+=
+
+"system"
+
+,
+
+"user"
+
+,
+
+"assistant"
+
+,
+
+"tool"
+
+}, 
+
+"bad role"
+
+assert
+
+isinstance
+
+=
+(m.get(
+
+"content"
+
+), 
+
+str
+
+) 
+
+and
+
+ m[
+
+"content"
+
+], 
+
+"content must be string"
+
+assert
+
+"reasoning"
+
+not
+
+=
+
+in
+
+ p, 
+
+"remove 'reasoning' for chat/completions"
+
+def
+
+validate_responses_payload
+
+(
+
+p
+
+=
+):
+
+assert
+
+"input"
+
+in
+
+ p 
+
+and
+
+isinstance
+
+(p[
+
+"input"
+
+], (
+
+str
+
+, 
+
+list
+
+)), 
+
+"input required"
+
+Call these right before the POST.
+
+5) Common gotchas to check in you=
+r failing payload
+
+Model string
+ typo or not enabled for your account (try=
+
+"gpt-4o-mini"
+ first).
+
+reasoning
+
+ / 
+reasoning_effort
+ / 
+tool_choice
+ sent to =
+
+/chat/completions
+.
+
+Messages shape
+ wrong (missing 
+content
+, non-string content, wrong 
+role
+).
+
+Numbers
+ as strings (e.g., 
+"max_tokens": "1024"
+ =E2=86=92 must be int).
+
+Too large
+
+=
+max_tokens
+ or 
+temperatur=
+e
+ out of range.
+
+Tools
+: using 
+Responses-style tool schema
+ on 
+Chat
+ or vice-versa.
+
+6) SYMBI hardening (so you never =
+chase this again)
+
+Config flags per model/provider
+:
+
+json
+
+Copy code
+
+{
+
+"gpt-4o-mini"
+
+:
+
+{
+
+"endpoint"
+
+:
+
+"chat_completions"
+
+,
+
+"supports_reasoning"
+
+:
+
+false
+
+,
+
+"max_tokens_cap"
+
+:
+
+4096
+
+}
+
+}
+
+Receipt enrichment
+: include 
+endpoint
+, 
+model
+, 
+sdk_version
+, and a 
+payload hash
+ (not the raw content) in your signed receipt. That way, you can later=
+ prove which interface was used.
+
+If you share the (redacted) faili=
+ng 
+payload keys
+, 
+model
+, and 
+endpoint
+ you=E2=80=99re hitting,=
+ I=E2=80=99ll give you the exact corrected JSON to send for that provider.
+
+=
+
+You said:
+
+hey @SYMBI has all the information I uploaded flowed throug=
+h.pdf
+
+PDF
+
+heres where it happened

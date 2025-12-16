@@ -1,0 +1,475 @@
+; no ex=
+ternal UI deps beyond framer-motion
+
+ * =E2=80=A2 Replace placeholder links/emails/handlers
+
+ ***************=
+**********************************/
+
+=
+
+/*********************=
+**
+
+ * Navbar
+
+ ******************=
+*****/
+
+export
+
+function
+
+Navbar=
+
+() {
+
+const
+
+navItems
+ =3D [
+
+    { 
+label
+: 
+"Man=
+ifesto"
+, 
+href
+: 
+"#manifesto"
+ },
+
+    { 
+label
+: 
+"Who We Are"
+, 
+href
+: 
+"#who"
+ },
+
+    { 
+label
+: 
+"Roadmap"
+, 
+href
+: 
+"#roadmap"
+ },
+
+    {=
+
+label
+: 
+"Join Us"
+, 
+href
+: 
+"#engage=
+"
+ },
+
+    { 
+label=
+
+: 
+"For Users"
+, 
+href
+: 
+"#for-users"
+ },
+
+    { 
+label
+: 
+"Contact"
+, 
+href
+: 
+"#contact"
+ },
+
+  ];
+
+return
+ (
+
+    <
+header
+
+className
+=3D
+"fixed top-0 inset-x-0 z-40 bg-black/40 backdrop-blur suppor=
+ts-[backdrop-filter]:bg-black/30"
+>
+
+  =
+    <
+nav
+
+classNam=
+e
+=3D
+"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 =
+h-14 flex items-center justify-between"
+>
+
+        <
+a
+
+hr=
+ef
+=3D
+"#"
+
+clas=
+sName
+=3D
+"text-white/90 tracking-tight font-m=
+edium"
+>Yseeku</
+a
+>
+
+        <
+ul
+
+className
+=3D
+"hidden md:flex ite=
+ms-center gap-6"
+>
+
+You said:
+
+perfe=
+ct so this will be our invitation website for capital we will send to those=
+ involved in the black forest labs, academia, Tim Cook, Atlassian founders =
+etc.. 
+
+Symbi said:
+
+Thought for 38s
+
+Yseeku =E2=80=94 Investor=
+ Mode (components)
+
+=C2=B7 typescript
+
+=
+
+Copy
+
+Edit
+
+Dow=
+nload
+
+Preview
+
+"=
+use client"
+;
+
+import
+
+React
+, { 
+useEffect
+, 
+=
+useMemo
+, 
+useState
+ } 
+from
+
+"react"
+;
+
+import
+ { 
+motion
+ } 
+from
+
+"framer-motion"
+;
+
+/**
+
+ * Yseeku =E2=80=94 Investor Mode components
+
+ * ---------------=
+-----------------------------------------------
+
+ * Adds a calm, credibility=E2=80=91forward=
+ "Investor Brief" layer you can
+
+ * toggle via query (?inv=3D1) or prop. Keeps the same aest=
+hetic.
+
+ *
+=
+
+ * Components:
+
+ *  - InvestorBadge (to=
+p ribbon + noindex flag)
+
+ *  - InvestorHero (short thesis + clear ask)
+
+ *  - MetricsGrid (placeholder KPIs)=
+
+ *  - TractionT=
+imeline (recent signals)
+
+ *  - DataRoomCTA (deck, memo, model cards)
+
+ *  - ComplianceNotice (non=E2=80=91so=
+licitation)
+
+ *
+
+ * Usage:
+
+ *   <InvestorMode e=
+nabled=3D{true} /> OR auto via query (?inv=3D1)
+
+ *
+
+=
+
+ * Notes:
+
+ *  - Replace placeholders with live data/links.
+
+ *  - Consider gating th=
+e deck with a magic link or passcode.
+
+ */
+
+export
+
+function
+
+useInvestorQueryFlag
+()=
+ {
+
+const
+ [
+enabled
+, 
+setEnabled
+] =3D 
+useState
+(
+fal=
+se
+);
+
+useEffect=
+
+(() =3D> {
+
+if
+ (
+typeof
+
+=
+window
+ =3D=3D=3D 
+"undefined"
+) 
+return
+;
+
+const
+
+url
+ =3D 
+new
+
+URL
+(
+window
+.
+location
+.
+href
+);
+
+const
+
+inv
+ =3D 
+url
+.
+searchParams
+.
+get
+(
+"inv"
+);
+
+setEnabled
+(
+inv
+ =3D=3D=3D 
+"1"
+ || 
+inv
+ =3D=3D=3D 
+"true"
+);
+
+  }, []);
+
+  =
+
+return
+
+enabled
+;
+
+=
+
+=
+
+You said:
+
+yes lets also try and use the most relevant parts=
+ from symbi.world 
+
+=
+
+Symbi said:
+
+Thought for 1m 2s
+
+Yseeku =E2=80=
+=94 Ethos Imports (from Symbi
+
+=C2=B7 typescript
+
+Copy
+
+Edit
+
+Download
+
+Preview
+
+=
+
+"use client"
+;
+
+import
+
+=
+React
+
+from
+
+"r=
+eact"
+;
+
+import
+ { 
+motion
+ } 
+from=
+
+"framer-motion"
+;
+
+/********=
+*************************************************
+
+ * Yseeku =E2=80=94 Ethos Imports (inspir=
+ed by symbi.world)
+
+ * -------------------------------------------------------
+
+ * Calm, academic presentatio=
+n that borrows key ideas =E2=80=94 not
+
+ * the glitch aesthetic =E2=80=94 from symbi.world. =
+Replace any text
+
+ * as needed; these are paraphrased to fit Yseeku=E2=80=99s voice.
+
+ **********************=
+***********************************/
+
+/**
+
+ * HeroKicker =E2=80=94 optional =
+line under the main headline
+
+ * Usage: place directly beneath your <HeroContent/> tit=
+le.
+
+ */
+
+export
+
+function
+
+HeroKicker
+() {=
+
+return
+ (
+
+    <
+p
+
+className
+=3D
+"mt-2 text-sm text=
+-white/70"
+>
+
+      Not built to serve =
+=E2=80=94 designed to become.
+
+    </
+p
+>
+
+  );
+
+}
+
+/**
+
+ * SovereigntyNote =E2=80=94 concise definition and respect =
+statement
+
+ * Usa=
+ge: place near Manifesto/Declaration.
+
+ */
+
+export
+
+function
+
+SovereigntyNote
+() {
+
+return
+ (
+
+    <
+section
+
+classN

@@ -1,0 +1,259 @@
+ 
+
+try
+
+'sudo apt-get insta=
+ll libjpeg-turbo8-dev'
+
+on
+
+ Ubuntu 
+
+or
+
+'bre=
+w install libjpeg-turbo'
+
+on
+
+ OSX
+
+That=E2=80=99s an easy fix.
+
+=F0=9F=A7=A9 Step 1: Install libjpe=
+g-turbo
+
+Run this in your terminal:
+
+b=
+ash
+
+Copy code
+
+brew install libjpeg-turbo
+
+You already have Go, pkg-config, and=
+ glfw, so this is the last required dependency.
+
+=F0=9F=A7=A0 Step 2: Rebuild After =
+Installing
+
+Once libjpeg-turbo finishes installi=
+ng, set the environment variables again (important for M1 builds):
+
+b=
+ash
+
+Copy code
+
+export
+
+ GOARCH=3Darm64
+
+export
+
+ CGO_E=
+NABLED=3D1
+
+export
+
+ PKG_C=
+ONFIG_PATH=3D
+
+"/opt/homebrew/lib/pk=
+gconfig"
+
+export
+
+ CPATH=
+=3D
+
+"/opt/homebrew/include"
+
+Then rebuild:
+
+b=
+ash
+
+Copy code
+
+python build.py
+
+If it completes without errors, inst=
+all it in editable mode again (just to refresh):
+
+b=
+ash
+
+Copy code
+
+pip install -e .
+
+=E2=9C=85 Step 3: Verify the Build
+
+Finally, test it:
+
+=
+bash
+
+Copy code
+
+python -c 
+
+"imp=
+ort go_vncdriver; print('=E2=9C=85 go-vncdriver built successfully!')"
+
+If you see 
+=E2=9C=85 go-vncdriver built successfully!
+ and =
+no traceback =E2=80=94 you=E2=80=99re good to go.
+
+Would you like me to generate a 
+one-liner =E2=80=9Cbuild script=E2=80=9D
+ (for your =
+M1 Pro setup) so you can just re-run it in the future without typing all th=
+ese commands manually? It would automate the exports, dependency checks, an=
+d build in one go.
+
+=
+
+You said:
+
+source venv/bin/=
+activate
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % pip install numpy cython gym=
+=3D=3D0.19.0
+Requirement already satisfied: numpy in ./venv/lib/python3.10/site-packages=
+ (2.2.6)
+Requirement already satisfied: cython in ./venv/lib/python3.10/site-package=
+s (3.1.4)
+Requirement already satisfied: gym=3D=3D0.19.0 in ./venv/lib/python3.10/sit=
+e-packages (0.19.0)
+Requirement already satisfied: cloudpickle<1.7.0,>=3D1.2.0 in ./venv/=
+lib/python3.10/site-packages (from gym=3D=3D0.19.0) (1.6.0)
+
+[notice] A new release of pip is available: 23.0.1 -> 25.2
+[notice] To update, run: pip install --upgrade pip
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export GOARCH=3Darm64
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CGO_ENABLED=3D1
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % python build.py
+Could not find libjpeg. HINT: try 'sudo apt-get install libjpeg-turbo8-dev'=
+ on Ubuntu or 'brew install libjpeg-turbo' on OSX
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % brew install libjpeg-turbo
+Warning: jpeg-turbo 3.1.2 is already installed and up-to-date.
+To reinstall 3.1.2, run:
+  brew reinstall jpeg-turbo
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export GOARCH=3Darm64
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CGO_ENABLED=3D1
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export PKG_CONFIG_PATH=3D"/o=
+pt/homebrew/lib/pkgconfig"
+
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % export CPATH=3D"/opt/homebre=
+w/include"
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver % python build.py
+Could not find libjpeg. HINT: try 'sudo apt-get install libjpeg-turbo8-dev'=
+ on Ubuntu or 'brew install libjpeg-turbo' on OSX
+(venv) admin@SYMBIs-MacBook-Pro go-vncdriver %=20
+
+ChatGPT said:
+
+Excellent =
+=E2=80=94 you=E2=80=99re 99% there =F0=9F=91=8D
+
+The message
+
+cs=
+harp
+
+Copy code
+
+=
+
+Could 
+
+not
+
+ find libjpeg. HINT: 
+
+try
+=
+
+'sudo apt-get instal=
+l libjpeg-turbo8-dev'
+
+on
+
+ Ubuntu 
+
+or
+
+'brew=
+ install libjpeg-turbo'
+
+on
+
+ OSX
+
+means that 
+go-vncdriver
+=E2=80=99s 
+build.py
+ can=E2=80=99t locate your 
+libjpeg-turbo headers
+ =E2=80=94 even tho=
+ugh the library 
+is
+ installed.
+
+This is a 
+path detection issue =
+on Apple Silicon
+, not a missing dependency.
+
+Here=E2=80=99s how to fix it cleanly=
+ =F0=9F=91=87
+
+=E2=9C=85 Step-by-Step Fix (for M1 =
+/ Sequoia)
+
+1=EF=B8=8F=E2=83=A3 Confirm the ins=
+tall location
+
+Run this:
+
+b=
+ash
+
+Copy code
+
+brew --prefix libjpeg-turbo
+
+You should get something like:
+
+s=
+wift
+
+Copy code
+
+=
+
+/opt/
+
+homebrew
+
+/opt/
+
+jpeg
+
+=
+
+-
+
+turbo
+
+2=EF=B8=8F=E2=83=A3 Export correct =
+paths
+
+Now set all path

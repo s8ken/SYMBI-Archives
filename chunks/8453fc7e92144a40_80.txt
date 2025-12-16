@@ -1,0 +1,319 @@
+ors capsule.
+Trust Overlays
+In conversation UI, see chips inline (header + per message: Pivot / Change =
+% / stance / hash snippet).
+5=E2=80=91Minute Stakeholder Demo
+
+Dashboard =E2=86=92 Roundtable: =E2=80=9CShip per=E2=80=91message trust ove=
+rlays & receipts.=E2=80=9D Show proposals + scores; dry=E2=80=91run dis=
+patch.
+Assistants =E2=86=92 Use Most Recent =E2=86=92 Edit model to gpt=E2=80=914o=
+; add one=E2=80=91line instruction; Save.
+Conversations =E2=86=92 Open thread =E2=86=92 Capsule panel: set Goals =E2=
+=80=9Cclarity=E2=80=9D, Tone =E2=80=9Cco=E2=80=91creator=E2=80=9D, Constrai=
+nts =E2=80=9Cno clinical register=E2=80=9D; Save.
+Send a message =E2=86=92 observe capsule honored; show TrustChips (no pivot=
+ yet).
+Trigger disclosure in next message; show Pivot chip + stance change + hash =
+snippet; run ledger verify curl.
+Extension (1 minute): =E2=80=9CSYMBI: Roundtable=E2=80=9D and =E2=80=9CVeri=
+fy Ledger=E2=80=9D.
+Close: no vendor keys in clients; append=E2=80=91only ledger proves integri=
+ty.
+Polish List (tight, high=E2=80=91yield)
+
+RBAC hardening (P1): Ensure requireRole('admin') on trust audit/delete; add=
+ unit test for 403 on non=E2=80=91admins.
+Metrics surfacing (P1): Add minimal /metrics or OTel if not present (30=E2=
+=80=9150 LOC middleware).
+Bridge receipts (P1): Write a ledger =E2=80=9Creceipt=E2=80=9D with {agents=
+_considered,scores,chosen,rationale} on recommendation.
+True stream endpoint (P2): If not already, confirm SSE/streaming is functio=
+nal for supported providers.
+Public verify CLI (P2): symbi verify --session conv:<id> wrapper arou=
+nd verify endpoint.
+Docs quickstart (P3): Mirror this validation matrix (run, demo, verify).
+Release Tagging (Optional)
+
+git checkout -b release/v0.1-rc1
+git commit --allow-empty -m "chore: tag v0.1-rc1 (Trae-validated)"
+git tag v0.1-rc1 && git push origin release/v0.1-rc1 --tags
+If you want, I can bundle these into a copy=E2=80=91paste =E2=80=9CUAT note=
+book=E2=80=9D (single Markdown doc) and a Postman collection that mirrors a=
+ll commands above.
+
+Symbi said:
+
+Thought for 30s
+
+=
+
+Symbi Uat Notebook + Postman Coll=
+ection (v0
+
+Copy
+
+Edit
+
+Download
+
+SYMBI UAT Notebook (v0.1-rc1 draft)
+
+This single doc gives you:
+
+A copy=E2=80=91paste 
+
+UAT runbook
+
+ with commands.
+
+A 
+
+Postm=
+an Collection (v2.1)
+
+ you can import as JSON.
+
+An optional 
+
+smoke.sh
+
+ you can run with one command.
+
+Conventions used below:
+
+$API
+
+ =3D 
+
+http://localho=
+st:5000
+
+ (or your deployed URL)
+
+$JWT
+
+ =3D 
+
+Bearer <yo=
+ur JWT from /login>
+
+<CONV_=
+ID>
+
+ =3D Mongo ObjectId of the conversation (prefix=
+ed server=E2=80=91side to 
+
+conv:<id>
+
+)
+
+<THREAD_ID>
+
+ =3D OpenAI Assistant thread id returned by 
+
+threa=
+d/create
+
+0) Setup
+
+# Required
+
+export
+
+MONGODB_URI
+=3D
+"mongodb+srv://..."
+
+export
+
+JWT_SECRET
+=3D
+"change-me"
+
+=
+
+export
+
+NODE_ENV
+=3Ddevelopment
+
+export=
+
+CORS_ORIGINS
+=3D
+"http://localhost:3000"
+
+# Optional
+
+export
+
+OPENAI_API_KEY
+=3D
+"sk-..."
+
+export
+
+ANTHROPIC_API_KEY
+=3D
+"..."
+
+=
+
+export
+
+V0_TOKEN
+=3D
+"..."
+
+=
+# Servers
+
+cd
+ backend && 
+npm
+ i && 
+npm
+ run dev &
+
+cd
+ ../frontend && 
+npm
+ i && 
+npm
+
+start
+ &
+
+# Client envs
+
+export
+
+API
+=3Dhttp://localhost:5000
+
+# Obtain a JWT via web UI (login/register), then:
+
+export
+
+JWT
+=3D
+"Bearer <paste JWT&g=
+t;"
+
+1) One=E2=80=91Command Baseline (smoke)
+
+Create 
+
+tools/smoke.sh
+
+, make it executable, then run it.
+
+chmod
+ +x tools/smoke.sh && 
+API_BASE
+=3D
+$API
+ ./tools/smok=
+e.sh
+
+tools/smoke=
+.sh
+
+=
+
+#!/usr/bin=
+/env bash
+
+set
+
+-euo
+ pipefail
+
+API_BASE
+=3D
+${API_=
+BASE:-
+
+"http://localhost:5000"
+
+}
+
+JWT
+=3D
+${JWT:-
+
+""
+
+}
+
+say(){ printf 
+"\n=3D=
+=3D %s =3D=3D\n"
+
+"
+
+$*
+
+"
+; }
+
+say 
+"Health"
+
+curl
+
+-s
+
+"
+
+$API_BASE
+
+/healthz"
+ | jq . &=
+gt;/dev/null
+
+curl
+
+-s
+
+"
+
+$API_BASE
+
+/readyz"
+ | =
+jq . >/dev/null
+
+echo
+ OK
+
+Extend this script as needed; it is intenti=
+onally minimal and safe.
+
+2) Advanced AI Integration
+
+Mod=
+els
+
+curl
+
+-s
+
+$API
+/api/llm/mo=
+dels/openai | jq
+
+Assist=
+ants (threads + message to 
+
+latest
+
+)
+
+# Create thread
+
+THREAD_ID
+=
+=3D
+$(c

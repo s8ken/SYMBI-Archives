@@ -1,0 +1,293 @@
+st be generated for this exact hostname
+.
+
+If your license was created for 
+a different hostname
+, you need to 
+re-request it from Nextron Systems
+.
+
+3️⃣ Manually Point to the License File
+
+Try running THOR Lite 
+with the license file specified manually
+:
+
+sh
+
+Copy
+
+sudo ./thor-lite-macosx --license /Applications/thor10/thor-license.txt
+
+If this works, then the scanner was just 
+not automatically detecting the file
+.
+
+4️⃣ If It Still Fails, Request a New License
+
+If the above steps 
+don’t work
+, you likely need a 
+new license file
+.
+
+Go to 
+
+THOR Lite License Page
+
+Enter your 
+exact hostname (
+Mes-MacBook-Pro.local
+)
+ when requesting a license.
+
+Download it and replace the old file in 
+/Applications/thor10/
+.
+
+💬 Let Me Know If This Works!
+
+If you still get 
+“No valid license file found”
+, let me know what 
+ls -l thor-license.txt
+ and 
+hostname
+ show, and we’ll troubleshoot further. 🚀
+
+You said:
+
+Error No valid license file found HOSTNAME: Mes-MacBook-Pro.local
+user@Mes-MacBook-Pro thor10 % ls -l /Applications/thor10/thor-license.txt
+
+-rw-r--r--@ 1 user  staff  880  1 Mar 17:20 /Applications/thor10/thor-license.txt
+user@Mes-MacBook-Pro thor10 % 
+
+ChatGPT said:
+
+🚨 THOR Lite Still Can't Find the License—Final Fixes
+
+Your 
+license file exists
+ (
+thor-license.txt
+), but THOR Lite 
+isn't recognizing it.
+ Let's go through the final fixes step by step.
+
+1️⃣ Check If the License File is Corrupted
+
+Run:
+
+sh
+
+Copy
+
+cat
+
+ /Applications/thor10/thor-license.txt
+
+You should see 
+license text
+ inside the file.
+
+If the file is empty
+ or looks corrupted, you’ll need to 
+re-download it
+ from Nextron.
+
+If the text looks fine
+, move on to the next step.
+
+2️⃣ Manually Specify the License File in the Command
+
+Try running THOR Lite with the 
+license path explicitly defined
+:
+
+sh
+
+Copy
+
+sudo ./thor-lite-macosx --license /Applications/thor10/thor-license.txt
+
+If this works, then the scanner was just 
+not automatically detecting the file
+.
+
+3️⃣ Check If THOR Lite Can Read the License File
+
+The issue may be 
+permissions
+. Run:
+
+sh
+
+Copy
+
+ls
+
+ -l /Applications/thor10/thor-license.txt
+
+If it shows 
+
+rw-r--r--
+
+, that means only your user can access it.
+
+To 
+ensure THOR Lite can read the file
+, try:
+
+sh
+
+Copy
+
+sudo 
+
+chmod
+
+ 644 /Applications/thor10/thor-license.txt
+
+Then retry:
+
+sh
+
+Copy
+
+sudo ./thor-lite-macosx
+
+4️⃣ If It Still Fails, Request a New License
+
+If nothing works, the issue is likely that the 
+license does not match your exact hostname (
+Mes-MacBook-Pro.local
+)
+.
+
+Go to 
+
+THOR Lite License Page
+
+Enter your 
+exact hostname (
+Mes-MacBook-Pro.local
+)
+ when requesting a new license.
+
+Download it and 
+replace
+ the old license file in 
+/Applications/thor10/
+.
+
+💬 Let Me Know If This Works!
+
+If you 
+still get a license error
+, let me know the output of:
+
+sh
+
+Copy
+
+cat
+
+ /Applications/thor10/thor-license.txt
+
+ls
+
+ -l /Applications/thor10/thor-license.txt
+hostname
+
+And we’ll troubleshoot further! 🚀
+
+You said:
+
+thor-lite-bedccd25-edfd91d3-20250228-20250831.lic
+
+File
+
+ok I have redownloaded and placed in the thor10 folder
+
+ChatGPT said:
+
+Great! Now, let's make sure THOR Lite can detect it.
+
+1️⃣ Rename the License File
+
+Move and rename the newly downloaded license file to 
+thor-license.txt
+:
+
+sh
+
+Copy
+
+mv
+
+ /Applications/thor10/thor-lite-bedccd25-edfd91d3-20250228-20250831.lic /Applications/thor10/thor-license.txt
+
+2️⃣ Verify the File is in the Right Place
+
+Check that it's correctly named and in the 
+thor10
+ folder:
+
+sh
+
+Copy
+
+ls
+
+ -l /Applications/thor10/
+
+You should see 
+
+thor-license.txt
+
+ listed.
+
+3️⃣ Set Correct Permissions
+
+Ensure THOR Lite can read the file:
+
+sh
+
+Copy
+
+sudo 
+
+chmod
+
+ 644 /Applications/thor10/thor-license.txt
+
+4️⃣ Run THOR Lite with the License
+
+Now, try running THOR Lite again:
+
+sh
+
+Copy
+
+sudo ./thor-lite-macosx --license ./thor-license.txt
+
+💬 Let Me Know If This Works!
+
+If it 
+still doesn't recognize the license
+, send me the output of:
+
+sh
+
+Copy
+
+hostname
+
+cat
+
+ /Applications/thor10/thor-license.txt
+
+ls
+
+ -l /Applications/thor10/th

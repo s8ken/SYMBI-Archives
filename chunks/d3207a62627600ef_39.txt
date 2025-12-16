@@ -1,0 +1,253 @@
+:
+
+1️⃣ Start a 
+new capture
+ on your active interface (
+en0
+ for Wi-Fi, 
+en4
+ for Ethernet).
+
+2️⃣ Use this 
+filter
+ to see 
+active connections
+
+You said:
+
+let me do another Wireshark capture for 60 second
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Sounds like a great plan! 🚀
+
+🛠 Steps for a 60-Second Wireshark Capture
+
+1️⃣ 
+Open Wireshark
+
+2️⃣ 
+Start a new capture
+ on your active network interface:
+
+en0
+ (Wi-Fi)
+ or 
+
+en4
+ (Ethernet)
+
+3️⃣ Let it run for 
+60 seconds
+
+4️⃣ 
+Stop the capture
+
+5️⃣ 
+Save the capture as a 
+.pcapng
+ or 
+.txt
+ file
+
+6️⃣ Upload the file here, and I’ll analyze it for any 
+suspicious connections or remote access attempts
+.
+
+📌 
+Tip:
+ While capturing, avoid opening websites or apps so we only catch background traffic.
+
+🚀 
+Looking forward to the new capture!
+ Let’s find out what’s happening behind the scenes. 🔍👀
+
+You said:
+
+capture 2.txt
+
+Document
+
+here you go 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Your Wireshark capture contains a large amount of network traffic, but let's focus on key aspects to determine if anything looks suspicious.
+
+What I Noticed:
+
+Frequent Connections to 
+68.12.20.2f
+
+This IP appears frequently in the packet data.
+
+If this isn't a known or expected IP (such as your ISP or a VPN), it warrants further investigation.
+
+External Connections Over 
+443
+ (TLS/SSL)
+
+Most outbound connections seem to be over port 
+443
+, which is common for HTTPS.
+
+Some IPs appear multiple times, such as:
+
+8.8.8.8
+ (Google DNS, expected)
+
+185.70.42.22
+ (Unknown, could be checked)
+
+151.101.3.6
+ (A Cloudflare or Fastly address, possibly CDN-related)
+
+Possible Multicast Traffic (
+ff02::/16
+)
+
+Some packets indicate multicast traffic (
+ff02::
+), which is used for local network discovery.
+
+This could be normal (e.g., Bonjour, mDNS), but if you didn’t initiate anything related to network discovery, it might be worth monitoring.
+
+Connection to 
+239.255.255.250:1900
+
+This is related to 
+UPnP (Universal Plug and Play)
+, often used by smart devices and gaming consoles.
+
+If you don’t use UPnP, disabling it on your router might improve security.
+
+What You Should Do Next
+
+Check Unknown IPs
+
+Run:
+
+nginx
+
+Copy
+
+Edit
+
+whois
+
+185.70.42.22
+
+whois 
+
+151.101.3.6
+
+If they are not associated with a service you use, they might be worth blocking.
+
+Monitor for Unexpected Traffic
+
+If you suspect malware, block unknown persistent connections in 
+LuLu
+.
+
+Ensure VPN is Active
+
+Since you mentioned 
+VPN isn't running
+, confirm that your VPN software is enabled and actually tunneling traffic.
+
+Disable UPnP on Router
+
+Unless needed, UPnP should be disabled to prevent external access from rogue devices.
+
+Let me know if you need a deeper analysis on specific aspects! 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22
+whois: connect(): Operation timed out
+sja@SJAs-MacBook-Pro ~ % whois 151.101.3.6
+whois: connect(): Operation timed out
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 WHOIS Requests Timing Out – What This Means
+
+Since both 
+
+whois 185.70.42.22
+ and 
+whois 151.101.3.6
+
+timed out
+, this could indicate:
+
+Your internet provider or firewall is blocking WHOIS requests.
+
+These IPs are intentionally hiding details
+ (often seen with CDN services or obfuscated malware C2 servers).
+
+There is a temporary issue with WHOIS lookup servers.
+
+🚀 Alternative Ways to Investigate These IPs
+
+Since 
+whois
+ isn't working directly, let's try other methods.
+
+1️⃣ Use 
+dig
+ to Get More Information
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+dig -x 185.70.42.22
+dig -x 151.101.3.6
+
+📌 This will perform 
+reverse DNS lookup
+ to see if these IPs resolve to a known domain.
+
+2️⃣ Check What Process Is Using These IPs
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 185.70.42.22
+sudo lsof -i -P | grep 151.101.3.6
+
+📌 This will show 
+if any app on your Mac is currently connected to these IPs
+.
+
+3️⃣ Check If These IPs Are in Any Network Logs
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep 
+
+"185.70.42.22"
+
+ /var/log/*
+grep 
+
+"151.101.3.6"
+
+ /var/log/*

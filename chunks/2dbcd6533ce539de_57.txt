@@ -1,0 +1,103 @@
+o-code" user interface, while the **Symbi FastAPI agent (Railway)** act=
+s as the intelligent orchestrator, handling all the complex integrations wi=
+th these new services. Docker will be the underlying containerization techn=
+ology, managed by Railway and potentially JFrog.
+
+Here's a recommended approach, reimagining the "moving bits" with these new=
+ technologies:
+
+### Reimagined Architecture Overview
+
+- **UI Frontend (Vercel)**: Next.js dashboard. Your primary "zero-code" int=
+eraction point.
+- **Symbi FastAPI Agent (Railway)**: The central intelligence and orchestra=
+tion layer. This is where the Python code for integrating with SambaNova, J=
+Frog, and Supabase will live. It will be deployed as a Docker container on =
+Railway.
+- **LLM Inference (SambaNova)**: Replaces OpenAI/Together AI for high-perfo=
+rmance AI model inference, called by the Symbi agent.
+- **Database & Auth (Supabase)**: Becomes the primary database (Postgre=
+s) for all structured data (logs, threads, policies, deployments) and provi=
+des authentication for the frontend.
+- **Software Supply Chain (JFrog)**: Manages Docker images, artifacts, and =
+potentially CI/CD pipelines, integrated with Symbi's deployment actions.
+- **Containerization (Docker)**: The standard for deploying Symbi itself an=
+d any code Symbi generates for Railway.
+
+mermaid
+Failed to render diagram
+
+### Integration Strategy & "Zero-Code" Impact
+
+#### 1. SambaNova (LLM Inference)
+
+- **Role**: Provides high-performance, specialized AI model inference.
+- **Integration**: Your Symbi FastAPI agent will make direct API calls to S=
+ambaNova's inference endpoints. This replaces the 
+generateText
+=
+ or 
+streamText
+ calls to OpenAI/Together AI within your Python =
+code.
+- **"Zero-Code" for User**: You would configure SambaNova API keys and endp=
+oint URLs as environment variables in your Railway project. Symbi's Python =
+code handles the actual API interaction.
+- **AI-Readable**: Symbi will still process the raw LLM output from SambaNo=
+va and format it into structured Markdown or JSON before logging it or pres=
+enting it to the user.
+
+#### 2. JFrog (Artifactory, Xray, Pipelines)
+
+- **Role**: Centralized management of software artifacts (like Docker image=
+s), security scanning, and potentially orchestrating CI/CD pipelines.
+- **Integration**:
+
+- **Artifactory**: If Symbi generates new code that needs to be packaged (e=
+.g., a new microservice), it could push the resulting Docker image to JFrog=
+ Artifactory. This provides a secure, versioned repository for all your Sym=
+bi-generated artifacts.
+- **Xray**: Before deploying any Symbi-generated code or even Symbi's own u=
+pdates, your Symbi agent could trigger JFrog Xray scans to check for vulner=
+abilities.
+- **Pipelines**: For more complex deployment workflows, Symbi could trigger=
+ a JFrog Pipeline. For example, "Symbi, deploy the new feature branch after=
+ it passes all security and integration tests."
+
+- **"Zero-Code" for User**: You would configure JFrog credentials (API keys=
+, instance URLs) as environment variables in Railway. Symbi's Python code w=
+ould contain the logic to interact with JFrog's APIs. The UI would expose c=
+ommands like "Scan Project for Vulnerabilities" or "Deploy with JFrog Pipel=
+ine."
+- **AI-Readable**: JFrog scan reports, artifact versions, and pipeline stat=
+uses can be logged to your Supabase 
+agent_logs
+ table in a stru=
+ctured JSON format, making them easily consumable by other Symbi agents.
+
+#### 3. Supabase (Database, Auth, Realtime, Edge Functions)
+
+- **Role**: Becomes the unified backend for data storage and user authentic=
+ation.
+- **Integration**:
+
+- **Postgres Database**: Migrate all existing database tables (
+users
+, 
+threads
+, 
+messages
+, 
+deployments
+, 
+bot_configs
+, 
+system_metrics
+, 
+agent_logs=
+
+) from NeonDB to Supabase Postgres. This simplifies your database ma=
+nagement.
+- **Authentication**: For the Next.js frontend, Supabase Auth offers a fant=
+astic "zero-code" solution. You can use 
+@supabase/a

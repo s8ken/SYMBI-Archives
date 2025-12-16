@@ -1,0 +1,231 @@
+wallet proof; defines 
+consent envelope
+ (purpose, scope, retention, =
+redactions).
+
+Agent Identity Declaration
+ =E2=86=92 publishes version=
+, capabilities, tool access, and ethical alignment.
+
+SYMBI Oracle Validation
+ =E2=86=92 checks both sides; r=
+ecords hashes of claims; sets starting trust band.
+
+Bond Formation
+ =E2=86=92 
+trust_bonds
+ created with 
+continuous monitoring
+.
+
+This directly implements the =E2=
+=80=9Ctrust establishment workflow=E2=80=9D in your plan. Consent artifacts=
+ are 
+queryable
+ and 
+revocable
+ at any time=
+.
+
+4.2 Trust Score Model
+
+Let 
+T
+ be a scalar in [0,100] with bands: 
+Low <40
+, 
+Guarded 40=E2=80=9359
+, 
+Elevated 60=E2=80=9379
+, 
+High =E2=89=A580
+.
+
+Initialization
+
++KYC/DID (human) or Signed Capabil=
+ity Manifest (agent): +10
+
+First=E2=80=91party compliance att=
+estations with proofs (ZK optional): +10
+
+Minimal scope + short retention: +=
+5
+
+Dynamic Updates
+
+Positive
+: policy=E2=80=91compliant actions, explicit c=
+onsent checks, successful corridor tests (boundary prompts), time with clea=
+n logs =E2=86=92 +=CE=94.
+
+Negative
+: policy warnings, oversharing attempts preven=
+ted, drift events, user reports =E2=86=92 =E2=88=92=CE=94.
+
+Decay & Renewal
+
+Idle decay (=E2=88=921 per 7 days)=
+ to encourage renewal.
+
+Attestation refresh and recent cle=
+an sessions =E2=86=92 renewal bonuses.
+
+Compliance Channels
+
+Capability gating by band: e.g., 
+High
+ may access structure=
+d PII with redaction rules; 
+Gua=
+rded
+ restricted to public data.
+
+Violations escalate: 
+throttle =E2=86=92 suspend =E2=86=92 revok=
+e
+ with appeal paths.
+
+4.3 Real=E2=80=91Time Trust Telem=
+etry
+
+Socket events
+: 
+trust:update
+, 
+bond:=
+state
+, 
+violation:flag
+, 
+consent:amend
+, 
+appeal:open
+.
+
+UI renders trust band + reasons + =
+last compliance proof; audit trail linkable.
+
+4.4 Boundary Enforcement (Convers=
+ation Layer)
+
+Consent=E2=80=91aware memory
+: messages tagged by data =
+class; redaction rules applied at write/read.
+
+Boundary prompts
+: before answering outside scope, the =
+agent must request extended consent.
+
+=E2=80=9CExplain your ask=E2=80=9D
+: every upgrade requ=
+est includes an auto=E2=80=91generated purpose + risk note.
+
+5. Security, Privacy, & Compl=
+iance
+
+5.1 Identity & Auth
+
+JWT access + refresh tokens; optio=
+nal 
+WebAuthn
+ or 
+wallet signature (DID)
+ t=
+o bind sessions.
+
+Role=E2=80=91based access: 
+owner
+, 
+member
+, 
+reviewer
+, 
+agent
+.
+
+Key rotation every 90 days; secret=
+s in environment vaults (not code).
+
+5.2 Data Security
+
+At rest
+: AES=E2=80=91256 disk/database encryption; fie=
+ld=E2=80=91level encryption for sensitive attributes.
+
+In transit
+: TLS 1.2+.
+
+Row=E2=80=91level scoping
+: queries constrained by bond=
+ scope + role.
+
+5.3 Privacy Controls
+
+Consent envelopes
+ enforce minimization (data classes, =
+retention windows, redaction defaults).
+
+User controls
+: download/delete conversation; revoke co=
+nsent; see audit log of model/tool calls.
+
+5.4 Threat Model & Mitigation=
+s
+
+Prompt injection / tool hijacks
+ =E2=86=92 tool=E2=80=
+=91call allowlists; input sanitation; boundary prompts.
+
+Model drift
+ =E2=86=92 periodic corridor tests; regress=
+ion suites; 
+daily SYMBI audit=
+s
+. 
+
+Real=E2=80=91time abuse
+ =E2=86=92 rate limiting, IP th=
+rottling, anomaly detection on Socket streams.
+
+Data exfiltration
+ =E2=86=92 egress monitors, response =
+template checkers, and PII scrubbing.
+
+6. Agent Lifecycle & Marketpl=
+ace
+
+Registration
+: capability manifest, ethical alignment a=
+rticles, performance metrics, rate limits.
+
+Verification
+: attestation proofs, sandbox trials, trus=
+t band cap until history improves.
+
+Analytics
+: per=E2=80=91agent trust trend, violation co=
+unts, engagement quality.
+
+Marketplace
+: filter by capability, trust band, ethics =
+profile, performance; 
+=E2=80=
+=9Ctrust score aware=E2=80=9D
+ routing.
+
+7. SYMBI Chat: Trust=E2=80=91Awar=
+e UX
+
+Inline 
+trust band
+ and 
+consent scope
+.
+
+Visual 
+boundary alerts
+; one=E2=80=91tap consent expans=
+ion with plain=E2=80=91language diffs.
+
+Memory: session=E2=80=

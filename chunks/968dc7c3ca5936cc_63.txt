@@ -1,0 +1,229 @@
+ button and immediately hold down 
+Command (â) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Enable SIP and Authenticated Root:
+
+In Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+â ï¸ Caution:
+
+Disabling SIP and Authenticated Root reduces your system's security. Ensure you 
+re-enable
+ them after making the necessary changes to maintain protection against malicious software.
+
+If you encounter any issues or have further questions, feel free to ask!
+
+Sources
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % diskutil list
+
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *1.0 TB     disk0
+   1:             Apple_APFS_ISC Container disk1         524.3 MB   disk0s1
+   2:                 Apple_APFS Container disk3         994.7 GB   disk0s2
+   3:        Apple_APFS_Recovery Container disk2         5.4 GB     disk0s3
+
+/dev/disk3 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +994.7 GB   disk3
+                                 Physical Store disk0s2
+   1:                APFS Volume Macintosh HD - Data     23.5 GB    disk3s1
+   2:                APFS Volume Macintosh HD            11.2 GB    disk3s3
+   3:              APFS Snapshot com.apple.os.update-... 11.2 GB    disk3s3s1
+   4:                APFS Volume Preboot                 6.9 GB     disk3s4
+   5:                APFS Volume Recovery                1.0 GB     disk3s5
+   6:                APFS Volume VM                      20.5 KB    disk3s6
+
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+I understand you're aiming to disable AirPlay on your Mac by modifying system files, specifically using 
+Chrisgeo's script
+. 
+To achieve this, it's necessary to make the system volume writable, especially on macOS Big Sur and later versions, where the system volume is sealed and read-only by default.
+ Here's a comprehensive step-by-step guide to assist you:
+
+â ï¸ Important Note:
+
+Modifying system files can impact your Mac's functionality. Ensure you have 
+backed up your data
+ before proceeding. Additionally, this process requires temporarily disabling 
+System Integrity Protection (SIP)
+ and the 
+Authenticated Root Requirement
+, which are security features in macOS.
+
+1ï¸â£ Temporarily Disable System Integrity Protection (SIP) and Authenticated Root
+
+Restart Your Mac in Recovery Mode:
+
+Shut down your Mac.
+
+Press the power button and immediately hold down 
+Command (â) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Disable SIP and Authenticated Root:
+
+In Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+csrutil authenticated-root 
+
+disable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+2ï¸â£ Mount the System Volume as Writable
+
+In macOS Big Sur and later, the system volume is sealed and read-only by default. To make changes:
+
+reddit.com
+
++1
+
+donemax.com
+
++1
+
+Identify the System Volume:
+
+Open 
+Terminal
+.
+
+toolbox.easeus.com
+
++1
+
+elitemacx86.com
+
++1
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+diskutil list
+
+Locate your system volume (typically named "Macintosh HD").
+
+Create a Mount Point:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ /System/Volumes/Update/mnt
+
+Mount the System Volume as Writable:
+
+Replace 
+/dev/disk3s3
+ with your actual system volume identifier found in step 1.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo mount -o nobrowse -t apfs /dev/disk3s3 /System/Volumes/Update/mnt
+
+3ï¸â£ Download and Prepare Chrisgeo's Script
+
+Access the Script:
+
+Visit Chrisgeo's GitHub Gist.
+
+Copy the Script:
+
+Select all the code in the Gist and copy it.
+
+TonyMacx86
+
++7
+
+Apple Stack Exchange
+
++7
+
+elitemacx86.com
+
++7
+
+Create the Script File:
+
+Open 
+Terminal
+.
+
+Navi

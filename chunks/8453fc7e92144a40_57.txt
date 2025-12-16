@@ -1,0 +1,158 @@
+Roundtable: triggers /api/bridge/orchestrate to gather proposals; optional =
+dispatch (dry-run) via /api/bridge/dispatch.
+Stores only SYMBI_API_KEY in SecretStorage. Configure API base via symbi.ap=
+iBase.
+Dev Container
+One-click Node 18 + Git in container; forwards 5000/3000/27017.
+Keeps your existing Docker at repo root intact by using .devcontainer/docke=
+r-compose.dev.yml.
+Bridge Orchestrator Endpoints
+
+POST /api/bridge/orchestrate (auth required): fans out to configured agents=
+ (http/llm), normalizes and ranks proposals, appends event to ledger.
+backend/controllers/bridge.controller.js
+POST /api/bridge/dispatch (auth required): dry-run executes the selected pr=
+oposal and appends a ledger event.
+backend/controllers/bridge.controller.js
+Ranking and adapters:
+backend/services/bridge.service.js
+Ledger append utility:
+backend/services/ledger.service.js
+Simple OpenAI wrapper:
+backend/services/llm.util.js
+Config (edit agents, enable/disable):
+backend/bridge/bridge.config.yaml
+Setup
+
+Backend
+Ensure envs present as usual (JWT_SECRET, OPENAI_API_KEY if using LLM kind)=
+.
+Optionally set tokens for agent http adapters used in bridge.config.yaml (e=
+.g., V0_TOKEN, SERVICE_TOKEN).
+Extension
+In symbi-vscode-extension: run npm install && npm run compile.
+Launch F5 (VS Code Extension Host) or package as needed.
+In Command Palette:
+=E2=80=9CSYMBI: Set API Base=E2=80=9D =E2=86=92 e.g., http://localhost:5000
+=E2=80=9CSYMBI: Save SYMBI_API_KEY=E2=80=9D =E2=86=92 your scoped backend t=
+oken
+=E2=80=9CSYMBI: Open Console=E2=80=9D, =E2=80=9CSYMBI: Verify Ledger=E2=80=
+=9D, =E2=80=9CSYMBI: Roundtable (Gather Proposals)=E2=80=9D.
+Dev Container
+Open folder in VS Code =E2=86=92 =E2=80=9CReopen in Container.=E2=80=9D
+Use tasks =E2=80=9Cbackend
+=E2=80=9D and =E2=80=9Cfrontend
+=E2=80=9D to run apps.
+Notes
+
+I avoided modifying your existing docker-compose.yml; the devcontainer uses=
+ its own compose file.
+The orchestrator defaults to dry-run dispatch. You can wire real actions pe=
+r agent if desired.
+No provider keys ever leave the server; the extension holds only a scoped S=
+YMBI token.
+Want me to add:
+
+A simple settings panel in the extension for API base/token,
+An SSE stream viewer for /api/llm/stream,
+Trust chips in the console sourced from /api/insights/timeline?
+17 files changed
++626
+-0
+
+Undo
+
+View changes
+devcontainer.json
++32
+-0
+
+docker-compose.dev.yml
++19
+-0
+
+tasks.json
++8
+-0
+
+app.js
++2
+-0
+
+bridge.config.yaml
++21
+-0
+
+bridge.controller.js
++60
+-0
+
+bridge.routes.js
++13
+-0
+
+bridge.service.js
++81
+-0
+
+ledger.service.js
++54
+-0
+
+llm.util.js
++30
+-0
+
+.vscodeignore
++7
+-0
+
+package.json
++51
+-0
+
+extension.ts
++114
+-0
+
+ledgerView.ts
++31
+-0
+
+net.ts
++31
+-0
+
+webviewHtml.ts
++59
+-0
+
+tsconfig.json
++13
+-0
+
+how much of that setup can you assist me with - given that part of the solu=
+tion for web ui consumers who dont want to see the vscode app underneath (c=
+ode anxious / normal consumers).... Unified Strategy: One SYMBI Core, Two S=
+urfaces
+Core (single source of truth)
+Express API + Mongo remain the brain: auth, assistants, conversation bridge=
+, trust/ledger, insights, guardrails, memory.
+Orchestrator (Bridge) mediates Codex / Trae / v0 and returns one ranked rec=
+ommendation.
+Identity: JWT + roles; SYMBI_API_KEY only in clients; vendor keys stay serv=
+er-side.
+Continuity: hibernation switch, ledger verify, Echo protocol (already in).
+Clients (VS Code ext + Web) =E2=86=92 SYMBI Core API (auth, assistants, led=
+ger, insights, guardrails, bridge)
+=E2=86=98=EF=B8=8E LLM vendors (OpenAI/Anthropic/=E2=80=A6) + Tools (Weavia=
+te, Webhooks)
+Surface 1: VS Code Extension (for builders)
+Purpose: deep dev workflows; chat + commands inside the IDE.
+Console Webview =E2=86=92 POST /api/assistant/message (latest assistant fal=
+lback).
+Ledger Tree =E2=86=92 /api/sessions/recent, Verify Chain =E2=86=92 /api/led=
+ger/verify.
+Status Bar =E2=86=92 /healthz for normal/hibernation/offline.
+Roundtable (Bridge) =E2=86=92 /api/bridge/orchestrate and /dispatch to coor=
+dinate Codex/Trae/v0

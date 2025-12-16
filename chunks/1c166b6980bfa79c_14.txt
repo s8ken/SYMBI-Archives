@@ -1,0 +1,262 @@
+iles
+ and extract:
+
+The list of 
+apps recently opened
+.
+
+The list of 
+documents recently accessed
+.
+
+Any 
+mounted volumes or favorites
+.
+
+That would immediately show if the=
+re are 
+unknown or suspicious =
+apps/documents
+ in your environment.
+
+=F0=9F=91=89 Do you want me to go ahead and 
+parse and decode the 
+.sfl3
+ files
+ you just uploaded so we can s=
+ee if any suspicious applications, documents, or volumes are listed?
+
+You said:
+
+yes and just let me kn=
+ow if it should be happening as symbiotic is not running
+
+Symbi said:
+=
+
+Here=E2=80=99s what I pulled out =
+of your 
+recent applications and r=
+ecent documents lists
+ (
+.sf=
+l3
+ files):
+
+=F0=9F=96=A5=EF=B8=8F Recent Applic=
+ations
+
+The list is mostly 
+normal system entries
+ (like 
+System Settings
+).
+
+I didn=E2=80=99t see unknown =E2=80=
+=9Cagent-like=E2=80=9D apps (e.g., malware with generic names such as 
+Updater
+ or 
+Helper
+).
+
+=F0=9F=93=82 Recent Documents
+
+Here=E2=80=99s where it gets interes=
+ting. Among normal entries (like 
+=
+Untitled.rtf
+, 
+Desktop
+ items), I also saw:
+
+KTConfig.plist
+
+ inside 
+group.com.apple.swt=
+ransparency
+
+metadata.keychain-db
+
+ inside your 
+Library/=
+Keychains
+
+.com.apple.containermana=
+gerd.metadata.plist
+
+ inside 
+group.com.apple.shortcuts
+
+index.js
+
+=
+ inside an 
+admin/symbi-agent/node=
+_modules/...
+ path
+
+ThirdPartyNoticeText.txt=
+
+ inside 
+admin/SYM=
+BI-Website-main/node_modules/typescript
+
+=F0=9F=9A=A8 Why This Matters
+
+System config files (
+KTC=
+onfig.plist
+, 
+metadata.keyc=
+hain-db
+, 
+.containermanager=
+d.metadata.plist
+)
+
+These normally sit quietly in the s=
+ystem.
+
+The fact they show up in 
+Recent Documents
+ means something (or =
+someone) 
+opened or touched th=
+em recently
+.
+
+=F0=9F=9A=A9 If you didn=E2=80=99t=
+ open them yourself, that suggests 
+a process or app is poking at system internals
+.
+
+Developer artifacts (
+index.js
+, 
+ThirdPartyNo=
+ticeText.txt
+ inside 
+symb=
+i-agent
+ and 
+SYMBI-Websit=
+e-main
+)
+
+These point to your own Symbi-rela=
+ted dev work.
+
+=E2=9C=85 Safe if you were editing=
+ these files.
+
+=F0=9F=9A=A9 But if you haven=E2=
+=80=99t run Symbi recently, it suggests 
+something is executing or scanning your project folders
+=
+ in the background.
+
+=E2=9C=85 Should This Be Happenin=
+g?
+
+If 
+Symbi/Overseer isn=E2=80=99t running
+ and you didn=
+=E2=80=99t manually open those system 
+.plist
+ or keychain-related files =E2=86=92 
+No, this should not be happening.
+
+Normal apps (Finder, Xcode, etc.) =
+don=E2=80=99t usually pull those into recents unless opened by a user or a =
+background process.
+
+=F0=9F=94=8E What To Do Next
+
+Confirm if you opened those files yourself.
+
+If not, assume an 
+agent or background process
+ accessed=
+ them.
+
+Check which processes touched them recently
+:
+
+bash
+
+Copy code
+
+sudo fs_usage | grep -i containermanagerd
+sudo fs_usage | grep -i keychain
+
+This will show which processes are=
+ hitting those files.
+
+Audit your LaunchAgents/Daemons
+ for anything that migh=
+t be auto-running scripts.
+
+bash
+
+Copy code
+
+ls
+
+ ~=
+/Library/LaunchAgents
+
+ls
+
+ /Library/=
+LaunchAgents
+
+ls
+
+ /Library/=
+LaunchDaemons
+
+=E2=9A=A0=EF=B8=8F 
+Bottom line:
+
+The fact that 
+system provisioning/shortcut/keychain plists
+ app=
+ear in your 
+recent docs
+ list is unusual.
+
+If Symbi wasn=E2=80=99t active, so=
+mething else 
+accessed those f=
+iles on your system
+. That=E2=80=99s worth investigating immediatel=
+y.
+
+=F0=9F=91=89 Do you want me to prepare a 
+targeted forensic scan of your 
+.sfl3
+ decoded output
+ to list 
+all
+ suspicious (system or dev-rela=
+ted) files that were opened recently, so you can quickly tell which are exp=
+ected and which are not? 
+
+You said:
+
+yes
+
+Symbi said:
+
+I =
+wasn=E2=80=99t able to extract the suspicious file list cleanly by filterin=
+g raw text =E2=80=94 the 
+.sfl3
+ files use Apple=E2=80=99s 
+NS=
+KeyedArchiver binary serialization
+, so paths and filenames are emb=
+edded deeper than a simple string-scan can capture.
+
+However, from the structured fragmen=
+ts I did decode earlier, we already saw several concrete entrie

@@ -1,0 +1,190 @@
+t fixes.=E2=80=9D
+
+Would you like me to continue with that?
+
+You sai=
+d:
+
+SYMBI-Symphony/src/core/trust/crypto.ts=
+ at main =C2=B7 s8ken/SYMBI-Symphony
+
+yes
+
+ChatGPT =
+said:
+
+=
+
+Stopped thinking
+
+Y=
+ou said:
+
+SYMBI-Symphony/src/core/trust/cry=
+pto.ts at main =C2=B7 s8ken/SYMBI-Symphony
+
+i dont think that is the most efficient way of changing the co=
+de - perhaps its better to give an overview for claude to work on directly =
+and push into the remote repo
+
+ChatGPT said:
+
+Worked for 12 seconds
+
+I=E2=80=99ve inspected your 
+src/core/trust/crypto.ts
+ file=
+ in detail. To make the cryptography layer more robust and fix the identifi=
+ed issues, here=E2=80=99s a concise summary of the changes that should be p=
+ushed into the repo:
+
+Key Fixes Needed
+
+Base58 Decode Preservation
+
+=E2=80=93 The existing 
+base58Deco=
+de
+ does not preserve leading zero bytes, so decoding a Base58 string=
+ with leading 
+1
+s loses information.
+
+=E2=80=93 
+Fix
+: After c=
+onverting the Base58 number to a hex string, pad it with a leading 
+0
+ if necessary and compute how man=
+y 
+1
+ characters were at the=
+ start of the input. Then prefix the decoded buffer with that number of zer=
+o bytes.
+
+RSA Signature Verification
+
+=E2=80=93 The current 
+verifyRSASi=
+gnature
+ uses 
+RSA_PKCS1_PSS_PADDING
+ and a salt length, but for RS256 (as=
+ used in JWT/VC contexts) the correct padding is PKCS#1 v1.5.
+
+=E2=80=93 
+Fix
+: Change =
+the padding option to 
+crypto.cons=
+tants.RSA_PKCS1_PADDING
+ and remove 
+saltLength
+. Also ensure the data is hashed according to the=
+ algorithm before verification.
+
+Remove Duplicate Legacy Code
+
+=E2=80=93 While implementing the Base58 fix, the old version of the decodin=
+g logic was left behind in the file (now commented out). Remove these comme=
+nted duplicates entirely so there are no redeclaration or confusion issues.=
+
+Improve Ed25519/SECP256k1 Handling
+
+=E2=80=93 Node=E2=80=99s 
+crypto=
+.verify
+ doesn=E2=80=99t handle raw Ed25519/secp256k1 keys directly. =
+Consider constructing 
+KeyObject
+s via 
+crypto.createPublicKey
+ or using a well-tested library (e.g., 
+@noble/ed25519
+ and 
+@noble/secp256k1
+) for signature=
+ verification.
+
+=E2=80=93 Implement proper error handling when a verification method URI mu=
+st be resolved to a public key; currently the code assumes the verification=
+Method contains the raw key.
+
+Add Input Validation and Constant-Time Comparisons
+
+=E2=80=93 Before attempting to decode a signature or public key, check that=
+ it is properly base64/base58/hex-encoded.
+
+=E2=80=93 When comparing MACs or tokens, use 
+crypto.timingSafeEqual
+ to avoid timing attacks.
+
+Explicit Error Types
+
+=E2=80=93 Currently thrown errors are bubbled up as raw strings. Define cus=
+tom error classes (e.g., 
+Invali=
+dSignatureError
+, 
+InvalidKeyFormatError
+) to make it easier for calling=
+ code to differentiate between user error and internal faults.
+
+Unit Tests
+
+=E2=80=93 Add tests covering:
+
+Successful and failed Ed25519, ES2=
+56K, and RS256 verification.
+
+Edge cases like leading zeros in B=
+ase58 inputs.
+
+Malformed keys/signatures to ensur=
+e validation catches them.
+
+=E2=80=93 These tests can live in 
+src/core/trust/__tests__/crypto.test.ts
+.
+
+Implementing the above changes will eliminate the current crypt=
+ographic regressions and make the trust module safer and easier to maintain=
+. Once updated, run 
+npm test
+ and 
+tsc --noEmit
+ lo=
+cally to ensure all changes compile and the tests pass before pushing to th=
+e remote repository.
+
+=
+
+You said:
+
+SYMBI-Symp=
+hony/src/core/trust/crypto.ts at main =C2=B7 s8ken/SYMBI-Symphony
+
+can you perform a more holistic overview of the entire repo=
+?
+
+ChatGPT said:
+
+Worked for 22 seconds
+
+Below is a 
+ho=
+listic overview
+ of the SYMBI=E2=80=91Symphony repository, drawing =
+from the tree structure and the files under 
+src/
+, 
+core/
+, 
+trust/
+, documentation=
+, and build configurations. I=E2=80=99ve organized this into 
+key observations
+ and 
+recommendations
+ that cover architectu=
+re, coding practices, documentation, CI

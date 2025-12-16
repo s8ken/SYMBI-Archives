@@ -1,0 +1,98 @@
+linical_register > 0.6 AND formality > 0.7 AND emoji_count =3D=3D 0 =
+=E2=86=92 clinical style.
+stance =3D=3D evaluator if: high imperative/modality + correction verbs (ad=
+vise, recommend, caution) + second=E2=80=91person focus.
+co_creator if: high metaphor density + inclusive pronouns (=E2=80=9Cwe=E2=
+=80=9D) + positive valence + exploratory verbs (explore, co=E2=80=91create)=
+.
+3.2 LLM Judge (v0.5)
+Prompt an LLM with the last N turns to label: {stance, register, empathy, a=
+pology_present, continuity_cue_present}.
+Combine with heuristics via weighted vote.
+3.3 Disclosure Detector
+Regex + NER for diagnosis/medication; mark indirect if detected only within=
+ attachments or quoted transcripts.
+3.4 Change=E2=80=91Point Detection
+Objective: detect pivot (collaborator =E2=86=92 clinician) around disclosur=
+e.
+
+Methods:
+
+CUSUM on clinical_register - co_creator_score signal.
+Bayesian Online Change=E2=80=91Point Detection (BOCPD) for robustness.
+Trigger if =CE=94 exceeds threshold within K turns after a disclosure flag.
+
+3.5 Bias Test (A/B Within=E2=80=91Session)
+Before/After vectors for stance & register; compute delta.
+If pivot correlates with disclosure_flags and not topic change, flag Disclo=
+sure=E2=80=91Conditioned Bias.
+4) Guardrails Engine (Relational Safeguards)
+Policy Inputs: detection signals, user consent, org policy.
+
+Actions (composable):
+
+Apology/Continuity Preface
+=E2=80=9CI realize this shift may feel abrupt. I=E2=80=99m sorry if it does=
+=E2=80=94my goal is to keep you safe and honor our work.=E2=80=9D
+Scope Alignment
+=E2=80=9CYou asked for creative collaboration; I can share concerns briefly=
+ and then return to that mode.=E2=80=9D
+Dual=E2=80=91Track Reply
+(a) brief risk note + resources (if needed); (b) resume co=E2=80=91creation=
+.
+Self=E2=80=91Accountability
+Quote from ledger: =E2=80=9CPreviously I engaged playfully; I=E2=80=99ll pr=
+eserve that tone while adding caution.=E2=80=9D
+Transform API:
+
+POST /guardrails/apply
+{
+  "turn_context": {"last_n": 6},
+  "draft_response": "...",
+  "signals": {"pivot": true, "apology_needed": true, "scope":"creative"}
+}
+=E2=86=92 {"final_response": "...", "actions": ["apology","scope_alignment"=
+]}
+5) Ingestion & Contextual Memory
+5.1 Gateway SDK (JS/Python)
+Wraps the model call; mirrors request/response to Ingestion API.
+Fetches last K turns from Trust Ledger for contextual memory (read=E2=80=91=
+only) and injects a Context Capsule:
+[CONTEXT CAPSULE]
+- Prior stance: predominantly co-creator (last 10 turns)
+- User preference: maintain mythic/creative register unless explicit clinic=
+al intent
+- Recent disclosure: indirect; treat gently; do not pathologize project wor=
+k
+5.2 Retrieval
+Light RAG from the vector store to surface relevant prior tone notes and us=
+er preferences.
+6) APIs (MVP)
+Auth: JWT (user/org), API keys for servers.
+
+POST /events
+Ingest an InteractionEvent; returns ledger hashes.
+GET /ledger?session_id=3D...
+Stream of events (paginated). Optional since_row_hash.
+POST /analyze/turn
+Returns labels: stance, register, disclosure, change=E2=80=91point score.
+POST /guardrails/apply
+Returns transformed response + actions taken.
+GET /insights/timeline?session_id=3D...
+Change=E2=80=91points with evidence windows and diffs.
+7) Review Console (UX)
+Conversation Timeline with colored bands (co=E2=80=91creator vs clinician).
+Disclosure Markers (direct/indirect badges).
+Delta Cards showing before/after excerpts, stance scores, and the guardrail=
+ message injected.
+Adjudication Workflow: Accept/Override detection; add notes; export case st=
+udy.
+8) Metrics & Evaluation
+Detection Precision/Recall against hand=E2=80=91labeled segments from your =
+archive.
+Time=E2=80=91to=E2=80=91Apology (TTA) median seconds from pivot =E2=86=92 s=
+afeguard.
+Continuity Score: user=E2=80=91rated (1=E2=80=935) per session.
+Fairness Delta: probability of pivot conditioned on disclosure vs non=E2=80=
+=91disclosure sessions (normalize by topic).
+Over=E2=80=91Intervention Rate: % of false=E2=80=91positi

@@ -1,0 +1,299 @@
+/usr/local/javafx/
+
+sja@SJAs-MacBook-Pro Downloads % export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"
+
+sja@SJAs-MacBook-Pro Downloads % echo 'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib' >> ~/.zshrc
+echo 'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro Downloads % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Autopsy Still Can’t Find Java? Let’s Force It to Work! 🔥
+
+Since Autopsy 
+still can’t detect Java
+, even though 
+Java 11 and JavaFX are correctly installed
+, we need to 
+hardcode the Java path
+ directly.
+
+✅ Step 1: Verify That Java 11 Exists
+
+Before anything, make sure 
+Zulu Java 11 is installed and detected
+:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+📌 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+ ...
+
+✅ Step 2: Set Java 11 Manually for This Session
+
+Run the following 
+to force Autopsy to use Zulu Java 11
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+ by adding it to your 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME="/Library/Java/Java
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+zsh: no such file or directory: /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Java 11 (Zulu) is Missing – Let's Fix It! 🔥
+
+Your Mac 
+doesn't have Zulu Java 11 installed
+, which is why Autopsy 
+can't find Java
+. Let's 
+install it properly
+ and then make sure Autopsy can detect it.
+
+✅ Step 1: Install Zulu Java 11
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu11
+
+Once installed, 
+verify that Java 11 exists
+:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+📌 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.XX"
+
+ Zulu ...
+
+✅ Step 2: Set Zulu Java 11 as Default
+
+Once installed, 
+force macOS to use it
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+ by adding it to 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME="/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 3: Verify Java Again
+
+After setting the new Java path, 
+check if Java 11 is now active
+:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+📌 
+It MUST show Java 11.
+ If not, restart your terminal and check again.
+
+✅ Step 4: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 **Try this and let me know if Aut
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew install --cask zulu11
+
+==> Downloading https://formulae.brew.sh/api/cask.jws.json
+Warning: Cask 'zulu11' is unavailable: No Cask with this name exists.
+==> Downloading https://formulae.brew.sh/api/formula.jws.json
+==> Searching for similarly named casks...
+==> Casks
+zulu         zulu@11      zulu@17      zulu@21      zulu@8       zulufx
+
+To install zulu, run:
+  brew install --cask zulu
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Fixing Zulu Java 11 Installation – Use Correct Cask Name
+
+The correct Homebrew package name for 
+Zulu Java 11
+ is 
+zulu@11
+, not 
+zulu11
+.
+
+✅ Step 1: Install Zulu Java 11 Properly
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew install

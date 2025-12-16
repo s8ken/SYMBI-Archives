@@ -1,0 +1,517 @@
+Theme Handling is Client-Side
+
+Open 
+
+theme-provider.tsx
+
+ in your project and wrap the theme logic inside 
+useEffect
+:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [theme, setTheme] = 
+
+useState
+
+(
+
+"dark"
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setTheme
+
+(
+
+document
+
+.
+
+documentElement
+
+.
+
+classList
+
+.
+
+contains
+
+(
+
+"dark"
+
+) ? 
+
+"dark"
+
+ : 
+
+"light"
+
+);
+  }, []);
+
+return
+
+<
+div
+
+className
+
+=
+
+{theme}
+
+>{children}
+
+</
+div
+
+>;
+}
+
+✅ 
+Why?
+ This ensures the theme 
+only updates on the client
+, avoiding mismatches with SSR.
+
+✅ Fix #2: Ensure Any 
+window
+ Checks Are in 
+useEffect
+
+If any component uses 
+window
+, move it inside 
+useEffect
+:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+MyComponent
+
+ = (
+
+) => {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ isClient ? 
+
+<
+div
+
+>Client-Side Rendered
+
+</
+div
+
+> : 
+
+<
+div
+
+>Loading...
+
+</
+div
+
+>;
+};
+
+✅ 
+Why?
+ This prevents the server from rendering 
+window
+, fixing hydration.
+
+✅ Fix #3: Debug with 
+useEffect
+ (Temporary)
+
+If the above fixes don’t work, 
+log hydration mismatches
+ using 
+useEffect
+:
+
+tsx
+
+Copy
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+"Hydration debug:"
+
+, 
+
+document
+
+.
+
+body
+
+.
+
+innerHTML
+
+);
+}, []);
+
+✅ 
+Why?
+ This helps track 
+what's changing between SSR and client.
+
+🔹 Step 3: Fix the Logo Issue
+
+Your 
+logo might not be showing
+ due to a 
+missing file path or Next.js Image optimization issues
+.
+
+1️⃣ 
+Ensure the logo exists in 
+/public/
+
+Correct file path:
+
+tsx
+
+Copy
+
+<img src=
+
+"/symbi-logo.jpg"
+
+ alt=
+
+"Symbi Logo"
+
+ width={
+
+200
+
+} height={
+
+100
+
+} />
+
+If using 
+next/image
+, update it:
+
+tsx
+
+Copy
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"Symbi Logo"
+
+width
+
+=
+
+{200}
+
+height
+
+=
+
+{100}
+
+priority
+
+ />
+
+✅ 
+Why?
+ Next.js optimizes images and expects them inside 
+/public/
+.
+
+🔹 Step 4: Push the Fixes & Redeploy
+
+1️⃣ 
+Save the fixes and push them to GitHub
+:
+
+bash
+
+Copy
+
+git add .
+git commit -m 
+
+"Fixed hydration issue & logo path"
+
+git push origin main
+
+2️⃣ 
+Go to Vercel and click "Redeploy"
+
+✅ Now the hydration error should be gone!
+
+🔥 
+Try these fixes and let me know what happens! We’re almost live!
+ 😈🚀
+
+You said:
+
+wait start slow where am I going
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Gotcha! Let’s slow it down and go step by step.
+ We’ll 
+first identify what’s causing the hydration issue
+, then 
+fix it one piece at a time.
+ 🚀😈
+
+🔹 Step 1: Identify Where the Error is Happening
+
+Right now, Next.js is 
+hydrating (re-rendering) the page on the client
+, but something 
+doesn’t match the server-side rendered (SSR) HTML.
+
+👉 
+We need to find which component is causing the problem.
+
+1️⃣ 
+Open your terminal and stop the Next.js server
+
+bash
+
+Copy
+
+CTRL + C
+
+(This stops the 
+npm run dev
+ process.)
+
+2️⃣ 
+Restart it with this command
+ (to see detailed logs):
+
+bash
+
+Copy
+
+npm run dev
+
+✅ 
+Look for console errors—it may point to the component causing hydration issues.
+
+3️⃣ 
+Also check your browser console
+ (Chrome: 
+Right Click > Inspect > Console
+).
+
+If you see errors like 
+"Hydration failed..."
+, check what part of the page is breaking.
+
+Does the error mention a specific component?
+
+🔹 Step 2: Debug Which Component is Causing the Issue
+
+If 
+the error doesn’t show a clear component
+, we can 
+log which parts are rendering differently.
+
+1️⃣ Open 
+
+app/layout.tsx
+
+ and add this debug line inside your 
+useEffect
+ hook:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect } 
+
+from
+
+"react"
+
+;
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+console
+
+.
+
+log
+
+(
+
+"Hydration debug:"
+
+, 
+
+document
+
+.
+
+body
+
+.
+
+innerHTML
+
+);
+}, []);
+
+2️⃣ Save and 
+restart the server
+ (
+npm run dev
+).
+
+3️⃣ 
+Check the browser console logs.
+
+Does something look off?
+
+Are parts of the page different from what the server expects?
+
+🔹 Step 3: Fix Common Hydration Issues
+
+Once we know 
+which

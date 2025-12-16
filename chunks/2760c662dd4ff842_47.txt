@@ -1,0 +1,343 @@
+No" WILL DESTROY CHANGES)?
+
+Press 
+Y
+
+ to save changes.
+
+Then
+: When asked for the file name, just press 
+Enter
+ to confirm the path 
+/Users/lcl/Documents/accessibility_monitor.sh
+.
+
+🚀 Step 3: Make It Executable
+
+Once the script is saved, make sure it’s executable:
+
+sh
+
+Copy
+
+chmod
+
+ +x /Users/lcl/Documents/accessibility_monitor.sh
+
+🚀 Step 4: Test the Script
+
+To verify it works, run the script manually:
+
+sh
+
+Copy
+
+/Users/lcl/Documents/accessibility_monitor.sh
+
+Let me know if this resolves the issue!
+
+You said:
+
+I think its too late I save it
+
+ChatGPT said:
+
+No worries! If the file was saved but didn't work as expected, we can fix it easily.
+
+Here’s what to do next:
+
+🚀 Step 1: Open the Script for Editing
+
+Let’s open the script again to check its contents:
+
+sh
+
+Copy
+
+nano /Users/lcl/Documents/accessibility_monitor.sh
+
+🚀 Step 2: Verify Script Content
+
+Make sure the script is written correctly. It should look like this:
+
+sh
+
+Copy
+
+#!/bin/bash
+
+ACCESSIBILITY_SETTINGS=
+
+"/Users/lcl/Documents/accessibility_settings.txt"
+
+CURRENT_SETTINGS=$(defaults 
+
+read
+
+ com.apple.universalaccess)
+
+# Check if the settings file exists
+
+if
+
+ [ -f 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+" ]; 
+
+then
+
+    LAST_SETTINGS=$(
+
+cat
+
+"
+$ACCESSIBILITY_SETTINGS
+
+")
+
+if
+
+ [ 
+
+"
+$CURRENT_SETTINGS
+
+" != 
+
+"
+$LAST_SETTINGS
+
+" ]; 
+
+then
+
+echo
+
+"ALERT: Accessibility settings have changed!"
+
+ | mail -s 
+
+"Accessibility Settings Change Alert"
+
+ your-email@example.com
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+else
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+🚀 Step 3: Save Again
+
+Once the script looks correct, you can save it properly by following these steps:
+
+Press 
+CTRL + X
+
+ to exit.
+
+Press 
+Y
+
+ to confirm saving changes.
+
+Press 
+Enter
+
+ to confirm the file path 
+/Users/lcl/Documents/accessibility_monitor.sh
+.
+
+🚀 Step 4: Make It Executable Again
+
+Ensure it’s executable:
+
+sh
+
+Copy
+
+chmod
+
+ +x /Users/lcl/Documents/accessibility_monitor.sh
+
+🚀 Step 5: Test the Script
+
+Finally, run the script to see if it logs properly:
+
+sh
+
+Copy
+
+/Users/lcl/Documents/accessibility_monitor.sh
+
+Let me know how it goes or if you encounter any issues! If the script still isn't running, we can troubleshoot further.
+
+You said:
+
+#!/bin/bash
+ACCESSIBILITY_SETTINGS="/Users/lcl/Documents/accessibility_settings.txt"
+CURRENT_SETTINGS=$(defaults read com.apple.universalaccess)
+
+# Check if the settings file exists
+if [ -f "$ACCESSIBILITY_SETTINGS" ]; then
+    LAST_SETTINGS=$(cat "$ACCESSIBILITY_SETTINGS")
+    if [ "$CURRENT_SETTINGS" != "$LAST_SETTINGS" ]; then
+        echo "ALERT: Accessibility settings have changed!" | mail -s "Accessibi$
+        echo "$CURRENT_SETTINGS" > "$ACCESSIBILITY_SETTINGS"
+    fi
+else
+    echo "$CURRENT_SETTINGS" > "$ACCESSIBILITY_SETTINGS"
+fi
+
+ChatGPT said:
+
+It looks like the script is almost correct but it seems to have been cut off at the 
+mail command
+ (
+echo "ALERT: Accessibility settings have changed!" | mail -s "Accessibi$
+). Let's fix this issue by completing the 
+mail command
+ properly and ensuring everything is in order.
+
+🚀 Corrected Script
+
+Here’s the corrected version of your script:
+
+sh
+
+Copy
+
+#!/bin/bash
+
+ACCESSIBILITY_SETTINGS=
+
+"/Users/lcl/Documents/accessibility_settings.txt"
+
+CURRENT_SETTINGS=$(defaults 
+
+read
+
+ com.apple.universalaccess)
+
+# Check if the settings file exists
+
+if
+
+ [ -f 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+" ]; 
+
+then
+
+    LAST_SETTINGS=$(
+
+cat
+
+"
+$ACCESSIBILITY_SETTINGS
+
+")
+
+if
+
+ [ 
+
+"
+$CURRENT_SETTINGS
+
+" != 
+
+"
+$LAST_SETTINGS
+
+" ]; 
+
+then
+
+echo
+
+"ALERT: Accessibility settings have changed!"
+
+ | mail -s 
+
+"Accessibility Settings Change Alert"
+
+ your-email@example.com
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+else
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+🚀 Step-by-Step Explanation:
+
+Current Settings
+: The script reads the current accessibility settings with:
+
+sh
+
+Copy
+
+CURRENT_SETTINGS=$(defaults 
+
+read
+
+ com.apple.universalaccess)
+
+Comparison
+: It checks 

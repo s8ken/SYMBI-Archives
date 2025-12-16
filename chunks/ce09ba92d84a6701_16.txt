@@ -1,0 +1,398 @@
+o Receipt
+ =E2=86=92 
+Verify in Browser
+ flow work end-to-end.
+
+Expose 
+/.well-known/ycq-receipt-pubkey
+ and reference it in the=
+ verifier page.
+
+Add footer provenance: =E2=80=9CCore=
+ trust: SYMBI-Symphony vX.Y =E2=80=A2 Product: SYMBI-SYNERGY (YCQ Sonate).=
+=E2=80=9D
+
+Consistency pass: =E2=80=9C95% test =
+coverage across 313+ files=E2=80=9D + label sample receipts =E2=80=9CExampl=
+e=E2=80=9D.
+
+Record a 90-sec demo video showing m=
+int =E2=86=92 paste =E2=86=92 verify.
+
+Export a one-pager PDF (problem =E2=
+=86=92 solution =E2=86=92 why now =E2=86=92 demo links =E2=86=92 protocol v=
+s product =E2=86=92 traction).
+
+If you want, I can now draft the one=
+-pager PDF text and the demo video script so you can record in one take.
+
+=
+
+=
+
+You said:
+
+https://www.yseeku.com/demo
+
+=
+
+Symbi said:=
+
+Th=
+ought for 9s
+
+Nice=E2=80=94saw the new 
+/demo
+ page. Here=E2=80=99s the quick tig=
+hten-up so it=E2=80=99s YC-ready and consistent with what we built.
+
+What=E2=80=99s good
+
+Clear demo creds and a single 
+Launch Interactive Demo
+ CTA.=
+
+YCQ Sonate=
+
+Strong protocol walkthroughs (DID me=
+thods, VC issuance, Status List 2021, audit chain). 
+
+YCQ Sonate
+
+Performance + coverage badges alread=
+y on-page (47ms, 95% cache hit, 95% test coverage). 
+
+YCQ Sonate
+
+Add these 5 things (today)
+
+Wire the verify flow
+
+Add buttons under the demo CTA: 
+Get Demo Receipt
+ =E2=86=92 
+Verify in Browser
+ (opens 
+/verifier.html
+ preloaded). This connects the narrative to a=
+ tangible proof. (We already drafted the UI + API.)
+
+Link methodology
+
+Under =E2=80=9CProduction Performance Metrics,=E2=80=9D add: 
+View methodology & assumptions =E2=86=92 =
+
+/metrics-methodology
+
+ so the 95% number is anchored. 
+
+YCQ Sonate
+
+=
+
+Public key endpoint mention
+
+In the =E2=80=9CCryptographic Audit Trail=E2=80=9D or after the verify butt=
+ons, add: 
+Public verify key
+ =E2=86=92 
+/.well-known/=
+ycq-receipt-pubkey
+. This reassures reviewers the receipts are third-=
+party verifiable. 
+
+YCQ Sonate
+
+Tagline lock
+
+Place the subhead =E2=80=9C
+Aw=
+areness through Auditability
+=E2=80=9D above the =E2=80=9CComplete =
+Trust Protocol Flow=E2=80=9D or above the buttons to emphasize proof-over-c=
+laims. 
+
+=
+
+YCQ =
+Sonate
+
+Demo limits note near creds
+
+You already mention limits lower on the page=E2=80=94mirror it right under =
+the email/password so folks don=E2=80=99t miss it (3 convos =E2=80=A2 10 ms=
+gs =E2=80=A2 24h purge). 
+
+YCQ Sonate
+
+Nice polish (if you have 15 mins)=
+
+Make the 
+Launch Interactive Demo
+ button open in a new =
+tab and keep a small =E2=80=9CRequires JavaScript=E2=80=9D hint, since the =
+Vercel app shows that when JS is disabled. 
+
+Sym=
+bi
+
+Add a tiny =E2=80=9CHow to verify=
+=E2=80=9D 3-step list above the buttons: 
+Mint =E2=86=92 Paste/Preloaded =E2=86=92 Click Verify
+.
+
+If you want, I=E2=80=99ll paste th=
+e exact snippets for the two buttons + the small =E2=80=9CHow to verify=E2=
+=80=9D block formatted to match this page=E2=80=99s style.
+
+=
+
+=
+
+=
+
+Sources
+
+=
+
+You said:
+
+yes
+
+Symbi said:
+
+Thought for 4 seconds
+
+awesome =E2=80=94 here are the drop-in snippets for 
+/demo
+.
+
+Option A =E2=80=94 Next.js/React (rec=
+ommended)
+
+Create 
+app/demo/DemoVerifyBlock.tsx
+ and import it in your 
+/demo
+ page.
+
+=
+tsx
+
+Copy code
+
+'use client'
+
+;
+
+import
+
+ { useS=
+tate } 
+
+from
+
+'react'
+
+;
+
+function
+
+b64u
+
+(
+
+s: 
+strin=
+g
+
+) {
+
+const
+
+ b64 =
+=3D 
+
+typeof
+
+window
+
+ =3D=3D=3D 
+
+'undefined'
+
+    ? 
+
+Buffer
+
+.
+
+from
+
+(s, 
+
+'utf8'
+
+=
+).
+
+toString
+
+(
+
+'base64'
+
+=
+)
+    : 
+
+btoa
+
+(
+
+unescape
+
+(
+
+encodeURIComponent
+
+(s)));
+
+return
+
+ b64.=
+
+replace
+
+(
+
+/=3D+$/
+
+,
+
+''
+
+).
+
+=
+
+replace
+
+(
+
+/\+/g
+
+,
+
+'-'
+
+).
+
+replace
+
+(
+
+/\//g
+
+,
+
+'_'
+
+);
+}
+
+export
+
+default
+
+function
+
+DemoVerifyBlock
+
+(
+
+) {
+
+const
+
+ [load=
+ing, setLoading] =3D 
+
+useS=
+tate
+
+(
+
+false
+
+);
+
+const
+
+ [rece=
+ipt, setReceipt] =3D useState<
+
+string
+
+>(
+
+''=
+
+);
+
+const
+
+ [err,=
+ setErr] =3D useState<
+
+string
+
+ | 
+
+null
+=
+
+>(
+
+null
+
+);
+
+async
+
+function
+
+mint
+
+(
+
+) {
+
+setLoading
+
+(
+
+true
+
+); 
+
+setErr
+
+(
+
+null
+
+);
+
+try
+
+ {
+
+const
+
+ r=
+ =3D 
+
+await
+
+fe

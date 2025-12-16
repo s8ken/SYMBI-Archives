@@ -1,0 +1,126 @@
+tChips.js
+(timeline overlays)
+frontend/src/pages/ConversationDetail.js
+(session=E2=80=91level + per=E2=80=91message chips)
+frontend/src/pages/ReviewConsole.js
+(pivot chip polish)
+How It Works
+
+VS Code extension (builders)
+Chat webview: POST /api/assistant/message
+Ledger Tree: /api/sessions/recent, verify /api/ledger/verify
+Status Bar: /healthz (normal/hibernation/offline)
+Roundtable: /api/bridge/orchestrate, optional /api/bridge/dispatch
+Only stores SYMBI_API_KEY (SecretStorage). No vendor keys in IDE.
+Web Trust Console (non=E2=80=91devs)
+Roundtable button on dashboard (UI for bridge)
+TrustChips on chat: uses /api/insights/timeline?session_id=3D=E2=80=A6. Dis=
+plays:
+Pivot (error chip) when change=E2=80=91point score > 60%
+Change (%) and stance transitions
+Row hash snippet (integrity breadcrumb)
+Review Console already visualizes change=E2=80=91points; now adds =E2=80=9C=
+Pivot=E2=80=9D chip.
+Runbook
+
+Backend
+Ensure env vars:
+JWT + DB: JWT_SECRET, MONGODB_URI
+OpenAI (if using LLM agent kind): OPENAI_API_KEY
+Optional agent tokens in backend/bridge/bridge.config.yaml:1 (e.g., V0_TOKE=
+N, SERVICE_TOKEN)
+Start as usual (e.g., cd backend && npm run dev)
+Web App
+cd frontend && npm install && npm start
+Dashboard: click =E2=80=9CRoundtable,=E2=80=9D enter a task, select agents,=
+ gather, and optionally =E2=80=9CApprove & Dispatch (dry=E2=80=91run)=
+=E2=80=9D
+Conversation view: trust chips appear in the header and below each message =
+(best=E2=80=91effort mapping using conversation id as session id)
+VS Code Extension
+Build: cd symbi-vscode-extension && npm i && npm run compil=
+e
+Run: Press F5 in VS Code to launch Extension Host
+In Command Palette:
+SYMBI: Set API Base =E2=86=92 http://localhost:5000
+SYMBI: Save SYMBI_API_KEY =E2=86=92 scoped token
+SYMBI: Open Console / Verify Ledger / Roundtable
+Dev Container (optional)
+Open repo in VS Code =E2=86=92 =E2=80=9CReopen in Container=E2=80=9D
+Use tasks =E2=80=9Cbackend
+=E2=80=9D and =E2=80=9Cfrontend
+=E2=80=9D
+Ports forwarded: 5000, 3000, 27017
+Security Posture
+
+Clients: only SYMBI_API_KEY (scoped) is stored; vendor keys remain server=
+=E2=80=91side.
+Webhooks: HMAC check in place (backend/middleware/verifyWebhookSignature.js
+).
+Rate limiting, CSP, sanitization are enforced (backend/middleware/security.=
+middleware.js
+).
+Notes & Caveats
+
+TrustChips session mapping: the chat page currently uses the conversation i=
+d as sessionId. If your ledger uses a different session_id, add that to the=
+ conversation payload and pass it to TrustChips for perfect alignment.
+Bridge config: toggle which agents participate by enabling/disabling entrie=
+s in backend/bridge/bridge.config.yaml
+.
+Next Steps (I can do these next)
+
+Trust overlays inside each chat bubble sourced from ledger events (accurate=
+ per=E2=80=91message mapping using real session_id).
+Assistants UX: =E2=80=9CUse Most Recent=E2=80=9D toggle, edit form (PUT), m=
+odel picker fed by /api/llm/models/openai.
+Context Capsules: add GET/PUT /api/context/capsule/:sessionId, inject into =
+LLM calls, and a small editor panel.
+Extension polish: add proposal JSON viewer + =E2=80=9COpen in Trust Console=
+=E2=80=9D deep link.
+If you want, I can wire the real session_id into the conversation flow so T=
+rustChips always matches the correct timeline, and finish the Assistants UX=
+ next.
+
+Symbi said:
+
+Thought for 1m 24s
+
+I can take y=
+ou the whole way. To keep momentum, here are two 
+ready-to-apply bundles
+ that finish the web surface=
+ for non-devs and lock in correctness:
+
+PR-WSID
+ =E2=80=94 Wire a real 
+session_id
+ end-to-end so TrustChips always align
+
+PR-AUX
+ =E2=80=94 Ship =E2=80=9CAssistants UX=E2=80=9D: Us=
+e-Most-Recent toggle, Edit Assistant form, live model picker
+
+No vendor keys in clients; fully rev=
+ersible.
+
+PR-WSID =E2=80=94 Real 
+session_id
+ (backend + web)
+
+1) Backend: Conversation schema ens=
+ures 
+session_id
+
+backend/models/conversat=
+ion.model.js
+
+ (patch)
+
+=
+diff
+
+Copy code
+
+ const mongoose =3D require('mongoose');
+ const { Schema, model } =

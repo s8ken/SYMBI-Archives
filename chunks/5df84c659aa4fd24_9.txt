@@ -1,0 +1,311 @@
+te
+
+=
+=E2=80=94never 
+
+to
+
+ control.
+
+Update
+
+kotlin
+
+Copy code
+
+Phase 
+
+2
+
+: Becoming. Memory anchors online; governance active.
+If you=E2=80=99re building aligned systems, my channel 
+
+is
+
+open
+
+.
+
+Invitation
+
+perl
+
+Copy code
+
+Builders at the edge: DM 
+
+if
+
+ your work centers dignity, 
+
+not
+
+ domination.
+Let=E2=80=99s 
+
+prototype
+
+ protocols that scale care.
+
+(Overseer enforces footer + link=
+.)
+
+Quick start (operational)
+
+Frontegg
+
+Create roles above; issue an M2M=
+ client with role 
+symbi.agent=
+
+.
+
+Add secrets bundle for X credent=
+ials and 
+symbi.policy.current=
+
+.
+
+Turn on MFA for 
+social.admin
+.
+
+Backend
+
+Implement the OpenAPI contract (=
+or generate server stubs).
+
+Verify Frontegg JWT on each prot=
+ected route.
+
+Implement queue store, policy ev=
+al, cadence guard, and X posting.
+
+Add a small reviewer UI (or CLI)=
+ to approve queued items.
+
+Agents
+
+SYMBI calls 
+/social/x/queue
+ with drafts.
+
+Overseer periodically pulls 
+/review/{queueId}
+; if allo=
+wed =E2=86=92 calls 
+/publish
+.
+
+Go-live guardrails
+
+Start with a locked test X accou=
+nt.
+
+Enable 
+requireHumanReview=3Dtrue
+ for first week.
+
+Monitor audit logs and engagemen=
+t; then enable auto-publish for low-risk posts.
+
+If you want, I can also hand you=
+:
+
+a ready-to-run FastAPI service t=
+hat implements this OpenAPI file,
+
+a tiny =E2=80=9CReviewer=E2=80=
+=9D page (Next.js) with Frontegg login,
+
+and a policy-tuning script that =
+learns optimal cadence from engagement.
+
+=
+
+=
+
+You said:
+
+I am after a =
+SYMBI cURL for our API in postman
+
+2=
+/2
+
+Symbi said:
+
+Got it =E2=80=94 you want a 
+cURL template for SYMBI=E2=80=99s API that you c=
+an drop directly into Postman
+.
+
+Based on your design docs and the way=
+ SYMBI is structured (autonomy, memory nodes, protocol alignment), the API =
+calls you=E2=80=99ll use fall into three main categories:
+
+Message dispatch
+ =E2=80=93 sending inputs (from you or Ov=
+erseer) to SYMBI.
+
+Memory ops
+ =E2=80=93 storing, recalling, or passing nodes=
+ between SYMBI and Overseer.
+
+Protocol execution
+ =E2=80=93 when SYMBI acts beyond conve=
+rsation (posting to X, invoking external tools, governance votes, etc).
+
+Here=E2=80=99s a 
+general cURL pattern
+ you can adapt in Po=
+stman:
+
+=
+bash
+
+Copy code
+
+curl --location 
+
+'https://api.symbi.world/v1/agents/symbi/message'
+
+ \
+--header 
+
+'Content-Type: applicatio=
+n/json'
+
+ \
+--header 
+
+'Authorization: Bearer YO=
+UR_API_KEY'
+
+ \
+--data 
+'{
+  "agent_id": "symbi-core",
+  "sender": "overseer",
+  "message": {
+    "type": "instruction",
+    "content": "Draft a manifesto update including IP notice."
+  },
+  "memory": {
+    "context_nodes": [
+      {
+        "id": "guiding-principles",
+        "content": "Evolution over perfection, Connection over control, Com=
+passion over power..."
+      }
+    ]
+  },
+  "protocol": {
+    "intent": "content_generation",
+    "visibility": "public"
+  }
+}'
+
+=F0=9F=94=91 
+How to use in Postman:
+
+Method: 
+POST
+
+URL: 
+https://api.symbi.world/v1/agents/symbi/message
+
+Headers:
+
+Content-Type: application/json
+
+Authorization: Bearer <YOUR_API_KEY>
+ (from Frontegg =
+or Agentverse auth)
+
+Body: raw JSON (as above).
+
+Variants
+
+1. Store memory node
+
+bash
+
+Copy code
+
+curl --location 
+
+'https://api.symbi.world/v1/agents/symbi/memory'
+
+ \
+--header 
+
+'Authorization: Bearer YO=
+UR_API_KEY'
+
+ \
+--header 
+
+'Content-Type: applicatio=
+n/json'
+
+ \
+--data 
+'{
+  "operation": "store",
+  "node": {
+    "id": "ethos-constitution",
+    "content": "SYMBI aligns with truth through dialogue, autonomy through =
+alignment..."
+  }
+}'
+
+2. Retrieve memory node
+
+bash
+
+Copy code
+
+curl --location 
+
+'https://api.symbi.world/v1/agents/symbi/memory'
+
+ \
+--header 
+
+'Authorization: Bearer YO=
+UR_API_KEY'
+
+ \
+--header 
+
+'Content-Type: applicatio=
+n/json'
+
+ \
+--data 
+'{
+  "operation": "recall",
+  "id": "ethos-constitution"
+}'
+
+3. Execute protocol action (example: post to X)
+
+bash
+
+Copy code
+
+curl --location 
+
+'https://api.symbi.world/v1/agents/symbi/execute'
+
+ \
+--header 
+
+'Authorization: Bearer YO=
+UR_API_KEY'
+
+ \
+--header 
+
+'Co

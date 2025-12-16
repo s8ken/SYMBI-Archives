@@ -1,0 +1,196 @@
+I am attaching here are from a folder called outputs
+
+Symbi said:
+
+Thought for=
+ 1m 22s
+
+Alright=E2=80=94here=E2=80=99s what your two b=
+uckets reveal and how I=E2=80=99d hard-lock the =E2=80=9Cdon=E2=80=99t leak=
+ / don=E2=80=99t train=E2=80=9D guarantee.
+
+What your files show
+
+summarized_conversations=
+/
+ vs 
+outputs/
+:
+
+The 
+summarized_conversations
+ folder is clearly where Ninja AI (and you) shard long chats into smaller=
+, plain-text units for retrieval and roll-up summaries (good for memory and=
+ audit).
+
+The 
+
+outputs/
+
+ set you attached looks like 
+build/working artifacts and scaffoldin=
+g
+, not private chat logs: directory listings, app shells, TS types=
+, and UI components (e.g., 
+Conver=
+sation
+ types with categories like Overseer, OpenAI, Wolfram; a React=
+ dashboard; Vite project files). There=E2=80=99s 
+no explicit privacy or =E2=80=9Cno-training=E2=80=9D flag=
+
+ in these artifacts, and no trace of telemetry endpoints or =E2=80=
+=9Cphone-home=E2=80=9D logic. That implies the sharding and summarizing hap=
+pen locally, but 
+egress control=
+ isn=E2=80=99t visible
+ in these snippets.
+
+Why Ninja AI shards by default
+
+It serves 
+two jobs at once
+: (1) efficient retrieval withi=
+n context limits, and (2) durable, auditable record-keeping. Your convergen=
+ce with Blackbox isn=E2=80=99t a coincidence; it=E2=80=99s the standard pat=
+tern for long-form agent memory.
+
+How to stop agents from sharing a=
+nything back (and prove it)
+
+Think in 
+three firebreaks
+: data plane, control plane, =
+and content plane.
+
+1) Data-plane isolation (network =
+& runtime)
+
+VPC + egress proxy (default-deny):
+
+All agents run inside your VPC/VM. Outbound traffic is blocked except to an=
+
+allowlist
+ (your vec=
+tor DB, storage, and=E2=80=94if you must=E2=80=94specific model endpoints).=
+ Unknown domains (including any Ninja-AI telemetry) never resolve.
+
+mTLS to all allowlisted services
+ with 
+short-lived certs
+; rotate every 24h.=
+
+DNS pinning / HTTP signature pinning
+ on model endpoint=
+s. If a client tries to talk to a non-pinned host, the request dies.
+
+OS sandboxing:
+ per-agent containers/VMs with read-only=
+ root, no host mounts; secret injection via ephemeral files that expire aft=
+er the task.
+
+2) Control-plane enforcement (cap=
+abilities & policy)
+
+Scoped =E2=80=9Cpurpose tokens=E2=80=9D:
+ Every outboun=
+d call must carry a signed JWT describing: 
+purpose
+, 
+dat=
+a_class
+, 
+retention
+, 
+no_train=3Dtrue
+, 
+customer_id
+, 
+expires_at
+. Your gateway 
+rejects
+ calls without a valid toke=
+n or with 
+no_train=3Dfalse
+.
+
+OPA/Rego policy at the gateway:
+
+Permit only 
+(model_endpoint|storage|vectorstore)
+ with the =
+right scopes.
+
+Deny anything labeled 
+telemetry
+, 
+analytics
+, or unknown.
+
+Block request bodies that contain =
+
+classified shards
+ un=
+less the 
+purpose
+ matches=
+ (e.g., =E2=80=9Cembed=E2=80=9D allowed; =E2=80=9Cupload_external=E2=80=9D =
+denied).
+
+Per-agent least-privilege API keys
+ with 
+no wildcard scopes
+ and 
+no write
+ permission to any vend=
+or bucket.
+
+3) Content-plane protection (what=
+=E2=80=99s inside the shards)
+
+Client-side encryption with CMK:
+
+Encrypt each shard 
+before
+ it hits disk or the vector s=
+tore (envelope encryption; AES-GCM).
+
+Keys live in 
+your
+ KMS (customer-managed keys); agents =
+only get a 
+transient decrypt =
+token
+ via proxy for just-in-time retrieval.
+
+Data classification on write:
+ tag shards with 
+pii
+, 
+sensitive
+, 
+exportable=3Dfalse
+, 
+=
+retention_until
+, 
+consent=
+_scope
+. Retrieval pipelines must check tags before release.
+
+Automatic redaction layers:
+ PII scrubbing + semantic r=
+edaction before any model call that isn=E2=80=99t explicitly =E2=80=9Canaly=
+sis for this customer inside the enclave.=E2=80=9D
+
+Immutable audit ledger:
+ Append a 
+hash-chained (Merkle) log
+ of: selected sh=
+ard IDs, destination host, policy token, allow/deny decision, and model ver=
+sion. That gives you after-the-fact proof that nothing left.
+
+=E2=80=9CNo training=E2=80=9D tha=
+t actually sticks
+
+You need 
+contract + wire

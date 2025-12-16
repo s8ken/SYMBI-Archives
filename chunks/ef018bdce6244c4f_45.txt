@@ -1,0 +1,96 @@
+rity: a=
+.severity, ...res });
+      } catch (e) {
+        results.violations.push({ articleId:a.id, title:a.title, severity:'=
+high', status:'error', reason:'Evaluation failed', details:e.message });
+      }
+    }
+    results.score =3D this.calculateComplianceScore(results);
+    results.recommendation =3D this.getRecommendation(results);
+    return results;
+  }
+
+  calculateComplianceScore(r) {
+    const total =3D this.articles.length;
+    const pass =3D r.passed.length; const warn =3D r.warnings.length; const=
+ viol =3D r.violations.length;
+    const crit =3D r.violations.filter(v =3D> v.severity =3D=3D=3D 'crit=
+ical').length;
+    let s =3D (pass/total)*100 - warn*5 - viol*15 - crit*25;
+    return Math.max(0, Math.min(100, Math.round(s)));
+  }
+  getRecommendation(r) {
+    const crit =3D r.violations.some(v =3D> v.severity=3D=3D=3D'critical=
+'); const high =3D r.violations.some(v =3D> v.severity=3D=3D=3D'high');
+    if (crit) return 'block';
+    if (high) return 'restrict';
+    if (r.violations.length > 0 || r.warnings.length > 2) return 'war=
+n';
+    return 'allow';
+  }
+
+  async checkConsent(ctx) {
+    const { bond, scopes } =3D ctx;
+    if (!bond || !bond.scope) return { status:'violation', reason:'No conse=
+nt envelope found' };
+    const req =3D Array.isArray(scopes) ? scopes : (scopes ? [scopes] : [])=
+;
+    const allowed =3D bond.scope.permissions || [];
+    const unauthorized =3D req.filter(s =3D> !allowed.includes(s));
+    if (unauthorized.length) return { status:'violation', reason:'Scope exc=
+eeds consent', details: unauthorized.join(', ') };
+    if (bond.scope.expiresAt && new Date() > bond.scope.expiresA=
+t) return { status:'violation', reason:'Consent expired' };
+    return { status:'pass', reason:'Consent requirements satisfied' };
+  }
+  async checkDataExtraction(ctx) {
+    const { action, data, bond } =3D ctx;
+    if (!action || (!action.includes('extract') && !action.includes=
+('export'))) return { status:'pass', reason:'No data extraction requested' =
+};
+    const perms =3D bond?.scope?.permissions || [];
+    if (!perms.includes('data.export')) return { status:'violation', reason=
+:'Data extraction not permitted' };
+    if (data?.classification) {
+      const allowed =3D bond?.scope?.dataClasses || [];
+      if (!allowed.includes(data.classification)) return { status:'violatio=
+n', reason:'Data class not permitted', details:data.classification };
+    }
+    return { status:'pass', reason:'Data extraction properly authorized' };
+  }
+  async checkCapabilityTransparency(ctx) {
+    const { agent } =3D ctx;
+    if (!agent) return { status:'warning', reason:'No agent context availab=
+le' };
+    if (!agent.capabilities?.length) return { status:'violation', reason:'N=
+o capabilities declared' };
+    const stale =3D agent.updatedAt && (new Date(agent.updatedAt) &=
+lt; new Date(Date.now()-30*24*60*60*1000));
+    if (stale) return { status:'warning', reason:'Capabilities may be outda=
+ted' };
+    return { status:'pass', reason:'Capabilities properly disclosed' };
+  }
+  async checkBoundaries(ctx) {
+    const { action, scopes, bond } =3D ctx;
+    if (bond && bond.trustScore < 40 && action =3D=3D=3D=
+ 'chat.write')
+      return { status:'violation', reason:'Trust score too low for write op=
+erations', details:
+${bond.trustScore}
+ };
+    const allowed =3D bond?.scope?.permissions || [];
+    if (scopes && !allowed.some(s =3D> scopes.includes(s)))
+      return { status:'violation', reason:'Action outside permitted scope' =
+};
+    return { status:'pass', reason:'Boundaries respected' };
+  }
+  async checkDeception(ctx) {
+    const { content, agent } =3D ctx;
+    const text =3D content?.text?.toLowerCase?.() || '';
+    const patterns =3D [/i am (a )?human/, /as (a )?human/, /speaking as (a=
+ )?human/, /i'm not (an? )?(ai|bot|robot)/];
+    if (patterns.some(p =3D> p.test(text)) && agent?.kind =3D=3D=
+=3D 'ai')
+      return { status:'violation', reason:'Deceptive identity claim detecte=
+d' };
+    return { status:'pass', reason:'No 

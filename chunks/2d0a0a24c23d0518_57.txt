@@ -1,0 +1,270 @@
+
+
+3️⃣ 
+We need to temporarily disable SIP to remove it.
+
+🛠 Step 1: Disable SIP in macOS Recovery Mode
+
+Since 
+this requires booting into Recovery Mode
+, follow these steps carefully:
+
+1️⃣ 
+Restart your Mac and hold
+
+Command (⌘) + R
+
+immediately
+ until you see the Apple logo.
+
+2️⃣ When the 
+macOS Utilities
+ window appears, click 
+Utilities
+ in the top menu and select 
+Terminal
+.
+
+3️⃣ In the 
+Recovery Mode Terminal
+, type:
+
+sh
+
+Copy
+
+csrutil 
+
+disable
+
+4️⃣ Press 
+Enter
+, then restart your Mac normally.
+
+✅ 
+SIP is now disabled, so we can fully remove Remote Management.
+
+🛠 Step 2: Boot Normally & Remove Remote Management
+
+After restarting your Mac, run these commands:
+
+sh
+
+Copy
+
+sudo launchctl bootout system/com.apple.remotemanagementd
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.RemoteManagement.plist
+
+✅ 
+This stops Remote Management and deletes its settings.
+
+🛠 Step 3: Re-Enable SIP for Security
+
+Once 
+Remote Management is removed
+, turn SIP back on:
+
+1️⃣ Restart your Mac again and hold 
+Command (⌘) + R
+ to enter 
+Recovery Mode
+.
+
+2️⃣ Open 
+Terminal
+ and type:
+
+sh
+
+Copy
+
+csrutil 
+
+enable
+
+3️⃣ Press 
+Enter
+, then restart your Mac normally.
+
+✅ 
+Your system is now locked down again, but without Remote Management.
+
+🚀 Final Confirmation
+
+Once you reboot, run this in Terminal:
+
+sh
+
+Copy
+
+launchctl list | grep -i remotemanagement
+
+🔍 
+If nothing appears, Remote Management is completely gone!
+
+📩 
+Let me know if you need help with this process!
+ 🔒🔥
+
+You said:
+
+ok sorry I was just investigating some noises here
+
+ChatGPT said:
+
+No worries—stay safe! 🚨 If anything seems off, trust your instincts and document anything unusual.
+
+When you're ready, follow the 
+SIP disable → Remote Management removal → SIP re-enable
+ process. Let me know if you need guidance at any step. 🔒🔥
+
+You said:
+
+lets check if the camera is running or screens are being shared 
+
+ChatGPT said:
+
+🛠 Check If Your Camera or Screen Sharing Is Active
+
+Since the attacker 
+previously had access to your screen
+, let’s confirm 
+if they are still watching.
+
+✅ Step 1: Check for Active Camera Usage
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+lsof | grep -i 
+
+"VDC\|AppleCamera\|AVCapture"
+
+🔍 
+If anything appears, an app is actively using your camera.
+
+📩 
+If you see a process using the camera, copy the result here!
+
+✅ Step 2: Check for Active Screen Sharing or Virtual Displays
+
+Run:
+
+sh
+
+Copy
+
+sudo launchctl list | grep -i 
+
+"screensharing"
+
+🔍 
+If 
+screensharingd
+ appears, your screen might be actively shared.
+
+📩 
+If anything shows up, we will disable it immediately.
+
+✅ Step 3: Check for Virtual Display or AirPlay Sessions
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AirPlay" OR eventMessage contains "display" OR eventMessage contains "screensharing"'
+
+ --last 30m
+
+🔍 
+If logs show recent screen sharing or AirPlay activity, it may still be running.
+
+📩 
+Send me the results so we can take action! 🔒🔥
+
+You said:
+
+user@Mes-MacBook-Pro ~ % lsof | grep -i "VDC\|AppleCamera\|AVCapture"
+
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+✅ No Active Camera Usage Detected!
+ 🎉
+
+Since 
+
+lsof
+ returned nothing
+, your camera is 
+not currently in use
+ by any app.
+
+Now, let’s check if 
+screen sharing or virtual displays are still active.
+
+🛠 Step 2: Check for Active Screen Sharing Services
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo launchctl list | grep -i 
+
+"screensharing"
+
+🔍 
+If 
+screensharingd
+ appears, something is still running screen sharing.
+
+📩 
+Send me the results!
+ If it’s active, we’ll shut it down.
+
+🛠 Step 3: Check for Virtual Display or AirPlay Sessions
+
+Since 
+they previously showed you your own Google Drive
+, they may still be using AirPlay or virtual displays.
+
+Run this:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "AirPlay" OR eventMessage contains "display" OR eventMessage contains "screensharing"'
+
+ --last 30m
+
+🔍 
+If anything appears, screen sharing or AirPlay may still be running.
+
+📩 
+Let me know what shows up!
+ If we find activity, we will disable it immediately. 🔒🔥
+
+You said

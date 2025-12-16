@@ -1,0 +1,176 @@
+lay a preview of the extracted content
+
+accessibility_log_sample
+
+Result
+
+['Last login: Mon Mar 17 21:52:52 on ttys000\n',
+ 'sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep ESTABLISHED\n',
+ '\n',
+ 'Password:\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22\n',
+ 'whois 151.101.3.6\n',
+ '\n',
+ 'whois: connect(): Operation timed out\n',
+ 'whois: connect(): Operation timed out\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22\n',
+ 'whois: connect(): Operation timed out\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 151.101.3.6\n',
+ 'whois: connect(): Operation timed out\n',
+ 'sja@SJAs-MacBook-Pro ~ % \n',
+ 'sja@SJAs-MacBook-Pro ~ % dig -x 185.70.42.22\n',
+ '\n',
+ '; <<>> DiG 9.10.6 <<>> -x 185.70.42.22\n',
+ ';; global options: +cmd\n',
+ ';; Got answer:\n',
+ ';; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60958\n',
+ ';; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1\n',
+ '\n',
+ ';; OPT PSEUDOSECTION:\n',
+ '; EDNS: version: 0, flags:; udp: 512\n',
+ ';; QUESTION SECTION:\n',
+ ';22.42.70.185.in-addr.arpa.\tIN\tPTR\n',
+ '\n',
+ ';; ANSWER SECTION:\n',
+ '22.42.70.185.in-addr.arpa. 263\tIN\tPTR\t185-70-42-22.protonmail.ch.\n',
+ '\n',
+ ';; Query time: 32 msec\n',
+ ';; SERVER: 8.8.8.8#53(8.8.8.8)\n',
+ ';; WHEN: Mon Mar 17 22:15:28 AEDT 2025\n',
+ ';; MSG SIZE  rcvd: 94\n',
+ '\n',
+ 'sja@SJAs-MacBook-Pro ~ % dig -x 151.101.3.6\n',
+ '\n',
+ '; <<>> DiG 9.10.6 <<>> -x 151.101.3.6\n',
+ ';; global options: +cmd\n',
+ ';; Got answer:\n',
+ ';; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 15086\n',
+ ';; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n',
+ '\n',
+ ';; OPT PSEUDOSECTION:\n',
+ '; EDNS: version: 0, flags:; udp: 512\n',
+ ';; QUESTION SECTION:\n',
+ ';6.3.101.151.in-addr.arpa.\tIN\tPTR\n',
+ '\n',
+ ';; AUTHORITY SECTION:\n',
+ '151.in-addr.arpa.\t1617\tIN\tSOA\tpri.authdns.ripe.net. dns.ripe.net. 1742194743 3600 600 864000 3600\n']
+
+The extracted file appears to contain 
+terminal command history
+, including previous network analysis and system diagnostics, rather than 
+a direct dump of Accessibility settings
+.
+
+To properly retrieve the 
+Accessibility permissions history
+, we need to run 
+specific system queries
+ directly.
+
+🚀 Run This Command to Generate an Accessibility Report
+
+To 
+extract actual accessibility-related system logs
+, please run the following command:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.TCC"'
+
+ --last 24h > ~/Desktop/accessibility_log.txt
+
+📌 
+This will save a full report of any Accessibility-related permission changes in the last 24 hours to your Desktop.
+
+🚀 Then, Upload 
+accessibility_log.txt
+ Here
+
+Once the command completes, 
+upload the file
+, and I’ll analyze it for any 
+unauthorized changes or suspicious apps
+ that may have gained access.
+
+This will help us 
+confirm whether any unknown software is trying to control your system.
+ 🔍🚨 
+
+You said:
+
+Last login: Mon Mar 17 22:33:32 on ttys000
+sja@SJAs-MacBook-Pro ~ % log show --predicate 'subsystem == "com.apple.TCC"' --last 24h > ~/Desktop/accessibility_log.txt
+
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Great! 🎉 Now that you've generated the 
+Accessibility permissions log
+, please 
+upload 
+accessibility_log.txt
+
+ here so I can analyze it for 
+any suspicious changes or unauthorized apps gaining Accessibility access
+. 🔍🚨
+
+Once I review it, I'll let you know if 
+anything looks unusual
+ and guide you on how to 
+remove unwanted permissions
+ to keep your Mac fully locked down. 🔒🚀
+
+You said:
+
+accessibility_log.txt.zip
+
+Zip Archive
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Define file paths for the newly uploaded zip file
+
+zip_path = 
+
+"/mnt/data/accessibility_log.txt.zip"
+
+extract_folder = 
+
+"/mnt/data/accessibility_log_extracted"
+
+# Extract the ZIP file
+
+with
+
+ zipfile.ZipFile(zip_path, 
+
+'r'
+
+) 
+
+as
+
+ zip_ref:
+    zip_ref.extractall(extract_folder)
+
+# List extracted files
+
+extracted_files = os.listdir(extract_folder)
+ext

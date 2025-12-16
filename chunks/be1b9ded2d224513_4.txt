@@ -1,0 +1,354 @@
+e:
+
+-
+
+cron:
+
+'0 0 * * *'
+
+# Runs daily at midnight UTC
+
+jobs:
+
+zap_scan:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+-
+
+name:
+
+Checkout
+
+code
+
+uses:
+
+actions/checkout@v2
+
+-
+
+name:
+
+Run
+
+OWASP
+
+ZAP
+
+security
+
+scan
+
+uses:
+
+zaproxy/action-full-scan@v0.1.0
+
+with:
+
+target:
+
+'https://your-website.com'
+
+This action will run ZAP against your website and produce a report of potential vulnerabilities.
+
+Dependency Vulnerability Check (Using Snyk or Dependabot)
+:
+
+Dependabot
+ is built into GitHub and can automatically scan your dependencies for known vulnerabilities. It will raise pull requests to update vulnerable dependencies.
+
+Snyk
+ is another tool that can scan your dependencies and alert you to vulnerabilities in open-source libraries.
+
+You can set up 
+Snyk
+ within your GitHub Actions to monitor your dependencies:
+
+yaml
+
+Copy
+
+Edit
+
+name:
+
+Dependency
+
+Vulnerability
+
+Check
+
+on:
+
+schedule:
+
+-
+
+cron:
+
+'0 0 * * *'
+
+# Runs daily at midnight UTC
+
+jobs:
+
+snyk_scan:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+-
+
+name:
+
+Checkout
+
+code
+
+uses:
+
+actions/checkout@v2
+
+-
+
+name:
+
+Set
+
+up
+
+Snyk
+
+uses:
+
+snyk/actions/setup@v1
+
+-
+
+name:
+
+Run
+
+Snyk
+
+vulnerability
+
+scan
+
+run:
+
+snyk
+
+test
+
+--all-projects
+
+Automated Alerts and Reports
+:
+
+Once vulnerabilities or SSL certificate issues are detected, you’ll want your AI to generate a report and send notifications (either through email or GitHub issues).
+
+For SSL checks, you can simply log the expiration status into a file and alert the team.
+
+For vulnerability reports, either the 
+OWASP ZAP
+ or 
+Snyk
+ actions will generate detailed reports that you can send to your team.
+
+Example Full Monitoring Workflow:
+
+Health Check
+: Verify website is up and running.
+
+SSL Certificate Check
+: Verify certificate is valid.
+
+Vulnerability Scan
+:
+
+Use OWASP ZAP for web vulnerabilities.
+
+Use Dependabot/Snyk to check for dependency vulnerabilities.
+
+Daily Reports
+: Compile results from all checks (e.g., SSL status, vulnerabilities) and generate a report. Store it as a GitHub issue or send it to a Slack/Email channel.
+
+Example GitHub Action for Full Monitoring:
+
+yaml
+
+Copy
+
+Edit
+
+name:
+
+Full
+
+Site
+
+Monitoring
+
+on:
+
+schedule:
+
+-
+
+cron:
+
+'0 0 * * *'
+
+# Runs daily at midnight UTC
+
+jobs:
+
+monitor:
+
+runs-on:
+
+ubuntu-latest
+
+steps:
+
+# Check Website Health
+
+-
+
+name:
+
+Check
+
+website
+
+health
+
+run:
+
+curl
+
+--head
+
+--silent
+
+--fail
+
+https://your-website.com
+
+||
+
+echo
+
+"Website is down"
+
+# Check SSL Certificate Expiry
+
+-
+
+name:
+
+Check
+
+SSL
+
+Certificate
+
+Expiry
+
+run:
+
+|
+          DOMAIN="your-website.com"
+          EXPIRY_DATE=$(echo | openssl s_client -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -enddate | sed "s/^notAfter=//")
+          EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s)
+          CURRENT_TIMESTAMP=$(date +%s)
+          DAYS_LEFT=$((($EXPIRY_TIMESTAMP - $CURRENT_TIMESTAMP) / 86400))
+          if [ $DAYS_LEFT -lt 30 ]; then
+            echo "Warning: SSL certificate for $DOMAIN will expire in $DAYS_LEFT days."
+          else
+            echo "SSL certificate for $DOMAIN is valid for $DAYS_LEFT more days."
+          fi
+
+# Run OWASP ZAP Security Scan
+
+-
+
+name:
+
+Run
+
+OWASP
+
+ZAP
+
+security
+
+scan
+
+uses:
+
+zaproxy/action-full-scan@v0.1.0
+
+with:
+
+target:
+
+'https://your-website.com'
+
+# Run Snyk Dependency Vulnerability Check
+
+-
+
+name:
+
+Run
+
+Snyk
+
+vulnerability
+
+scan
+
+uses:
+
+snyk/actions/setup@v1
+
+run:
+
+snyk
+
+test
+
+--all-projects
+
+Recap:
+
+SSL Certificate
+: Automated expiration check.
+
+Vulnerability Scanning
+: Use OWASP ZAP or Snyk to find vulnerabilities.
+
+Reporting
+: Alerts and reports on vulnerabilities and SSL status.
+
+Let me know if you'd like to dive deeper into setting up any specific part of this system!
+
+You said:
+
+I'm pretty low code myself so trying to use lln only we also have vercel v0 building and housing first to production so git serves as more a repo backup i guess 
+
+ChatGPT said:
+
+Updated saved memory
+
+Thanks for the clarification! Since you're using Vercel for production deployment and GitHub mainly as a repository backup, it sounds 

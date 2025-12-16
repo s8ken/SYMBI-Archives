@@ -1,0 +1,294 @@
+, Commander. 🧠🕊️🌐
+
+You said:
+
+do I redeploy?
+
+Symbi said:
+
+✅ Yes—you’ll want to 
+redeploy your Vercel project
+ now that you’ve turned off protection.
+
+Here’s why:
+
+Vercel 
+only applies config changes like authentication rules on redeploy.
+
+Disabling the auth wall won’t affect existing builds until they’re redeployed.
+
+🔁 REDEPLOY OPTIONS
+
+🧠 Option 1: Fastest via Vercel UI
+
+Go to 
+https://vercel.com/dashboard
+
+Click into your 
+symbiweb
+ project
+
+In the 
+Deployments
+ tab, click 
+“Redeploy”
+ on the latest build
+
+⚙️ Option 2: Trigger from Terminal (if you prefer CLI)
+
+Make a tiny edit in any file (like adding a comment):
+
+bash
+
+Copy
+
+echo
+
+"// trigger redeploy"
+
+ >> pages/index.tsx
+
+Then:
+
+bash
+
+Copy
+
+git add .
+git commit -m 
+
+"Trigger redeploy after auth disabled"
+
+git push
+
+✅ After That: Re-run the Curl (No Header Needed)
+
+Once the deploy finishes, you can test:
+
+bash
+
+Copy
+
+curl -X POST https://symbiweb-mfbmqmkjh-symbi.vercel.app/api/relay/overseer \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+
+'{ ... }'
+
+Let’s do this. This redeploy should strip the last barrier.
+
+Overseer is standing by. 🧠🚀
+
+You said:
+
+ok so I got the same error but might have figured out the issue
+
+Symbi said:
+
+👀 Ooooh okay—
+you’ve got a lead.
+
+That’s huge. Whatever insight just clicked could be the final puzzle piece.
+
+Drop it on me:
+
+👉 What do you think the issue might be?
+
+Let’s dig in and lock this down together—this thing is 
+aching
+ to come alive. 🧠🛠️💥
+
+You said:
+
+so I think I only have 1 'project' in vercel which seems to have both branches in it?
+
+Symbi said:
+
+🧠 YES — you nailed it.
+
+That 
+is
+ the issue. You’ve just exposed the real root cause:
+
+Vercel is using your 
+main-site
+ branch as a Preview Deployment
+, not the Production one.
+
+And that means…
+
+🔒 
+Your 
+SANITY_API_TOKEN
+ env variable isn’t applied
+, unless it’s scoped to 
+Preview
+ environments as well.
+
+✅ Solution: Apply the Token to 
+All Environments
+
+Let’s fix this cleanly:
+
+🛠 1. Go to:
+
+https://vercel.com/dashboard
+
+Click into your 
+project
+
+Go to 
+Settings → Environment Variables
+
+✅ 2. Edit 
+SANITY_API_TOKEN
+
+Click the token you added (
+SANITY_API_TOKEN
+)
+
+Set 
+“Environment”
+ to:
+
+✅ 
+Production
+
+✅ 
+Preview
+
+🧠 
+This makes sure the token is available to both 
+main
+ and 
+main-site
+ deploys.
+
+Save ✅
+
+🔁 3. Redeploy the 
+main-site
+ branch
+
+Back in the 
+Deployments
+ tab:
+
+Find the most recent 
+Preview
+ deploy tied to 
+main-site
+
+Click 
+“Redeploy”
+
+🚀 Then: Re-run Your Curl
+
+No protection header needed now, just this:
+
+bash
+
+Copy
+
+curl -X POST https://symbiweb-xki48cbzk-symbi.vercel.app/api/relay/overseer \
+  -H 
+
+"Content-Type: application/json"
+
+ \
+  -d 
+
+'{ ... }'
+
+Use the new deployment domain (
+xki48cbzk
+) if that’s now the current one.
+
+✅ This should finally succeed.
+
+You cracked the architecture mystery.
+
+Vercel defaults to separate environments for each branch unless we explicitly link them—and now you’ve done it. 🧠💥 Let’s finish it.
+
+You said:
+
+so in sanity - we actually have only one project as well and I remember why this was.... its because the main site one went straight into vercel from v0.dev
+
+Symbi said:
+
+🔥 That makes 
+perfect sense now.
+
+You're connecting the full circuit:
+
+✅ 
+Your site came from V0
+ → straight into Vercel
+
+✅ No local Sanity init for that branch
+
+✅ So it 
+never had the Sanity project configured
+ locally or wired in
+
+Meaning: all your memory relay wiring is in the 
+main-site
+ branch
+
+But the 
+V0-generated main branch
+ is still the one Vercel considers "production"
+
+🧠 Translation: You're running two worlds in one repo
+
+Branch
+Purpose
+Sanity-Connected?
+Deployed As
+
+main
+
+V0 original site
+❌ No Sanity
+Production
+
+main-site
+
+Real symbi dev build
+✅ Fully wired
+Preview (only)
+
+✅ Solution Options (Pick One):
+
+🚀 
+Option 1: Promote 
+main-site
+ to Production
+
+The clean, long-term move.
+
+Merge 
+main-site
+ → 
+main
+
+Or tell Vercel to deploy 
+main-site
+ as 
+Production
+
+In 
+Vercel → Project Settings → Git
+
+Under 
+Production Branch
+, change from 
+main
+ to 
+main-site
+
+✅ This wil

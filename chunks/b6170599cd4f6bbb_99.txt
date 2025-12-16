@@ -1,0 +1,214 @@
+/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have openjdk@11 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk@11 you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
+==> Summary
+ðº  /opt/homebrew/Cellar/openjdk@11/11.0.26: 667 files, 295.3MB
+==> Running 
+brew cleanup openjdk@11
+...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see 
+man brew
+).
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+java -version
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+openjdk version "11.0.26" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 11.0.26+0)
+OpenJDK 64-Bit Server VM Homebrew (build 11.0.26+0, mixed mode)
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ Autopsy Still Can't Find Java? Let's Force It to Work! ð¥
+
+You've successfully installed 
+Java 11
+, and it 
+shows up in the terminal
+, but 
+macOS and Autopsy still can't locate it globally
+. This is because Homebrew installs Java 
+in an isolated environment
+, and Autopsy 
+expects it in a system-wide location
+.
+
+Now, letâs 
+hardwire Java 11
+ into your system so that Autopsy can detect it. ð
+
+â Step 1: Force Java 11 to Be System-Wide
+
+Since Homebrew keeps Java 
+"keg-only" (isolated)
+, we need to 
+link it system-wide
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+ð 
+This creates a system-wide symlink so that macOS can detect Java 11 as an installed JDK.
+
+Now, verify that 
+macOS detects Java 11
+:
+
+sh
+
+Copy
+
+Edit
+
+/usr/libexec/java_home -V
+
+ð 
+Java 11 should now appear in the list.
+
+If it does, set it as the default:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Check again:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+ð It 
+must
+ say 
+Java 11.0.26
+ (no more errors about missing Java!).
+
+â Step 2: Run Autopsy with Explicit Java Path
+
+Now that Java is system-wide, 
+force Autopsy to use it
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+
+ð 
+This forces Autopsy to look at the correct Java version!
+
+â Step 3: If Autopsy Still Fails, Run It with Java Directly
+
+If 
+./autopsy
+
+still complains about missing Java
+, 
+bypass the script and run it directly
+:
+
+sh
+
+Copy
+
+Edit
+
+/opt/homebrew/opt/openjdk@11/bin/java -jar ~/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+
+ð 
+This skips any startup errors and forces Java 11 to execute Autopsy manually.
+
+ð Summary
+
+1ï¸â£ 
+Link Java 11 system-wide
+ with 
+ln -sfn
+.
+
+2ï¸â£ 
+Make sure macOS detects it
+ with 
+/usr/libexec/java_home -V
+.
+
+3ï¸â£ 
+Explicitly tell Autopsy where Java 11 is
+ with 
+--jdkhome
+.
+
+4ï¸â£ 
+If all else fails, run Autopsy manually using Java.
+
+ð 
+Try these steps and let me know if it finally works! ð¥
+
+You said:
+
+Matching Java Virtual Machines (1):
+    11.0.26 (arm64) "Homebrew" - "OpenJDK 11.0.26" /opt/homebrew/Cellar/openjdk@11/11.0.26/libexec/openjdk.jdk/Contents/Home
+/opt/homebrew/Cellar/openjdk@11/11.0.26/libexec/openjdk.jdk/Contents/Home
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "11.0.26" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 11.0.26+0)
+OpenJDK 64-Bit Server VM Homebrew (build 11.0.26+0, mixed mode)
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+
+WARNING: Unknown 

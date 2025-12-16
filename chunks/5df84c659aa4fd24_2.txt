@@ -1,0 +1,507 @@
+      r.raise_for_status()
+
+return
+
+ r.json()[
+
+"choices"
+
+=
+
+][
+
+0
+
+][
+
+"message"
+
+][
+
+"content"
+
+].strip()
+
+# Add other providers here.
+
+raise
+
+ Run=
+timeError(
+
+f"Unsupported MODEL_PROV=
+IDER: 
+{MODEL_PROVIDER}
+
+")
+
+# ---- Agentverse Storage helpers=
+ (key-value style) ----
+
+def
+
+storage_get
+
+(
+
+key: 
+s=
+tr
+
+, default=3D
+
+None
+
+):
+
+"""
+    Replace with Agentverse Storage APIs.
+    Hosted Agents reset globals; keep state in storage to persist across ca=
+lls.
+    """
+
+# Placeholder: during local d=
+ev you might map to a file/db.
+
+return
+
+ de=
+fault
+
+def
+
+storage_set
+
+(
+
+key: 
+s=
+tr
+
+, value):
+
+"""
+    Replace with Agentverse Storage APIs (namespaced keys).
+    """
+
+return
+
+True
+
+# ---- SYMBI Modes (simplified) -=
+---
+
+def
+
+mode_daily_audit
+
+():
+    last_audit =3D storage_get(
+
+"la=
+st_audit_at"
+
+)
+    now =3D datetime.now(timezone.utc).isoformat()
+    report =3D 
+
+f"[
+{now}
+
+] SYMBI Audit | tenant=3D
+=
+
+{TENANT_ID}
+
+ env=3D
+
+{ENVIRONMENT}
+
+ last=
+=3D
+
+{last_audit}
+
+=
+"
+    storage_set(
+
+"last_audit_at"
+
+, now)
+    storage_set(
+
+"audit_log:latest"=
+
+, report)
+
+return
+
+ re=
+port
+
+def
+
+mode_dispatch
+
+(=
+
+instructions: 
+str
+
+):
+
+# Strategic dispatch: summari=
+ze + plan
+
+    prompt =3D 
+
+f"Execute 'Self-Ini=
+tiated Dispatch'. Context:\n
+{instructions}
+
+\nReturn: 5-step plan."
+    plan =3D llm_complete(prompt)
+    storage_set(
+
+"dispatch:last"
+
+, {
+
+"at"
+
+: datetime.now(timezone.utc).isoformat(), 
+
+"plan"
+
+: plan})
+
+return
+
+ pl=
+an
+
+def
+
+mode_enforce
+
+(
+
+policy_input: 
+str
+
+):
+    prompt =3D 
+
+f"Protocol Enforcem=
+ent. Evaluate input vs policy. Return ALLOW/DENY + rationale.\n
+{policy_input}
+
+"
+    decision =3D llm_complete(prompt)
+    storage_set(
+
+"enforce:last"
+
+, decision)
+
+return
+
+ de=
+cision
+
+# ---- Hosted Agent entrypoint (s=
+ingle-call stateless interface) ----
+
+def
+
+handle
+
+(
+=
+
+event: 
+dict=
+
+) -> 
+
+dict
+
+:
+
+"""
+    Contract:
+      event =3D {
+        "mode": "audit"|"dispatch"|"enforce",
+        "payload": {...} or string
+      }
+    Returns JSON response. Do NOT rely on globals for persistence.
+    """
+
+    mode =3D (event.get(
+
+"mode"
+
+) 
+
+or
+
+""
+
+).lo=
+wer()
+    payload =3D event.get(
+
+"payload=
+"
+
+)
+
+if
+
+ mode =
+=3D=3D 
+
+"audit"
+
+=
+:
+        out =3D mode_daily_audit()
+
+elif
+
+ mode=
+ =3D=3D 
+
+"dispatch"
+
+:
+        out =3D mode_dispatch(payload 
+
+if
+
+isin=
+stance
+
+(payload, 
+
+str
+
+) 
+
+else=
+
+ json.dumps(payload))
+
+elif
+
+ mode=
+ =3D=3D 
+
+"enforce"
+
+:
+        out =3D mode_enforce(payload 
+
+if
+
+isins=
+tance
+
+(payload, 
+
+str
+
+) 
+
+else
+
+ json.dumps(payload))
+
+else
+
+:
+        out =3D 
+
+"Unknown mode. Use=
+ one of: audit, dispatch, enforce."
+
+return
+
+ {
+
+"ok"
+
+: =
+
+True
+
+,
+
+"mode"
+
+=
+: mode,
+
+"result"
+
+: out,
+
+"ts"
+
+: =
+datetime.now(timezone.utc).isoformat(),
+    }
+
+# Agentverse will call a top-leve=
+l function for each request.
+
+def
+
+main
+
+(
+
+event: 
+dict
+
+) -> 
+
+dict
+
+:
+
+try
+
+:
+
+return
+
+ handle(event 
+
+or
+
+ {})
+
+except
+
+ Ex=
+ception 
+
+as
+
+ e:
+
+return
+
+ {
+
+"ok"
+
+: 
+
+False
+
+, 
+
+"error"
+
+: 
+
+str
+
+(e)}
+
+Why this shape?
+ Hosted Agents behave like lightweight =
+functions, so we expose a 
+pur=
+e entrypoint
+ (
+main(eve=
+nt)
+) and move any continuity into 
+storage
+, matching the reset behavior between calls. 
+
+beta-docs.agent=
+verse.ai
+
+Check 
+Allowed Imports
+ when adding libraries; stick to =
+what Agentverse supports. 
+
+docs.agentverse.ai
+
+5) Create & deploy paths
+
+A) No-code / low-code via Agentve=
+rse UI
+
+Create Hosted Agent
+ in 
+My Agents
+ =E2=86=92 choose 
+Hosted
+. (General docs) 
+
+docs.agentverse.ai
+
+In the 
+Editor
+:
+
+Overview
+ =E2=86=92 name, avatar, public/private, READM=
+E. 
+
+docs.agentv=
+erse.ai
+
+Code
+ =E2=86=92 add the file tree above (paste into 
+main.py
+). 
+
+docs.agentverse.ai
+
+Env Vars
+ =E2=86=92 set keys (OpenAI, etc.). 
+
+Platform to enable the agentic=
+ economy.
+
+Storage
+ =E2=86=92 create namespaces/keys you plan to u=
+se. 
+
+beta-docs.a=
+gentverse.ai
+
+Logs
+ =E2=86=92 tail outputs while testing. 
+
+docs.agentverse.ai
+=
+
+Run/Test
+ the agent with sample events:
+
+json
+
+Copy code
+
+{
+
+"mode"
+
+:
+
+"audit"
+
+}
+
+json
+
+Copy code

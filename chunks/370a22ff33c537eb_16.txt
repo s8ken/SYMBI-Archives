@@ -1,0 +1,335 @@
+te SYMBI evals. Bridges theory to code=E2=80=94e.g., run 5D metri=
+cs locally.
+
+Python-only for now=E2=80=94add JS/TS versions for Res=
+onate/Symphony alignment. No sample data; seed with dummy inputs.
+
+=
+
+Trust =
+& Schemas
+
+/src/receipt_schema.json: JSON for signed "=
+trust receipts" logging AI-human interactions (fields: session_id, ciq_metr=
+ics for clarity/integrity/quality, self_hash, signature).
+
+Crypto-r=
+eady for verification=E2=80=94e.g., SHA-256 hashes for integrity. Ties to e=
+thical AI logging.
+
+Schema's basic=E2=80=94expand with validation e=
+xamples (e.g., Joi/Zod code). No UI for generating receipts.
+
+Partner Mat=
+erials
+
+/partner-pack/ with pilot-sow/ (SOW templates), de=
+ck/ (presentations), pricing/ (terms). Plus /branding/ for assets and /webs=
+ite-copy/ for promo text.
+
+Enterprise-ready: Plug-and-play for pilo=
+ts (e.g., "SYMBI + Your AI Tool").
+
+Commercial focus=E2=80=94balanc=
+e with open-source examples. No integration guides yet (e.g., "Hook to Symp=
+hony").
+
+Implementation Scaffolds
+
+/backend/ and /fronte=
+nd/ folders (likely stubs for full SYMBI apps), plus overall structure for =
+extensibility.
+
+Modular=E2=80=94fork /src/ for custom builds. Suppo=
+rts community governance (per README).
+
+Empty-ish=E2=80=94add "TODO=
+.md" in each for next steps. No CI/CD setup.
+
+Over=
+all, features nail the "public-good" vibe: Free kits for academics, schemas=
+ for devs, whitepapers for thought leaders. For fairness, it's research-hea=
+vy=E2=80=94shines for SYMBI's ethical core but could add more "plug-in" exa=
+mples for non-experts.
+
+Implementation Assessment (Now Code + Do=
+cs Hybrid)
+
+Whoa=
+=E2=80=94this has 
+code
+! No longer pure docs: /src/ brings schemas,=
+ /replication-kit/ adds Python. It's TypeScript/Node-friendly in spirit (al=
+igns with siblings), but Python-forward for research. Clean, modular=E2=80=
+=94ESLint/Prettier vibes inferred. No major vulns (basic JSON/Python), but =
+prod-ify with tests.
+
+Architecture
+
+Structur=
+e
+: Root (SYMBI-Vault) as the "vault"=E2=80=94flat-ish with themati=
+c folders (/whitepapers/, /replication-kit/, etc.). No monorepo tools (e.g.=
+, Turbo), but logical nesting.
+
+Data Flo=
+w
+: Static for docs (read MD/JSON); executable for kits (pip instal=
+l =E2=86=92 run experiments). Git for versioning=E2=80=94e.g., tag whitepap=
+er releases.
+
+Scalabil=
+ity Notes
+: Python kit uses standard deps (no exotics); JSON schema=
+ pluggable for APIs.
+
+Key Components & Code Quality
+
+Scan=
+ned core files=E2=80=94solid for a first project. ~70% "coverage" feel (doc=
+s well-linked, code minimal but crisp).
+
+receipt_=
+schema.json (Trust Core)
+:
+
+How it W=
+orks
+: Defines structure for verifiable logs=E2=80=94e.g., {"versio=
+n": "1.0", "ciq_metrics": {"clarity": 0.9}, "signature": "hex_hash"}. Use w=
+ith crypto libs (e.g., ecdsa in Python) for signing.
+
+Code Ins=
+ight
+ (JSON excerpt):
+
+JSON
+
+=
+
+Copy
+
+{
+
+  "type"
+
+: 
+
+"object"
+
+,
+
+  "propertie=
+s"
+
+: {
+
+    "version=
+"
+
+: { 
+
+"type"
+
+: 
+
+"string"
+
+ },
+
+    "session=
+_id"
+
+: { 
+
+"type"
+
+: 
+
+"string"
+
+ },
+
+    "ciq_met=
+rics"
+
+: {
+
+      "type"=
+
+: 
+
+"object"
+
+,=
+
+      "prope=
+rties"
+
+: {
+
+        "cla=
+rity"
+
+: { 
+
+"type"
+
+: 
+
+"number"
+
+, 
+
+"minimum"
+
+: 
+
+0
+
+, 
+
+"maximum"
+
+: 
+
+1
+
+ },
+
+        "int=
+egrity"
+
+: { 
+
+"type"
+
+: 
+
+"number"
+
+, 
+
+"minimum"
+
+: 
+
+0
+
+, 
+
+"maximum"
+
+: 
+
+1
+
+ },
+
+        "qua=
+lity"
+
+: { 
+
+"type"
+
+: 
+
+"number"
+
+, 
+
+"minimum"
+
+: 
+
+0
+
+, 
+
+"maximum"
+
+: 
+
+1
+
+ }
+
+      }
+
+    },
+
+    "self_ha=
+sh"
+
+: { 
+
+"type"
+
+: 
+
+"string"
+
+ },
+
+    "signatu=
+re"
+
+: { 
+
+"type"
+
+: 
+
+"string"
+
+ }
+
+  },
+
+  "required"=
+
+: [
+
+"version"
+
+, 
+
+"session_id"
+
+, 
+
+"ciq_metrics"
+
+, 
+=
+
+"self_hash"
+
+, 
+
+"sig=
+nature"
+
+]
+
+}
+
+=
+
+Strength=
+s
+: JSON Schema standard=E2=80=94validate with jsonschema lib. Ties=
+ to SYMBI's trust (e.g., map ciq to Resonate's Trust Protocol).
+
+Issues
+: No examples=E2=80=94add a /src/validate.py script.
+
+Replicat=
+ion Kit (/replication-kit/)
+:
+
+How it W=
+orks
+: Python package (setup.py) for SYMBI experiments=E2=80=94e.g.=
+, compute metrics via 

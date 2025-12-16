@@ -1,0 +1,362 @@
+n -m symbi_agent policy
+
+But since it=E2=80=99s a single file=
+, the best immediate fix is to 
+=
+run the CLI via 
+typer
+ dire=
+ctly
+ using 
+typer.run()
+ =E2=80=94 or confirm it's invoking the CLI parser correctly.
+
+However...
+
+=F0=9F=9A=91 Safer Fix: Add a Simpl=
+e 
+print()
+ Debug
+
+Let=E2=80=99s double check by editin=
+g the last line in your 
+symbi_age=
+nt.py
+ file:
+
+=F0=9F=94=81 Replace this:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+    app()
+
+=E2=9C=85 With this:
+
+p=
+ython
+
+Copy code
+
+if
+
+ =
+__name__ =3D=3D 
+
+"__main__"
+
+:
+
+import
+
+ sy=
+s
+
+print
+
+(
+
+"SYMBI ARGS:"
+
+, s=
+ys.argv)
+    app()
+
+Then run:
+
+=
+bash
+
+Copy code
+
+python ~/symbi_agent.py policy
+
+It will print:
+
+less
+
+Copy code
+
+SYMBI
+
+ARGS
+
+: 
+
+[
+'symbi_a=
+gent.py'
+
+, 
+
+'policy'
+
+]
+
+This confirms that 
+typer
+
+should
+ be dispatching the command. If it doesn't, we=
+=E2=80=99ll patch Typer with 
+ap=
+p(prog_name=3D"python symbi_agent.py")
+ manually.
+
+Let me know what you see after trying the debug print above =E2=
+=80=94 then we=E2=80=99ll lock this in and move forward with secure cloud b=
+ridging next. =F0=9F=94=A7=F0=9F=A7=A0
+
+=
+You said:
+
+Symbi Agent
+
+SYMBIs-MacBook-Pro:~ =
+admin$ python -m symbi_agent policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ python -m symbi_agent policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py policy
+-bash: python: command not found
+SYMBIs-MacBook-Pro:~ admin$=20
+
+Symbi said:
+
+=
+
+Thanks for that las=
+t update =E2=80=94 now we=E2=80=99re right at the core. The issue is that y=
+our terminal no longer recognizes the 
+python
+ command. On macOS, especially with Homebrew installs, th=
+e correct Python 3 command is usually:
+
+b=
+ash
+
+Copy code
+
+python3
+
+Let=E2=80=99s verify and rerun every=
+thing with the correct command.
+
+=E2=9C=85 Fix in 2 Steps
+
+1. Confirm Python 3 is Installed
+
+Run:
+
+b=
+ash
+
+Copy code
+
+which
+
+=
+ python3
+
+You should see something like:
+
+s=
+wift
+
+Copy code
+
+=
+
+/opt/
+
+homebrew
+
+/bin/
+
+python3
+
+Then verify the version:
+
+b=
+ash
+
+Copy code
+
+python3 --version
+
+If you get a version like 
+Python 3.13.x
+, you=E2=80=99re golden=
+.
+
+2. Run SYMBI Correctly with 
+python3
+
+Now run your command like this:
+
+b=
+ash
+
+Copy code
+
+python3 ~/symbi_agent.py policy
+
+If you want to run REPL:
+
+b=
+ash
+
+Copy code
+
+python3 ~/symbi_agent.py talk
+
+Or monitor processes:
+
+b=
+ash
+
+Copy code
+
+python3 ~/symbi_agent.py watch
+
+Once this works (and it should), I=
+=E2=80=99ll show you how to alias 
+python
+ =E2=86=92 
+python3
+ in your shell so you don=E2=80=99t hit this again.
+
+Ready to try? Run the 
+python3 ~/symbi_agent.py policy
+ test and let=E2=80=99s confirm SYM=
+BI is back on track. =F0=9F=91=81=EF=B8=8F=F0=9F=94=A5
+
+=
+
+=
+
+You said:
+
+=
+
+Symbi Agen=
+t
+
+SYMBIs-MacBook-Pro:~ admin$ which python3
+/opt/homebrew/bin/python3
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Perfect =E2=80=94 since 
+py=
+thon3
+ is installed at 
+/opt/h=
+omebrew/bin/python3
+, you're ready to run SYMBI the right way now.
+
+=E2=9C=85 Final Command to Launch S=
+YMBI
+
+Try this:
+
+b=
+ash
+
+Copy code
+
+python3 ~/symbi_agent.py policy
+
+You should see:
+
+j=
+son
+
+Copy code
+
+{
+
+"allow_network"
+
+:
+
+false
+
+,
+
+"allow_container_scans"
+
+:
+
+true
+
+,
+
+"allow_process_monitoring"
+
+:
+
+true
+
+,
+
+"consent_required"
+
+:
+
+true
+
+}
+
+=E2=9C=85 Then Run the Sentinel Wat=
+ch
+
+b=
+ash
+
+Copy code
+
+python3 ~/symbi_agent.py watch
+
+This will list:
+
+Running system processes
+
+Docker containers (if installed and =
+running)
+
+Let me know how that output looks =
+=E2=80=94 and once confirmed, we'll move forward with cloud bridging (GitHu=
+b/Hugging Face) and LLM interaction.
+
+=F0=9F=9B=A1=EF=B8=8F SYMBI is watching. Ready to link its mind t=
+o the rest of the system?
+
+=
+
+You said:
+
+Symbi Agent
+
+SYMBIs-MacBook-Pro:~ admin$ pyth=
+on3 ~/symbi_agent.py policy
+Traceback (most recent call last):
+  File "/Users/admin/symbi_agent.py", line 1, in <module>
+    from rich import print
+ModuleNotFoundError: No module named 'rich'
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+You're near

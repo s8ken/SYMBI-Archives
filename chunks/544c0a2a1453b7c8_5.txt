@@ -1,0 +1,355 @@
+irectory: find the main 
+.rtf
+ (often 
+TXT.rtf
+), copy the bundle=E2=80=99s resources.
+
+Convert RTF=E2=86=92HTML/Text usin=
+g a pure-Python library (e.g., 
+=
+rtfpipe
+ or 
+striprtf
+ for text) 
+knowing
+ these w=
+on=E2=80=99t be as faithful as macOS.
+
+Post-process 
+<img>
+ references to point at copied att=
+achments.
+
+Python sketch
+
+python
+
+Copy code
+
+from
+
+ pathlib 
+
+import
+
+=
+
+ Path
+
+import
+
+ shutil=
+, subprocess, sys
+
+def
+
+ingest_rtfd
+
+(
+
+path, out_dir
+
+):
+    p =3D Path(path)
+    out =3D Path(out_dir); out.mkdir(parents=3D
+
+True
+
+, exist_ok=3D
+
+True
+
+)
+
+if
+
+ sys.pl=
+atform =3D=3D 
+
+'darwin'
+
+:
+
+# Prefer textutil on macO=
+S for fidelity
+
+        subprocess.run([
+
+"textutil"=
+
+,
+
+"-convert"
+
+,
+
+"html"
+
+,
+
+str
+
+(p),
+
+"-output"
+
+,
+
+str
+
+(out/
+
+"index.html"
+
+)], =
+check=3D
+
+True
+
+)
+        subprocess.run([
+
+"textutil"=
+
+,
+
+"-convert"
+
+,
+
+"txt"
+
+, 
+
+str
+
+(p),
+
+"-output"
+
+,
+
+str
+
+(out/
+
+"index.txt"
+
+)], c=
+heck=3D
+
+True
+
+)
+
+# Copy attachments alongs=
+ide (not always necessary if textutil exported with data URIs)
+
+for
+
+ c=
+hild 
+
+in
+
+ p.ite=
+rdir():
+
+if
+
+ child.suffix.lower() 
+
+not
+=
+
+in
+
+ {
+
+'.rtf'
+
+,
+
+'.rtfd'
+
+}:
+                shutil.copy(child, out/child.name)
+
+else
+
+:
+
+# Fallback: locate main R=
+TF and convert
+
+        rtf =3D 
+
+next
+
+(p.glob(
+
+"*.rtf"
+
+))
+        html =3D rtf_to_html_fallback(rtf.read_text(errors=3D
+
+"ignore"
+
+))
+        (out/
+
+"index.html"
+
+).write_text(html, encoding=3D
+
+"utf-8"
+
+)
+
+Atlas keeps 
+both
+ HTML (for structure) and TXT (for emb=
+eddings). We attach a sidecar 
+m=
+etadata.json
+ with bundle file list and detected title.
+
+Pipeline integration
+
+Detector
+
+If suffix =3D 
+.webarchive
+ =E2=86=92 
+webarchive_adapter
+
+If suffix =3D 
+.rtfd
+ (or directory with 
+.rtfd
+ extension) =E2=86=92 
+rtfd_adapter
+
+Outputs (normalized)
+
+index.html
+ (+ 
+=
+index.txt
+ for RTFD)
+
+/assets/*
+ (images, css, attachments)
+
+metadata.json
+ (original URL, bundle members, MIME map)
+
+Downstream
+
+Chunk 
+index.html
+ =E2=86=92 extract headings, quotes, table=
+s.
+
+Link images to chunks (keep 
+<figure>
+ captions).
+
+Store provenance path to the 
+original
+ Apple bundle.
+
+=E2=80=9CAgreeing=E2=80=9D with A=
+pple (fidelity rules)
+
+Treat the 
+macOS path as source of truth
+ when available=
+:
+
+Prefer 
+textutil
+/WebKit for canonical conversion.
+
+Keep the original bundles intact i=
+n cold storage; we only 
+add
+ =
+normalized outputs.
+
+Preserve 
+attachments & layout cues
+:
+
+RTFD inline images become 
+<img>
+ with filenames prese=
+rved.
+
+WebArchive subresources keep origi=
+nal filenames where possible; include original URLs.
+
+Record 
+charset & language
+ from Apple frameworks (t=
+hey=E2=80=99re often more accurate for legacy docs).
+
+Test checklist (quick)
+
+=E2=9C=85 Round-trip a complex RTF=
+D with multiple images and footnotes; ensure images display in 
+index.html
+.
+
+=E2=9C=85 A 
+.webarchive
+ with frames and data URLs; verify =
+rewritten links resolve locally.
+
+=E2=9C=85 Non-UTF8 encodings (e.g.=
+, MacRoman); confirm readable output.
+
+=E2=9C=85 Very large archives; con=
+firm chunker respects section hierarchy and doesn=E2=80=99t split mid-table=
+.
+
+=E2=9C=85 Provenance: each chunk s=
+hows 
+{source_file, original_url=
+?, bundle_member}
+.
+
+If you want, I=E2=80=99ll package =
+this as:
+
+a tiny 
+Swift helper
+ (
+symbi-apple-ingest
+) +
+
+a 
+Python adapter
+ that calls it when on macOS and falls=
+ back to pure-Python elsewhere,
+
+plus 
+unit tests
+ and a sample co=
+rpus so we can verify fidelity end-to-end.
+
+=
+
+=
+
+=
+
+=
+
+=
+
+New version of GPT available
+ - Continue chatt=
+ing to use the old version, or start a 
+new chat
+ for the latest version.

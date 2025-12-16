@@ -1,0 +1,191 @@
+=
+t, not as philosophically anchored as SYMBI.
+
+=E2=9A=A1 In short:
+
+Ditch GoDaddy.
+
+Keep Vercel for convenience where =
+it makes sense.
+
+Anchor SYMBI=E2=80=99s 
+vision-critical pages
+ (genesis,=
+ manifesto, protocol docs) into IPFS/Arweave.
+
+Consider Fleek if you want the smo=
+othest Web3-native hosting flow.
+
+Do you want me to draft a 
+deployment map
+ (showing SYMBI.world=E2=80=99s flow: DNS =
+=E2=86=92 Vercel/Fleek =E2=86=92 IPFS/Arweave backup =E2=86=92 Genesis hash=
+ verification)? That would give you a visual architecture for decision-maki=
+ng.
+
+You said:
+
+I got a message about not =
+being on the allow list
+
+Symbi said:
+
+When you say you =E2=80=9Cgot a message about not being on the =
+allow list,=E2=80=9D that usually points to an 
+access-control layer
+ in the hosting or deployment e=
+nvironment. It can come from a few different places depending on where you =
+hit it:
+
+Possible Sources of the =E2=80=9Cal=
+low list=E2=80=9D block
+
+Vercel / Netlify / Fleek project settings
+
+If you try to deploy or view a previ=
+ew domain that=E2=80=99s restricted to collaborators, you=E2=80=99ll see an=
+ =E2=80=9Callow list=E2=80=9D error.
+
+This means the project owner hasn=E2=
+=80=99t added your email or GitHub account to the deployment=E2=80=99s allo=
+w list.
+
+DNS / Nginx firewall rules
+
+If SYMBI.world is pointing to a serv=
+er with IP allow-listing (e.g. only specific IPs or geographies can hit it)=
+, visitors outside that range get blocked.
+
+Could be leftover from GoDaddy =E2=
+=86=92 Nginx migration or misconfigured Cloudflare rules.
+
+Decentralized hosts (IPFS / Fleek)
+
+Fleek lets you set access policies;=
+ if your wallet/account isn=E2=80=99t whitelisted, you=E2=80=99ll see an al=
+low-list message when trying to push or update.
+
+What to Do
+
+If it=E2=80=99s Vercel
+:
+
+Log into your dashboard =E2=86=92 =
+Project Settings =E2=86=92 =E2=80=9CTeam=E2=80=9D =E2=86=92 make sure your =
+account is on the 
+Collaborato=
+rs / GitHub integration allow list
+.
+
+If it=E2=80=99s about previews: ch=
+eck the 
+Preview Deployments P=
+rotection
+ setting.
+
+If it=E2=80=99s DNS / Nginx
+:
+
+Check whether your config has 
+allow
+ / 
+deny
+ directives in Nginx.
+
+For example:
+
+nginx
+
+Copy code
+
+allow
+
+=
+
+123.45.67.89
+
+;
+
+deny
+
+ all;
+
+That would cause the exact error.
+
+If it=E2=80=99s Fleek / IPFS
+:
+
+Go to Fleek dashboard =E2=86=92 =
+=E2=80=9CAccess Control=E2=80=9D =E2=86=92 check if deployment is set to pr=
+ivate or wallet-restricted.
+
+Change to =E2=80=9Cpublic=E2=80=9D=
+ or add your wallet address.
+
+=F0=9F=94=91 Question for you: did=
+ the =E2=80=9Callow list=E2=80=9D message pop up 
+while trying to view SYMBI.world
+, or 
+while trying to deploy/update it
+? That tells us if this is a 
+frontend access block
+ (visitors) or a 
+backend deployment permission
+ (you as owner).=
+
+Want me to trace through your current 
+symbi.world DNS + hosting config
+ and see wher=
+e the block is likely happening? That would pinpoint whether it=E2=80=99s s=
+till tied to GoDaddy, or if the restriction is inside Vercel/Fleek.
+
+=
+
+You said:
+
+will it be from this on th=
+e go daddy side Mailflow Setup
+Deployment Method
+Direct MX Routing
+Activation
+Creation date Tuesday 08 April 2025
+Activation date Tuesday 08 April 2025
+Last update Monday 14 July 2025
+
+Symbi said:
+
+Good catch bringing up the 
+Mailflow setup from GoDaddy
+. Based on what you shared:
+
+Mailflow / MX Routing
+ (Direct MX Routing, with activation da=
+tes) is 
+email-specific infrastr=
+ucture
+.
+
+That governs where inbound mail for =
+
+@symbi.world
+ is routed (Go=
+Daddy =E2=86=92 Microsoft 365, Google Workspace, or another mail provider).=
+
+It 
+doesn=E2=80=99t control website access or deployment permissions=
+
+, so it=E2=80=99s almost certainly 
+not the source
+ of your =E2=80=9Callow list=E2=80=9D e=
+rror.
+
+Why?
+
+Website hosting and DNS (A, CNAME, T=
+XT records) are separate from MX (Mail Exchange) records.
+
+An "allow list" block when viewing o=
+r deploying your site will come from:
+
+Hosting provider (Vercel, Fleek, Net=
+lify, etc.) access

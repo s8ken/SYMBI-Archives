@@ -1,0 +1,216 @@
+n Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.RecentD=
+ocuments.sfl3, NSURL=3Dfile:///Users/stephenaitken/Library/Application%20Su=
+pport/com.apple.sharedfilelist/com.apple.LSSharedFileList.RecentDocuments.s=
+fl3, NSUnderlyingError=3D0x6000027b4000 {Error Domain=3DNSPOSIXErrorDomain =
+Code=3D1 "Operation not permitted"}})
+
+Symbi said:
+
+Thanks for sharing the logs and the command output =
+=E2=80=94 let=E2=80=99s break down what you=E2=80=99re seeing:
+
+=F0=9F=94=8E The Bluetooth Logs
+
+All the entries you pasted are from =
+
+macOS system daemons
+:
+
+bluetoothd
+ =E2=86=92 the Bluetooth daemon.
+
+searchpartyuseragent
+ =E2=86=92 part of 
+Find My
+ (Apple=E2=80=99s device location serv=
+ice).
+
+ContextStoreAgent
+, 
+A=
+irPlayXPCHelper
+, 
+useractiv=
+ityd
+ =E2=86=92 other Apple background services.
+
+Key observations:
+
+TCC available 1, req 0
+ =E2=86=92 Transparency, Consent, and Co=
+ntrol framework (Apple=E2=80=99s permission manager). It=E2=80=99s confirmi=
+ng access states.
+
+Sessions like
+
+c=
+om.apple.icloud.searchpartyuseragent-central
+ =E2=86=92 normal for Fi=
+nd My/iCloud integration.
+
+Repeated 
+"Bluetooth power state: 0"
+ =E2=86=92 just means your =
+Bluetooth was off, but system agents are still polling.
+
+Received Heart Beat notification -- HIDShim
+ =E2=86=92 watchdog=
+ messages; not malicious.
+
+=E2=9C=85 These logs look 
+normal
+. They=E2=80=99re chatty =
+because Apple services are constantly pinging, even if Bluetooth is off.
+
+=F0=9F=94=8E The 
+plutil
+ Error
+
+Your command:
+
+bash
+
+Copy code
+
+plutil -p ~/Library/Application\ Support/com.apple.sha=
+redfilelist/com.apple.LSSharedFileList.RecentDocuments.sfl3
+
+returned:
+
+nginx
+
+Copy code
+
+Operation
+
+ not =
+permitted
+
+This is because 
+macOS protects certain user data with Transpare=
+ncy, Consent, and Control (TCC)
+ =E2=80=94 even 
+you
+ can=E2=80=99t read it from Terminal without=
+ granting Full Disk Access.
+
+=E2=9C=85 How to Access 
+.sfl3
+ Files Properly
+
+Go to 
+System Settings =E2=86=92 Privacy & Security =E2=86=
+=92 Full Disk Access
+.
+
+Add 
+Terminal
+ (or iTerm, whichever you=E2=80=99re using=
+).
+
+Retry the command:
+
+bash
+
+Copy code
+
+plutil -p ~/Library/Application\ Support/com.apple.sha=
+redfilelist/com.apple.LSSharedFileList.RecentDocuments.sfl3
+
+=E2=86=92 Now you should be able t=
+o decode the file.
+
+=F0=9F=9A=A9 What You=E2=80=99re =
+Really Checking
+
+The 
+RecentDocuments.sfl3
+ file is important because if =
+you find:
+
+System files (
+*.plist
+, 
+keychain-db
+) being opened when 
+you didn=E2=80=99t do it
+ =E2=86=92 suspicious.
+
+Unknown apps/scripts listed =E2=86=
+=92 possible rogue agent or background process.
+
+=E2=9A=A0=EF=B8=8F 
+Summary so far:
+
+The Bluetooth logs =3D =E2=9C=85 n=
+ormal Apple background chatter.
+
+The 
+.sfl3
+ access denied =3D =E2=9C=85 expected (just needs=
+ Full Disk Access to read).
+
+Next step =3D 
+grant Full Disk Access
+ and re-run the =
+
+plutil
+ decode, so we can=
+ list the exact recent documents and confirm if there=E2=80=99s unusual sys=
+tem access.
+
+=F0=9F=91=89 Do you want me to give you a 
+ready-to-run shell script
+ that will decod=
+e 
+all
+ your 
+.sfl3
+ files (Recent Apps, Recent Docs, F=
+avorite Items, etc.) once you enable Full Disk Access, and automatically hi=
+ghlight suspicious entries?
+
+=
+
+You said:
+
+iCloud is =
+not running on this profile at all
+
+Symbi said:
+
+=
+
+That=E2=80=99s an important detail =E2=80=94 thank y=
+ou for clarifying.
+
+If 
+iCloud is not enabled on this macOS user profile
+, then se=
+eing active processes and logs tied to 
+
+com.apple.icloud.searchp=
+artyuseragent
+
+ and 
+Find My
+ sessions is unusual. Normally:
+
+searchpartyuseragent
+ runs if 
+Find My Mac
+ or 
+iCloud features
+ are enabled.
+
+If iCloud is disabled, it should not=
+ be registering Bluetooth sessions like the logs you shared.
+
+=F0=9F=94=8E What This Could Mean
+
+Benign system noise (possible)
+
+On some macOS versions, Apple daemon=
+s load even when the service isn=E2=80=99t configured. They often idle and =
+produce log noise, though they shouldn=E2=80=99t be 
+attaching 

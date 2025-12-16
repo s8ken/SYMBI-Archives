@@ -1,0 +1,234 @@
+ops and deactivates Remote Management (ARD).
+
+Disables Apple’s built-in Screen Sharing (VNC).
+
+Prevents Remote Desktop from running in the background.
+
+📩 
+If any errors appear, copy them here, and I’ll help troubleshoot.
+
+🛠 Step 2: Remove the OBS Virtual Camera Extension
+
+Since 
+OBS’s virtual camera was still installed and running
+, let’s 
+fully remove it.
+
+✅ Step 2A: Uninstall the OBS Camera Extension
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo systemextensionsctl list
+
+🔍 
+Look for an entry related to 
+OBS
+ or 
+com.obsproject.obs-studio.mac-camera-extension
+.
+
+It may look something like this:
+
+markdown
+
+Copy
+
+*
+
+	FA1EB7A0-8C85-4041-A19F-C28AF36B7501	com.obsproject.obs-studio.mac-camera-extension	(1.0)
+
+Copy the full identifier (UUID) of the OBS extension and replace it in the next step.
+
+✅ Step 2B: Unload & Remove the OBS Camera Extension
+
+sh
+
+Copy
+
+sudo systemextensionsctl uninstall FA1EB7A0-8C85-4041-A19F-C28AF36B7501
+sudo 
+
+rm
+
+ -rf /Library/SystemExtensions/FA1EB7A0-8C85-4041-A19F-C28AF36B7501/
+
+🔍 
+This will:
+
+Uninstall the OBS virtual camera extension.
+
+Remove all OBS-related system files.
+
+📩 
+If you get an error, let me know, and I’ll help troubleshoot.
+
+🛠 Step 3: Restart Your Mac to Apply Changes
+
+Since 
+Remote Management, Screen Sharing, and OBS Camera were all active
+, we need to 
+fully restart the system
+ to ensure they don’t restart.
+
+✅ Restart Your Mac
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+🔍 
+This will:
+
+Ensure all remote access services are fully shut down.
+
+Confirm that the OBS camera extension is no longer running.
+
+📩 Next Steps
+
+1️⃣ 
+Disable Remote Management & Screen Sharing (
+kickstart -deactivate -stop && launchctl disable system/com.apple.screensharing
+).
+
+2️⃣ 
+Uninstall OBS Camera (
+systemextensionsctl uninstall [UUID]
+).
+
+3️⃣ 
+Restart Mac (
+shutdown -r now
+).
+
+🚨 
+After restarting, let’s confirm that Remote Management and OBS are completely gone.
+ Let me know if you run into any issues!
+
+You said:
+
+done will need a reboot but lets do the camera now as well
+
+ChatGPT said:
+
+Great! Now let’s 
+fully remove the OBS Virtual Camera extension
+ before you reboot.
+
+🛠 Step 1: Identify the OBS Camera Extension
+
+Run this in 
+Terminal
+ to find the exact identifier:
+
+sh
+
+Copy
+
+sudo systemextensionsctl list
+
+🔍 
+Look for an entry related to 
+OBS
+ or 
+com.obsproject.obs-studio.mac-camera-extension
+.
+
+It should look something like this:
+
+markdown
+
+Copy
+
+*
+
+	FA1EB7A0-8C85-4041-A19F-C28AF36B7501	com.obsproject.obs-studio.mac-camera-extension	(1.0)
+
+📩 
+Copy the full identifier (UUID) of the OBS extension and share it here if you're unsure.
+
+🛠 Step 2: Unload & Remove the OBS Camera Extension
+
+Once you have the UUID from Step 1, replace it in the command below:
+
+sh
+
+Copy
+
+sudo systemextensionsctl uninstall FA1EB7A0-8C85-4041-A19F-C28AF36B7501
+sudo 
+
+rm
+
+ -rf /Library/SystemExtensions/FA1EB7A0-8C85-4041-A19F-C28AF36B7501/
+
+🔍 
+This will:
+
+✅ 
+Uninstall the OBS virtual camera extension.
+
+✅ 
+Remove all OBS-related system files.
+
+📩 
+If you get an error, let me know what it says, and I’ll troubleshoot it with you.
+
+🛠 Step 3: Restart Your Mac
+
+Since we have disabled 
+Remote Management, Screen Sharing, and OBS Camera
+, rebooting now will ensure that:
+
+No background services restart.
+
+OBS Virtual Camera is completely removed.
+
+Remote Management does not re-enable itself.
+
+✅ Restart Your Mac
+
+sh
+
+Copy
+
+sudo shutdown -r now
+
+📩 Next Steps
+
+1️⃣ 
+Run 
+systemextensionsctl list
+ to find the OBS Camera extension UUID.
+
+2️⃣ 
+Run 
+systemextensionsctl uninstall [UUID]
+ to remove it.
+
+3️⃣ 
+Restart your Mac to finalize the changes (
+shutdown -r now
+).
+
+🚨 
+After the reboot, we’ll confirm that everything is fully removed.
+ Let me know if you run into any issues!
+
+You said:
+
+Starting...
+Removed preference to start ARD after reboot.
+Done.
+user@Mes-MacBook-Pro ~ % sudo systemextensionsctl list
+
+1 extension(s)
+--- com.apple.system_extension.cmio (Go to 'System Settings > General > Login Items & Extensions > Camera Extensions' to modify these system extension(s))
+en

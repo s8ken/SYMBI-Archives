@@ -1,0 +1,361 @@
+ity salience; mood from sent=
+iment/tonality of linked chunks.
+
+Atlas UI (MVP)
+
+Timeline
+ (left) =E2=9F=B6 scrollable evolution of idea=
+s, with file provenance chips.
+
+Idea Graph
+ (center) =E2=9F=B6 interactive nodes (size =
+=3D centrality; color =3D status).
+
+Details panel
+ (right) =E2=9F=B6 source quotes, decisio=
+ns, backlinks, =E2=80=9Cpromote to scene=E2=80=9D.
+
+Storyboard
+ tab =E2=9F=B6 ordered scenes + generated pr=
+ompts; drag to reorder; export to CSV/MD.
+
+Tech choices (pragmatic)
+
+Backend: 
+Python + FastAPI
+.
+
+Storage: 
+Postgres
+ (pgvector) or 
+SQLite + chroma
+ for small start.
+
+Embeddings: local or API=E2=80=94p=
+luggable interface.
+
+Frontend: 
+Next.js + React
+, graph with 
+Cytoscape.js
+ or 
+D3
+.
+
+Workers: 
+Celery/RQ
+ for async ingestion & image job=
+ dispatch.
+
+Exports: JSON, Markdown deck, PPTX=
+ (python-pptx) optional.
+
+Security & Provenance
+
+Immutable audit on 
+decisions
+ (who/when/why).
+
+Provenance chains: every scene lin=
+ks back to exact 
+chunk_id
+.
+
+Local-first option; air-gapped imp=
+ort mode for sensitive archives.
+
+=E2=80=9CDay-1=E2=80=9D Build Pla=
+n (2 weeks of focused sprints compressed into steps)
+
+Scaffold
+ repo with FastAPI, DB schema, ingestion CLI.
+
+Parsers
+ for PDF/DOCX/HTML/WebArchive; normalize & =
+chunk; store embeddings.
+
+Clustering + heuristics
+ to create 
+ideas
+ and initial 
+decisions
+.
+
+Light UI
+: timeline + idea table + status Kanban.
+
+Storyboard generator
+ producing prompt CSV + Markdown.
+
+Exporter
+: corpus map (sitemap.json) + deck draft.
+
+Tiny starter: ingest script (illu=
+strative)
+
+python
+
+Copy code
+
+# ingest.py
+
+from
+
+ pathlib =
+
+import
+
+ Path
+
+from
+
+ mylib 
+
+import
+
+ parse_an=
+y, chunk, upsert_doc, embed, cluster
+
+root =3D Path(
+
+"/corpus"
+
+)
+docs =3D []
+
+for
+
+ p 
+=
+
+in
+
+ root.rglob(
+
+"*"
+
+):
+
+if
+
+ p.suff=
+ix.lower() 
+
+in
+
+=
+ {
+
+".pdf"
+
+,
+
+".docx"
+
+,
+
+".html"
+
+,
+
+".webarchive"
+
+,
+
+".txt"
+
+,
+
+".md"
+
+}:
+        text, meta =3D parse_any(p)          
+
+# returns clean text + metadata
+
+        doc_id =3D upsert_doc(p, meta)
+
+for
+
+ c=
+h 
+
+in
+
+ chunk(te=
+xt):
+            emb =3D embed(ch.text)
+            ch_id =3D ch.save(doc_id, emb)
+        docs.append(doc_id)
+
+cluster(docs)  
+
+# builds ideas, li=
+nks mentions, seeds decisions
+
+What you get from this
+
+A 
+living atlas
+ of our work that answers: 
+what did we dream, ship, park, reject=E2=80=94=
+and why?
+
+A 
+storyboard pack
+ you can feed to Midjourney (or any g=
+enerator) to produce a coherent visual saga=E2=80=94scene by scene=E2=80=94=
+with receipts.
+
+If you want, I=E2=80=99ll drop this into a 
+build spec on canvas
+ (schema + task li=
+st + prompt templates) and include a minimal repo structure so you can hand=
+ it to an engineer and start immediately.
+
+=
+
+You said:
+
+the key to it is=
+ having it agree with some of the apple native files like the webarchive an=
+d rtfd 
+
+Symbi said:
+
+Thought for 24s
+
+=
+
+Tota=
+lly agree=E2=80=94the pipeline has to 
+speak Apple
+. Here=E2=80=99s a tight, build-ready plan so SYMB=
+I Atlas ingests 
+.webarchive
+ and 
+.rtfd
+ cleanl=
+y and consistently with your other sources.
+
+Apple-native ingestion plan
+
+A. Safari 
+.webarchive
+ (WebKit archive)
+
+A WebArchive is a (binary) plist bun=
+dle with:
+
+WebMainResource
+ (HTML bytes, MIME, URL)
+
+WebSubresources
+ (images, CSS, JS, etc.)
+
+WebSubframeArchives
+ (nested frames)
+
+Strategy (two-tier)
+
+macOS-native canonical path (preferred)
+
+Create a tiny Swift helper (CLI or X=
+PC) that uses WebKit/Foundation to read and convert:
+
+Load 
+WebArchive
+ =E2=86=92 extract HTML
+
+Persist all subresources to a folder=
+
+Re-write HTML 
+<link/src>
+ to local asset paths
+
+Return: 
+index.html
+, 
+=
+/assets/*
+, plus metadata (original URL, detected charset, titles).
+
+Swift sketch
+
+=
+swift
+
+Copy code
+
+import
+
+ Foundation
+
+import
+
+ WebKit
+
+let
+
+ inPath 
+
+=3D
+
+URL
+
+(fileURLWithPath: 
+
+CommandLine
+
+.arguments=
+[
+
+1
+
+])
+
+let
+
+ outDir 
+
+=3D
+
+URL
+
+(fileURLWithPath: 
+
+CommandLine
+
+.arguments=
+[
+
+2
+
+], isDirecto=
+ry: 
+
+true
+
+)
+
+let
+
+ data 
+
+=3D
+
+try
+
+Data
+
+(contentsOf: inPath)
+
+let
+
+ archive 
+
+=3D
+
+try
+
+N

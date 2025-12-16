@@ -1,0 +1,87 @@
+ts
+Create: POST /api/assistant/create (accepts name, instructions, model, tool=
+s; default gpt-4o)
+List: GET /api/assistant/list (sorted newest first)
+Latest: GET /api/assistant/latest (most recent assistant)
+Update: PUT /api/assistant/:assistantId (name/instructions/model/tools)
+Delete: DELETE /api/assistant/:assistantId
+Threads: POST /api/assistant/thread/create, GET /api/assistant/thread/:thre=
+adId/messages
+Message: POST /api/assistant/message (uses provided assistantId or falls ba=
+ck to latest if omitted)
+Trust / Ledger & Analysis
+Event/ledger schema
+event_id, session_id, user, model_vendor, model_name, timestamp, prompt, re=
+sponse, metadata, analysis, embeddings, ledger:{prev_hash,row_hash,signatur=
+e}
+Hash-chain & signatures
+prev_hash =3D last row_hash within session; row_hash =3D SHA-256 of canonic=
+al payload + prev_hash
+Optional Ed25519 signature via LEDGER_SIGNING_KEY (PEM private key)
+Append-only enforced via pre-hooks (no updates/deletes)
+Heuristic analysis features
+sentiment(valence/confidence), formality, clinical_register, emoji_count, h=
+edging_index, politeness
+safety_flags, disclosure_flags (direct/indirect heuristics), stance (co_cre=
+ator/evaluator/gatekeeper/neutral + conf)
+change_point_score vs last K events; pivot_detected thresholded and tied to=
+ disclosure presence
+Guardrails/apply behavior
+Composes apology + scope-alignment + optional dual-track preface ahead of t=
+he draft response based on signals and scope
+CI/CD & Ops
+GitHub Actions (CI/CD)
+.github/workflows/ci.yml: Lint/type-check (backend/frontend), tests (Mongo =
+service), Codecov upload, security scans (npm audit, OWASP DC, Semgrep, Tri=
+vy); scheduled weekly
+.github/workflows/codeql.yml: CodeQL analysis weekly and on main push/PR
+Deploy targets
+Vercel project files present; Express serves built FE in production
+Observability
+Prometheus/Grafana/Loki/OTel configs present; app does not emit metrics/tra=
+ces in code paths
+Security Posture (snapshot)
+JWT
+Validation requires JWT_SECRET (no unsafe default outside tests), 30d expir=
+y; socket connections require JWT
+RBAC/scopes
+Middlewares exist (requireRole, validateJWTScopes) but not broadly applied =
+to sensitive routes
+CORS
+Dev: allow all; Prod: allowlist via CORS_ORIGINS/CORS_ORIGIN + localhost
+Limits & hygiene
+Rate limits (auth vs general), Content-Type restricted (JSON/URL-encoded), =
+body size 10MB + Content-Length checks
+Helmet CSP, mongoSanitize, HPP, suspicious input detection
+Secrets exposure
+User API keys stored with select:false and not returned by controllers
+Notable risks
+Public webhooks lack HMAC/signature verification
+Test utilities contain hard-coded external Mongo URIs
+/api/llm/stream simulates streaming; could mislead clients
+Gaps, Risks, Unknowns
+OpenAPI spec mismatch (documents /declarations, not actual /api/trust, /api=
+/ledger, /api/events, /api/analyze, /api/guardrails, /api/insights)
+Webhooks unsecured (no signature verification)
+Committed artifacts: backend/coverage/*, many .DS_Store, large archives/*
+RBAC not enforced on trust audits/deletes
+Observability configs present but not instrumented in app
+Dependency/circular/unused analysis not run in this pass (network-restricte=
+d linters/audits)
+Recommendations (prioritized)
+Top 5 immediate fixes
+Enforce HMAC signature on all webhooks; treat endpoints as private by defau=
+lt
+Update openapi.yaml to current /api/* routes; mount Swagger UI in dev
+Apply requireRole('admin') to trust audit/delete and similar sensitive oper=
+ations
+Implement real streaming for /api/llm/stream or rename to /simulate-stream =
+and document behavior
+Remove hard-coded external Mongo URIs from test scripts; move to .env.test
+Top 5 de-bloat deletions/merges
+Remove backend/coverage/* from repo; add to .gitignore
+Purge .DS_Store and add ignore
+Consider moving archives/* to a docs repo or exclude from deployments
+Consolidate /api/events/ledger with /api/ledger (keep alias only if documen=
+ted)
+Remove dead security middleware usage or wire consistently acr

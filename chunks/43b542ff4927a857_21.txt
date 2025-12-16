@@ -1,0 +1,358 @@
+=92 
+asi_service
+ using 
+httpx
+):
+
+What the stack trace tells us (key =
+lines)
+
+asi_service.stream_chat_completion_with_reasoning(...)
+ =E2=86=
+=92 you=E2=80=99re calling 
+
+/v1/chat/completions
+
+ =
+with a 
+=E2=80=9Creasoning=E2=80=
+=9D
+ path/flag.
+
+Upstream: 
+https://api.asi1.ai/v1/chat/completions
+ returned 
+400
+.
+
+Your code raised at 
+response.raise_for_status()
+ before you cou=
+ld parse the error body.
+
+Most common 400s for chat endpoints:=
+
+Wrong endpoint
+ (provider expects 
+/v1/responses
+ or a different path).
+
+Model name invalid
+ or not enabled for your account.
+
+Payload schema mismatch
+ (fields, types, or nesting off; e=
+.g., function/tools format).
+
+Headers
+ missing/malformed (
+Authorization
+, 
+Content-Type
+).
+
+Unsupported fields
+ (e.g., 
+reasoning
+, 
+too=
+l_choice
+, 
+parallel_tool_=
+calls
+) for that provider/model.
+
+Out-of-range values
+ (
+max_tokens
+ too high; temperatures not numeric; arrays emp=
+ty).
+
+Messages shape invalid
+ (roles, missing 
+content
+, tool-call linking, non-string =
+content where strings are required).
+
+Quick isolation: 60-second smoke =
+test
+
+Run a 
+minimal
+ request against the same base URL to pro=
+ve the path/model/payload are accepted:
+
+bash
+
+Copy code
+
+curl -i https://api.asi1.ai/v1/chat/completions \
+  -H 
+
+"Authorization: Bearer 
+$ASI_API_KEY
+
+" \
+  -H 
+
+"Content-Type: application/js=
+on"
+
+ \
+  -d 
+'{
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Say hello in one word."}
+    ],
+    "max_tokens": 16
+  }'
+
+If this returns 
+200
+ =E2=86=92 your base URL/key are fi=
+ne; the failing request differs (payload/headers).
+
+If it=E2=80=99s 
+400
+ again =E2=86=92 likely 
+endpoint or model
+ issue for thi=
+s provider; confirm their accepted endpoints and model IDs.
+
+If your provider actually uses 
+
+/v1/responses
+
+, swap the path and payload accord=
+ingly (that endpoint takes a different schema).
+
+Add visibility (don=E2=80=99t jus=
+t raise_for_status)
+
+Capture the server=E2=80=99s error=
+ body 
+before
+ raising=
+, so you can see exactly what field failed:
+
+python
+
+Copy code
+
+try
+
+:
+    resp =3D 
+
+await
+
+ client.post(url, headers=3Dheaders, json=3Dpayload, timeout=3D
+=
+
+30
+
+)
+
+if
+
+ resp.s=
+tatus_code >=3D 
+
+400
+
+:
+        detail =3D 
+
+await
+
+ resp.aread()
+        logger.error(
+
+"ASI 400: %s"=
+
+, detail.decode(errors=3D
+
+"ignore"
+
+))
+        resp.raise_for_status()
+
+except
+
+ httpx.=
+HTTPStatusError 
+
+as
+
+ e:
+
+# keep original but with body=
+ surfaced
+
+raise
+
+(Do redact secrets if you log payl=
+oads.)
+
+Payload checklist (chat/completio=
+ns)
+
+Validate these 
+exactly
+:
+
+Headers
+
+Authorization: Bearer <key>
+
+Content-Type: application/json
+
+Top-level keys
+
+model: "<valid-model-id>"
+ (spelling & availabili=
+ty)
+
+messages: [{role, content}]
+ where 
+role =E2=88=88 {system,user,assistant,tool}
+ and
+
+content
+ is a 
+string
+, 
+or
+ a valid=
+ multi-part if provider supports it (don=E2=80=99t send objects unless docu=
+mented).
+
+max_tokens
+ (reasonable, e.g., =E2=89=A4 4096)
+
+Avoid unknown keys: remove 
+reasoning
+, 
+response_format
+, 
+tool_choice
+, etc. unless the provider supports them=
+ on 
+chat/completions
+=
+.
+
+Tools / function-calling
+
+If using tools, ensure the 
+schema matches the provider
+=
+:
+
+json
+
+Copy code
+
+{
+
+"tools"
+
+:
+
+[
+
+{
+
+"type"
+
+:
+
+"function"
+
+,
+
+"function"
+
+:
+
+{
+
+"name"
+
+:
+
+"my_=
+fn"
+
+,
+
+"parameters"
+
+:
+
+{
+
+...
+
+}
+=
+
+}
+
+}
+
+]
+
+,
+
+"tool_choice"
+
+:
+
+"auto"
+
+}
+
+Do not
+ send OpenAI =E2=80=9CResponses API=E2=80=9D fie=
+lds to a =E2=80=9CChat Completions=E2=80=9D endpoint (and vice-versa). They=
+ are different.
+
+Numbers & limits
+
+temperature
+ 0=E2=80=932 (float)
+
+top_p
+ 0=E2=80=931
+
+No NaNs/strings for numeric fields=
+.
+
+max_tokens
+ within the model=E2=80=99s cap.
+
+Messages correctness
+
+Every item has 
+role
+ and 
+content
+.
+
+If you include a 
+tool
+ message, it must reference a previo=
+us 
+tool_call_id
+ from the=
+ assistant turn.
+
+No empty arrays/empty strings wher=
+e forbidden.
+
+Model & endpoint alignment
+
+Some provid

@@ -1,0 +1,462 @@
+xt-white"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-3xl font-bold"
+
+>Welcome to Symbi AI
+
+</
+h1
+
+>
+
+</
+main
+
+>
+
+</
+div
+
+>
+  );
+}
+
+Then commit and push:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Ensured homepage exists"
+
+git push origin main
+vercel --prod --force
+
+🛠 Step 2: Ensure Vercel Is Serving the Correct Build Directory
+
+Check if 
+next.config.mjs
+ is correctly set up:
+
+bash
+
+Copy
+
+Edit
+
+cat
+
+ next.config.mjs
+
+It should include:
+
+js
+
+Copy
+
+Edit
+
+export
+
+default
+
+ {
+
+output
+
+: 
+
+"export"
+
+, 
+
+// Ensure this is correct
+
+trailingSlash
+
+: 
+
+true
+
+,
+};
+
+If it’s missing, 
+add it
+, then commit and redeploy:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed Next.js config for static export"
+
+git push origin main
+vercel --prod --force
+
+🛠 Step 3: Check Vercel Project Settings
+
+1️⃣ 
+Go to Vercel Dashboard
+ → Select your project
+
+2️⃣ 
+Check the "Build & Output Settings"
+
+Build Command:
+
+bun run build
+
+Output Directory:
+ Ensure it matches **
+.next/**
+ or your static export.
+
+3️⃣ 
+If the output directory is wrong, fix it in your local 
+next.config.mjs
+
+, commit, and redeploy.
+
+**🚀
+
+🚨 
+Issue: Vercel Says "No Framework Detected"
+ 🚨
+
+This means Vercel 
+does not recognize your project as a Next.js app
+, which is why it's failing to route properly (causing the 
+404 error
+).
+
+🛠 Fix 1: Ensure 
+next.config.mjs
+ is Present
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ | grep next.config.mjs
+
+If it 
+exists
+, open it:
+
+bash
+
+Copy
+
+Edit
+
+cat
+
+ next.config.mjs
+
+If it's 
+missing
+, create it:
+
+bash
+
+Copy
+
+Edit
+
+touch
+
+ next.config.mjs
+
+Ensure the file contains this configuration:
+
+js
+
+Copy
+
+Edit
+
+export
+
+default
+
+ {
+
+output
+
+: 
+
+"export"
+
+,
+
+trailingSlash
+
+: 
+
+true
+
+,
+};
+
+Then commit and redeploy:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed Next.js config"
+
+git push origin main
+vercel --prod --force
+
+🛠 Fix 2: Manually Tell Vercel It’s a Next.js Project
+
+Since Vercel 
+isn't detecting your framework automatically
+, we need to explicitly set it.
+
+1️⃣ 
+Go to Vercel Dashboard
+ → Select your 
+Symbi
+ project
+
+2️⃣ 
+Go to "Settings"
+ → Click on 
+"Project Settings"
+
+3️⃣ Under 
+"Framework Preset"
+, 
+change it to "Next.js"
+
+4️⃣ 
+Save & redeploy:
+
+bash
+
+Copy
+
+Edit
+
+vercel --prod --force
+
+🛠 Fix 3: Add a 
+vercel.json
+ File (If Needed)
+
+If the issue persists, manually tell Vercel what to do by creating 
+vercel.json
+ at the root of your project:
+
+bash
+
+Copy
+
+Edit
+
+touch
+
+ vercel.json
+
+Add the following content:
+
+json
+
+Copy
+
+Edit
+
+{
+
+"version"
+
+:
+
+2
+
+,
+
+"builds"
+
+:
+
+[
+
+{
+
+"src"
+
+:
+
+"package.json"
+
+,
+
+"use"
+
+:
+
+"@vercel/next"
+
+}
+
+]
+
+,
+
+"routes"
+
+:
+
+[
+
+{
+
+"src"
+
+:
+
+"/(.*)"
+
+,
+
+"dest"
+
+:
+
+"/"
+
+}
+
+]
+
+}
+
+Then commit and redeploy:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Added vercel.json to explicitly define Next.js project"
+
+git push origin main
+vercel --prod --force
+
+🚀 Final Steps
+
+1️⃣ 
+Make sure 
+next.config.mjs
+ exists and is correct
+
+2️⃣ 
+Set the framework to "Next.js" in Vercel Settings
+
+3️⃣ 
+If needed, add a 
+vercel.json
+ file
+
+4️⃣ 
+Redeploy and check if Vercel now detects the framework properly
+
+🚀 
+Try these fixes and let me know if it works!
+ 🔥🔥🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % cat next.config.mjs
+
+let userConfig = undefined
+try {
+  userConfig = await import('./v0-user-next.config')
+} catch (e) {
+  // ignore error
+}
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
+  },
+  experimental: {
+    webpackBuildWorker: true,
+    parallelServerBuildTraces: true,
+    parallelServerCompiles: true,
+  },
+}
+
+mergeConfig(nextConfig, userConfig)
+
+function mergeConfig(nextConfig, userConfig) {
+  if (!userConfig) {
+    return
+  }
+
+  for (const key in userConfig) {
+    if (
+      typeof nextConfig[key] === 'object' &&
+      !Array.isArray(nextConfig[key])
+    ) {
+      nextConfig[key] = {
+        ...nextConfig[key],
+        ...userConfig[key],
+      }
+   

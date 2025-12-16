@@ -1,0 +1,225 @@
+plication\ Support/Google/Chrome/Default/History
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url FROM history_items WHERE url LIKE '%stream%';"
+
+If 
+YouStream, Twitch, or another streaming platform appears
+, that confirms 
+livestreaming via browser
+.
+
+🚨 Next Steps
+
+1️⃣ 
+Find which app is making these connections (
+lsof -i -n | grep ESTABLISHED
+).
+
+2️⃣ 
+Reverse lookup the IPs (
+nslookup
+) to see which services they belong to.
+
+3️⃣ 
+Check browser history for livestream-related websites.
+
+Since 
+Amazon AWS and Cloudflare are involved
+, this strongly suggests a 
+web-based or hidden livestream
+. Let me know what you find! 🚨
+
+You said:
+
+I did use twitch for a few days 
+
+ChatGPT said:
+
+That explains some of the Cloudflare and AWS connections—Twitch uses both for streaming and data distribution. However, we still need to confirm:
+
+1️⃣ 
+Was Twitch the only livestreaming platform used?
+
+2️⃣ 
+Did any unauthorized streams occur?
+
+🚨 Next Steps to Confirm if There Were Unauthorized Livestreams
+
+1️⃣ Check Twitch-Specific Connections
+
+Run:
+
+sh
+
+Copy
+
+nslookup 104.18.43.204
+nslookup 104.18.32.47
+
+If these resolve to 
+Twitch
+, it confirms the connections were Twitch-related.
+
+2️⃣ Check Your Twitch Account for Past Streams
+
+Since Twitch 
+keeps a record of past broadcasts
+, check:
+
+Go to
+
+https://www.twitch.tv/
+
+ → Click your profile.
+
+Go to Creator Dashboard → Content → Video Producer.
+
+If you see 
+streams you didn’t initiate
+, that’s a red flag.
+
+3️⃣ Check for Hidden Twitch Stream Keys
+
+If your stream key was stolen, an attacker could broadcast on your behalf.
+
+Go to Twitch
+ → Settings → Stream
+
+Reset your stream key
+ to ensure no one else can use it.
+
+🔍 4️⃣ Was There Streaming Outside of Twitch?
+
+Since you used Twitch, we now need to check if 
+other livestreaming happened without your knowledge.
+
+A. Scan Browser History for Other Streaming Sites
+
+Run:
+
+sh
+
+Copy
+
+grep -i 
+
+"stream\|live"
+
+ ~/Library/Application\ Support/Google/Chrome/Default/History
+sqlite3 ~/Library/Safari/History.db 
+
+"SELECT url FROM history_items WHERE url LIKE '%stream%';"
+
+If you see 
+YouStream, Facebook Live, or another platform
+, that suggests 
+other livestreams happened.
+
+B. Check If OBS Was Streaming Elsewhere
+
+Even though you deleted OBS, if it streamed to 
+multiple platforms (Twitch + another service),
+ the logs might remain.
+
+Run:
+
+sh
+
+Copy
+
+cat
+
+ ~/Library/Application\ Support/obs-studio/logs/obs-*.txt | grep -i 
+
+"rtmp\|stream"
+
+If OBS logged multiple 
+streaming destinations
+, that’s a sign of dual-streaming (multi-platform broadcasting).
+
+🚨 Summary of Next Actions
+
+✅ 
+Confirm if the IPs belong to Twitch (
+nslookup
+).
+
+✅ 
+Check your Twitch account for past unauthorized broadcasts.
+
+✅ 
+Reset your Twitch stream key (if compromised).
+
+✅ 
+Look for evidence of livestreaming outside of Twitch (
+grep
+ browser history, OBS logs).
+
+Since you used Twitch, it’s possible the logs 
+only reflect your own activity
+—but we need to be sure 
+nothing else was broadcasted without your consent.
+
+Let me know what you find! 🚨
+
+You said:
+
+user@Mes-MacBook-Pro ~ % nslookup 104.18.43.204
+nslookup 104.18.32.47
+
+Server:		192.168.1.1
+Address:	192.168.1.1#53
+
+** server can't find 204.43.18.104.in-addr.arpa: NXDOMAIN
+
+Server:		192.168.1.1
+Address:	192.168.1.1#53
+
+** server can't find 47.32.18.104.in-addr.arpa: NXDOMAIN
+
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The 
+NXDOMAIN
+ response means the reverse lookup 
+did not return a domain name
+, which happens for some 
+Cloudflare-protected services
+. These IPs 
+could still belong to Twitch
+, but we need a different approach to confirm.
+
+🚨 Next Steps to Identify These Connections
+
+Since the reverse lookup didn’t work, let's try a 
+forward lookup
+ (checking what domains your Mac connected to).
+
+1️⃣ Find Out Which Domains Your Mac Contacted
+
+Run:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 7d
+
+This will list 
+all DNS requests your Mac made in the last 7 days
+, which may reveal:
+
+Twitch streaming servers
+
+Other u

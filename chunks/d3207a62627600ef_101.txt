@@ -1,0 +1,351 @@
+with OpenJDK).
+
+The Sleuth Kit (libtsk_jni) not being properly linked.
+
+✅ Step 1: Install JavaFX for Java 11
+
+Autopsy 
+needs JavaFX
+, but OpenJDK 
+does not include it
+ on macOS. Install it manually:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjfx
+
+📌 
+Next, set JavaFX for Java 11:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/homebrew/opt/openjfx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+echo
+
+'export PATH_TO_FX=/opt/homebrew/opt/openjfx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 2: Use a More Compatible JDK (Zulu JDK 11)
+
+Autopsy 
+seems to have issues with Homebrew’s OpenJDK
+. Let’s install a more compatible version:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu11
+
+📌 
+Now, set Zulu as the default JDK:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+📌 
+Verify that Zulu is active:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+Expected output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.X"
+
+ Zulu ...
+
+✅ Step 3: Ensure The Sleuth Kit Library is Linked
+
+Autopsy 
+also crashes if it can’t find 
+libtsk_jni
+ properly
+. Let’s make sure it’s linked:
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p ~/Downloads/autopsy-4.21.0/lib
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib ~/Downloads/autopsy-4.21.0/lib/
+
+Then set the library path:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:
+
+$DYLD_LIBRARY_PATH
+
+echo
+
+'export DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+🚀 What If It Still Fails?
+
+If 
+Autopsy still crashes
+, check the error log:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid*.
+
+log
+
+ | 
+
+tail
+
+ -n 50
+
+📌 
+Send me the last 50 lines of the error log, and we’ll debug further!
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew install openjfx
+
+==> Downloading https://formulae.brew.sh/api/formula.jws.json
+==> Downloading https://formulae.brew.sh/api/cask.jws.json
+Warning: No available formula with the name "openjfx". Did you mean openfa, openj9, openjdk, opendbx, openjph or openmsx?
+==> Searching for similarly named formulae and casks...
+==> Formulae
+openfa       openj9       openjdk      opendbx      openjph      openmsx
+
+To install openfa, run:
+  brew install openfa
+
+==> Casks
+openmsx                                  openzfs
+
+To install openmsx, run:
+  brew install --cask openmsx
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Homebrew Doesn’t Have OpenJFX? Let’s Install It Manually! 🔥
+
+Autopsy 
+needs JavaFX
+, but Homebrew no longer includes an 
+openjfx
+ formula. Instead, let’s 
+install OpenJFX manually
+ and 
+link it to Java 11
+.
+
+✅ Step 1: Download & Install OpenJFX Manually
+
+Run this to 
+download the correct JavaFX SDK
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-aarch64_bin-sdk.zip
+
+📌 
+Extract the files
+:
+
+sh
+
+Copy
+
+Edit
+
+unzip openjfx-11.0.2_osx-aarch64_bin-sdk.zip
+
+📌 
+Move OpenJFX to 
+/opt/javafx
+ for easier access
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mv
+
+ openjfx-11.0.2 /opt/javafx
+
+✅ Step 2: Link JavaFX to Java 11
+
+Now that 
+JavaFX is installed
+, tell Java where to find it:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/javafx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+To 
+make this permanent
+, add these lines to your 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/javafx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 3: Try Running Autopsy Again
+
+sh
+
+Co

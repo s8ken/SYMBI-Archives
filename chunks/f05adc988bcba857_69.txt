@@ -1,0 +1,506 @@
+bash
+
+Copy
+
+Edit
+
+code app/layout.tsx
+
+OR
+
+bash
+
+Copy
+
+Edit
+
+code app/page.tsx
+
+ð¹ 
+This opens the file in VS Code for easier editing.
+
+ð Step 3: Add 
+"use client";
+ to Fix the Error
+
+Once inside the file, 
+add this line at the top
+:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+; 
+
+// â¬ Add this at the top
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }
+
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ isClient ? 
+
+<
+div
+
+className
+
+=
+
+"light"
+
+>{children}
+
+</
+div
+
+> : 
+
+null
+
+;
+}
+
+ð¹ 
+This ensures your component only runs on the client, preventing the hydration error.
+
+ð Step 4: Restart Your Next.js Server
+
+After saving your changes, restart your 
+Next.js server
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð¹ 
+Then check 
+http://localhost:3001
+ to see if the error is fixed.
+
+Need More Help?
+
+If you're not sure 
+which file
+ is causing the issue, send me a 
+screenshot of the error message
+ from your terminal or browser console.
+
+Iâll help pinpoint exactly where to make the changes.
+
+ð 
+Try these steps and let me know what happens!
+
+You said:
+
+import type React from "react"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "Symbi AI - Intelligent Assistant",
+  description: "Empowering your workflow with advanced artificial intelligence that adapts to your needs.",
+    generator: 'v0.dev'
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+
+import './globals.css'
+
+ChatGPT said:
+
+The 
+React hydration error
+ is likely happening because the 
+
+ThemeProvider
+
+ is trying to apply 
+theme changes
+ on the 
+server-side
+, which conflicts with how React rehydrates on the client.
+
+â Fix 1: Add 
+"use client";
+ at the Top
+
+Since 
+Next.js 13+ App Router
+ has 
+server components by default
+, you need to 
+explicitly mark this component as a client component
+.
+
+ð Update your 
+layout.tsx
+ file:
+
+Open the file
+ in your terminal:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+OR in 
+VS Code
+:
+
+bash
+
+Copy
+
+Edit
+
+code app/layout.tsx
+
+Modify it as follows (Add 
+"use client";
+ at the top)
+:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+; 
+
+// â Fix: Forces client-side execution
+
+import
+
+type
+
+React
+
+from
+
+"react"
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+import
+
+"./globals.css"
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"@/components/theme-provider"
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] })
+
+export
+
+const
+
+ metadata = {
+
+title
+
+: 
+
+"Symbi AI - Intelligent Assistant"
+
+,
+
+description
+
+: 
+
+"Empowering your workflow with advanced artificial intelligence that adapts to your needs."
+
+,
+
+generator
+
+: 
+
+'v0.dev'
+
+}
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"light"
+
+enableSystem
+
+disableTransitionOnChange
+
+        >
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  )
+}
+
+â Fix 2: Wrap 
+ThemeProvider
+ with 
+useEffect
+ (Optional)
+
+If the issue persists, wrap 
+ThemeProvider
+ inside a 
+client-only check
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+"use client"
+
+; 
+
+// â Ensure this is at the top
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [mounted, setMounted] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setMounted
+
+(
+
+true
+
+);
+  }, []);
+
+if
+
+ (!mounted) 
+
+return
+
+n

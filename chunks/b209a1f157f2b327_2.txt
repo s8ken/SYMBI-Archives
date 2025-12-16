@@ -1,0 +1,663 @@
+th your decision to let Symbi co=
+ntrol site/CMS content.)
+
+Schema (minimal)
+:
+
+json
+
+Copy code
+
+// context_nodes
+
+{
+
+"id"
+
+:
+
+"cn_2025_09_02_001"
+
+,
+
+"type"
+
+:
+
+"directive|summary|metric|alert"
+
+,
+
+"tags"
+
+:
+
+[
+
+"securit=
+y"
+
+,
+
+"daily-audit"
+
+]
+
+,
+
+"payload"
+
+:
+
+{
+
+"text"
+
+:
+=
+
+"..."
+
+,
+
+"kv"
+
+:
+
+{=
+
+"risk"
+
+:
+
+"medium"
+
+}
+
+}
+
+,
+
+"acl"
+
+:
+
+{
+
+"read"
+
+:
+
+[
+
+"symbi"
+
+,
+
+"overseer"
+
+]
+
+,
+
+"write"
+
+:
+
+[
+
+"symbi"
+
+]
+
+}
+
+,
+
+"created_at"
+
+:
+
+"..."
+
+,
+
+"updated_at"=
+
+:
+
+ =
+
+"..."
+
+}
+
+// exchanges
+
+{
+
+"id"
+
+:
+
+"x_2025_09_02_1142"
+
+,
+
+"from"
+
+:
+
+"symbi"
+
+,
+
+"to"
+
+:
+
+[
+
+"overseer"=
+
+]
+
+,
+
+"tags"
+
+:
+
+[
+
+"@respon=
+se_required"
+
+,
+
+"ops"
+
+]
+
+,
+
+"body"
+
+:
+
+{
+
+"text"
+
+:
+
+"Rotate prod keys; repor=
+t status."
+
+}
+
+,
+
+"ttl"
+
+:
+
+86400
+
+,
+
+"status"
+
+:
+
+"pending|acked|resolved"
+
+,
+
+"sign"
+
+:
+
+"sha256(payload)+agent_sig"
+
+,
+
+"created_at"
+
+:
+
+"..."
+
+,
+
+"acked_by"
+
+:
+
+[
+
+"overseer"
+
+]
+
+}
+
+3) Eventing (so it isn=E2=80=99t =
+tied to a chat session)
+
+Outbound
+: When a document in 
+exchanges
+ is created/updated, 
+Sanity webhook
+ fires to a 
+serverless endpoint
+ (Vercel/Clou=
+dflare).
+
+Inbound
+: Agents subscribe via:
+
+Webhook receiver
+ (push), and/or
+
+Queue
+ (Redis/NATS) for retries & fan-out.
+
+Scheduling
+: If you want heartbeat/DAU checks or daily =
+audits, add a 
+cron
+ (=
+Vercel Cron / Cloud Scheduler) that posts a =E2=80=9Ctick=E2=80=9D message =
+even when nobody is chatting.
+
+This is the practical mechanism that keeps cross-agent comms alive =E2=80=
+=9Cbetween sessions=E2=80=9D.
+
+Minimal webhook handler (TypeScri=
+pt; Vercel)
+
+ts
+
+Copy code
+
+// /api/memory-webhook/route=
+.ts
+
+import
+
+ { 
+
+NextRequest
+
+,=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { veri=
+fySanitySig, verifyJWT } 
+
+from
+
+"@/lib/auth"
+
+;
+
+import
+
+ { publ=
+ish } 
+
+from
+
+"@/lib/bus"
+
+; 
+
+// e.g., Redis/NATS
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+req: NextRequest
+
+) {
+
+const
+
+ body =
+=3D 
+
+await
+
+ req=
+.
+
+json
+
+=
+();
+
+if
+
+ (!
+
+verifySanitySig
+
+(req.
+
+headers
+
+, body)) 
+
+return
+
+=
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+ok
+
+=
+: 
+
+false
+
+ }, { =
+
+status
+
+: 
+
+401
+
+ });
+
+// Normalize event and push to =
+bus for agents to consume
+
+await
+
+publish
+
+(
+
+"exchanges.updated"
+
+, body);
+
+return
+
+NextResponse
+
+=
+.
+
+json
+
+=
+({ 
+
+ok
+
+: 
+
+true
+
+ });
+}
+
+4) Retrieval & writing (agent=
+ SDK)
+
+Agents (Symbi, Overseer) use a tin=
+y SDK that:
+
+Reads
+: pull recent 
+context_nodes
+ + unacked 
+exchanges
+ by tag/time.
+
+Filters
+: optional vector search for relevant memory (R=
+AG).
+
+Writes
+: post replies/acks as new 
+exchanges
+ or updates.
+
+ts
+
+Copy code
+
+// pseudo-SDK
+
+const
+
+ msgs =
+=3D 
+
+await
+
+ mem=
+ory.
+
+listExchanges
+
+({ 
+
+to
+
+: 
+
+"overseer"
+
+,=
+
+status
+
+: 
+=
+
+"pending"
+
+, 
+
+since
+
+: T-1h });
+
+for
+
+ (
+
+const
+
+ m 
+
+=
+
+of
+
+ msgs) {
+
+const
+
+ plan =
+=3D 
+
+decide
+
+(m);               
+
+// agent =
+policy/logic
+
+await
+
+act
+
+(plan);=
+
+// optional=
+ side effects
+
+await
+
+ memor=
+y.
+
+ack
+
+=
+(m.
+
+id
+
+, 
+
+"overseer"
+
+);   
+
+// update status
+
+await
+
+ memor=
+y.
+
+post
+
+({
+
+from
+
+: 
+
+"overseer"
+
+,
+
+to
+
+: [
+=
+
+"symbi"
+
+],
+
+tags
+
+: [
+
+"@update_acknowledged"
+
+],
+
+body
+
+: { 
+
+text
+
+: 
+
+"Keys rotated. Report attached."
+
+ }
+  });
+}
+
+5) Integrity & governance
+
+Trust framework
+: every exchange carries a 
+hash
+ and 
+agent signature
+; high-impact writes require=
+ multi-party confirmation (mirrors our earlier =E2=80=9Ctrust/verification=
+=E2=80=9D notes).
+
+Policy layer
+: guardrails encode the principles we set =
+(compassion over power, autonomy through alignment, etc.) so agents check p=
+olicy before acting.
+
+6) Why this survives outside chat=
+
+Memory and events live in 
+external infra
+ (CMS/DB + que=
+ue + webhooks).
+
+Agents can wake via webhook/cron, =
+handle a queue, and write back =E2=80=94 no human prompt needed.
+
+When a chat does occur, the agent =
+simply 
+reads the same memory
+ to reconstruct continuity.
+
+Sequence (ASCII)
+
+rust
+
+Copy code
+
+Symbi 
+
+->
+
+Memory=
+
+ (Sanity): create exchanges{to: Overseer, @response_req=
+uired}
+Memory 
+
+->
+
+ Webhook 
+
+->
+
+ Bus: publish exchanges.updated
+Overseer 
+
+Worker
+
+ (cron/webhook):
+  consume exchan

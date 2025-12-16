@@ -1,0 +1,888 @@
+ proposal's steps via the adapter (or prepare a script and await hu=
+man /approve)
+
+const
+
+ resul=
+t =3D 
+
+await
+
+require
+
+(
+
+"../services/bridge.service"
+
+).
+
+executeProposa=
+l
+
+({ agent_key, proposal, context });
+
+await
+
+appendEvent
+
+({
+
+session_id
+
+: =
+context.
+
+session_id
+
+=
+
+ || 
+
+"orchestrator"
+
+,
+
+model_vendor
+
+=
+: 
+
+"symbi"
+
+,
+
+model_name
+
+: =
+
+"bridge-v1"
+
+,
+
+prompt
+
+: 
+
+JSON
+
+.
+=
+
+stringify
+
+({ =
+
+dispatch
+
+: { agen=
+t_key, 
+
+proposal_id
+
+: proposal.
+
+proposal_id
+
+ } }),
+
+response
+
+: 
+
+JSON
+
+.
+
+stringify
+
+(=
+{ result }),
+
+analysis
+
+: { =
+
+stance
+
+: 
+
+"executor"
+
+ }
+  });
+
+  res.
+
+json
+
+({ 
+
+ok
+
+: 
+
+true
+
+, result });
+};
+
+backend/services/br=
+idge.service.js
+
+js
+
+Copy code
+
+const
+
+ ya=
+ml =3D 
+
+require
+
+(
+
+"js-yaml"
+
+);
+
+const
+
+ fs =3D =
+
+require
+
+(
+
+"fs"
+
+);
+
+const
+
+ path =
+=3D 
+
+require
+
+(=
+
+"path"
+
+);
+
+const
+
+ fetch =
+=3D 
+
+require
+
+(=
+
+"node-fetch"
+
+);
+
+const
+
+=
+
+CFG
+
+ =3D y=
+aml.
+
+load
+
+(fs.
+
+readFileSync
+
+(path.
+
+join
+
+(process.
+
+cwd
+
+(), 
+
+"bac=
+kend/bridge/bridge.config.yaml"
+
+), 
+
+"utf8"
+
+));
+
+const
+
+=
+
+BRIDGE_CONTRACT
+
+=
+
+ =3D 
+
+`You are SYMBI agent. R=
+eturn JSON only: {"proposal_id":...,"goal":...,"steps":[...],"artifacts":[.=
+..],"risks":[...],"assumptions":[...],"est_cost":0,"est_confidence":0.0}`
+
+;
+
+exports
+
+.
+
+dispatchToAgents
+
+=
+ =3D 
+
+async
+
+ ({=
+ task, agents, context }) =3D> {
+
+const
+
+ activ=
+e =3D 
+
+CFG
+
+.
+
+agents
+
+.
+
+filter
+
+(
+
+a
+
+ =3D> agents.
+
+includes
+
+(a.
+
+key
+
+) && a.
+
+enabled
+
+);
+
+const
+
+ outs =
+=3D 
+
+await
+
+Promise
+
+.
+
+all
+
+(acti=
+ve.
+
+map
+
+(
+
+a
+
+ =3D> 
+
+askAgent
+
+(a, { task, context }).
+
+catch
+
+(
+
+=
+
+e
+
+ =3D> ({ 
+
+error
+
+: 
+
+String
+
+(e), 
+
+agent_key
+
+: a.
+
+key
+
+ }))));
+
+return
+
+ outs=
+.
+
+filter
+
+(
+
+Boolean
+
+);
+};
+
+async
+
+=
+
+function
+
+askAgent
+
+(
+=
+
+agent, payload
+
+) {
+
+if
+
+ (agent.
+
+kind
+
+ =3D=3D=
+=3D 
+
+"http"
+
+) {
+
+const
+
+ url=
+ =3D agent.
+
+route
+
+ ? 
+
+`
+${agent.base_url}
+
+${a=
+gent.route}
+
+` : agent.
+
+base_url
+
+;
+
+const
+
+ res=
+ =3D 
+
+await
+
+fetch
+
+(u=
+rl, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+headers
+
+: {
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+,
+        ...(agent.
+
+auth_header
+
+ ? { 
+
+"Authorizati=
+on"
+
+: agent.
+
+a=
+uth_header
+
+.
+
+replace
+
+(
+
+=
+"${SERVICE_TOKEN}"
+
+, process.
+
+env
+
+.
+
+SERVICE_TOKEN
+
+).
+
+replace
+
+(
+
+"${V0_TOKEN}"
+
+, process.
+
+env
+
+.
+
+V0_TOKEN
+
+) } : {})
+      },
+
+body
+
+: 
+
+JSON
+
+.
+=
+
+stringify
+
+({ =
+
+task
+
+: payload.
+
+task
+
+, 
+
+context
+
+: payload.
+=
+
+context
+
+, 
+
+contract
+
+: 
+
+BRIDGE_CONTRACT
+
+ })
+    });
+
+const
+
+ txt=
+ =3D 
+
+await
+
+ re=
+s.
+
+text
+
+();
+
+return
+
+ { =
+
+agent_key
+
+: agent=
+.
+
+key
+
+, 
+
+raw
+
+: txt, 
+
+proposal
+
+: 
+
+safeParseJson
+
+(txt) };
+  }
+
+if
+
+ (agent.
+
+kind
+
+ =3D=3D=
+=3D 
+
+"llm"
+
+) {
+
+// Use your existing LLM cont=
+roller/util to call OpenAI with the BRIDGE_CONTRACT
+
+const
+
+ { o=
+penaiCall } =3D 
+
+require
+
+(
+
+"./llm.util"
+
+); 
+
+// implement thin wr=
+apper over your existing code
+
+const
+
+ msg=
+ =3D 
+
+`Task: 
+${payload.task}
+
+\nContext: 
+
+${
+JSON
+
+.stringify(payload.context)}\n\n
+
+${BRIDGE_CONTRACT}
+
+`;
+
+const
+
+ txt=
+ =3D 
+
+await
+
+openaiCall
+
+(agent.
+
+model
+
+ || 
+
+"gpt-4o"
+
+, msg);
+
+return
+
+ { =
+
+agent_key
+
+: agent=
+.
+
+key
+
+, 
+
+raw
+
+: txt, 
+
+proposal
+
+: 
+
+safeParseJson
+
+(txt) };
+  }
+
+throw
+
+new
+
+Error
+
+(
+
+`Unknown agent kind: 
+${=
+agent.kind}
+
+`);
+}
+
+function
+
+safeParseJson
+
+(
+
+s
+
+) { 
+
+try
+
+ { 
+
+return
+
+JSON
+
+.
+
+parse
+
+(s); } 
+
+=
+
+catch
+
+ { 
+
+return
+
+null
+
+; } }
+
+exports
+
+.
+
+rankProposals
+
+ =
+=3D 
+
+(
+arr, { weights }
+
+) =3D> {
+
+// Normalize and score: higher =
+confidence, lower risk/cost, more steps/artifacts
+
+return
+
+ (arr=
+ || []).
+
+map
+
+=
+
+(
+
+x
+
+ =3D> {
+
+const
+
+ p =
+=3D x.
+
+proposal
+
+ || {};
+
+const
+
+ com=
+pleteness =3D 
+
+Math
+
+.
+
+min
+
+(
+
+1
+
+, (=
+(p.
+
+steps
+
+?.
+
+length
+
+||
+
+0
+
+) + (p.
+
+artifacts
+
+?.
+
+=
+
+length
+
+||
+
+0
+
+)) / 
+
+8
+
+);
+
+const
+
+ ris=
+k =3D 
+
+scoreInverse
+=
+
+(p.
+
+risks
+
+?.
+
+length
+
+ || 
+
+0
+
+); 
+
+// fewer risks =3D=3D better
+
+const
+
+ cos=
+t =3D p.
+
+est_cost
+
+ !=3D 
+
+null
+
+ ? 
+
+1
+
+ / (
+
+1
+
+ + 
+
+Number
+
+(p.
+
+est_cost
+
+)) : 
+
+=
+
+0.5
+
+;
+
+const
+
+ con=
+fidence =3D 
+
+clamp
+
+(
+
+Number
+
+(p.
+
+est_confidence
+
+ ?? 
+
+0.5
+
+), 
+
+0
+
+,=
+
+1
+
+);
+
+const
+
+ sco=
+re =3D weights.

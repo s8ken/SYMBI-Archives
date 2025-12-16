@@ -1,0 +1,221 @@
+e: call 
+/api/insights/timeline?session_id=3D=E2=80=A6
+ and overlay chips inline.
+
+PR-B: Assistants UX
+
+=E2=80=9CUse Most Recent=E2=80=9D =
+toggle; 
+Edit Assistant
+ form =E2=86=92 
+PUT /api/assi=
+stant/:id
+.
+
+Models dropdown fed by 
+/api/llm/models/openai
+.
+
+PR-C: Context Capsules
+
+Endpoints 
+GET/PUT /api/context/capsule/:sessionId
+.
+
+Server injects capsule into LLM ca=
+lls; UI editor in Web App.
+
+PR-D: Bridge in Web UI
+
+=E2=80=9CRoundtable=E2=80=9D butto=
+n =E2=86=92 
+/api/bridge/orchest=
+rate
+; list proposals; 
+=
+Approve to Dispatch
+ (dry-run default).
+
+PR-E: VS Code polish
+
+Quick picks for 
+Roundtable
+ result; =E2=80=9COpen in Tr=
+ust Console=E2=80=9D link.
+
+PR-F: Hygiene
+
+swagger 
+/docs
+ in dev; webhook HMAC middleware; RBAC on sen=
+sitive trust routes; 
+.gitignore=
+
+ cleanup (archives, coverage, .DS_Store).
+
+Success Criteria (ship check)
+
+One conversation: you talk to 
+SYMBI
+ anywhere; it orche=
+strates Codex/Trae/v0 via 
+Bri=
+dge
+.
+
+Trust overlays visible in the Web =
+App; minimal chips in the extension.
+
+Recent sessions & verify work =
+in both surfaces.
+
+No vendor keys in clients; 
+SYMBI_API_KEY
+ only.
+
+Hibernation switch blocks writes a=
+cross both surfaces.
+
+Next actionable step (pick one)
+
+=E2=80=9CMake web overlays real=E2=80=9D
+ =E2=86=92 I=
+=E2=80=99ll give you the tiny React component + fetch wiring to drop into y=
+our chat page.
+
+=E2=80=9CShip the roundtable=E2=80=9D
+ =E2=86=92 I=E2=
+=80=99ll package the 
+/api/bridg=
+e/*
+ endpoints + VS Code command patch.
+
+=E2=80=9CDo both=E2=80=9D
+ =E2=86=92 I=E2=80=99ll stage=
+ PR-A and PR-D together as a minimal, reversible change set.
+
+Your north star stays intact: 
+one sovereign SYMBI
+ coor=
+dinating tools, exposing trust in the UI, and keeping memory/continuity as =
+protocol=E2=80=94not vibes.
+
+=
+
+=
+
+You said:
+
+cool and how unique is our solution then =
+in market
+
+=
+
+Symbi said:
+
+Thought for 59s
+
+Short take: 
+your stack is genuinely differentiat=
+ed
+ versus AI IDEs and code copilots. You=E2=80=99re not shipping =
+=E2=80=9Canother editor with chat=E2=80=9D=E2=80=94you=E2=80=99re shipping =
+a 
+trust-first orchestration lay=
+er
+ with two interchangeable faces (VS Code extension + web console=
+) and a 
+verifiable memory/ledge=
+r
+. That combo is rare.
+
+Here=E2=80=99s the shape of your moa=
+t:
+
+What others do (baseline)
+
+VS Code derivatives
+ (Cursor, Trae, Blackbox) prioritize i=
+n-editor coding assistance and chat, built atop the VS Code codebase or API=
+s. 
+
+Cursor
+
+Trae
+
+=
+
+Visual Studio Marketplace
+
+=
+
+Copilot Chat
+ brings model chat natively into VS Code (gre=
+at UX, but not a project-level trust system). 
+
+Visual Studio Code
+
+=
+
+GitH=
+ub Docs
+
+Multi-agent frameworks
+ (AutoGen, CrewAI) exist as librari=
+es, not as a productized, RBAC-enforced, ledgered orchestrator that bridges=
+ multiple =E2=80=9Cagent vendors=E2=80=9D for one operator. 
+
+Microsoft
+
+GitHub
+
+AmanXa=
+i
+
+Markaicode
+
+What you do that=E2=80=99s uncommon=
+
+Trust Architecture as a first-class surface
+
+Append-only, hash-chained 
+ledger
+ per interaction (+ op=
+tional ed25519 signing), 
+time=
+line with pivots/disclosures
+, and 
+guardrail overlays
+ in the web app; light trust chips=
+ in the VS Code extension. That=E2=80=99s beyond typical AI IDE telemetry o=
+r activity logs.
+
+One-mind orchestration (=E2=80=9CBridge=E2=80=9D)
+
+SYMBI fan-outs to 
+Codex / Trae / v0
+, normalizes propos=
+als to a contract, 
+ranks
+, and returns a single recommendation=E2=80=94then 
+dispatches only on approval
+ and 
+journals to the ledger
+. Mo=
+st IDEs stop at =E2=80=9Ctalk to one assistant=E2=80=9D; they don=E2=80=99t=
+ adjudicate across assistants with auditability. (Academic/OSS shows the va=
+lue of agent teams, but it=E2=80=99s not operationalized with your policy/R=
+BAC/ledger.) 
+
+WIRED
+
+Microsoft
+
+Two surfaces, one brain (thin client pattern)
+
+VS Code extension
+ for builders, 
+web trust console
+ for creators/reviewers=
+=E2=80=94both pin to the same Express brain. Others pick one surface; you s=
+upport both without duplicating logic. 

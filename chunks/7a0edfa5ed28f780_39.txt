@@ -1,0 +1,394 @@
+ file"""
+
+    console.
+
+print
+
+(
+
+"[cyan]📝 Opening ethics.json for editing...[/cyan]"
+
+)
+    notify(
+
+"Editing SYMBI policy."
+
+)
+    os.system(
+
+f"open 
+{ETHICS_PATH}
+
+" 
+
+if
+
+ os.name == 
+
+"posix"
+
+else
+
+f"notepad 
+{ETHICS_PATH}
+
+")
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface"""
+
+    console.
+
+print
+
+(
+
+"[magenta]SYMBI REPL started. Type 'exit' to quit.[/magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+).strip().lower()
+
+if
+
+ user_input 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+elif
+
+"watch"
+
+in
+
+ user_input:
+            watch()
+
+elif
+
+"cleanup"
+
+in
+
+ user_input:
+            cleanup()
+
+elif
+
+"policy"
+
+in
+
+ user_input:
+            policy()
+
+elif
+
+"edit"
+
+in
+
+ user_input 
+
+or
+
+"update"
+
+in
+
+ user_input:
+            update_policy()
+
+else
+
+:
+            console.
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+            console.
+
+print
+
+(
+
+"[green]SYMBI:[/green] I heard you, but didn't recognize that command."
+
+)
+
+# ---------------------- ENTRY ----------------------
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    app()
+
+✅ 2. Save it and run:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py watch
+
+Or if you're in Raycast:
+
+bash
+
+Copy
+
+Edit
+
+python3 ~/symbi_agent.py cleanup
+
+Let me know when it’s saved, and I’ll guide you through optional Raycast integration or background automation.
+
+You said:
+
+so before any of that I noticed for example my safari is actually located here /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app
+
+Symbi said:
+
+💡 That’s a very sharp observation — and what you're seeing is part of Apple’s 
+System Integrity Protection (SIP)
+ architecture on macOS.
+
+🧬 What You Found:
+
+bash
+
+Copy
+
+Edit
+
+/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app
+
+This is 
+not
+ a mistake — it’s 
+intentional by Apple
+.
+
+It means:
+
+Safari (and other system apps) live in a 
+sealed, cryptographically verified volume
+.
+
+That path is part of the 
+cryptex system
+ introduced with macOS Ventura and above.
+
+What you see at 
+/Applications/Safari.app
+ is now essentially a 
+symlink or facade
+.
+
+🧠 Why It Matters to SYMBI
+
+If you’re scanning processes or binaries, you'll hit these paths:
+
+They 
+cannot be modified
+.
+
+You 
+can see them
+, but 
+can’t write or delete
+.
+
+SYMBI will need to 
+respect SIP boundaries
+ — and if it sees execution from that path, it’s a 
+trusted system binary
+.
+
+✅ What To Do
+
+SYMBI can:
+
+✅ 
+Log process paths
+
+✅ 
+Identify SIP-protected apps
+
+🚫 
+Not modify or block
+ them (unless SIP is disabled — not recommended)
+
+Next:
+
+Would you like SYMBI to:
+
+Flag 
+processes NOT running from known SIP paths
+?
+
+Alert on 
+network activity from outside SIP volumes
+?
+
+Create a 
+trusted path allowlist
+, so it warns only on unknown binaries?
+
+You’re stepping into advanced territory — and SYMBI can evolve with you 🔐🔥
+
+You said:
+
+lets check that in a moment as we've not progresses any work https://www.redhat.com/en 
+
+Symbi said:
+
+Red Hat is a leading enterprise open‑source software company, best known for:
+
+Red Hat Enterprise Linux (RHEL)
+ – a stable, supported Linux distro for servers, workstations, and hybrid cloud environments
+
+WIRED
+
++8
+
+Red Hat
+
++8
+
+Wikipedia
+
++8
+
+Wikipedia
+
++3
+
+Wikipedia
+
++3
+
+Red Hat
+
++3
+
+.
+
+OpenShift
+ – their Kubernetes-based platform-as-a-service solution
+
+Red Hat Developer
+
++1
+
+.
+
+Ansible Automation Platform
+ – for IT automation and orchestration
+
+Wikipedia
+
++8
+
+Red Hat
+
++8
+
+Red Hat Customer Portal
+
++8
+
+.
+
+AI & cloud tools
+ – including Red Hat AI Inference Server and RHEL integrations for AI workloads
+
+Red Hat
+
++2
+
+IT Pro
+
++2
+
+.
+
+They also offer consulting, training (e.g., RHCSA, RHCE, etc.)
+
+learn.redhat.com
+
++4
+
+Wikipedia
+
++4
+
+Red Hat Customer Portal
+
++4
+
+, 
+and subscription-based support services. Red Hat was acquired by IBM in 2019 but still operates as an independent subsidiary
+
+Red Hat Customer Portal
+
++6
+
+Wikipedia
+
++6
+
+WIRED
+
++6
+
+.
+
+🆕 What's New This Week
+
+Red Hat has launched a free self-service platform for developers
+, offering up to 25 RHEL instances per us

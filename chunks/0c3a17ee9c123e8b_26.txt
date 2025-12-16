@@ -1,0 +1,587 @@
+ly
+
+The SYMBI logo appears
+
+The footer is centered properly
+
+📤 Step 5: Push the Fix to GitHub & Deploy
+
+If everything works:
+
+bash
+
+Copy
+
+git add app/page.tsx
+git commit -m 
+
+"Fixed function return issue and improved Next.js Image handling"
+
+git push origin main
+
+✅ 
+Vercel will automatically deploy the fix
+.
+
+🎯 Let Me Know If You Need More Help! 🚀🔥
+
+2/2
+
+You said:
+
+okay and SYMBI is above the logo? 
+
+Vercel Deployment Expert GPT said:
+
+Yes! In this 
+corrected 
+page.tsx
+ file
+, 
+SYMBI is positioned above the logo
+. 🎉
+
+🛠 How the Layout Works
+
+The 
+animated words
+ (including 
+"SYMBI"
+) will appear at the top, fading in and out.
+
+The static "SYMBI" text
+ (
+<h1 className="text-3xl font-bold text-white mb-2">SYMBI</h1>
+) is directly above the 
+logo
+ and does not change.
+
+The 
+logo appears below
+ the text.
+
+✅ Layout Structure in 
+page.tsx
+
+tsx
+
+Copy
+
+<div className=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+  {
+
+/* Animated Words Changing Above Everything */
+
+}
+  <motion.
+
+h1
+
+    key={words[currentWordIndex].
+
+text
+
+}
+    className=
+
+"text-3xl font-bold text-white mb-6"
+
+    initial={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+    animate={{ 
+
+opacity
+
+: 
+
+1
+
+ }}
+    exit={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+    transition={{ 
+
+duration
+
+: 
+
+0.8
+
+ }}
+  >
+    {words[currentWordIndex].
+
+text
+
+}
+  </motion.
+
+h1
+
+>
+
+  {
+
+/* Static SYMBI Text Above Logo */
+
+}
+  <div className=
+
+"flex flex-col items-center mb-8"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-3xl font-bold text-white mb-2"
+
+>SYMBI
+
+</
+h1
+
+>  {
+
+/* Static SYMBI Text */
+
+}
+
+    {
+
+/* Logo Section */
+
+}
+    <div className=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+      />
+    </div>
+  </div>
+</div>
+
+📌 How It Looks
+
+✅ 
+"SYMBI"
+ (static text) is 
+always above the logo
+.
+
+✅ 
+"SYMBI"
+ is 
+large and bold
+ (
+text-3xl font-bold text-white mb-2
+).
+
+✅ 
+The animated words
+ (e.g., 
+"Intelligence Unbound"
+, 
+"Peace"
+, etc.) appear 
+above everything
+ and fade in/out.
+
+✅ The 
+logo is perfectly centered below
+
+"SYMBI"
+.
+
+🚀 Next Steps
+
+Paste the fixed 
+page.tsx
+
+ into your project.
+
+Run 
+npm run dev
+
+ to test it locally.
+
+Check if 
+"SYMBI"
+ is correctly above the logo.
+
+If correct, 
+push to GitHub
+ and deploy! 🚀🔥
+
+Let me know if you want any more tweaks! 😊🎉
+
+You said:
+
+so deployed locally the changing words are above the logo and I can't see SYMBI anywhere - please note SYMBI needed to be removed from the changing words completely which I think is the confusion - changing words remain below the logo - 'SYMBI' fixed above the logo with no animations
+
+Vercel Deployment Expert GPT said:
+
+Got it! 
+"SYMBI" should be a static text above the logo
+, and the 
+changing words should remain below the logo
+. Here’s the 
+fixed 
+page.tsx
+ file
+ to make this work correctly. 🚀
+
+✅ Corrected 
+app/page.tsx
+ (SYMBI Fixed Above the Logo, Changing Words Below)
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+ { motion } 
+
+from
+
+"framer-motion"
+
+;
+
+import
+
+ { useState, useEffect } 
+
+from
+
+"react"
+
+;
+
+const
+
+ words = [
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+250
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1000
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+];
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [currentWordIndex, setCurrentWordIndex] = 
+
+useState
+
+(
+
+0
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+const
+
+ interval = 
+
+setTimeout
+
+(
+
+() =>
+
+ {

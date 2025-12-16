@@ -1,0 +1,250 @@
+ed access to your system, they are 
+restricted from causing damage
+ through 
+Terminal
+, we need to implement several security measures that 
+limit their access
+ and 
+control system behavior
+.
+
+Here are a few key strategies you can use to safeguard your system:
+
+🚀 Step 1: Enable FileVault (Full Disk Encryption)
+
+This ensures that 
+your entire disk is encrypted
+ and only accessible by you with the correct password.
+
+Turn on FileVault
+ (if not already enabled):
+
+Go to 
+System Preferences
+ → 
+Security & Privacy
+ → 
+FileVault
+.
+
+Click on 
+Turn On FileVault
+.
+
+This will require your password for decryption, preventing anyone without your password from accessing your files (including via Terminal).
+
+🚀 Step 2: Use Strong Passwords
+
+Make sure that all your user accounts are protected with 
+strong passwords
+ to prevent unauthorized access.
+
+Change your password
+:
+
+Go to 
+System Preferences
+ → 
+Users & Groups
+.
+
+Change the password for your user account and any other accounts that may be vulnerable.
+
+Consider using a 
+password manager
+ to generate and store strong, unique passwords for each account.
+
+🚀 Step 3: Limit sudo (Superuser) Access
+
+Restricting 
+
+sudo
+
+ privileges prevents unauthorized users from executing administrative commands.
+
+Modify 
+sudoers
+ file
+:
+
+Open Terminal and type:
+
+sh
+
+Copy
+
+sudo visudo
+
+Edit sudoers file
+ to limit who can run 
+sudo
+ commands:
+
+You can restrict 
+sudo
+ access to only your user account.
+
+For example, ensure your user account is the only one listed under the 
+sudo
+ group.
+
+Disable sudo for other accounts
+:
+
+If you suspect that there are rogue accounts with 
+sudo
+ access, remove their entries or disable them.
+
+🚀 Step 4: Use a Guest User Account (or disable all other accounts)
+
+If you're concerned about unauthorized access, 
+disable unused accounts
+ or enable a 
+Guest account
+ with limited access.
+
+Disable unused accounts
+:
+
+Go to 
+System Preferences
+ → 
+Users & Groups
+.
+
+Disable any unused accounts to prevent unauthorized access.
+
+Enable Guest User
+ (with restricted access):
+
+Under 
+Users & Groups
+, enable the 
+Guest User
+ account and restrict their ability to modify system files.
+
+Limit the Guest account’s Terminal access
+:
+
+Disable Terminal
+ for the Guest user by removing Terminal from the 
+Applications folder
+ for that user.
+
+Or, use a tool like 
+Parental Controls
+ to prevent them from using Terminal.
+
+🚀 Step 5: Enable System Integrity Protection (SIP)
+
+System Integrity Protection (SIP)
+ helps prevent 
+critical system files
+ from being modified, even by the root user.
+
+Ensure SIP is enabled
+:
+
+To check SIP status, run:
+
+sh
+
+Copy
+
+csrutil status
+
+If SIP is disabled, you can 
+re-enable it
+ by following these steps:
+
+Restart your Mac in 
+Recovery Mode
+ (hold 
+Command + R
+ while booting).
+
+Open 
+Terminal
+ from the 
+Utilities
+ menu.
+
+Run the command:
+
+sh
+
+Copy
+
+csrutil 
+
+enable
+
+Restart your Mac.
+
+🚀 Step 6: Monitor and Restrict Shell Access
+
+You can limit which users have access to 
+Terminal
+ or the 
+bash/zsh
+ shell.
+
+Restrict access to Terminal
+:
+
+You can remove the ability for other users to access 
+Terminal
+ by editing their 
+profile
+.
+
+Modify the 
+
+/etc/shells
+
+ file to only include authorized shell paths (like 
+/bin/bash
+ or 
+/bin/zsh
+ for yourself).
+
+Limit access to specific users
+:
+
+You can prevent certain users from logging into the system by adding them to the 
+“no login” shell
+.
+
+Example:
+
+sh
+
+Copy
+
+sudo usermod -s /usr/sbin/nologin <username>
+
+This command sets the user's shell to 
+nologin
+, effectively disabling shell access.
+
+🚀 Step 7: Audit and Monitor System Activity
+
+Use monitoring tools to track and alert you to unusual activities, including changes in the system files, processes, or network connections.
+
+LuLu
+, 
+Oversight
+, and other tools you've set up will monitor external processes, but 
+you can go further
+ by setting up audit trails.
+
+Install Audit Framework
+ (
+auditd
+):
+
+You can use the 
+audit framework
+ to log system events, including command executions in Terminal.
+
+The command:

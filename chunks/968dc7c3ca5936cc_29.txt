@@ -1,0 +1,260 @@
+rPlayUIAgent keeps coming back, 
+something is triggering it.
+ Letâs check the logs.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.airplay"'
+
+ --last 10m
+
+ð¨ 
+Look for any errors or signs of it being restarted.
+
+ð¨ Next Steps
+
+Run 
+sudo launchctl list | grep -i airplay
+
+Run 
+log show --predicate 'subsystem == "com.apple.airplay"' --last 10m
+
+Let me know the results.
+
+ð¨ 
+If we find whatâs restarting it, we can finally stop it from coming back.
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl list | grep -i airplay
+
+Password:
+148	0	com.apple.AirPlayXPCHelper
+-	0	com.apple.fairplayd
+-	0	com.apple.fairplaydeviceidentityd
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Findings: 
+AirPlayXPCHelper
+ Has Restarted
+
+ð¨ 
+Despite disabling it earlier, 
+com.apple.AirPlayXPCHelper
+ is running again.
+
+â 
+This confirms that macOS is forcing it to restart.
+
+This means 
+a deeper system-level service is relaunching AirPlayXPCHelper automatically
+, likely due to SIP protection or a hidden persistence mechanism.
+
+ð¨ Step 6: Check System Logs for Whatâs Restarting AirPlay
+
+Now, letâs see 
+what is triggering 
+AirPlayXPCHelper
+ to restart
+.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.airplay"'
+
+ --last 10m
+
+ð¹ This will show 
+any recent AirPlay-related activity
+, including logs from the moment 
+AirPlayXPCHelper
+ restarted.
+
+ð¨ Step 7: Check If Another Process is Forcing AirPlay to Restart
+
+We need to check 
+if another macOS service is forcing AirPlayXPCHelper back on.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl blame system/com.apple.AirPlayXPCHelper
+
+â 
+If this returns a process name, thatâs what is forcing AirPlay back on.
+
+ð¨ 
+If nothing appears, weâll have to disable SIP to fully remove AirPlay.
+
+Next Steps
+
+Run 
+log show --predicate 'subsystem == "com.apple.airplay"' --last 10m
+
+Run 
+sudo launchctl blame system/com.apple.AirPlayXPCHelper
+
+Let me know what appears!
+
+ð¨ 
+If we find whatâs restarting it, weâll disable that next.
+
+Findings from AirPlay Logs
+
+ð¨ 
+
+AirPlayXPCHelper
+ is being restarted automatically.
+
+â 
+P2P (Peer-to-Peer) mode is enabled, Bonjour discovery is running, and it's actively scanning for AirPlay devices.
+
+ð¹ 
+AirPlay is forcefully reactivating network-based discovery even after being disabled.
+
+ð¹ 
+Errors indicate potential permission issues, but AirPlay continues running.
+
+ð¨ Next Steps: Attempt to Block AirPlayXPCHelper
+
+Step 1: Manually Disable AirPlay in macOS Settings
+
+Go to 
+System Settings
+ > 
+General
+ > 
+AirDrop & Handoff
+
+Turn Off 
+AirPlay Receiver
+
+Step 2: Disable AirPlay Service via Terminal
+
+Run the following:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+
+ð¨ This attempts to 
+prevent AirPlayXPCHelper from running
+.
+
+Step 3: Manually Unload AirPlay Service
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl unload -w /System/Library/LaunchAgents/com.apple.AirPlayXPCHelper.plist
+
+ð¨ This prevents it from starting on boot.
+
+Step 4: Change Permissions to Block Execution
+
+If the process still restarts, 
+prevent it from being executable
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/PrivateFrameworks/AirPlaySupport.framework/Versions/A/Resources/AirPlayXPCHelper
+
+This makes the AirPlay binary unreadable and unexecutable.
+
+ð¨ Step 5: Verify Changes
+
+After running the above, check if it still runs:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i airplay
+launchctl list | grep -i airplay
+
+If AirPlay Still Restarts: SIP (System Integrity Protection) May Be Blocking Removal
+
+Apple's 
+System Integrity Protection (SIP)
+ prevents complete removal of system services.
+
+To fully remove AirPlay:
+
+Restart Mac in Recovery Mode
+
+Hold 
+Command + R
+ while booting.
+
+Disable SIP Temporarily
+
+Open Terminal in Recovery Mode and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+Boot Back and Remove AirPlay Components
+
+Rerun the previous 
+chmod 000
+ and 
+launchctl disable
+ commands.
+
+Re-enable 

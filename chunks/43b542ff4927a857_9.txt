@@ -1,0 +1,200 @@
+/consensus step.
+
+Questions to close the gap:
+ Do you support 
+dynamic agent spawning
+ and 
+context-aware routing
+ (s=
+kills registry), or is routing static via endpoints? Any 
+capability registry
+ / 
+agent directory
+?
+
+2) Identity & trust (the crux=
+)
+
+DRUID:
+ Publicly emphasizes role-based access, encrypti=
+on, and auditability=E2=80=94especially in regulated verticals (e.g., AML/K=
+YC language on banking page). They don=E2=80=99t expose a low-level crypto =
+spec publicly. 
+
+druidai.com
+
+SYMBI-SYNERGY (goal):
+ You=E2=80=99ve called it a 
+trust infrastructure
+. If =
+you=E2=80=99re using signed events (JWT/JWS), per-agent keys, or DIDs/VCs f=
+or provenance, that=E2=80=99s a strong differentiator vs. =E2=80=9CRBAC-onl=
+y=E2=80=9D.
+
+What would differentiate you:
+
+Provenance:
+ signed chain-of-thought 
+metadata
+ (not content) + tamper-evident execut=
+ion trails.
+
+Capability tokens:
+ least-privilege, time-boxed, scope-=
+bound tool grants.
+
+Cross-agent trust:
+ attestations for tool invocations, =
+with remote verification.
+
+Human-in-the-loop policy:
+ override/approval flows embe=
+dded in the trust layer (not just the UI).
+
+3) Knowledge & data connector=
+s
+
+DRUID:
+ Pre-built connectors; =E2=80=9CAI Knowledgebase=
+=E2=80=9D pitch (unlock enterprise knowledge). 
+
+druidai.com
+
+SYMBI-SYNERGY:
+ If you wrap OpenAI + local embeddings, =
+outline how your 
+adapter laye=
+r
+ controls 
+PII scopi=
+ng
+, 
+field-level reda=
+ction
+, and 
+per-query=
+ guardrails
+ (prompt tags, data classifications). This can be stron=
+ger than generic connectors if you enforce 
+data-ownership policies
+ at the edge.
+
+4) Governance & policy
+
+DRUID:
+ =E2=80=9CUnified interface=E2=80=9D with role-b=
+ased security and analytics; they imply governance but don=E2=80=99t publis=
+h a fine-grained policy spec. 
+
+druidai.com
+
+SYMBI-SYNERGY:
+ Your edge could be a 
+policy engine
+ (rego/Opa-like or JSON p=
+olicy graph) that:
+
+binds agent 
+capabilities =E2=86=92 policies =E2=86=92 environme=
+nts
+ (dev/prod),
+
+injects 
+guardrails
+ (max spend, tool quotas, network eg=
+ress),
+
+logs policy decisions for audit/re=
+play.
+
+5) Observability & audit
+
+DRUID:
+ =E2=80=9CReal-time analytics=E2=80=9D on perfor=
+mance/completions. 
+
+druidai.com
+
+=
+
+SYMBI-SYNERGY:
+ If your trust layer already captures 
+structured events
+ (who=
+/what/why/inputs/outputs/signatures), highlight:
+
+Session timelines
+ with causal links,
+
+Policy decision logs
+,
+
+Signed receipts
+ for cross-team or partner trust.
+
+6) Autonomy & agent builder
+
+DRUID:
+ Markets =E2=80=9Cautonomous agent creation=E2=
+=80=9D via an agent builder (Oct 2024 launch). 
+
+druidai.com
+
++1
+
+SYMBI-SYNERGY:
+ If you support 
+declarative agent manifests
+ (capabilities, t=
+ools, datasets, policies) with codegen into Elysia/ElizaOS plugins, that ma=
+tches or beats their builder=E2=80=94especially if manifests also specify 
+trust constraints
+.
+
+Where SYMBI-SYNERGY can clearly o=
+utshine (recommendations)
+
+Cryptographic trust & provenance:
+
+Add/confirm per-agent keypairs, signed execution receipts, and optional 
+DID/VC
+ issuance for int=
+er-org interoperability. Expose a simple 
+verify()
+ CLI/endpoint for partners.
+
+Capability-scoped tokens:
+
+Replace broad API keys with signed, short-lived, 
+least-privilege
+ tokens (tool+scope+budget+TTL)=
+. Enforce at the Elysia middleware.
+
+Policy-driven orchestration:
+
+Keep routing declarative: 
+inten=
+t =E2=86=92 policy =E2=86=92 agent selection =E2=86=92 allowed tools
+=
+. Policy changes shouldn=E2=80=99t require redeploys.
+
+Structured audit stream:
+
+Emit JSON events (task_id, actor, intent, policy_decision, inputs_hash, out=
+puts_hash, sigs). Provide a 
+p=
+rivacy-preserving
+ mode (hash/redact sensitive fields) with 
+verifiable
+ metadata.
+
+Agent manifests & builder:
+
+YAML/JSON manifests that define tools, data scopes, trust constraints, quot=
+as=E2=80=94plus a small UI to assemble/validate them. This meets DRUID=E2=
+=80=99s =E2=80=9Cagent builder=E2=80=9D story, but with 
+trust baked in
+.
+
+What I need from your repo to fin=
+al

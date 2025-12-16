@@ -1,0 +1,149 @@
+s: No Network Activity for AirPlay
+
+Since 
+AirPlay did not appear in 
+lsof -iUDP
+
+, that means 
+no active network connections are triggering AirPlay.
+
+This rules out a 
+remote AirPlay session
+ as the cause. Instead, 
+something on the system itself is keeping it alive.
+
+ð¨ Step 14: Check If Another System Process is Restarting AirPlay
+
+Now, let's check 
+if another macOS system daemon is controlling AirPlay
+.
+
+Run This in Terminal:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -i apple
+
+ð¹ This will list 
+all protected system services
+ and show if 
+another process is keeping AirPlay active.
+
+Let me know the output before we continue!
+ ð¨
+
+You said:
+
+Last login: Fri Mar  7 08:00:12 on console
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % sudo lsof -iUDP | grep -i airplay
+
+Password:
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl list | grep -i apple
+`
+
+-	0	com.apple.mobile.obliteration
+400	0	com.apple.security.cryptexd
+573	0	com.apple.CoreAuthentication.daemon
+382	0	com.apple.coreservicesd
+512	0	com.apple.modelcatalogd
+-	0	com.apple.touchbarserver
+784	0	com.apple.deleted_helper
+-	0	com.apple.avbdeviced
+977	0	com.apple.cvmsServ
+-	0	com.apple.applessdstatistics
+-	0	com.apple.corercd
+-	0	com.apple.hdiejectd
+-	0	com.apple.corestorage.corestoraged
+427	0	com.apple.storagekitd
+404	0	com.apple.biomed
+-	0	com.apple.ospredictiond
+-	0	com.apple.storereceiptinstaller
+714	0	com.apple.mobileactivationd
+585	0	com.apple.seld
+460	0	com.apple.PerfPowerTelemetryClientRegistrationService
+-	0	com.apple.iconservices.iconservicesagent
+-	0	com.apple.asr
+-	0	com.apple.audiomxd
+-	0	com.apple.RosettaUpdateService
+-	0	com.apple.logkextloadsd
+340	0	com.apple.syslogd
+553	0	com.apple.symptomsd-diag
+374	0	com.apple.WindowServer
+665	0	com.apple.idleassetsd
+-	0	com.apple.NetworkSharing
+-	0	com.apple.afpfs_checkafp
+-	0	com.apple.systemstats.microstackshot_periodic
+-	0	com.apple.AppSSOAgent.login
+350	0	com.apple.securityd
+-	0	com.apple.attentionawarenessd
+353	0	com.apple.nesessionmanager
+-	0	com.apple.cfnetwork.cfnetworkagent
+-	0	com.apple.ocspd
+420	0	com.apple.symptomsd
+515	0	com.apple.IOUserDockChannelSerial-0x100000de0
+355	0	com.apple.autofsd
+308	0	com.apple.UserEventAgent-System
+-	0	com.apple.Kerberos.kadmind
+-	0	com.apple.griddatad
+792	0	com.apple.coresymbolicationd
+-	0	com.apple.PerfPowerServicesExtended
+526	0	com.apple.suhelperd
+-	0	com.apple.RFBEventHelper
+-	0	com.apple.racoon
+-	0	com.apple.bosreporter
+-	0	com.apple.MobileSoftwareUpdate.CryptegraftService
+-	0	com.apple.metadata.mds.scan
+371	0	com.apple.AirPlayXPCHelper
+311	0	com.apple.mediaremoted
+-	0	com.apple.mbusertrampoline
+-	0	com.apple.RemoteDesktop.PrivilegeProxy
+-	0	com.apple.diskimagesiod
+316	0	com.apple.accessoryupdaterd
+-	0	com.apple.sysdiagnose
+797	0	com.apple.installd
+793	0	com.apple.system_installd
+-	0	com.apple.DASDelegateService
+818	0	com.apple.AppStoreDaemon.StorePrivilegedODRService
+-	0	com.apple.dvdplayback.setregion
+396	0	com.apple.nehelper
+-	0	com.apple.boswatcher
+306	0	com.apple.logd
+375	0	com.apple.tccd.system
+-	0	com.apple.accessoryd
+-	0	com.apple.appleseed.fbahelperd
+-	0	com.apple.memory-maintenance
+-	0	com.apple.IFCStart
+576	0	com.apple.applekeystored
+335	0	com.apple.kernelmanagerd
+-	0	com.apple.mdmclient.daemon
+663	0	com.apple.ctkd
+523	0	com.apple.icloud.searchpartyd
+-	0	com.apple.retimerd
+-	0	com.apple.Virtualization.AppleVirtualPlatformHIDBridge
+491	0	com.apple.cameracaptured
+-	0	com.apple.xpc.roleaccountd
+395	0	com.apple.nsurlsessiond_privileged
+656	0	com.apple.awdd
+381	0	com.apple.contextstored
+433	0	com.apple.mDNSResponderHelper.reloaded
+777	0	com.apple.countryd
+-	0	com.apple.findmymacmessenger
+-	0	com.apple.dt.RemotePairingDataVaultHelper
+490	0	com.apple.appleh13camerad
+894	0	com.apple.online-auth-agent.xpc
+683	0	com.apple.nearbyd
+-	0	com.apple.CSCSupportd
+712	0	com.apple.cloudd
+414	0	com.apple.secinitd
+-	0	com.apple.fskit.fskit_helper
+-	0	com.apple.kuncd
+-	0	com.apple.corecaptured
+-	0	com.apple.scsid
+-	0	com.apple.IOAccelMemoryInfoCollector
+-	0	com.apple.msrpc.lsarpc
+-	0	com.apple.di

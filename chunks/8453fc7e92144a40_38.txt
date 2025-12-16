@@ -1,0 +1,302 @@
+;
+
+Option B: if you don=E2=80=99t wan=
+t real streaming now, 
+rename
+ route to 
+/api/llm/simu=
+late-stream
+ and update OpenAPI + frontend references accordingly.
+
+5) 
+Ledger verify + Recent sessions
+
+GET 
+/api/ledger/ver=
+ify?session_id=3D=E2=80=A6
+
+: recompute the hash-chain; retur=
+n 
+{ ok, break_at?: index }
+.
+
+GET 
+/api/sessions/r=
+ecent?limit=3D50
+
+: distinct 
+session_id
+ from 
+interaction_events
+ by recency.
+
+Patch (excerpt):
+
+diff
+
+Copy code
+
+--- a/backend/controllers=
+/ledger.controller.js
+
++++ b/backend/controllers/ledger.=
+controller.js
+
+@@
+
++exports.verify =3D async (req, =
+res) =3D> {
+
++  const { session_id } =3D req.=
+query || {};
+
++  if (!session_id) return res.s=
+tatus(400).json({ error: 'session_id required' });
+
++  const items =3D await Interac=
+tionEvent.find({ session_id }).sort({ timestamp: 1 }).lean();
+
+=
+
++  let prev =3D null;
+
++  for (let i=3D0;i<items.len=
+gth;i++){
+
++    const expect =3D sha256(can=
+onicalize({ ...items[i], ledger: { ...items[i].ledger, row_hash: undefined,=
+ prev_hash: prev }}));
+
++    if (items[i].ledger.prev_ha=
+sh !=3D=3D prev || items[i].ledger.row_hash !=3D=3D expect) {
+
+=
+
++      return res.json({ ok:fals=
+e, break_at:i, event_id: items[i].event_id });
+
++    }
+
++    prev =3D items[i].ledger.ro=
+w_hash;
+
++  }
+
++  return res.json({ ok:true, co=
+unt: items.length });
+
++};
+
+diff
+
+Copy code
+
+--- a/backend/routes/ledg=
+er.routes.js
+
++++ b/backend/routes/ledger.route=
+s.js
+
+@@
+ router.get('/', controller.list);
+
++router.get('/verify', controlle=
+r.verify);
+
+New sessions route:
+
+diff
+
+Copy code
+
+--- a/backend/routes/sess=
+ions.routes.js (new)
+
++++ b/backend/routes/sessions.rou=
+tes.js
+
++const router =3D require('expre=
+ss').Router();
+
++const InteractionEvent =3D requ=
+ire('../models/interactionEvent.model');
+
++router.get('/recent', async (re=
+q,res)=3D>{
+
++  const limit =3D Math.min(pars=
+eInt(req.query.limit||'50',10), 200);
+
++  const ids =3D await Interacti=
+onEvent.aggregate([
+
++    { $sort: { timestamp: -1 } =
+},
+
++    { $group: { _id: "$session_=
+id", last: { $first: "$timestamp" } } },
+
++    { $sort: { last: -1 } },
+
++    { $limit: limit }
+
++  ]);
+
++  res.json({ items: ids.map(x=
+=3D>x._id) });
+
++});
+
++module.exports =3D router;
+
+Mount in 
+app.js
+:
+
+diff
+
+Copy code
+
+ app.use('/api/ledger', require('./routes/ledger.route=
+s'));
+
++app.use('/api/sessions', requir=
+e('./routes/sessions.routes'));
+
+6) 
+De-bloat & hygiene
+
+Ignore
+ and remove committed artifacts:
+
+diff
+
+Copy code
+
+--- a/.gitignore
+
++++ b/.gitignore
+
++backend/coverage/
+
+=
+
++coverage/
+
++.DS_Store
+
++archives/
+
++.env.local
+
++.env.*.local
+
+Commands (I will stage on approval):
+
+bash
+
+Copy code
+
+git 
+
+rm
+
+ -r --cached backend/coverage 2>/dev/null || 
+
+true
+
+git 
+
+rm
+
+ -r --=
+cached archives 2>/dev/null || 
+
+true
+
+git 
+
+rm
+
+ --cac=
+hed **/.DS_Store 2>/dev/null || 
+
+true
+
+WHAT YOU=E2=80=99LL SEE BEFORE CO=
+MMIT
+
+I=E2=80=99ll show a single staged =
+diff covering:
+
+new/updated files listed above,
+
+the OpenAPI additions (paths only,=
+ no novella),
+
+ignores, and route mounts.
+
+Then I=E2=80=99ll commit:
+
+makefile
+
+Copy code
+
+ops: atlas-a1 (openapi alignment, w=
+ebhook HMAC, RBAC, stream semantics, ledger verify, recent sessions, git hy=
+giene)
+
+=E2=80=A6and open a PR.
+
+ROLLBACK
+
+Revert PR or 
+git revert -m 1 <merge_sha>
+.
+
+Disabling Swagger UI: set 
+NODE_ENV=3Dproduction
+.
+
+HMAC off: unset 
+WEBHOOK_SECRET
+.
+
+Stream rename: keep alias until =
+clients updated.
+
+Your call
+
+/approve PR-A=
+TLAS-A1 [stream=3Dreal|rename]
+
+ =E2=80=94 I=E2=80=99ll prepa=
+re the exact diff and PR.
+
+/revise PR-AT=
+LAS-A1 <change>
+
+ =E2=80=94 e.g., =E2=80=9Cdon=E2=80=99=
+t add swagger-ui=E2=80=9D, =E2=80=9Crename stream only=E2=80=9D.
+
+/abort PR-ATL=
+AS-A1
+
+ =E2=80=94 stop.
+
+=
+
+=
+
+You said:
+
+symbi whats your thou=
+ghts about this SYMBI
+
+You're absolutely correct! Most modern IDEs and coding environments, includ=
+ing Blackbox, Trae, and many others, are essentially "skinned" versions of =
+VS Code or built using VS Code's core components:
+
+VS Code-based IDEs:
+
+- M

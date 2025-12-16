@@ -1,0 +1,720 @@
+ategories"
+
+:
+
+[
+
+"O=
+ther"
+
+]
+
+}
+
+src/extension.ts
+
+ts
+
+Copy code
+
+import
+
+ *=
+
+as
+
+ vscode 
+
+from
+
+'vscode'
+
+;
+
+import
+
+ { 
+
+SymbiLedgerProvider
+
+ } 
+
+from
+
+'./ledgerView'
+
+;
+
+import
+
+ { getA=
+piBase, fetchJson } 
+
+from
+
+'./net'
+
+;
+
+export
+
+async
+
+=
+
+function
+
+activate
+
+(
+
+=
+
+ctx: vscode.ExtensionContext
+
+) {
+
+// Status bar mode indicator
+
+const
+
+ statu=
+s =3D vscode.
+
+window
+
+.
+
+createStatusBarIt=
+em
+
+(vscode.
+
+St=
+atusBarAlignment
+
+.
+
+Left
+
+, 
+
+100=
+
+);
+  status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: =E2=80=A6"=
+
+;
+  status.
+
+tooltip
+
+ =3D 
+
+"SYMBI mode"
+
+;
+  status.
+
+show
+
+();
+  ctx.
+
+subscriptions
+
+.
+
+push
+
+(status);
+
+refreshMode
+
+(status).
+
+catch
+
+();
+
+// Ledger tree
+
+const
+
+ provi=
+der =3D 
+
+new
+
+SymbiLedgerProvider
+
+(ctx);
+  vscode.
+
+window
+
+.
+
+registerTreeDataProvi=
+der
+
+(
+
+'symbi.led=
+ger'
+
+, provider);
+
+// Commands
+
+  ctx.
+
+subscriptions
+
+.
+
+push
+
+(
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+'symbi.openCons=
+ole'
+
+, 
+
+() =3D=
+>
+
+=
+openConsole
+
+(ctx)),
+    vscode.
+
+commands
+
+.
+
+registerCommand
+
+(
+
+'symbi.verifyLe=
+dger'
+
+, 
+
+async
+
+ () =3D> {
+
+const
+
+ i=
+d =3D 
+
+await
+
+ v=
+scode.
+
+window
+
+=
+.
+
+showInputBox
+
+({ 
+
+prompt
+
+: 
+
+'session_id'
+
+ });
+
+if
+
+ (!id=
+) 
+
+return
+
+;
+
+try
+
+ {
+
+const
+
+=
+ res =3D 
+
+await
+
+fetchJson
+
+=
+
+(
+
+`/api/ledger/verify?session=
+_id=3D
+${
+encodeURIC=
+omponent
+
+(id)}`, ctx);
+        vscode.
+
+window
+
+.
+
+showInformation=
+Message
+
+(res.
+
+=
+ok
+
+ ? 
+
+`Ledger O=
+K (
+${res.count}
+
+)` : 
+
+`Break at index 
+${res.break_at}
+
+`);
+      } 
+
+catch
+
+=
+ (
+
+e
+
+:
+
+any
+
+) {
+        vscode.
+
+window
+
+.
+
+showErrorMessag=
+e
+
+(
+
+String=
+
+(e?.
+
+message
+
+ || e));
+      }
+    })
+  );
+}
+
+async
+
+=
+
+function
+
+refreshMode
+
+(
+
+status: vscode.StatusBarItem
+
+) {
+
+try
+
+ {
+
+const
+
+ bas=
+e =3D 
+
+getApiBase
+
+();
+
+if
+
+ (!base=
+) { status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: offline"=
+
+; 
+
+return
+
+; }
+    status.
+
+text
+
+ =3D 
+
+"$(shield) SYMBI: checking=
+"
+
+;
+
+const
+
+ res=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/healthz`);
+    status.
+
+text
+
+ =3D res.
+
+ok
+
+ ? 
+
+"$(shield) SYMBI: normal"
+
+ : 
+
+"$(shield) SYMB=
+I: hibernation"
+
+;
+  } 
+
+catch
+
+ { s=
+tatus.
+
+text
+
+ =
+=3D 
+
+"$(shield) SYMBI: offline"
+
+; }
+
+setTimeout
+
+=
+(
+
+() =3D>
+
+ =
+
+refreshMode
+
+=
+
+(status), 
+
+30000
+
+);
+}
+
+function
+
+openConsole
+
+(
+
+ctx: vscode.ExtensionContext
+
+) {
+
+const
+
+ panel=
+ =3D vscode.
+
+window
+
+=
+
+.
+
+createWebviewPanel=
+
+(
+
+'symbi.consol=
+e'
+
+, 
+
+'Symbi Con=
+sole'
+
+, vscode.
+
+ViewColumn
+
+.
+
+Two
+
+, {
+
+enableScripts
+
+: 
+
+true
+
+, 
+
+retainContextWhenHidden
+
+: 
+
+true
+
+  });
+  panel.
+
+webview
+
+.
+
+html
+
+ =3D=
+
+getHtml
+
+();
+  panel.
+
+webview
+
+.
+
+onDidReceiveMessage
+
+(
+
+async
+
+ (msg) =3D> {
+
+if
+
+ (msg?.=
+
+type
+
+ =3D=3D=
+=3D 
+
+'send'
+
+) {
+
+const
+
+ p=
+ayload =3D { 
+
+message
+
+: msg.
+
+text
+
+ };
+
+try
+
+ {
+
+const
+
+=
+ data =3D 
+
+await
+
+fetchJson
+
+(
+
+'/api/assistant/message'
+
+, ctx, { 
+
+method
+
+: 
+
+'POST'
+
+, 
+
+body
+
+: 
+
+JSON
+
+.=
+
+stringify
+
+(payload) });
+        panel.
+
+webview
+
+.
+
+postMessage
+
+({ 
+
+type
+
+: 
+
+'reply'
+
+, data });
+      } 
+
+catch
+
+=
+ (
+
+e
+
+:
+
+any
+
+) {
+        panel.
+
+webview
+
+.
+
+postMessage
+
+({ 
+
+type
+
+: 
+
+'error'
+
+, 
+
+error
+
+: 
+
+String
+
+(e?.
+
+message
+
+||e) });
+      }
+    }
+  });
+}
+
+function
+
+getHtml
+
+(
+
+): 
+
+string
+
+ {
+
+return
+
+`<!doctype html><html><body>
+  <style>body{font:12px sans-serif;margin:0} .wrap{padding:12px} text=
+area{width:100%;height:90px} pre{white-space:pre-wrap}</style>
+  <div class=3D"wrap">
+    <h3>SYMBI Console</h3>
+    <textarea id=3D"t" placeholder=3D"Message to latest assistant=E2=80=
+=A6"></textarea>
+    <button id=3D"s">Send</button>
+    <div id=3D"o"></div>
+  </div>
+  <script>
+    const vscode =3D acquireVsCodeApi();
+    document.getElementById('s').onclick =3D () =3D> {
+      const text =3D document.getElementById('t').value;
+      vscode.postMessage({ type:'send', text });
+    };
+    window.addEventListener('message', ev =3D> {
+      const o =3D document.getElementById('o');
+      if (ev.data.type=3D=3D=3D'reply') o.innerHTML =3D '<pre>'+JSON.=
+stringify(ev.data.data,null,2)+'</pre>';
+      if (ev.data.type=3D=3D=3D'error') o.innerHTML =3D '<pre

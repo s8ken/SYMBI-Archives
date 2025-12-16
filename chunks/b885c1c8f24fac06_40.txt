@@ -1,0 +1,222 @@
+are resolved and changes are staged, run:
+
+bash
+
+Copy
+
+Edit
+
+git rebase --
+
+continue
+
+â 
+This finalizes the rebase process.
+
+ð¹ Step 2: Push to GitHub
+
+Once the rebase completes, push the updated branch to GitHub:
+
+bash
+
+Copy
+
+Edit
+
+git push -u origin main --force
+
+â 
+This will update the remote repository with your latest changes.
+
+ð Next Step: Deploy on Vercel
+
+Once GitHub is updated, weâll 
+connect it to Vercel and go live!
+
+Let me know when the push is successful. ðð¥
+
+ð¥ 
+You're in great shape!
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % git rebase --continue
+
+hint: Waiting for your editor to close the file... 
+E325: ATTENTION
+Found a swap file by the name "~/Library/CloudStorage/ProtonDrive-aitken.stephen
+@pm.me-folder/symbi-ai-website/.git/.COMMIT_EDITMSG.swp"
+          owned by: sja   dated: Thu Mar 20 21:53:43 2025
+         file name: ~sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-f
+older/symbi-ai-website/.git/COMMIT_EDITMSG
+          modified: YES
+         user name: sja   host name: SJAs-MacBook-Pro.local
+        process ID: 4472
+While opening file "/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@p
+m.me-folder/symbi-ai-website/.git/COMMIT_EDITMSG"
+             dated: Thu Mar 20 21:56:01 2025
+      NEWER than swap file!
+
+(1) Another program may be editing the same file.  If this is the case,
+    be careful not to end up with two different instances of the same
+    file when making changes.  Quit, or continue with caution.
+(2) An edit session for this file crashed.
+    If this is the case, use ":recover" or "vim -r /Users/sja/Library/CloudStora
+ge/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/.git/COMMIT_EDITMSG"
+
+    to recover the changes (see ":help recovery").
+    If you did this already, delete the swap file "/Users/sja/Library/CloudStora
+-- More --
+
+ChatGPT said:
+
+ð¥ 
+You're hitting a swap file issue because Git is opening your commit message in 
+vim
+ (a terminal-based editor), and there's a leftover crash file.
+ No worries, let's fix this fast. ðð
+
+ð¹ Step 1: Exit Vim Safely
+
+Right now, Git is waiting for you to 
+close the commit message editor
+. To exit without making changes, do the following:
+
+1ï¸â£ 
+Press 
+Esc
+
+ (just to make sure youâre out of editing mode).
+
+2ï¸â£ 
+Type:
+
+less
+
+Copy
+
+Edit
+
+:
+
+q
+
+!
+
+(This tells Vim to 
+quit without saving
+.)
+
+3ï¸â£ 
+Press 
+Enter
+
+ð¹ Step 2: Delete the Swap File
+
+Since thereâs a leftover 
+.swp
+ file from a previous Git operation, delete it:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ /Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/.git/.COMMIT_EDITMSG.swp
+
+â 
+This removes the swap file and prevents Vim from blocking your commit.
+
+ð¹ Step 3: Resume the Rebase
+
+Now that the swap file is gone, 
+run the rebase command again:
+
+bash
+
+Copy
+
+Edit
+
+git rebase --
+
+continue
+
+â If the commit message editor opens again, 
+save and close
+:
+
+If using Vim:
+ Press 
+i
+ (to enter insert mode), then 
+Esc
+, type 
+:wq
+, and press 
+Enter
+.
+
+If using Nano:
+ Press 
+CTRL + X
+, then 
+Y
+, then 
+Enter
+.
+
+ð¹ Step 4: Push to GitHub
+
+Once the rebase is successful, 
+push the changes
+:
+
+bash
+
+Copy
+
+Edit
+
+git push -u origin main --force
+
+ð 
+This should finally complete everything and sync your repo with GitHub!
+
+Let me know if you hit any more snagsâweâre 
+so close
+ to deployment! ðð¥
+
+You said:
+
+abort?
+
+ChatGPT said:
+
+ð¥ 
+If you're feeling stuck or unsure, you can safely abort the rebase and start fresh.
+ This will reset your repo to how it was 
+before you ran 
+git rebase
+
+, so you can retry.
+
+ð¹ Step 1: Abort the Rebase
+
+If you just
+
+You said:
+
+Swap file "~/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-
+ai-website/.git/.COMMIT_EDITMSG.swp" already exists!
+[O]pen Read-Only, (E)dit anyway, (R)ecover, (D)elete it, (Q)uit, (A)bort:
+
+ChatGPT said:
+
+ð¥ 
+You have a few options here, but the best move is to delete the swap file so you can continue cleanly.
+
+ð¹ Step 

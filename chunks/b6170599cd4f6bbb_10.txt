@@ -1,0 +1,298 @@
+ause rogue camera extensions, remote management, screen capturing etc..
+
+ChatGPT said:
+
+Ah, now we're diving into the 
+deep surveillance hunt
+âlooking for rogue processes, hidden extensions, and any signs of 
+remote management, screen capturing, or unauthorized camera access.
+ ð­ðµï¸ââï¸
+
+Here are the 
+best tools
+ from the ones I mentioned earlier that will help you 
+detect spyware, hidden services, and unauthorized access.
+
+ð Best Mac Security & Monitoring Tools
+
+1ï¸â£ 
+Lynis
+ (For System Security Auditing)
+
+ð¡ 
+Lynis
+ is a powerful tool that performs a 
+full security audit
+ of your Mac. It will check for 
+remote management services, unauthorized users, suspicious permissions, and misconfigurations.
+
+How to Install:
+
+sh
+
+Copy
+
+Edit
+
+brew install lynis
+
+Run a Full Security Scan:
+
+sh
+
+Copy
+
+Edit
+
+sudo lynis audit system
+
+ð This will generate a 
+detailed report
+ of security weaknesses, active remote services, and backdoors.
+
+2ï¸â£ 
+KnockKnock
+ (Detect Persistently Installed Malware)
+
+ð 
+KnockKnock
+ scans 
+launch agents, kernel extensions, login items, and background services
+ that persist on your systemâeven after reboot.
+
+Install it via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask knockknock
+
+Run KnockKnock:
+
+Open 
+KnockKnock
+ from your Applications folder and press 
+"Scan"
+.
+
+ð It will show everything that 
+automatically runs at startup
+, including potentially hidden spyware.
+
+3ï¸â£ 
+LuLu
+ (Firewall for Detecting Hidden Outbound Connections)
+
+ð 
+LuLu
+ is a 
+free firewall
+ that detects 
+outbound connections
+ made by hidden apps, trojans, and surveillance software.
+
+Install it via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask lulu
+
+Run LuLu:
+
+Open LuLu.
+
+Enable monitoring
+ for 
+all network traffic
+.
+
+Block
+ any unknown processes trying to send data 
+out of your Mac
+.
+
+4ï¸â£ 
+OverSight
+ (Detect Unauthorized Camera & Mic Access)
+
+ð¸ð¤ 
+OverSight
+ actively 
+monitors your Macâs camera and microphone
+, alerting you when an app or process tries to access them.
+
+Install it via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask oversight
+
+Run OverSight:
+
+Open 
+OverSight
+ from Applications.
+
+Enable monitoring
+ for your camera and microphone.
+
+It will pop up an alert
+ when an unknown app tries to access them.
+
+5ï¸â£ 
+FSMonitor
+ (Monitor File System Changes in Real-Time)
+
+ð 
+FSMonitor
+ shows all file system activity 
+in real-time
+âhelpful for detecting if spyware is secretly modifying files, installing backdoors, or changing system permissions.
+
+Install it via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask fsmonitor
+
+Run FSMonitor:
+
+Open FSMonitor.
+
+Watch for unusual file changes
+, such as:
+
+Hidden installs (
+/Library/LaunchDaemons/
+)
+
+Secret logs (
+/var/log/
+)
+
+Screen recordings (
+/tmp/
+)
+
+ð How to Check for Remote Management & Surveillance
+
+After installing these tools, run the following 
+manual checks
+ in 
+Terminal
+ to spot hidden spyware:
+
+1ï¸â£ Check for Remote Management
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo systemsetup -getremotelogin
+
+ð If it says 
+"Remote Login: On"
+, someone may have 
+SSH access
+ to your Mac.
+
+To disable:
+
+sh
+
+Copy
+
+Edit
+
+sudo systemsetup -setremotelogin off
+
+2ï¸â£ List Running Screen Capture & Camera Processes
+
+Check for 
+active screen recording
+ processes:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i 
+
+"screen"
+
+ð If you see suspicious processes like 
+screensharingd
+, 
+investigate further
+.
+
+Check for 
+apps using the camera
+:
+
+sh
+
+Copy
+
+Edit
+
+lsof | grep 
+
+"VDC"
+
+ð This will show any process accessing your 
+Mac's camera
+.
+
+3ï¸â£ List All Startup Services
+
+sh
+
+Copy
+
+Edit
+
+launchctl list
+
+ð This shows all 
+background services
+ running at startupâuse it to spot anything unusual.
+
+4ï¸â£ Detect Hidden Remote Access Software
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+ð This will show 
+open network connections
+. If you see unknown services listening on 
+ports like 5900 (VNC), 22 (SSH), or 3389 (Remote Desktop)
+, someone may be remotely accessing you

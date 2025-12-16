@@ -1,0 +1,522 @@
+
+;
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ body = 
+
+await
+
+ req.
+
+json
+
+();
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, 
+
+message
+
+: 
+
+"Replicate API is working!"
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+false
+
+, 
+
+error
+
+: 
+
+"Error processing request."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+export
+
+async
+
+function
+
+GET
+
+(
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+message
+
+: 
+
+"Replicate API Endpoint"
+
+ });
+}
+
+ð Step 3: Ensure the File is in the Correct Location
+
+The 
+correct structure
+ should be:
+
+Copy
+
+Edit
+
+ð app/
+ â£ ð api/
+ â â£ ð replicate/
+ â â â ð route.ts  â (This must exist!)
+
+If 
+route.ts
+ is in the wrong place, 
+move it
+ to:
+
+bash
+
+Copy
+
+Edit
+
+app/api/replicate/route.ts
+
+ð Step 4: Test Locally Before Deploying
+
+Before pushing to GitHub, 
+test the fix locally
+:
+
+â 
+Run the Next.js Build Locally
+
+bash
+
+Copy
+
+Edit
+
+npm run build
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn build
+
+If 
+it compiles successfully
+, 
+push the fix
+.
+
+If 
+it fails
+, 
+send me the error message
+, and Iâll help debug further.
+
+ð¤ Step 5: Push the Fix to GitHub & Deploy Again
+
+Once everything works locally:
+
+1ï¸â£ Commit and Push
+
+bash
+
+Copy
+
+Edit
+
+git add app/api/replicate/route.ts
+git commit -m 
+
+"Fixed API route exports"
+
+git push origin main
+
+2ï¸â£ Vercel Will Auto-Deploy
+
+Go to 
+Vercel Dashboard
+ â Select your project.
+
+Check 
+Deployments
+.
+
+Wait for it to build.
+
+â¨ Let Me Know If You Need More Help! ðð¥
+
+If deployment 
+still fails
+, 
+send me the latest Vercel error logs
+, and Iâll guide you further. ð
+
+You said:
+
+this is in the file as per last edit: import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    // Example: Log input data
+    console.log("Replicate API Request:", body);
+
+    return NextResponse.json({ success: true, message: "Replicate API is workin$
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Error processing request$
+  }
+}
+
+ChatGPT said:
+
+Great, you're on the right track! However, there are a few 
+potential issues
+ in your 
+route.ts
+ file that may be causing the 
+Vercel build failure
+. Let's fix them step by step.
+
+ð Step 1: Fix Formatting Issues
+
+I noticed your code 
+might have line truncations (
+$
+ symbols at the end`)
+. This happens when a line is too long in some text editors.
+
+â Corrected 
+route.ts
+
+Replace the contents of your 
+app/api/replicate/route.ts
+ file with this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ body = 
+
+await
+
+ req.
+
+json
+
+();
+
+// Example: Log input data
+
+console
+
+.
+
+log
+
+(
+
+"Replicate API Request:"
+
+, body);
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, 
+
+message
+
+: 
+
+"Replicate API is working!"
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+false
+
+, 
+
+error
+
+: 
+
+"Error processing request."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+// Add a GET method to prevent module errors
+
+export
+
+async
+
+function
+
+GET
+
+(
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+message
+
+: 
+
+"Replicate API Endpoint"
+
+ });
+}
+
+ð Step 2: Ensure the File is in the Correct Folder
+
+Your file 
+must
+ be in this location:
+
+bash
+
+Copy
+
+Edit
+
+app/api/replicate/route.ts
+
+If it's not, 
+move it
+ to the correct path.
+
+ð  Step 3: Test Locally Before Deploying
+
+Before pushing to GitHub, 
+test your build locally
+:
+
+Run the Next.js Build Command
+
+bash
+
+Copy
+
+Edit
+
+npm run build
+
+or
+
+bash
+
+Copy
+
+Edit
+
+yarn build
+
+â If it compiles 
+successfully
+, 
+proceed to Step 4
+.
+
+â If 
+it fails
+, 
+send me the full error log
+, and I'll help debug.
+
+ð Step 4: Push the Fix to GitHub
+
+Once it works locally, 
+push the fix
+:
+
+bash
+
+Copy
+
+Edit
+
+git add app/api/replicate/route.ts
+git commit -m 
+
+"Fixed API route module error"
+
+git push origin main
+
+Vercel 
+will automatically redeploy
+ your p

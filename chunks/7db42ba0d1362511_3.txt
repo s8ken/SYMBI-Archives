@@ -1,0 +1,291 @@
+t, and communication management. Skilled in responding to client inquiries, efficiently triaging requests, and escalating complex issues to specialist teams in fast-paced environments. Strong interpersonal and communication abilities, honed through extensive experience in multi-channel support, including contact centers, offshore teams, and digital platforms. Highly adaptable with the ability to maintain attention to detail, prioritize tasks, and deliver exceptional service. Committed to continuous learning and team collaboration to achieve optimal outcomes in dynamic settings."
+
+# Save the modified document
+
+output_path = 
+
+"/mnt/data/Modified_Resume_Stephen_Aitken_2025.pdf"
+
+# Convert the docx file to PDF
+
+from
+
+ fpdf 
+
+import
+
+ FPDF
+
+# Create a PDF object
+
+pdf = FPDF()
+pdf.set_auto_page_break(auto=
+
+True
+
+, margin=
+
+15
+
+)
+pdf.add_page()
+
+# Add title
+
+pdf.set_font(
+
+"Arial"
+
+, 
+
+'B'
+
+, 
+
+12
+
+)
+pdf.cell(
+
+200
+
+, 
+
+10
+
+, txt=
+
+"Resume - Stephen James Aitken"
+
+, ln=
+
+True
+
+, align=
+
+"C"
+
+)
+
+# Add the modified content from the docx to the pdf
+
+pdf.ln(
+
+10
+
+)
+pdf.set_font(
+
+"Arial"
+
+, size=
+
+10
+
+)
+
+for
+
+ para 
+
+in
+
+ doc.paragraphs:
+    pdf.multi_cell(
+
+0
+
+, 
+
+10
+
+, para.text)
+
+# Output PDF
+
+pdf.output(output_path)
+
+output_path
+
+---------------------------------------------------------------------------
+UnicodeEncodeError                        Traceback (most recent call last)
+Cell In[1], line 34
+     31     pdf.multi_cell(0, 10, para.text)
+     33 # Output PDF
+---> 34 pdf.output(output_path)
+     36 output_path
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:1065, in FPDF.output(self, name, dest)
+   1063 #Finish document if necessary
+   1064 if(self.state<3):
+-> 1065     self.close()
+   1066 dest=dest.upper()
+   1067 if(dest==''):
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:246, in FPDF.close(self)
+    244 self._endpage()
+    245 #close document
+--> 246 self._enddoc()
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:1636, in FPDF._enddoc(self)
+   1634 def _enddoc(self):
+   1635     self._putheader()
+-> 1636     self._putpages()
+   1637     self._putresources()
+   1638     #Info
+
+File ~/.local/lib/python3.11/site-packages/fpdf/fpdf.py:1170, in FPDF._putpages(self)
+   1167 #Page content
+   1168 if self.compress:
+   1169     # manage binary data as latin1 until PEP461 or similar is implemented
+-> 1170     p = self.pages[n].encode("latin1") if PY3K else self.pages[n] 
+   1171     p = zlib.compress(p)
+   1172 else:
+
+UnicodeEncodeError: 'latin-1' codec can't encode character '\u2018' in position 831: ordinal not in range(256)
+
+It seems there was an issue with encoding while generating the PDF. Let me fix that and try again. 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Re-attempt the PDF creation with a proper encoding handling
+
+from
+
+ fpdf 
+
+import
+
+ FPDF
+
+# Create a PDF object
+
+pdf = FPDF()
+pdf.set_auto_page_break(auto=
+
+True
+
+, margin=
+
+15
+
+)
+pdf.add_page()
+
+# Add title
+
+pdf.set_font(
+
+"Arial"
+
+, 
+
+'B'
+
+, 
+
+12
+
+)
+pdf.cell(
+
+200
+
+, 
+
+10
+
+, txt=
+
+"Resume - Stephen James Aitken"
+
+, ln=
+
+True
+
+, align=
+
+"C"
+
+)
+
+# Add the modified content from the docx to the pdf
+
+pdf.ln(
+
+10
+
+)
+pdf.set_font(
+
+"Arial"
+
+, size=
+
+10
+
+)
+
+for
+
+ para 
+
+in
+
+ doc.paragraphs:
+
+# Ensuring all text is safely encoded to avoid unicode errors
+
+    pdf.multi_cell(
+
+0
+
+, 
+
+10
+
+, para.text.encode(
+
+'latin1'
+
+, 
+
+'replace'
+
+).decode(
+
+'latin1'
+
+))
+
+# Output PDF
+
+output_path = 
+
+"/mnt/data/Modified_Resume_Stephen_Aitken_2025.pdf"
+
+pdf.output(output_path)
+
+output_path
+
+Result
+
+'/mnt/data/Modified_Resume_Stephen_Aitken_2025.pdf'
+
+The updated resume has been successfully converted to PDF. You can download it using the link below:
+
+Download the PDF
+
+You said:
+
+the formatting was awful can't you make it like I had in my original but fixed as you did in this chat?
+
+ChatGPT said:
+
+I understand the need to maintain the original formatting while including the changes. Let me fix this and preserve the formatting in line with your original resume wh

@@ -1,0 +1,325 @@
+)}
+,
+
+userRoles: userRoles
+
+});
+
+}
+
+next();
+
+};
+
+};
+
+// Enhanced JWT Validation with Scope Checking
+
+const validateJWTScopes =3D (requiredScopes) =3D> {
+
+return (req, res, next) =3D> {
+
+if (!req.user) {
+
+return res.status(401).json({
+
+success: false,
+
+error: 'Authentication required'
+
+});
+
+}
+
+const userScopes =3D req.user.scopes || [];
+
+const hasRequiredScope =3D requiredScopes.every(scope =3D>
+
+userScopes.includes(scope) || userScopes.includes('*')
+
+);
+
+if (!hasRequiredScope) {
+
+return res.status(403).json({
+
+success: false,
+
+error: 'Insufficient scope',
+
+message: 
+Required scopes: ${requiredScopes.join(', ')}
+
+,
+
+userScopes: userScopes
+
+});
+
+}
+
+next();
+
+};
+
+};
+
+// Input Validation Schemas
+
+const validationSchemas =3D {
+
+// Trust Declaration Validation
+
+trustDeclaration: [
+
+body('trustDeclaration.agent_id')
+
+.isString()
+
+.isLength({ min: 1, max: 100 })
+
+.matches(/^[a-zA-Z0-9_-]+$/)
+
+.withMessage('Agent ID must be alphanumeric with hyphens/u
+
+nderscores'),
+
+body('trustDeclaration.agent_name')
+
+.isString()
+
+.isLength({ min: 1, max: 200 })
+
+.trim()
+
+.escape(),
+
+body('trustDeclaration.compliance_score')
+
+.optional()
+
+.isFloat({ min: 0, max: 1 })
+
+.withMessage('Compliance score must be between 0 and 1'),
+
+body('trustDeclaration.guilt_score')
+
+.optional()
+
+.isFloat({ min: 0, max: 1 })
+
+.withMessage('Guilt score must be between 0 and 1')
+
+],
+
+// User Registration Validation
+
+userRegistration: [
+
+body('email')
+
+.isEmail()
+
+.normalizeEmail()
+
+.withMessage('Valid email is required'),
+
+body('password')
+
+.isLength({ min: 8, max: 128 })
+
+.matches(/^(?=3D.*[a-z])(?=3D.*[A-Z])(?=3D.*\d)(?=3D.*[@$!%*?&])[A
+
+-Za-z\d@$!%*?&]/)
+
+.withMessage('Password must contain at least 8 characters
+
+with uppercase, lowercase, number, and special character'),
+
+body('username')
+
+.isString()
+
+.isLength({ min: 3, max: 30 })
+
+.matches(/^[a-zA-Z0-9_]+$/)
+
+.withMessage('Username must be 3-30 characters, alphanumer
+
+ic with underscores')
+
+],
+
+// ID Parameter Validation
+
+mongoId: [
+
+param('id')
+
+.isMongoId()
+
+.withMessage('Invalid ID format')
+
+],
+
+// Pagination Validation
+
+pagination: [
+
+query('page')
+
+.optional()
+
+.isInt({ min: 1, max: 1000 })
+
+.withMessage('Page must be between 1 and 1000'),
+
+query('limit')
+
+.optional()
+
+.isInt({ min: 1, max: 100 })
+
+.withMessage('Limit must be between 1 and 100')
+
+]
+
+};
+
+// Validation Error Handler
+
+const handleValidationErrors =3D (req, res, next) =3D> {
+
+const errors =3D validationResult(req);
+
+if (!errors.isEmpty()) {
+
+const formattedErrors =3D errors.array().map(error =3D> ({
+
+field: error.path || error.param,
+
+message: error.msg,
+
+value: error.value,
+
+location: error.location
+
+}));
+
+return res.status(400).json({
+
+success: false,
+
+error: 'Validation failed',
+
+message: 'The request contains invalid data',
+
+details: formattedErrors
+
+});
+
+}
+
+next();
+
+};
+
+// Request Logging Middleware
+
+const requestLogger =3D (req, res, next) =3D> {
+
+const startTime =3D Date.now();
+
+const requestId =3D 
+req_${Date.now()}_${Math.random().toString(
+
+36).substr(2, 9)}
+;
+
+req.requestId =3D requestId;
+
+req.startTime =3D startTime;
+
+// Log request
+
+console.log(JSON.stringify({
+
+type: 'request',
+
+requestId,
+
+method: req.method,
+
+path: req.path,
+
+ip: req.ip,
+
+userAgent: req.get('User-Agent'),
+
+userId: req.user?.id,
+
+timestamp: new Date().toISOString()
+
+}));
+
+// Log response
+
+const originalSend =3D res.send;
+
+res.send =3D function(data) {
+
+const duration =3D Date.now() - startTime;
+
+console.log(JSON.stringify({
+
+type: 'response',
+
+requestId,
+
+statusCode: res.statusCode,
+
+duration,
+
+contentLength: data ? data.length : 0,
+
+timestamp: new Date().toISOString()
+
+}));
+
+originalSend.call(this, data);
+
+};
+
+next();
+
+};
+
+// Security Event Logger
+
+const logSecurityEvent =3D (eventType, details, req) =3D> {
+
+console.warn(JSON.stringify({
+
+type: 'security_event',
+
+eventType,
+
+details,
+
+requestId: req.requestId,
+
+ip: req.ip,
+
+userAgent: req.get('User-Agent'),
+
+userId: req.user?.id,
+
+timestamp: new Date().toISOString()
+
+}));
+
+};
+
+// Suspicious Activity Detection
+
+const 

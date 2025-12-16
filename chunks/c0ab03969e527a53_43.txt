@@ -1,0 +1,238 @@
+inue to Step 2.
+
+🛠️ Step 2: Disable AirPlay Receiver at System Level
+
+Even though 
+AirPlay is removed
+, macOS still 
+thinks your Mac can receive AirPlay streams.
+
+Try disabling this feature manually:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+✅ 
+This tells macOS to stop acting as an AirPlay receiver.
+
+🔹 
+Check if the icon disappears after this command.
+
+🗑️ Step 3: Delete Hidden AirPlay Service Files
+
+Even though we removed AirPlay’s core services, some preference files might still exist.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.airplay*
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.apple.airplay*
+killall SystemUIServer
+
+✅ 
+This removes any leftover AirPlay preferences.
+
+🔹 
+Restart your Mac after this and check if the icon is gone.
+
+🔄 Step 4: Force Remove Any Remaining AirPlay Services
+
+Even though 
+launchctl
+ didn’t show active AirPlay services before, let’s try 
+one last force removal
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl bootout system/com.apple.AirPlayXPCHelper
+sudo launchctl 
+
+disable
+
+ system/com.apple.AirPlayXPCHelper
+killall SystemUIServer
+
+✅ 
+This forces any remaining AirPlay UI services to shut down.
+
+🚨 Let Me Know What Happens!
+
+Did unplugging the TV remove the icon?
+
+Did 
+defaults write com.apple.airplay receiver-enabled -bool NO
+ help?
+
+Did deleting AirPlay preferences (
+rm -rf
+) fix it?
+
+Does 
+launchctl bootout system/com.apple.AirPlayXPCHelper
+ return any errors?
+
+🚀 
+If the icon is still there after all this, we’ll go even deeper! Let me know what happens.
+
+You said:
+
+when I disconnect the icon immediately dissapears
+
+ChatGPT said:
+
+✅ Confirmed: The TV is Triggering the AirPlay Icon
+
+🚀 
+We’ve found the root cause!
+ Your Mac is 
+not running AirPlay
+, but 
+it thinks your TV is an AirPlay-compatible receiver.
+
+✅ 
+Unplugging the TV instantly removes the icon.
+
+🚨 
+Reconnecting the TV brings the icon back.
+
+🔍 Why This is Happening
+
+Your TV is being detected as an "AV Receiver"
+ (as shown in 
+system_profiler SPDisplaysDataType
+).
+
+macOS 
+thinks it's an AirPlay target
+, even though we removed AirPlay services.
+
+This is a UI-only issue
+—AirPlay is not active, but macOS is 
+still recognizing AirPlay-capable devices
+.
+
+🚀 Final Fix: Stop macOS From Detecting the TV as an AirPlay Receiver
+
+Since we now 
+know the trigger
+, we need to 
+force macOS to stop treating your TV as an AirPlay device.
+
+🛠️ Step 1: Manually Disable AirPlay for External Displays
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+defaults write com.apple.airplay receiver-enabled -bool NO
+killall SystemUIServer
+
+✅ 
+This tells macOS to stop acting as an AirPlay receiver.
+
+🔹 
+Reconnect your TV and check if the icon still appears.
+
+🖥️ Step 2: Check Display Settings (Disable Mirroring)
+
+Go to 
+System Settings
+ → 
+Displays
+
+Find your 
+TV (AV Receiver)
+
+Look for an "AirPlay Display" option and set it to "Off."
+
+Uncheck "Show mirroring options in menu bar when available."
+
+✅ 
+This tells macOS to stop treating the TV as an AirPlay display.
+
+🔄 Step 3: Prevent AirPlay from Auto-Connecting
+
+Even though AirPlay services are removed, 
+macOS might still remember your TV
+ as an AirPlay device.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+rm
+
+ -rf /Library/Preferences/com.apple.airplay*
+sudo 
+
+rm
+
+ -rf ~/Library/Preferences/com.apple.airplay*
+killall SystemUIServer
+
+✅ 
+This deletes any stored settings that associate your Mac with the TV.
+
+🚨 Let Me Know What Happens!
+
+Does 
+defaults write com.apple.airplay receiver-enabled -bool NO
+ stop the icon?
+
+Does disabling "AirPlay Display" in System Settings fix it?
+
+Does deleting 
+com.apple.airplay*
+ preferences help?
+
+🚀 
+We’re almost there! Let me know if the icon finally disappears for good.
+
+You said:
+
+ok so I will enable sip and restart
+
+ChatGPT said:
+
+🚀 Final Steps: Re-Enable SIP & Restart
+
+Now that we’ve confirmed 
+AirPlay is fully disabled and the issue was the TV being detected as an AirPlay receiver
+, you can safely 
+re-enable System Integrity Protection (SIP) and restart.
+
+🛠

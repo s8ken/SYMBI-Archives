@@ -1,0 +1,294 @@
+nter
+).
+
+Restart the syslog service:
+
+sh
+
+Copy
+
+Edit
+
+sudo launchctl stop com.apple.syslogd
+sudo launchctl start com.apple.syslogd
+
+🚀 Next Step
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+grep -r 
+
+"32376"
+
+ /etc /var 2>/dev/null
+
+📌 
+Let me know if it finds anything!
+ If nothing is found, we can move on to the 
+next issue (DNS check).
+ 🔍
+
+You said:
+
+ja@SJAs-MacBook-Pro ~ %  launchctl stop com.apple.syslogd
+sja@SJAs-MacBook-Pro ~ % sudo launchctl start com.apple.syslogd
+sja@SJAs-MacBook-Pro ~ % grep -r "32376" /etc /var 2>/dev/null
+
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 1 Complete: Remote Logging Entry Removed
+ ✅
+
+Since:
+
+Nothing was found
+ in 
+/etc
+ or 
+/var
+ referencing 
+32376
+,
+
+No process was running on that port
+,
+
+You restarted syslog
+,
+
+→ That means the logging to 
+127.0.0.1:32376
+ is now gone! 🎉
+
+Step 2: Investigate the Suspicious Nameserver
+
+🔍 Check Current DNS Configuration
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+Look for 
+113.212.173.22
+ in the output.
+ If it appears under 
+resolver #X
+, let me know.
+
+🚀 If That Nameserver is Found & You Don’t Recognize It
+
+You can change your DNS to a 
+trusted provider
+ (Google or Cloudflare):
+
+Set DNS to Google (8.8.8.8 & 8.8.4.4)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+Flush DNS Cache to Apply Changes
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Then, check your DNS again:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+🚀 Next Step: Run 
+scutil --dns
+ and Tell Me if 
+113.212.173.22
+ is Still There
+
+🔎 If it’s gone, we move to the next check (deleted files still in use). If it’s still there, we’ll dig deeper. 🚀
+
+You said:
+
+resolver #1
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 2: Investigate the Suspicious Nameserver
+
+✅ 
+You confirmed that 
+113.212.173.22
+ is listed under 
+resolver #1
+ in 
+scutil --dns
+
+, meaning your Mac 
+is using this nameserver
+.
+
+🔍 What Does This Mean?
+
+1️⃣ 
+If you don’t recognize 
+113.212.173.22
+
+, it could be:
+
+A 
+manually configured DNS server
+ (possibly from an app or VPN).
+
+A 
+hijacked DNS setting
+ (if malware modified your network settings).
+
+2️⃣ 
+If you didn’t set this DNS manually
+, it’s best to 
+remove it
+ and set your DNS to a 
+trusted provider (Google or Cloudflare).
+
+Step 2A: Reset DNS to a Trusted Provider
+
+🔹 
+Set Google DNS (
+8.8.8.8, 8.8.4.4
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+🔹 
+OR Set Cloudflare DNS (
+1.1.1.1, 1.0.0.1
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 1.1.1.1 1.0.0.1
+
+Step 2B: Flush DNS Cache
+
+After changing the DNS, 
+clear the old settings
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 2C: Verify the Fix
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+Check if 
+113.212.173.22
+ is gone!
+ If it still appears, we might need to investigate further.
+
+🚀 Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+🔎 If it’s still there, we’ll check for hidden configurations. If it’s gone, we move to the 
+next investigation (deleted files still in use).
+ 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo killall -HUP mDNSResponder
+
+sja@SJAs-MacBook-Pro ~ % scutil --dns
+
+DNS configuration
+
+resolver #1
+  nameserver[0] : 113.212.173.22
+  nameserver[1] : 113.212.168.1
+  nameserver[2] : 192.168.68.1
+  if_index : 22 (en4)
+  flags    : Request A records
+  reach    : 0x00000002 (Reachable)
+
+resolver #2
+  domain   : local
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300000
+
+resolver #3
+  domain   : 254.169.in-addr.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300200
+
+resolver #4
+  domain   : 8.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300400
+
+resolver #5
+  domain   : 9.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order   

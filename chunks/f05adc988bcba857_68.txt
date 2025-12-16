@@ -1,0 +1,512 @@
+ig.js
+:
+
+js
+
+Copy
+
+Edit
+
+module
+
+.
+
+exports
+
+ = {
+
+experimental
+
+: {
+
+appDir
+
+: 
+
+true
+
+, 
+
+// â Ensure this is enabled
+
+  },
+}
+
+Then restart your server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð If the Issue Persists
+
+Run 
+npx sanity debug
+
+ and check if your 
+Sanity project ID
+ matches.
+
+Check 
+http://localhost:3001/studio
+ again.
+
+Let me know what happens after these steps! ð
+
+You said:
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+- className="light"
+- style={{color-scheme:"light"}}
+
+ChatGPT said:
+
+It looks like you're facing a 
+React hydration error
+ in your Next.js app. This usually happens when there's a mismatch between the 
+server-rendered HTML
+ and the 
+client-rendered React components
+.
+
+ð§ Fixing the Hydration Error
+
+1ï¸â£ Wrap Dynamic Components with 
+useEffect
+ (Client-Side Rendering)
+
+If a component 
+relies on the client-side state
+, wrap it with 
+useEffect
+ to ensure it's only rendered after hydration:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+; 
+
+// â Ensure this is at the top
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+YourComponent
+
+(
+
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+if
+
+ (!isClient) {
+
+return
+
+null
+
+; 
+
+// â Prevents mismatch by not rendering on the server
+
+  }
+
+return
+
+<
+div
+
+className
+
+=
+
+"light"
+
+style
+
+=
+
+{{
+
+colorScheme:
+
+ "
+
+light
+
+" }}>Hello World
+
+</
+div
+
+>;
+}
+
+â 
+Why?
+ This ensures that the component only renders on the 
+client side
+, preventing hydration errors.
+
+2ï¸â£ Ensure 
+className
+ and 
+style
+ are Consistent
+
+The error mentions:
+
+arduino
+
+Copy
+
+Edit
+
+- className=
+
+"light"
+
+- style={{color-scheme:
+
+"light"
+
+}}
+
+ð 
+Check where you're using 
+className="light"
+
+ and make sure it's:
+
+Always rendered the same way on both server & client.
+
+Not dependent on client-side state during SSR.
+
+If Using Dark Mode with 
+next-themes
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useTheme } 
+
+from
+
+"next-themes"
+
+;
+
+const
+
+ { theme } = 
+
+useTheme
+
+();
+
+return
+
+<
+div
+
+className
+
+=
+
+{theme
+
+ === 
+
+"dark"
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ "
+
+light
+
+"}>Theme Test
+
+</
+div
+
+>;
+
+ð¹ 
+Fix:
+ Add 
+suppressHydrationWarning
+ to avoid the mismatch:
+
+tsx
+
+Copy
+
+Edit
+
+<p suppressHydrationWarning>{theme}</p>
+
+3ï¸â£ Remove 
+color-scheme
+ from Inline 
+style
+ (If Not Needed)
+
+If you don't 
+need
+
+color-scheme
+, remove it:
+
+tsx
+
+Copy
+
+Edit
+
+<div className=
+
+"light"
+
+>
+
+Hello
+
+World
+
+</div>
+
+Instead, define it in 
+CSS
+:
+
+css
+
+Copy
+
+Edit
+
+.light
+
+ {
+
+color
+
+-scheme: light;
+}
+
+4ï¸â£ Check for 
+use client
+ in 
+app/layout.tsx
+
+If your layout contains client-only logic (like 
+useState
+ or 
+useTheme
+), add 
+"use client";
+ at the top:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }
+
+) {
+
+return
+
+<
+div
+
+>{children}
+
+</
+div
+
+>;
+}
+
+**ð Final Steps
+
+You said:
+
+sorry which file and how do I navigate to it?
+
+ChatGPT said:
+
+To fix the 
+React hydration error
+, we need to modify specific files in your 
+Next.js project
+. Below is a 
+step-by-step guide
+ to navigate to the correct files and edit them.
+
+ð Step 1: Open Your Terminal & Navigate to the Project
+
+Since your project is named 
+
+symbi-main-site
+
+, open your terminal and run:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Documents/symbi-main-site
+
+ð¹ 
+This ensures you're inside the correct project directory.
+
+ð Step 2: Open the File in Nano or VS Code
+
+We likely need to update 
+one of these files
+:
+
+layout.tsx
+
+ (if the issue is in the app's layout)
+
+page.tsx
+
+ (if the issue is on the homepage)
+
+theme-provider.tsx
+
+ (if you're using 
+next-themes
+)
+
+Option 1: Open in Nano (Terminal)
+
+Use the 
+nano
+ command to edit the file inside the terminal:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+OR, if the issue is in the homepage:
+
+bash
+
+Copy
+
+Edit
+
+nano app/page.tsx
+
+To 
+save and exit in Nano
+:
+
+CTRL + X
+ to exit
+
+Y
+ to confirm changes
+
+Enter
+ to save
+
+Option 2: Open in VS Code (GUI)
+
+If you prefer 
+a graphical editor
+, use 
+VS Code
+:
+

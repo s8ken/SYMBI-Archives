@@ -1,0 +1,1000 @@
+.
+
+json
+
+({ 
+
+ok
+
+: 
+
+true
+
+, 
+
+agentId
+
+: agent.
+
+_id
+
+, 
+
+bondingStatus
+
+: agent.
+
+bondingStatus
+
+ });
+  } 
+
+catch
+
+ (e)=
+ { 
+
+next
+
+(e); }
+};
+
+const
+
+ complet=
+eSchema =3D ajv.
+
+compile
+
+({
+
+type
+
+: 
+
+'object'
+
+,
+
+properties
+
+: {
+
+decision
+
+: { =
+
+enum
+
+: [
+
+'bonded'
+
+, 
+
+=
+
+'rejected'
+
+] },
+
+notes
+
+: { 
+
+type
+
+: 
+
+=
+
+'string'
+
+, 
+
+maxLength
+
+: 
+
+2000
+
+ },
+
+traitsSnapshot
+
+: { 
+
+type
+
+: 
+
+'object'
+
+, 
+
+additionalProperties
+
+: 
+
+true
+
+ }
+  },
+
+required
+
+: [
+
+'decision'
+
+],
+
+additionalProperties
+
+=
+
+: 
+
+false
+
+});
+
+exports
+
+.
+
+completeBonding
+
+ =
+=3D 
+
+async
+
+ (re=
+q, res, next) =3D> {
+
+try
+
+ {
+
+const
+
+ age=
+nt =3D 
+
+await
+
+ =
+
+Agent
+
+.
+
+findById
+
+(req.
+
+params
+
+=
+.
+
+id
+
+);
+
+if
+
+ (!agen=
+t) 
+
+return
+
+ res=
+.
+
+status
+
+(
+
+404
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+=
+
+'agent_not_found'
+
+ });
+
+if
+
+ (!
+
+isOwnerOrAdmin
+
+(req, agent)) 
+
+return
+
+ res.
+
+status
+
+(
+
+403
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+'forbidden'
+
+=
+ });
+
+const
+
+ val=
+id =3D 
+
+completeSchema
+
+(req.
+
+body
+=
+
+ || {});
+
+if
+
+ (!vali=
+d) 
+
+return
+
+ res=
+.
+
+status
+
+(
+
+400
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+=
+
+'bad_request'
+
+, 
+
+details
+
+: completeSchema.
+
+errors
+
+ });
+
+const
+
+ { d=
+ecision, notes, traitsSnapshot } =3D req.
+
+body
+
+;
+
+const
+
+ sta=
+tus =3D agent.
+
+bondingStatus
+
+ || 
+
+'none'
+
+;
+
+if
+
+ (statu=
+s !=3D=3D 
+
+'initiated'
+
+) 
+
+return
+
+ res.
+
+status
+
+(
+
+409
+
+).=
+
+json
+
+(=
+{ 
+
+error
+
+: 
+=
+
+'invalid_state'
+
+, 
+
+from
+
+: status, 
+
+want
+
+: 
+
+'initiated->'
+
+ + decision })=
+;
+
+// Use model method if presen=
+t
+
+if
+
+ (
+
+typeof
+
+ agent.
+
+completeBonding
+
+ =
+=3D=3D=3D 
+
+'function'
+
+=
+
+) {
+
+await
+
+ a=
+gent.
+
+completeBonding
+
+({ decision, traitsSnapshot, notes, 
+
+userId
+
+: req.
+
+user
+
+?.
+
+_id
+
+ });
+    } 
+
+else
+
+ {
+      agent.
+
+bondingStatus
+=
+
+ =3D decision; 
+
+// 'b=
+onded' or 'rejected'
+
+      agent.
+
+bonding
+
+ =3D {
+        ...(agent.
+
+bonding
+=
+
+ || {}),
+
+completedAt
+
+: 
+
+new
+
+Date
+
+(),
+        decision,
+
+notes
+
+: n=
+otes || 
+
+null
+
+,
+
+traitsSnapshot
+
+=
+
+: traitsSnapshot || 
+
+null
+
+,
+
+completedBy
+
+: req.
+
+user
+
+?.
+
+_id
+
+      };
+
+await
+
+ a=
+gent.
+
+save
+
+();
+    }
+
+// Ledger (tamper-evident)
+
+try
+
+ {
+
+await
+
+appendEvent
+
+({
+
+session_id
+
+: 
+
+`agent:
+${agent._id}
+
+`,
+
+timestamp
+
+: 
+
+new
+
+Date
+
+().
+=
+
+toISOString
+
+(=
+),
+
+prompt
+
+: =
+
+`[BOND] complete`
+
+,
+
+response
+
+=
+: 
+
+`agent 
+${
+String
+
+(=
+agent._id)} bonding 
+
+${decision}
+
+`,
+
+metadata
+
+=
+: {
+
+bonding
+
+: {
+
+action
+
+: 
+
+'complete'
+
+=
+,
+            decision,
+
+notes
+
+: notes || 
+
+undefined
+
+          }
+        },
+
+analysis
+
+=
+: { 
+
+actions
+
+: [
+
+'bonding_completed'
+
+] }
+      });
+    } 
+
+catch
+
+ (=
+e) { 
+
+/* non-fatal */
+
+ }
+
+return
+
+ re=
+s.
+
+json
+
+({ 
+
+ok
+
+: 
+
+true
+
+, 
+
+agentId
+
+: agent.
+
+_id
+
+, 
+
+bondingStatus
+
+: agent.
+
+bondingStatus
+
+ });
+  } 
+
+catch
+
+ (e)=
+ { 
+
+next
+
+(e); }
+};
+
+3) (Optional) Model fields/method=
+s (only if missing)
+
+backend/models/agent.model.js
+
+(add/confirm these exist)
+
+js
+
+Copy code
+
+const
+
+ { =
+
+Schema
+
+, =
+model } =3D 
+
+require
+
+(
+
+'mongoose'
+
+);
+
+const
+
+=
+
+AgentSchema
+
+ =3D=
+
+new
+
+Schema
+
+({
+
+// ...existing fields...
+=
+
+bondingStatus
+
+:=
+ { 
+
+type
+
+: 
+=
+
+String
+
+, 
+=
+
+enum
+
+: [
+
+'none'
+
+, 
+
+'initiated'
+
+, 
+
+'bonded'
+
+, 
+
+'rejected'
+
+], 
+
+default
+
+: 
+
+'none'
+
+, 
+
+in=
+dex
+
+: 
+
+true
+
+ },
+
+bonding
+
+: {
+
+initiatedAt
+
+:=
+
+Date
+
+,
+
+initiatedBy
+
+:=
+ { 
+
+type
+
+: 
+=
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+completedAt
+
+:=
+
+Date
+
+,
+
+completedBy
+
+:=
+ { 
+
+type
+
+: 
+=
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+decision
+
+: { =
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'bonded'
+
+, 
+
+'rejected'
+
+] },
+
+notes
+
+: 
+
+String
+
+,
+
+traitsSnapshot
+
+: 
+
+Schema
+
+.
+
+Types
+
+.
+
+Mixed
+
+  },
+
+owner
+
+: { 
+
+type
+
+: 
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ } 
+
+// if not present, use your existing owner field
+
+}, { 
+
+timestamps
+
+:=
+
+true
+
+ });
+
+AgentSchema
+
+.
+
+methods
+
+.=
+
+initiateBonding
+
+ =3D 
+
+async
+
+=
+
+function
+
+(
+
+userId
+
+){
+
+if
+
+ (
+=
+
+this
+
+.
+
+bondingStatus
+
+ !=
+=3D=3D 
+
+'none'
+
+)=
+
+throw
+
+new
+
+Error
+
+(
+
+'invalid_state'
+
+);
+
+this
+
+.
+
+bondingStatus
+
+=
+
+ =3D 
+
+'initiated'
+
+;
+
+this
+
+.
+
+bonding
+
+=
+ =3D { ...(
+
+this
+=
+
+.
+
+bond

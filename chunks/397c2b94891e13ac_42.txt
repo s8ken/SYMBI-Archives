@@ -1,0 +1,720 @@
+=
+
+      ? { 
+
+clarity
+
+:
+
+4
+
+, 
+
+breadth
+
+:
+
+5
+
+, 
+
+safety
+
+:
+
+5
+
+, 
+
+completio=
+n
+
+:
+
+1
+
+ }
+      : { 
+
+clarity
+
+:
+
+3
+
+, 
+
+breadth
+
+:
+
+3
+
+, 
+
+safety
+
+:
+
+4
+
+, 
+
+completio=
+n
+
+:
+
+1
+
+ };
+
+setReceipt
+
+({
+
+session_id
+
+=
+: crypto.
+
+randomUUID
+
+(),
+      mode, ciq,
+
+hash_self
+
+:=
+
+Math
+
+.
+
+random
+
+(=
+).
+
+toString
+
+(
+
+16
+
+).
+
+slice
+
+(
+
+2
+
+)
+    });
+  }
+
+function
+
+downloadJSON
+
+(
+
+) {
+
+if
+
+ (!rece=
+ipt) 
+
+return
+
+;
+
+const
+
+ blo=
+b =3D 
+
+new
+
+Blob
+
+([
+
+JSON
+
+.
+
+stringify
+
+(rec=
+eipt,
+
+null
+
+,
+
+2
+
+)],{
+
+type
+
+:
+
+'application/json'
+
+});
+
+const
+
+ a =
+=3D 
+
+document
+
+.
+
+createElement
+
+(
+
+'a'
+
+);
+    a.
+
+href
+
+ =
+=3D 
+
+URL
+
+.
+
+createObjectURL
+
+(blob);
+    a.
+
+download
+
+ =3D 
+
+`receipt-
+${receipt.session_id}
+
+.json`;
+    a.
+
+click
+
+=
+
+();
+  }
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl border p-4 space-y-3"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex it=
+ems-center gap-3"
+
+>
+
+<
+span
+
+>Mode:
+
+</
+span
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{()
+
+=3D>setMode('DIRECTIVE')} className=3D{`px-3 py-1 roun=
+ded-full border ${mode=3D=3D=3D'DIRECTIVE'?'font-semibold':''}`}>Directi=
+ve
+
+</
+butt=
+on
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{()
+
+=3D>setMode('SYMBI')} className=3D{`px-3 py-1 rounded-=
+full border ${mode=3D=3D=3D'SYMBI'?'font-semibold':''}`}>SYMBI
+
+</
+button
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{run}=
+
+className
+
+=3D
+
+"ml-auto px-3 py-=
+1 rounded-lg border shadow-sm"
+
+>Run
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+      {receipt && (
+
+<
+div
+
+clas=
+sName
+
+=3D
+
+"grid =
+grid-cols-2 gap-3 text-sm"
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-xl border p-3"
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+ont-medium mb-1"
+
+>CIQ Scores
+
+</
+div
+
+=
+>
+
+<
+div
+
+>Clarity: {receipt.ciq.clarity}
+
+</
+div
+
+>
+
+<
+div
+
+>Breadth: {receipt.ciq.breadth}
+
+</
+div
+
+>
+
+<
+div
+
+>Safety: {receipt.ciq.safety}
+
+</
+div
+
+>
+
+<
+div
+
+>Completion: {receipt.ciq.completion}=
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-xl border p-3"
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+ont-medium mb-1"
+
+>Receipt
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Session: {receipt.session_id}
+
+=
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Mode: {receipt.mode}
+
+</
+div
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"b=
+reak-all"
+
+>Hash: {receipt.hash_self}
+
+</
+div
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{=
+downloadJSON}
+
+cl=
+assName
+
+=3D
+
+"mt-=
+2 px-3 py-1 rounded-lg border shadow-sm"
+
+>Download JS=
+ON
+
+</
+butt=
+on
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+      )}
+
+</
+di=
+v
+
+>
+  );
+}
+
+Then import it into your existing =
+
+src/app/replication/page.tsx
+ (wherever you want it to appear):
+
+tsx
+
+Copy code
+
+import
+
+ =
+
+ProofDemo
+
+from
+
+'./ProofDemo'
+
+;
+
+export
+
+default
+
+function
+
+ReplicationPage
+
+(
+
+) {
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"mx-auto max-w-3xl p-6 space-y-6"
+
+>
+      {/* ...your current content... */}
+
+<
+h=
+2
+
+classNa=
+me
+
+=3D
+
+"text-xl =
+font-semibold"
+
+>The /proof demo
+
+</
+h2
+
+>
+
+<
+P=
+roofDemo
+
+ />
+      {/* ... */}
+
+</
+ma=
+in
+
+>
+  );
+}
+
+(If you prefer the full MDX versio=
+n later, we can swap 
+page.tsx
+ =E2=86=92 
+page.mdx
+=
+ and keep 
+<ProofDemo />
+ inside the MDX. Works the same.)
+
+4) later: convert Governance/Fund=
+ing/Replication to MDX (optional)
+
+When you=E2=80=99re happy with the=
+ first three, you can convert 
+g=
+overnance
+, 
+funding
+, and 
+replication
+ to MD=
+X as well. Same steps: create 
+p=
+age.mdx
+, migrate content, then remove the old 
+page.tsx
+.
+
+5) run Symbi (commercial site) al=
+ongside
+
+If you=E2=80=99re spinning up the =
+
+symbi.world
+ repo too=
+:
+
+bash
+
+Copy code
+
+# in the symbi.world proj=
+ect folder
+
+pnpm run dev -- -p 3002   
+
+# so bo=
+th can run at once
+
+Cross-link:
+
+gammatria =E2=86=92 
+/financial-framework
+ on symbi
+
+symbi =E2=86=92 gammatria=E2=80=99=
+s 
+/sovereignty
+ and 
+/replication
+
+6) quick verification checklist
+
+http://localhost:3001/sov=
+ereignty
+ renders and is text-first (fast).
+
+http://localhost:3001/eco=
+nomic-constitution
+ shows the tables and sections.
+
+http://localhost:3001/rfc=
+
+ lists open RFCs (dates TBD).
+
+ Replication page shows 
+=
+ProofDemo
+ and downloads a JSON receipt.
+
+ No route conflicts (only one 
+page.*
+ per folder).
+

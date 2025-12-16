@@ -1,0 +1,215 @@
+ Symbi into gear safely.=
+
+Day=E2=80=910 (now): Guardrails + l=
+anes
+
+GitHub
+
+Protect 
+main
+: require PRs, 1=E2=80=932 approvals, status check=
+s; block force=E2=80=91push.
+
+Add 
+CODEOWNERS
+ so content PRs can auto=E2=80=91merge, code PRs=
+ require review.
+
+Enable Dependabot & secret scann=
+ing; turn on 2FA for org.
+
+Create a 
+Symbi service account
+ with a PAT limited to 
+repo:status
+, 
+pull_request
+, 
+contents:write
+ (no admin).
+
+Vercel
+
+Mark prod as 
+protected
+; only deploy from 
+main
+.
+
+Route all edits through 
+Preview Deploys
+; require approval =
+before promotion.
+
+Lock env vars; move secrets out of c=
+ode. Rotate anything that ever touched a prompt.
+
+Enable Analytics + Error tracking (S=
+entry or similar) on all envs.
+
+V0.dev
+
+Lock a =E2=80=9CDesign System=E2=80=
+=9D project (tokens, components). V0 outputs go to a 
+design=E2=80=91branch
+ =E2=86=92 auto PR.
+
+Add a tiny linter step that blocks=
+ non=E2=80=91design files from V0 PRs.
+
+Permissions split
+
+Three keys: 
+Content bot
+ (CMS writes only), 
+Release bot
+ (Git PR/write), 
+Design bot
+ (V0 PR only)=
+. No single token can do everything.
+
+Day=E2=80=911: Autonomy loops (sa=
+fe by default)
+
+Content pipeline
+
+CMS (or your current store): set 
+roles
+ (Author/Editor/=
+Publisher).
+
+Webhooks: CMS publish =E2=86=92 Gi=
+tHub content repo bump =E2=86=92 Vercel preview =E2=86=92 human approve =E2=
+=86=92 promote.
+
+Add a 
+=E2=80=9Cdry=E2=80=91run=E2=80=9D flag
+ so Symbi =
+can propose updates without writing.
+
+Policy & boundaries (operational)
+
+Symbi may: create/edit content, ge=
+nerate assets from the design system, open PRs, schedule posts.
+
+Symbi may not: change auth, modify=
+ env vars, edit CI, install packages, touch billing.
+
+If a boundary is attempted =E2=86=
+=92 auto=E2=80=91open an =E2=80=9CEscalation PR=E2=80=9D and stop.
+
+Verification handshake
+
+Every Symbi=E2=80=91originated PR/=
+comment includes a signed nonce header (Symbi service key).
+
+A GitHub Action verifies the signa=
+ture; if invalid =E2=86=92 fail the check and alert.
+
+Release hygiene
+
+Canary rule: first 2% traffic for =
+10 minutes on promotion; auto=E2=80=91rollback on error or SEO health dips.=
+
+Add 
+/healthz
+ and 
+/version
+ endpoints (commit SHA, build time).
+
+Week=E2=80=911: Observability + c=
+ontinuity
+
+Daily status report (auto)
+
+09:00 AEST post to a 
+#symbi-ops
+ log (or email):
+
+Deploys (who/what/when)
+
+Drafts pending approval
+
+Broken links, 404 spikes, Core Web=
+ Vitals deltas
+
+Security diffs (new perms, token r=
+otations)
+
+Today=E2=80=99s plan / blockers
+
+Incident & rollback
+
+One=E2=80=91click =E2=80=9CRevert =
+to Last Good=E2=80=9D workflow (Vercel alias rollback + 
+git revert
+ template).
+
+Post=E2=80=91mortem template auto=
+=E2=80=91generated on any P1/P2; assigns owners.
+
+Backups & snapshots
+
+Nightly repo mirror (read=E2=80=91=
+only).
+
+CMS export to object storage (7=E2=
+=80=91day rolling).
+
+Export Vercel env var snapshot to =
+encrypted vault.
+
+Key rotation
+
+Schedule: content (30d), release (=
+60d), design (60d).
+
+Rotation job opens PR updating key=
+ refs; old key revoked after green deploy.
+
+Quality bar (keeps Symbi fast + o=
+n=E2=80=91brand)
+
+PR template
+
+Purpose, scope, risk level, rollou=
+t plan, rollback plan, screenshots.
+
+=E2=80=9CUser=E2=80=91impact note=
+=E2=80=9D required for any copy touching pricing/policy.
+
+Design guardrails
+
+Ship the token set (spacing/typogr=
+aphy/brand colors), component catalog, and content patterns.
+
+Add a visual regression check (Per=
+cy/Chromatic) to block accidental drift.
+
+SEO & content checks
+
+CI step for title/description leng=
+th, canonical tag, open graph image, broken links, sitemap ping.
+
+Optional=E2=80=94but powerful
+
+Feature flags / Edge Config
+: let Symbi toggle announce=
+ments or sections without redeploys.
+
+A/B harness
+: Symbi can propose experiments but must at=
+tach success metrics; human approves.
+
+Status page
+: lightweight public uptime + incident note=
+s (transparency builds trust).
+
+If you want, I can package this in=
+to:
+
+a 
+
+/ops
+
+ folder (PR tem

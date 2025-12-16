@@ -1,0 +1,301 @@
+ to the script:
+
+sh
+
+Copy
+
+#!/bin/bash
+
+ACCESSIBILITY_SETTINGS=
+
+"/Users/lcl/Documents/accessibility_settings.txt"
+
+CURRENT_SETTINGS=$(defaults 
+
+read
+
+ com.apple.universalaccess)
+
+# Check if the settings file exists
+
+if
+
+ [ -f 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+" ]; 
+
+then
+
+    LAST_SETTINGS=$(
+
+cat
+
+"
+$ACCESSIBILITY_SETTINGS
+
+")
+
+if
+
+ [ 
+
+"
+$CURRENT_SETTINGS
+
+" != 
+
+"
+$LAST_SETTINGS
+
+" ]; 
+
+then
+
+echo
+
+"ALERT: Accessibility settings have changed!"
+
+ | mail -s 
+
+"Accessibility Settings Change Alert"
+
+ your-email@example.com
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+else
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+3️⃣ 
+Save and make it executable
+:
+
+sh
+
+Copy
+
+chmod
+
+ +x /Users/lcl/Documents/accessibility_monitor.sh
+
+4️⃣ 
+Run the script manually
+ or use 
+cron jobs
+ to run it at regular intervals (e.g., every 10 minutes).
+
+🚀 Step 3: Set Up a Cron Job for Regular Checks
+
+If you want the script to run 
+automatically
+ at intervals, you can use 
+cron
+ to schedule it.
+
+1️⃣ Open the crontab for editing:
+
+sh
+
+Copy
+
+crontab -e
+
+2️⃣ Add a line to run the script every 10 minutes (you can adjust the frequency as needed):
+
+sh
+
+Copy
+
+*/10 * * * * /Users/lcl/Documents/accessibility_monitor.sh
+
+3️⃣ 
+Save and exit
+. The script will now run every 10 minutes and alert you if there’s a change in your accessibility settings.
+
+🚀 Step 4: Test the Setup
+
+To test, try changing an accessibility option (like 
+VoiceOver
+, 
+Zoom
+, etc.) and check if you receive an email or notification.
+
+🚀 Step 5: Enhance with Other Monitoring Tools
+
+If you want even more visibility into these settings, we could combine this with 
+Oversight
+, 
+LuLu
+, or even use tools like 
+BlockBlock
+ to monitor app installations and file changes as well.
+
+📌 
+Let me know if you'd like to customize this setup further or need any help testing it out!
+ 🚀
+
+You said:
+
+how do I save it again?
+
+ChatGPT said:
+
+To 
+save the script
+ after editing it with 
+nano
+, follow these steps:
+
+In nano
+ (the text editor):
+
+After you've written or modified your script, press 
+CTRL + X
+ to exit.
+
+It will prompt you with:
+
+java
+
+Copy
+
+Save modified 
+
+buffer
+
+(ANSWERING 
+"No"
+
+ WILL DESTROY CHANGES) ?
+
+Press 
+Y
+
+ to confirm that you want to save the file.
+
+It will then ask for the file name:
+
+pgsql
+
+Copy
+
+File 
+
+Name
+
+to
+
+Write
+
+: /Users/lcl/Documents/accessibility_monitor.sh
+
+Press 
+Enter
+ to confirm and save with the same file name.
+
+That's it! You've successfully saved the script. You can now 
+make it executable
+ and set up your cron job as outlined earlier.
+
+Let me know if you need further assistance with any step!
+
+You said:
+
+lcl@LCLs-MacBook-Pro ~ % nano /Users/lcl/Documents/accessibility_monitor.sh
+
+lcl@LCLs-MacBook-Pro ~ % File Name to Write: /Users/lcl/Documents/accessibility_monitor.sh
+
+Name:                                          cannot open 
+Name' (No such file or directory)
+
+to:                                            cannot open 
+to' (No such file or directory)
+
+Write::                                        cannot open 
+Write:' (No such file or directory)
+
+/Users/lcl/Documents/accessibility_monitor.sh: Bourne-Again shell script text executable, ASCII text
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+It looks like you're encountering an issue with 
+nano
+ trying to save the file. The message 
+cannot open
+ indicates there may have been an accidental key press during the save process, which caused some confusion.
+
+Let’s go step-by-step to fix it:
+
+🚀 Step 1: Exit 
+nano
+ Without Saving
+
+First, let's exit the current 
+nano
+ session without saving:
+
+Press 
+CTRL + C
+
+ to cancel the save operation.
+
+It will ask if you want to save:
+
+Press 
+N
+
+ to not save any changes and exit 
+nano
+.
+
+🚀 Step 2: Reopen and Save the File Correctly
+
+Open the file again:
+
+sh
+
+Copy
+
+nano /Users/lcl/Documents/accessibility_monitor.sh
+
+Write or paste your script
+ into the editor.
+
+Save the file
+ properly by pressing:
+
+CTRL + X
+ (to exit)
+
+When it asks
+: 
+Save modified buffer (ANSWERING "

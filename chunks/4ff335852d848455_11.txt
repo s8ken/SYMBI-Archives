@@ -1,0 +1,157 @@
+ public t=
+okenSplits;
+
+&nbs=
+p;     function setSplit(uint256 tokenId, address[=
+] calldata _recipients, uint256[] calldata _percentages) external {
+          require(msg.sen=
+der =3D=3D ownerOf(tokenId), "Not owner");
+          tokenSplits[tok=
+enId] =3D Split(_recipients, _percentages);
+      }
+
+&nbs=
+p;     function distribute(uint256 tokenId, uint25=
+6 amount) external payable {
+          Split storage s=
+plit =3D tokenSplits[tokenId];
+          for (uint i =3D=
+ 0; i < split.recipients.length; i++) {
+            &nb=
+sp; split.recipients[i].transfer((amount * split.percentages[i]) / 100=
+00);
+          }
+      }
+  }
+  ```
+
+B. I=
+SRC Integration (Metadata)
+
+Location: Would extend YCQ-sonate/libs/m=
+usic.
+
+How it would work:
+
+&nbs=
+p; * Store ISRC codes (e.g., USAT22301234) in NFT metadata.
+
+&nbs=
+p; * Example metadata schema (not yet in repo):
+
+&nbs=
+p;   
+ &a=
+mp;nbsp;&nbsp;&nbsp;&nbsp;{ &nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;"name": "My Track", &nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;"isrc": "USAT22301234", &nbsp;&nbsp;&=
+amp;nbsp;&nbsp;&nbsp;&nbsp;"splits": [ &nbsp;&nbsp;&=
+;nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ "address": "0x123=
+...", "share": 6000 }, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&a=
+mp;nbsp;&nbsp;&nbsp;{ "address": "0x456...", "share": 2000 } &n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;], &nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;"stems": { &nbsp;&nbsp;&a=
+mp;nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"vocals": "ipfs:/=
+/QmXoypiz...", &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;"drums": "ipfs://QmYoypiz..." &nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;} &nbsp;&nbsp;&nbsp;&nbs=
+p;} &nbsp;&nbsp;&nbsp;&nbsp;
+
+&nbs=
+p; * Current hint: The metadata.ts file handles track metadata but doe=
+sn=E2=80=99t yet include ISRC.
+
+C. A=
+utomated Payouts (Oracle + Agents)
+
+Location: Would use symbi-synergy/apps/a=
+gent.
+
+How it would work:
+
+&nbs=
+p; * An agent monitors streaming platforms (e.g., Spotify) via Chainli=
+nk oracles.
+
+&nbs=
+p; * When a track is streamed, the agent triggers RoyaltySplitter.dist=
+ribute().
+
+&nbs=
+p; * Current hint: The PaymentAgent.sol in symbi-synergy is a template=
+ for such logic.
+
+What=E2=80=99s Actually Implemented Toda=
+y?
+Here=E2=80=99s what you can demo from the repos right now:
+FeatureRepoCode LocationWhat It DoesDID Authenticationsymbi-synergy/apps/id=
+entityUsers log in with wallet + DID (no passwords).IPFS File SharingYCQ-so=
+nate/libs/ipfsUpload/download encrypted stems (WAV/MP3) via IPFS.NFT Mintin=
+gYCQ-sonate/contracts/NFT.solMint a track as an NFT (basic metadata, no spl=
+its yet).AI Stem SeparationYCQ-sonate/libs/ai/audioPython script to split v=
+ocals/drums (uses Demucs).Collaborative DAWYCQ-sonate/apps/dawReal-time syn=
+c of DAW projects (like Google Docs for music).
+
+Where Did I Get the "Music Rights" Idea?
+I inferred it from:
+
+SYMBI=E2=80=99s Whitepaper (symbi.world)=
+:
+
+&nbs=
+p;  * Mentions "tokenized creative rights" and "automated royalty=
+ distributions" as part of the roadmap.
+
+YCQ-sonate=E2=80=99s README:
+
+&nbs=
+p;  * Goals include "fair compensation" and "transparent splits",=
+ but these aren=E2=80=99t fully implemented yet.
+
+&nbs=
+p;  * Line 42: "Enable artists to retain ownership and earn fairl=
+y."
+
+Code Hints:
+
+&nbs=
+p;  * The NFT.sol contract has a royaltyInfo placeholder.
+
+&nbs=
+p;  * The metadata.ts file suggests future support for splits.
+
+Industry Context:
+
+&nbs=
+p;  * Projects like Audius and Sound.xyz use similar models, so I=
+ assumed YCQ would follow suit.
+
+How to Demo What Is Built
+If you want to showcase YCQ-sonate today, focus on these implemented featur=
+es:
+A. Decentralized Login + NFT Minting
+
+Clone YCQ-sonate:
+
+&nbs=
+p;  
+ &nbs=
+p;&nbsp;&nbsp;git clone https://github.com/s8ken/YCQ-sonate.git &am=
+p;nbsp;&nbsp;&nbsp;cd YCQ-sonate &nbsp;&nbsp;&nbsp;pnpm=
+ install &nbsp;&nbsp;&nbsp;
+
+Run the frontend:
+
+&nbs=
+p;  
+ &nbs=
+p;&nbsp;&nbsp;pnpm run dev &nbsp;&nbsp;&nbsp;
+
+Demo Steps:
+
+&nbs=
+p;  * Log in with a wallet (MetaMask/Phantom) =E2=86=92 generates=
+ a DID.
+
+&nbs=
+p;  * Upload a tra

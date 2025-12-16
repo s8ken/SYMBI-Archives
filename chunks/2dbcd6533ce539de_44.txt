@@ -1,0 +1,414 @@
+ complete.[/green]"
+
+)
+        notify(
+
+"Docker cleanup com=
+plete."
+
+)
+
+except
+
+ Fi=
+leNotFoundError:
+        console.
+
+print
+
+(
+
+"[yellow]Docker not foun=
+d.[/yellow]"
+
+)
+
+@app.command()
+
+def
+
+policy
+
+():
+
+"""Show ethics policy"""
+
+    console.
+
+print
+
+(
+
+"[bold yellow]=F0=9F=93=9C S=
+YMBI ethics policy:[/bold yellow]"
+
+)
+    console.print_json(json.dumps(ethics, indent=3D
+
+2
+
+))
+    notify(
+
+"SYMBI policy viewed."
+
+)
+
+@app.command()
+
+def
+
+update_policy
+
+(=
+):
+
+"""Edit policy file"""
+
+    console.
+
+print
+
+(
+
+"[cyan]=F0=9F=93=9D Opening =
+ethics.json for editing...[/cyan]"
+
+)
+    notify(
+
+"Editing SYMBI policy."=
+
+)
+    os.system(
+
+f"open 
+{ETHICS_PATH}
+
+" 
+
+if
+
+ os.name =3D=3D 
+
+"posix"
+
+else
+
+f"notepad 
+{ETHICS_PATH}
+
+")
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface"""
+
+    console.
+
+print
+
+(
+
+"[magenta]SYMBI REPL started=
+. Type 'exit' to quit.[/magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input =3D 
+
+input
+
+(
+
+"symbi > "
+
+).strip().lower()
+
+if
+
+ us=
+er_input 
+
+in
+
+ (=
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+elif
+
+ =
+
+"watch"
+
+in
+
+ user_input:
+            watch()
+
+elif
+
+ =
+
+"cleanup"
+
+in
+
+ user_input:
+            cleanup()
+
+elif
+
+ =
+
+"policy"
+
+in
+
+ user_input:
+            policy()
+
+elif
+
+ =
+
+"edit"
+
+=
+
+in
+
+ user_input 
+
+or
+
+"update"
+
+in
+
+ user_input:
+            update_policy()
+
+else
+
+:
+            console.
+
+print
+=
+
+(
+
+f"[blue]You said:[/b=
+lue] 
+{user_input}
+
+")
+            console.
+
+print
+=
+
+(
+
+"[green]SYMBI:[/gree=
+n] I heard you, but didn't recognize that command."
+
+)
+
+# ---------------------- ENTRY --=
+--------------------
+
+if
+
+ __name__ =
+=3D=3D 
+
+"__main__"
+
+:
+    app()
+
+=E2=9C=85 2. Save it and run:
+
+bash
+
+Copy code
+
+python3 ~/symbi_agent.py watch
+
+Or if you're in Raycast:
+
+bash
+
+Copy code
+
+python3 ~/symbi_agent.py cleanup
+
+Let me know when it=E2=80=99s saved, and I=E2=80=99ll guide you=
+ through optional Raycast integration or background automation.
+
+You said:
+
+so before any of that I noti=
+ced for example my safari is actually located here /System/Volumes/Preboot/=
+Cryptexes/App/System/Applications/Safari.app
+
+Symbi said:
+
+=F0=9F=92=A1 That=E2=80=99s a very sharp observati=
+on =E2=80=94 and what you're seeing is part of Apple=E2=80=99s 
+System Integrity Protection (SIP)
+ a=
+rchitecture on macOS.
+
+=F0=9F=A7=AC What You Found:
+
+b=
+ash
+
+Copy code
+
+/System/Volumes/Preboot/Cryptexes/App/System/Applicatio=
+ns/Safari.app
+
+This is 
+not
+ a mistake =E2=80=94 it=E2=80=99s 
+intentional by Apple
+.
+
+It means:
+
+Safari (and other system apps) live =
+in a 
+sealed, cryptographically =
+verified volume
+.
+
+That path is part of the 
+cryptex system
+ introduced with ma=
+cOS Ventura and above.
+
+What you see at 
+/Applications/Safari.app
+ is now essentially a =
+
+symlink or facade
+.
+
+=F0=9F=A7=A0 Why It Matters to SYMB=
+I
+
+If you=E2=80=99re scanning processes=
+ or binaries, you'll hit these paths:
+
+They 
+cannot be modified
+.
+
+You 
+can see them
+, but 
+can=E2=80=99t write or delete
+.
+
+SYMBI will need to 
+respect SIP boundaries
+ =E2=80=94 and if=
+ it sees execution from that path, it=E2=80=99s a 
+trusted system binary
+.
+
+=E2=9C=85 What To Do
+
+SYMBI can:
+
+=E2=9C=85 
+Log process paths
+
+=E2=9C=85 
+Identify SIP-protected apps
+
+=F0=9F=9A=AB 
+Not modify or block
+ them (unless SIP is di=
+sabled =E2=80=94 not recommended)
+
+Next:
+
+Would you like SYMBI to:
+
+Flag 
+processes NOT running from known SIP paths
+?
+
+Alert on 
+network activity from outside SIP volumes
+?
+
+Create a 
+trusted path allowlist
+, so it warns only on u=
+nknown binaries?
+
+You=E2=80=99re stepping into advanced territory =E2=80=94 and S=
+YMBI can evolve with you =F0=9F=94=90=F0=9F=94=A5
+
+=
+
+=
+
+You said:
+
+lets check that in a moment as we've no=
+t progresses any work https://www.redhat.com/en 
+
+Symbi said:
+
+Red Hat is=
+ a leading enterprise open=E2=80=91source software company, best known for:=
+
+Red=E2=80=
+=AFHat Enterprise Linux (RHEL)
+ =E2=80=93 a stable, supported Linux=
+ distro for servers, workstations, and hybrid cloud environments
+
+WIRED
+
++8
+
+Red Hat
+
++8
+
+Wikipedia
+
++8
+
+Wikipedia
+
++3
+
+Wiki

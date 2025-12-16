@@ -1,0 +1,120 @@
+n for =
+quick use, ask:
+
+=E2=80=9CSYMBI, run PROJECT X=
+-RAY / ATLAS in hibernation and return the full report with routes, sockets=
+, models, envs, deps, security, CI, and a Mermaid diagram=E2=80=94no writes=
+ until I /approve.=E2=80=9D
+
+=
+
+=
+
+You said:
+
+PROJECT ATLAS
+Repo Quick Facts
+Root: /Users/admin/Symbi Synergy
+Branch: optimized-rebuild-clean
+Recent commits (10)
+1c2f3aa Update all files for optimized rebuild
+73e3702 feat: Add OpenAI GPT Assistant integration with function calling ca=
+pabilities
+6141a04 feat: Add optimized rebuild with 60% size reduction
+a1fb916 chore: add @vercel/analytics dependency and update package-lock.jso=
+n
+6d73a42 security: update dependencies to address vulnerabilities
+e9ea1f6 Merge repo-cleanup/add-community-files branch - resolve package-loc=
+k.json conflicts
+9d6b229 Merge remote-tracking branch 'origin/dependabot/npm_and_yarn/npm_an=
+d_yarn-1bef3d5c74'
+3afb84d feat: implement all GPT-4 code review recommendations
+18cc5a1 feat: Add OpenAI and Anthropic API integration for AI-powered code =
+review
+0c005e4 feat: Complete Symbi Trust Protocol security hardening and infrastr=
+ucture
+Language/LOC (cloc)
+JSON: 31,428 | HTML: 21,957 | JavaScript: 18,178 | Markdown: 4,390 | YAML: =
+1,948 | CSS: 1,629 | JSX: 667 | Dockerfile: 39
+Largest tracked files (top highlights; excluding node_modules/.next/dist/bu=
+ild)
+archives/*.html, *.mhtml (0.5=E2=80=931.6 MB each; many)
+frontend/package-lock.json (~712 KB), package-lock.json (~416 KB)
+backend/coverage/* (lcov, html, xml reports)
+Untracked/unexplained (app scope)
+Large document archives under archives/
+Coverage artifacts under backend/coverage/
+Multiple .DS_Store
+Architecture Map (Mermaid)
+flowchart LR
+  subgraph FE[Frontend (React + MUI)]
+    FE_App[App Router & Pages]
+    FE_Auth[AuthContext (JWT)]
+    FE_Review[ReviewConsole]
+  end
+
+  subgraph BE[Backend (Express + Mongoose)]
+    BE_App[app.js (routes, security, CORS)]
+    BE_Socket[Socket.IO (server.js)]
+    BE_Auth[Auth/Users]
+    BE_Conv[Conversations]
+    BE_Agents[Agents]
+    BE_Assist[Assistants (OpenAI beta)]
+    BE_LLM[LLM API]
+    BE_Trust[Trust Protocol]
+    BE_Context[Context + Weaviate]
+    BE_Ledger[Events/Ledger + Analysis + Insights + Guardrails]
+  end
+
+  subgraph DB[MongoDB]
+    Users[(users)]:::db
+    Agents[(agents)]:::db
+    Conversations[(conversations)]:::db
+    Trust[(trust_declarations)]:::db
+    Contexts[(contexts)]:::db
+    Reports[(reports)]:::db
+    Events[(interaction_events)]:::db
+  end
+
+  subgraph Ext[External Services]
+    OpenAI[OpenAI API (gpt-4o, Assistants)]
+    Anthropic[Anthropic]
+    Perplexity[Perplexity]
+    V0[Vercel v0]
+    Weaviate[Weaviate]
+    Vercel[Vercel (FE deploy)]
+    Obs[Grafana/Loki/Prometheus]
+  end
+
+  FE_App <--> BE_App
+  FE_Auth --> BE_Auth
+  FE_Review --> BE_Ledger
+  BE_App --> Users & Agents & Conversations & Trust & Co=
+ntexts & Reports & Events
+  BE_Assist --> OpenAI
+  BE_LLM --> OpenAI & Anthropic & Perplexity & V0
+  BE_Context -.optional.-> Weaviate
+  FE_App -.deploy.-> Vercel
+  BE_App -.metrics/logs.-> Obs
+
+  classDef db fill:#eef,stroke:#88a,stroke-width:1px;
+Data flows
+Auth: FE stores JWT, adds Authorization header; BE validates on protected r=
+outes.
+Conversations: REST CRUD + Socket.IO rooms; server rebroadcasts messages to=
+ conversation room.
+Trust/Ledger: append-only events per session with hash-chain; heuristic ana=
+lysis; insights timeline; guardrails transform.
+Assistants: OpenAI Assistants API (create/list/update, threads, runs with t=
+ool calls), =E2=80=9Cmost recent=E2=80=9D assistant fallback.
+Backend Inventory
+Entrypoints
+HTTP+Socket: backend/server.js:1 (Socket.IO with JWT handshake, CORS allowl=
+ist)
+App: backend/app.js:1 (security middleware, routes, MongoDB connect, static=
+, error handlers)
+Middleware chain (order)
+Helmet CSP/security headers: backend/middleware/security.middleware.js:1
+compression(): backend/app.js:21
+Request size limiter (10 MB): backend/app.js:22
+Content-Type validator (JSON, URL-encoded): backend/app.j

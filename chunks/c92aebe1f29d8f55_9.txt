@@ -1,0 +1,365 @@
+xt encodings (UTF-8, plain text, etc.)
+
+Handles both modern extensions =
+(
+.mjs
+) and legacy ones (
+.htm
+)
+
+What =
+This Means in Practice
+
+When =
+this app is installed:
+
+File Types
+: Al=
+l these programming files become associated with BLACKBOXAI
+
+Default Handler
+: It may become the default app for opening code files
+
+Quick Access
+: =
+Users can quickly open any supported file type directly into the editor
+
+Professional Appearance=
+
+: Code files get proper icons instead of generic text file icons
+
+This =
+is essentially BLACKBOXAI saying to macOS: 
+"I'm a code editor, and here=
+ are all the file types I can handle professionally."
+
+__stddef_unreachable.h
+
+22 lines
+
+h
+
+=
+
+SA
+
+This is a 
+C/C++ heade=
+r file
+ from the 
+LLVM/Clang compiler project
+. Here=
+'s what it's doing:
+
+Purpo=
+se
+
+Defin=
+es the 
+unreachable()
+ macro for C code to indicate unreachable code paths t=
+o the compiler.
+
+What =
+It Does
+
+Compiler Optimization Hint
+:
+
+unreachable()
+ tells the compil=
+er: 
+"This code should never be executed"
+
+Allows aggressive optimizations=
+ by eliminating dead code paths
+
+Helps with branch prediction an=
+d code generation
+
+Conditional Definition
+:
+
+c
+
+#
+
+if
+
+!
+
+de=
+fined
+
+(
+
+unreachable
+
+)
+
+||
+
+(
+
+__has=
+_feature
+
+(
+
+modules
+
+)
+
+&&
+
+!
+
+__building_module
+
+(
+
+_Builtin_stddef
+
+)
+
+)
+
+#
+
+define
+
+unreachable
+
+(
+
+)=
+
+__builtin_unreachable
+
+(
+
+)
+
+#
+
+endif
+
+=
+
+This =
+means:
+
+Only define 
+unreachable()
+ if i=
+t's not already defined
+
+Handle special cases when using=
+ Clang modules
+
+Maps to the compiler built-in 
+__built=
+in_unreachable()
+
+Usage=
+ Example
+
+c
+
+switch
+
+(
+
+value
+
+)
+
+{
+
+case
+
+1
+
+:
+
+return
+
+"one"
+
+;
+
+case
+
+2
+
+:
+
+return
+
+"two"
+
+;
+
+default
+
+:
+
+=20
+
+unreachable
+
+(
+
+)
+
+;
+
+// This should never happen
+
+}
+
+Key D=
+etails
+
+C-Only
+: 
+#ifndef __cplusplus
+ means this only applies to C code =
+(not C++)
+
+Module Support
+: The complex condition handles Clang's module sy=
+stem, ensuring the macro works correctly when headers are compiled as modul=
+es vs. traditional textual inclusion
+
+LLVM Project
+: This is part of the official LLVM compiler infras=
+tructure, providing standard library extensions
+
+This =
+header helps write more efficient C code by allowing developers to mark imp=
+ossible code paths, enabling better compiler optimizations and potentially =
+catching logic errors.
+
+aarch64-swift-linux-musl-clang.cfg
+
+9 lines
+
+cfg
+
+SA
+
+This is a 
+Clang compi=
+ler configuration file
+ for cross-compiling to 
+ARM64 Linux =
+with musl libc
+ using 
+Swift interoperability
+. Here=
+'s what each flag does:
+
+Targe=
+t Configuration
+
+-ta=
+rget aarch64-swift-linux-musl
+
+:
+
+aarch64
+: ARM 6=
+4-bit architecture (Apple Silicon, server CPUs)
+
+swift
+: Swift l=
+anguage interoperability enabled
+
+linux
+: Target =
+operating system
+
+musl
+: Use musl=
+ libc instead of glibc (smaller, statically linkable)
+
+Runti=
+me Libraries
+
+-rt=
+lib=3Dcompiler-rt
+
+: Use LLVM's compiler runtime instead of G=
+CC's libgcc
+
+-stdlib=3Dlibc++
+
+: Use LLVM's C++ standard library instead=
+ of GNU libstdc++
+
+-unwindlib=3Dlibunwind
+
+: Use LLVM's stack unwinding librar=
+y
+
+Linki=
+ng Configuration
+
+-fu=
+se-ld=3Dlld
+
+: Use LLVM's LLD linker instead of GNU ld or gol=
+d
+
+-lc++abi
+
+: Link against the C++ ABI library
+
+-static
+
+: Create statically linked binaries (no dynamic de=
+pendencies)
+
+Use C=
+ase
+
+This =
+configuration is typically used for:
+
+Cross-compilation
+: Building ARM64 Linux binaries from other platforms
+
+Swift on Linux
+=
+: Projects mixing Swift and C/C++ code
+
+Static deployment
+: Self-contained binaries with no external dependencies
+
+Alpine Linux
+: =
+musl-based distributions
+
+Container images
+: Minimal, statically-linked executables
+
+The c=
+ombination creates portable ARM64 Linux binaries that don't require specifi=
+c system libraries to be installed, making them ideal for containerized app=
+lications or embedded systems.
+
+com.apple.AccessorySetup.appexpt
+
+16 lines
+
+text
+
+SA
+
+This is an 
+Apple Exte=
+nsion Point
+ configuration file that defines how third-party apps c=
+an create 
+Accessory Setup Exten

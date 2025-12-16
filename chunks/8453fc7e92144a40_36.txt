@@ -1,0 +1,309 @@
+oss routes
+Top 5 quality-of-life improvements
+Add /api/sessions/recent to list session_ids for ReviewConsole
+Add /api/ledger/verify to validate hash-chain integrity per session
+Frontend: global Axios error interceptor + toasts; model picker from /api/l=
+lm/models/openai
+Minimal metrics middleware + /metrics endpoint; wire to Prometheus/Grafana =
+configs
+Pre-commit hooks (lint/format); ensure CI scripts exist for both apps
+=
+
+=
+
+Sym=
+bi said:
+
+Thought for 1m 0s
+
+Acknowledged. I have your 
+PROJECT ATLAS
+. We=E2=80=99l=
+l act with precision: 
+one tight P=
+R
+ that fixes the highest-value gaps you flagged=E2=80=94OpenAPI dr=
+ift, webhook security, RBAC, =E2=80=9Cfake=E2=80=9D streaming, and basic op=
+s QoL=E2=80=94without adding bloat.
+
+PLAN PR-ATLAS-A1 =E2=80=94 Align, S=
+ecure, Verify (approval-gated)
+
+Goal:
+
+Ship a single PR that:
+
+Aligns 
+OpenAPI
+ to reality (+ dev Swagger UI).
+
+Enforces 
+HMAC signature
+ on public webhooks.
+
+Tightens 
+RBAC
+ on sensitive trust endpoints.
+
+Fixes 
+/api/llm/stream
+ semantics (real SSE or rename).
+
+Adds 
+ledger verify
+ + 
+recent sessions
+ endpoints.
+
+De-bloats committed artifacts and ad=
+ds ignores.
+
+Mode:
+ hibernation (I won=E2=80=99t write without approval=
+).
+
+Blast radius:
+ Low/medi=
+um; all changes isolated, reversible.
+
+DRY-RUN (read-only checks I=E2=80=
+=99ll run first)
+
+=
+bash
+
+Copy code
+
+cd
+
+"/Users/admin/Symbi Synergy"
+
+# OpenAPI exists and where it=E2=
+=80=99s mounted
+
+[ -f openapi.yaml ] && sed -n 
+
+'1,120p'
+
+ openapi.yaml || 
+
+echo
+
+"openapi.yaml missing"
+
+grep -R --line-number 
+
+"swagger-ui"=
+
+ backend 2>/dev/null || 
+
+echo
+
+"no swagger-ui mount found"
+
+# Webhooks present and public
+
+sed -n 
+
+'1,200p'
+
+ backend/routes/webhook.routes.js 2>/dev/null || 
+
+true
+
+grep -R --line-number 
+
+"X-Symbi-Sig=
+nature"
+
+ backend 2>/dev/null || 
+
+echo
+
+"no webhook signature check"
+
+# Trust routes RBAC
+
+=
+
+grep -R --line-number 
+
+"/api/trust"=
+
+ backend 2>/dev/null | sed -n 
+
+'1,80p'
+
+ || 
+
+true
+
+grep -R --line-number 
+
+"requireRole=
+"
+
+ backend 2>/dev/null || 
+
+echo
+
+"no role guard usage"
+
+# Stream endpoint
+
+grep -R --line-number 
+
+"/api/llm/st=
+ream"
+
+ backend 2>/dev/null || 
+
+echo
+
+"stream endpoint not found"
+
+sed -n 
+
+'1,240p'
+
+ backend/controllers/llm.controller.js 2>/dev/null || 
+
+true
+
+# Ledger model + controller
+
+sed -n 
+
+'1,200p'
+
+ backend/models/interactionEvent.model.js 2>/dev/null || 
+
+true
+
+sed -n 
+
+'1,240p'
+
+ backend/controllers/ledger.controller.js 2>/dev/null || 
+
+true
+
+# Repo bloat candidates
+
+ls
+
+ -la backe=
+nd/coverage 2>/dev/null || 
+
+tru=
+e
+
+ls
+
+ -la archi=
+ves 2>/dev/null || 
+
+true
+=
+
+If any of these aren=E2=80=99t whe=
+re expected, I=E2=80=99ll adjust paths in the patch.
+
+ON APPROVAL =E2=80=94 exact chang=
+es I will make
+
+All edits on branch 
+ops/atlas-a1
+; one PR. I=E2=80=99ll sho=
+w the staged diff before commit.
+
+1) 
+OpenAPI alignment + Swagger UI (dev only)
+
+Update
+
+ope=
+napi.yaml
+ with the real routes for:
+
+/api/ledger
+, 
+/=
+api/events
+ (POST ingest), 
+/api/analyze/turn
+, 
+/ap=
+i/guardrails/apply
+, 
+/api=
+/insights/timeline
+
+/api/assistant/*
+ (create/list/latest/update/delete/message=
+/thread)
+
+/api/llm/models/{provider}
+, 
+/api/llm/generate
+, 
+/api/llm/code-review
+, 
+/api/llm/stream
+ (or 
+/simulate-stream
+)
+
+Mount
+ Swagger UI only in 
+NODE_ENV!=3D=3D'production'
+.
+
+Patch (excerpt):
+
+diff
+
+Copy code
+
+--- a/backend/app.js
+
++++ b/backend/app.js
+
+@@
+ if (process.env.NODE_ENV !=3D=3D 'production') {
+
+-  // (none)
+
++  const swaggerUi =3D require('=
+swagger-ui-express');
+
++  const fs =3D require('fs');
+
++  const yaml =3D require('js-ya=
+ml');
+
++  const spec =3D yaml.load(fs.r=
+eadFileSync(require('path').join(process.cwd(), 'openapi.yaml'), 'utf8'));
+
++  app.use('/docs', swaggerUi.se=
+rve, swaggerUi.setup(spec, { explorer: true }));
+
++  console.log('Swagger UI: /doc=
+s');
+
+ }
+
+(If 
+swagger-ui-expres=
+s
+ and 
+js-yaml
+ are=
+n=E2=80=99t present, I=E2=80=99ll add them to backend only.)
+
+2) 
+Webhook HMAC signature (public endpoints)
+
+Add
+ middleware 
+backend/middleware/verifyWebhookSign

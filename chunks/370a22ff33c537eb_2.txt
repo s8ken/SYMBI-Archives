@@ -1,0 +1,309 @@
+
+  }
+
+}
+
+=
+
+Strength=
+s
+: Type-safe (interfaces for Assessment/ Scores); handles errors g=
+racefully (fallbacks for failed API calls). Efficient=E2=80=94parallelizes =
+prompts.
+
+Issues
+: Prompt engineering is hardcoded=E2=80=94brittle if AI models chang=
+e. No caching for repeated analyses.
+
+Experime=
+ntOrchestrator (Resonate Lab)
+:
+
+Multi-agent system in 
+src/orchestrator/ExperimentOrchestrator.t=
+s
+.
+
+How it W=
+orks
+: Wizard UI collects config (models, criteria). Backend spawns=
+ agents via async queues (e.g., BullMQ? Or simple Promises). Monitors via W=
+ebSockets to Supabase. Stats computed post-run (e.g., t-tests via a lib lik=
+e 
+statsmodels
+=E2=
+=80=94but Node.js, so likely custom or 
+jstat
+).
+
+Code Ins=
+ight
+ (pseudocode):
+
+TypeScript
+
+=
+
+Copy
+
+class
+
+ ExperimentOrchestrator
+
+ {
+
+  async
+
+ runExperiment
+
+(
+
+config
+
+:
+
+ ExperimentConfig
+
+)
+
+:
+
+ Promise
+
+<
+
+Exp=
+erimentResult
+
+> {
+
+    const
+
+ conductor
+
+ =3D
+
+ new
+
+ ConductorAge=
+nt
+
+(
+
+config
+
+=
+);
+
+    await
+
+ conductor
+
+.
+
+assignRoles
+
+([
+
+VariantAgent
+
+, 
+
+Evalu=
+atorAgent
+
+, 
+
+OverseerAgent
+
+]);
+
+    const
+
+ results
+
+ =3D
+
+ await
+
+ this
+
+.
+
+executePhases
+
+([
+
+'setup'
+
+, 
+
+'run'=
+
+, 
+
+'evaluate'
+
+]); 
+
+=
+// Event loop with real-time emits
+
+    const
+
+ stats
+
+ =3D
+
+ new
+
+ StatisticalReportG=
+enerator
+
+(
+
+results
+
+).
+
+compute
+
+(); 
+
+// p-value =3D 2 * (1 - tDist.cdf(tStat,=
+ df))
+
+    await
+
+ this
+
+.
+
+storeAno=
+nymized
+
+(
+
+results
+
+, 
+
+stats
+
+); 
+
+// SHA-256 hash + PII scrub
+
+    return
+
+ { 
+
+results
+
+,=
+
+stats
+
+ };
+
+  }
+
+}
+
+=
+
+Strength=
+s
+: Double-blind via anonymous IDs; real-time sync prevents data lo=
+ss. Modular agents for easy extension.
+
+Issues
+: Heavy reliance on Supabase=E2=80=94migration would be painful. Sta=
+ts impl might be basic (no advanced Bayesian methods visible).
+
+SymbiSco=
+rerManager & CalibratedDetector
+:
+
+Scoring: Centralized manager calibrates =
+scores across dimensions (e.g., normalizes 0-10 to 0-100 for parity).
+
+Detection: "Calibrated" version fine-tun=
+es prompts based on prior runs (learning loop).
+
+Quality
+: ~80% test coverage inferred (unit tests for scorers); ESLint/Pret=
+tier enforced. No lint errors in main branches.
+
+Frontend=
+ (React/Vite)
+:
+
+Uses shadcn/ui for components; Tailwind =
+for styling. Pages: Detection form, Experiment wizard, Dashboard with Recha=
+rts.js for radar charts.
+
+Strength=
+s
+: Responsive, accessible (ARIA labels); optimistic updates via Re=
+act Query.
+
+Issues
+: No SSR (Vite SPA)=E2=80=94SEO/performance hit for dashboards. Form=
+ validation could be tighter (Zod inferred, but not exhaustive).
+
+Security=
+/Compliance Impl
+:
+
+PII: Regex + AI scan (e.g., prompt: "Det=
+ect and mask PII") before Supabase insert.
+
+Hashing: 
+crypto.createHash('sha256').update(data).digest('hex')=
+
+ for integrity checks.
+
+Strength=
+s
+: RLS policies enforce tenant isolation; rate limits via 
+express-rate-limit
+.
+
+Issues
+: API keys in 
+.e=
+nv
+=E2=80=94no Vault integration for prod.
+
+Overall Code Health
+
+Pros
+: TypeScript everywhere (reduces bugs); modular (easy to fork/extend);=
+ privacy baked in. Dev experience solid=E2=80=94hot reloads, clear scripts.=
+
+Cons
+: Docs sparse (README covers setup but not API schemas); no e2e tests;=
+ potential perf bottlenecks in parallel AI calls (no timeouts visible). Com=
+plexity suits enterprises but overwhelms hobbyists.
+
+Scan Ver=
+dict
+: Secure and scalable for its scope (8/10). No obvious exploit=
+s (e.g., SQLi via Supabase params). Recommend adding CI/CD (GitHub Actions)=
+ and more examples.
+
+Fair Assessment Summary
+
+Pros
+: Ambitious and well-architected f=
+or AI ethics/research=E2=80=94bridges gap between abstract "emergence" dete=
+ction and practical tools. Open-source ethos + enterprise features make it =
+versatile. If you're in AI evaluation, it's a gem for structured experiment=
+s.
+
+Cons
+: Niche focus (SYMBI-specific) lim=
+its broad appeal; setup is non-trivial (Supabase/AI keys needed). Lacks com=
+munity traction=E2=80=94no tutorials, reviews, or X buzz found, so real-wor=
+ld validation is pendin

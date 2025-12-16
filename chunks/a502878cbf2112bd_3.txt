@@ -1,0 +1,165 @@
+ one last check:
+
+Run this command to see if 
+your Mac is set up to receive AirPlay streams
+:
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay receiver-active
+
+If the result is 
+1
+
+, AirPlay receiving is 
+enabled
+, meaning another device could stream to your Mac.
+
+If 
+0
+
+, it is 
+disabled
+, which is the safer setting.
+
+If 
+1
+ appears and you didn’t enable it, you can disable it with:
+
+sh
+
+Copy
+
+sudo defaults write /Library/Preferences/com.apple.airplay receiver-active -bool 
+
+false
+
+Summary of Findings So Far:
+
+✅ 
+No active AirPlay streaming detected
+
+✅ 
+No screen-sharing or VNC processes running
+
+✅ 
+No recent AirPlay events in the logs
+
+Let me know the result of the 
+AirPlay receiver check
+ so we can confirm your system is secure.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % log show --predicate 'subsystem == "com.apple.AirPlay"' --last 1h
+
+Filtering the log data using "subsystem == "com.apple.AirPlay""
+Skipping info and debug messages, pass --info and/or --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+--------------------------------------------------------------------------------------------------------------------
+Log      - Default:          0, Info:                0, Debug:             0, Error:          0, Fault:          0
+Activity - Create:           0, Transition:          0, Actions:           0
+user@Mes-MacBook-Pro ~ % ps aux | grep -E 'screensharing|airplay|vnc'
+
+user               976   1.1  0.0 410724112   1504 s000  S+    3:48pm   0:00.00 grep -E screensharing|airplay|vnc
+_fpsd              676   0.0  0.1 426947424  13488   ??  Ss    3:28pm   0:00.18 /System/Library/PrivateFrameworks/CoreFP.framework/Versions/A/fairplayd
+user@Mes-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay receiver-active
+
+2025-03-01 15:49:19.836 defaults[978:22774] 
+The domain/default pair of (/Library/Preferences/com.apple.airplay, receiver-active) does not exist
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Final Analysis: No Signs of Active AirPlay or Mirroring
+
+Your results confirm that 
+AirPlay and screen-sharing are not currently active
+ on your Mac:
+
+✅ 
+No recent AirPlay logs
+ → No evidence of streaming or mirroring activity.
+
+✅ 
+No screen-sharing, VNC, or AirPlay processes running
+ → No remote access detected.
+
+✅ 
+AirPlay receiver setting does not exist
+ → This means 
+your Mac is not configured as an AirPlay receiver
+, so other devices cannot stream to it.
+
+What This Means for Your Security Concerns
+
+Your Mac does not currently appear to be compromised via AirPlay mirroring.
+
+There is no active screen-sharing or VNC remote control process running.
+
+AirPlay receiving is not enabled, meaning another device cannot send a stream to your Mac.
+
+This suggests that if 
+AirPlay or mirroring was used in the past
+, it is no longer active. If you still suspect a compromise, we can look deeper into past logs, startup processes, or network activity to see if something was previously active and then disabled.
+
+Would you like to investigate further, or does this ease your concerns for now?
+
+You said:
+
+1st hang.rtf
+
+File
+
+ChatGPT said:
+
+Analysis of the 1st Hang Report
+
+Your Mac experienced a 
+TextEdit application hang
+ that lasted 
+251 seconds (over 4 minutes)
+ before the system sampled the process.
+
+Key Observations:
+
+TextEdit Hang Cause:
+
+The issue appears related to 
+NSSavePanel
+, which is responsible for saving files.
+
+The process was stuck in a layout operation involving 
+NSTextView
+ and 
+NSTextViewportLayoutController
+, which manage text rendering.
+
+This suggests TextEdit might have frozen while trying to 
+save or render a document
+.
+
+System Context at the Time:
+
+Accessory Updater (
+accessoryupdaterd
+) was running
+ – This process updates Apple accessories.
+
+Accountsd (
+accountsd
+) was running
+ – Manages user accounts and Apple ID credentials.
+
+AirPlayUIAgent was active
+ – This is concerning because it handles 
+AirPlay streaming and mirroring
+.
+
+Adprivacyd

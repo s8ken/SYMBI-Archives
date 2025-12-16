@@ -1,0 +1,275 @@
+stat -an | grep ESTABLISHED
+
+What to do:
+
+If you see 
+connections to unknown IPs
+ or repeated connections to strange addresses, let me know.
+
+🛠 Step 4️⃣: Check for Modified System Files (Rootkits Check)
+
+Run this command to see if system files have been modified:
+
+sh
+
+Copy
+
+sudo find /System/Library/ -
+
+type
+
+ f -
+
+exec
+
+ sh -c 
+
+'ls -lT "$1" | grep -v "Jan 1 2023"'
+
+ sh {} \;
+
+(You may need to enter your 
+admin password
+.)
+
+What to do:
+
+Normally, system files should 
+not be modified recently
+.
+
+If you see 
+recently changed files
+ that don’t match system updates, it could indicate tampering.
+
+🛠 Step 5️⃣: Check if System Integrity Protection (SIP) Has Been Bypassed
+
+We already checked 
+System Integrity Protection (SIP)
+ earlier, but let’s confirm there are 
+no unauthorized changes
+ to your security settings.
+
+Run:
+
+sh
+
+Copy
+
+csrutil status
+
+It should return:
+
+✅ 
+"System Integrity Protection: enabled"
+
+Next Steps
+
+Run these commands 
+one at a time
+, and let me know what you find.
+
+If anything looks suspicious, we can dig deeper into that area.
+
+🚀 
+Take your time, and I’ll guide you through each result!
+
+You said:
+
+remember one step at a time please
+
+ChatGPT said:
+
+Updated saved memory
+
+Got it! Let's start with 
+Step 1: Checking for Unknown Background Processes
+.
+
+🛠 Step 1️⃣: List Running Processes
+
+Open 
+Terminal
+.
+
+Copy and paste this command:
+
+sh
+
+Copy
+
+ps aux | grep -v 
+
+'\['
+
+ | less
+
+Press Enter
+ to run it.
+
+Use the arrow keys
+ to scroll through the list.
+
+If you see any 
+suspicious or unknown process names
+, copy them here.
+
+Press 
+Q
+
+ to exit the list when you’re done.
+
+Let me know if anything looks unusual! 🚀
+
+You said:
+
+processes.rtf
+
+File
+
+here it is
+
+ChatGPT said:
+
+🔍 Summary of Your Running Processes
+
+Your list shows 
+only normal macOS system processes
+—nothing looks suspicious or unusual.
+
+✅ 
+Everything appears to be system-related
+:
+
+WebKit.WebContent
+
+ → Part of Safari or another WebKit-based browser.
+
+WindowServer
+
+ → Manages the macOS graphical interface.
+
+airportd
+
+ → Controls Wi-Fi functions.
+
+DriverKit-AppleBCMWLAN
+
+ → Manages your network drivers.
+
+Siri.app
+
+ → The Siri voice assistant.
+
+WebKit.Networking
+
+ → Handles network tasks for Safari/WebKit.
+
+Metadata.framework
+
+ → Handles macOS Spotlight search indexing.
+
+🛠 Next Step: Check for Suspicious Startup Items
+
+Now let’s see if anything unusual is launching automatically when you start your Mac.
+
+1️⃣ Run This in Terminal:
+
+sh
+
+Copy
+
+ls
+
+ ~/Library/LaunchAgents /Library/LaunchAgents /Library/LaunchDaemons
+
+What this does:
+
+Lists 
+all apps, services, and scripts
+ that start automatically with macOS.
+
+If we find anything unknown, we can investigate further.
+
+📌 
+Run this and let me know the output!
+ 🚀
+
+You said:
+
+user@Mes-MacBook-Pro ~ % ls ~/Library/LaunchAgents /Library/LaunchAgents /Library/LaunchDaemons
+
+/Library/LaunchAgents:
+us.zoom.updater.login.check.plist	us.zoom.updater.plist
+
+/Library/LaunchDaemons:
+us.zoom.ZoomDaemon.plist
+
+/Users/user/Library/LaunchAgents:
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🔍 Summary of Your Startup Items
+
+Your system has 
+only Zoom-related startup items
+, which are 
+normal and not a security risk
+:
+
+✅ 
+Safe Entries:
+
+us.zoom.updater.login.check.plist
+
+ → Zoom update checker.
+
+us.zoom.updater.plist
+
+ → Keeps Zoom updated.
+
+us.zoom.ZoomDaemon.plist
+
+ → Zoom’s background service.
+
+📌 No unknown or suspicious startup items were found!
+ 🚀
+
+🛠 Next Step: Check for Hidden Network Connections
+
+Now let’s see if any unusual 
+active network connections
+ are present.
+
+1️⃣ Run This in Terminal:
+
+sh
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+What this does:
+
+Lists 
+all currently active network connections
+.
+
+If we see 
+connections to unknown IP addresses
+, we can investigate further.
+
+📌 
+Run this and let me know the results!
+ 🚀
+
+You said:
+
+should we expect these zoom updates to occur on every restart? 
+
+ChatGPT said:
+
+Good question! 
+Yes, Zoom’s update services are designed to run at startup
+ to check for new versions and apply updates automati

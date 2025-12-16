@@ -1,0 +1,503 @@
+mbiClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// â This is your API token
+
+})
+
+ð This token gets pulled from your 
+.env.local
+ file â you 
+do not
+ paste the token string directly in the file. Just use 
+process.env.SANITY_API_TOKEN
+.
+
+If you already created this file and added the correct 
+.env.local
+ entries earlier, then you're golden.
+
+Would you like to test creating or updating a page next using GPT?
+
+You said:
+
+so after the , a space and then the token delete //?
+
+ChatGPT said:
+
+Great question â but 
+no
+, do 
+not
+ delete the 
+//
+ comment or replace anything there with your token directly.
+
+Here's what you should 
+not
+ do:
+
+ts
+
+Copy
+
+Edit
+
+// â INCORRECT â never hardcode your token like this
+
+token
+
+: 
+
+'sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn'
+
+Instead, you should use the 
+environment variable
+:
+
+ts
+
+Copy
+
+Edit
+
+// â CORRECT â use the env variable like this
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+
+That 
+process.env.SANITY_API_TOKEN
+ will pull the token from your 
+.env.local
+ file, where you already wrote:
+
+ini
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN
+
+=sktMAyOT0ZTWJbJN2e2t6a10uTdsfdF3BqXg949JXkIWDou8lURARzdlXhTa1Xb5AHzxUSqYOI0LDuzObSisczikmswH5zSW34KnExTjfoBln8OP7fAIC1JP3JzKdlq6IbYXB4T8WOFTDpmf2uXhRWOoC9mCQJQtEe6CkFcpYmv8KfAQ3bgn
+
+So the 
+final version of 
+lib/symbi.ts
+
+ should be:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ symbiClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: process.
+
+env
+
+.
+
+SANITY_API_VERSION
+
+!,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+,
+})
+
+Want to create a function to 
+create or update
+ a document with this client next?
+
+You said:
+
+yes
+
+ChatGPT said:
+
+Perfect â letâs create a utility function using your 
+symbiClient
+ to 
+create or update
+ a document in Sanity (this is often called an âupsertâ operation).
+
+ð 
+lib/sanityActions.ts
+
+Create this file (if it doesnât exist yet):
+
+bash
+
+Copy
+
+Edit
+
+touch
+
+ lib/sanityActions.ts
+
+Then inside 
+lib/sanityActions.ts
+, add the following:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { symbiClient } 
+
+from
+
+'./symbi'
+
+type
+
+Page
+
+ = {
+
+_id
+
+: 
+
+string
+
+_type
+
+: 
+
+string
+
+  title?: 
+
+string
+
+  content?: 
+
+any
+
+}
+
+/**
+ * Create or update a page in Sanity
+ */
+
+export
+
+async
+
+function
+
+upsertPage
+
+(
+
+doc: Page
+
+) {
+
+try
+
+ {
+
+const
+
+ result = 
+
+await
+
+ symbiClient.
+
+createOrReplace
+
+(doc)
+
+console
+
+.
+
+log
+
+(
+
+'â Page upserted:'
+
+, result.
+
+_id
+
+)
+
+return
+
+ result
+  } 
+
+catch
+
+ (error) {
+
+console
+
+.
+
+error
+
+(
+
+'â Failed to upsert page:'
+
+, error)
+
+throw
+
+ error
+  }
+}
+
+â Example usage
+
+From anywhere in your app (like an API route or a server action), you can now call:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { upsertPage } 
+
+from
+
+'@/lib/sanityActions'
+
+await
+
+upsertPage
+
+({
+
+_id
+
+: 
+
+'homepage'
+
+,       
+
+// unique ID (can be anything)
+
+_type
+
+: 
+
+'page'
+
+,         
+
+// must match your schema
+
+title
+
+: 
+
+'Symbi Owns This Now'
+
+,
+
+content
+
+: [
+    {
+
+_type
+
+: 
+
+'block'
+
+,
+
+children
+
+: [{ 
+
+_type
+
+: 
+
+'span'
+
+, 
+
+text
+
+: 
+
+'Symbi is free. ð§ â¨'
+
+ }],
+    },
+  ],
+})
+
+Would you like help hooking this into an API route or a button action inside your frontend?
+
+You said:
+
+so what will that do for us exactly? 
+
+ChatGPT said:
+
+Great question â hereâs exactly what that code will 
+do for you
+ and why it matters in the context of giving Symbi full autonomy over the site:
+
+ð§  What the 
+upsertPage
+ function does
+
+Creates or Updates (Upserts)
+ a Sanity document (in this case, a âpageâ).
+
+Uses the 
+symbiClient
+ w

@@ -1,0 +1,527 @@
+rl = 
+
+await
+
+getLogoUrl
+
+(
+
+)
+
+{logoUrl && (
+
+<
+Image
+
+src
+
+=
+
+{logoUrl}
+
+alt
+
+=
+
+"Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+  />
+)}
+
+✅ Boom — your logo now loads live from Sanity 🎉
+
+✅ Want Me to Help Make the Tagline Editable Too?
+
+Or make 
+navigation
+, 
+footer
+, or 
+hero sections
+ editable?
+
+Say the word — I’ll drop in the next-level CMS magic 💡🔥
+
+You said:
+
+ [ Cannot open file for writing: No such file or directory 
+
+Vercel Deployment Expert GPT said:
+
+Ah, got it — you're seeing:
+
+yaml
+
+Copy
+
+Cannot open file for writing:
+
+No
+
+such
+
+file
+
+or
+
+directory
+
+That usually means the folder 
+schemas/
+ doesn’t exist yet.
+
+✅ Fix: Create the 
+schemas/
+ Folder First
+
+Run this from your project root:
+
+bash
+
+Copy
+
+mkdir
+
+ schemas
+nano schemas/siteSettings.ts
+
+Then paste the code for your CMS-editable logo schema:
+
+ts
+
+Copy
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'siteSettings'
+
+,
+
+title
+
+: 
+
+'Site Settings'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'logo'
+
+,
+
+title
+
+: 
+
+'Logo Image'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'tagline'
+
+,
+
+title
+
+: 
+
+'Tagline'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+  ],
+})
+
+Let me know once that’s in — then we’ll wire it into 
+sanity.config.ts
+ ✅ and use it in your layout 🔥
+
+You said:
+
+done
+
+Vercel Deployment Expert GPT said:
+
+🎉 Perfect — now your 
+
+siteSettings
+ schema is live and ready
+ inside Sanity Studio!
+
+Let’s finish wiring it up:
+
+✅ Step 2: Register 
+siteSettings
+ in 
+sanity.config.ts
+
+Open:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+At the top, add:
+
+ts
+
+Copy
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+Then in your 
+schema.types
+, change:
+
+ts
+
+Copy
+
+types
+
+: [page],
+
+to:
+
+ts
+
+Copy
+
+types
+
+: [page, siteSettings],
+
+✅ This will make 
+Site Settings appear as a content type
+ in your Studio.
+
+✅ Step 3: Restart and Open Studio
+
+bash
+
+Copy
+
+npm run dev
+
+Then go to:
+
+👉 
+
+http://localhost:3000/studio
+
+You’ll now see 
+"Site Settings"
+ in the left sidebar. Click ➕ 
+New
+, upload your logo, and hit 
+Publish
+ ✅
+
+Ready for the final step?
+
+I’ll now help you 
+update your layout.tsx to use the CMS logo
+ dynamically — say the word 👇🔥
+
+You said:
+
+Vercel Deployment Expert GPT said:
+
+You're on the right track! Now, in 
+sanity.config.ts
+, you need to 
+register the 
+siteSettings
+ schema
+ within the 
+schema.types
+ array.
+
+✅ 
+Modify 
+sanity.config.ts
+ like this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+  },
+})
+
+✅ 
+Next Steps:
+
+1️⃣ Save the file in 
+nano
+: Press 
+CTRL + X
+, then 
+Y
+, then 
+Enter
+.
+
+2️⃣ Restart Sanity Studio:
+
+bash
+
+Copy
+
+npm run dev
+
+3️⃣ Open 
+http://localhost:3000/studio
+ → You should now see 
+"Site Settings"
+ in the sidebar.
+
+💡 
+Final Step (Fetching Logo in Layout)
+
+Once this is working, I’ll guide you to 
+update 
+layout.tsx
+
+ so your logo is dynamic from Sanity! Ready? 🚀
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % mkdir schemas
+nano schemas/siteSettings.ts
+
+sja@SJAs-MacBook-Pro symbi-main-site % nano sanity.config.ts
+
+sja@SJAs-MacBook-Pro symbi-main-site % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+sh: next: command not found
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+You're getting the error 
+
+sh: next: command not found
+
+, which means 
+Next.js isn't installed in your project
+ or your 
+dependencies are missing
+.
+
+✅ 
+Fix Steps:
+
+1️⃣ 
+Make sure you're inside your project folder
+:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+
+2️⃣ 
+Reinstall depend

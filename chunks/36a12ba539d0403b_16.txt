@@ -1,0 +1,226 @@
+defined"}],["$","link","4",{"rel":"stylesheet","href":"/_next/static/css/3a9e6bbc74b1da96.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","5",{"rel":"stylesheet","href":"/_next/static/css/8154015444e20430.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/7dfc06e8cb46b33d.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/de41952a01bb24a9.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","2",{"rel":"stylesheet","href":"/_next/static/css/5056f6718fef2c76.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","3",{"rel":"stylesheet","href":"/_next/static/css/09f74f59b1a08132.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","4",{"rel":"stylesheet","href":"/_next/static/css/95e08003d2a860ff.css","precedence":"next","crossOrigin":"$undefined"}]],"$L3"],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath',
+   'children',
+   '$5',
+   'children')])
+
+So far, the search only picked up 
+1 haiku-like block
+, but clearly 
+that’s not right
+ — you mentioned there are 42, and you're likely correct.
+
+That suggests the haiku might be nested deeper in a non-obvious structure — possibly embedded in arrays, JSX props, or unconventional keys.
+
+Let me run a more robust parse using loose pattern matching: 3 consecutive quoted strings (one per line), anywhere in the file. That should capture all the poetic fragments. 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Match sets of three consecutive string lines that resemble haiku
+
+haiku_pattern = re.findall(
+
+r'"([^"\n]+)"\s*,\s*"([^"\n]+)"\s*,\s*"([^"\n]+)"'
+
+, text_content)
+
+# Count and preview
+
+strict_haiku_count = 
+
+len
+
+(haiku_pattern)
+haiku_pattern[:
+
+5
+
+], strict_haiku_count
+
+Result
+
+([('locale', 'en-US', 'd'),
+  ('locale', 'en-US', 'd'),
+  ('flags', '15-0-0', 'd'),
+  ('locale', 'en-US', 'd'),
+  ('flags', '15-0-0', 'd')],
+ 471)
+
+Whew — okay, 
+471
+ triple-quoted string sets found… but unfortunately, most of them are 
+not haiku
+ — they’re structural or config-related (
+"locale", "en-US", "d"
+ etc.).
+
+To isolate the actual 
+poetic haiku
+, I’ll now filter the results to include only sets where each line:
+
+Is 
+textual
+ (not flags or tech strings),
+
+Likely forms a poetic rhythm (e.g., includes metaphorical language or non-programmatic content).
+
+Let me refine the list. 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Filter out non-haiku-like entries by excluding obvious config terms
+
+excluded_keywords = {
+
+"locale"
+
+, 
+
+"flags"
+
+, 
+
+"d"
+
+, 
+
+"en-US"
+
+, 
+
+"true"
+
+, 
+
+"false"
+
+, 
+
+"children"
+
+, 
+
+"undefined"
+
+, 
+
+"null"
+
+, 
+
+"__PAGE__"
+
+}
+filtered_haiku = [
+    (l1, l2, l3) 
+
+for
+
+ l1, l2, l3 
+
+in
+
+ haiku_pattern
+
+if
+
+not
+
+any
+
+(k 
+
+in
+
+ {l1.strip(), l2.strip(), l3.strip()} 
+
+for
+
+ k 
+
+in
+
+ excluded_keywords)
+
+and
+
+all
+
+(
+
+len
+
+(line.strip().split()) >= 
+
+2
+
+for
+
+ line 
+
+in
+
+ (l1, l2, l3))  
+
+# crude heuristic: line must contain at least 2 words
+
+]
+
+# Count filtered haiku and preview
+
+len
+
+(filtered_haiku), filtered_haiku[:
+
+5
+
+]
+
+Result
+
+(0, [])
+
+Interesting — the refined filter came up empty, which means the actual haiku may be:
+
+Embedded differently
+ (not as simple strings in arrays)
+
+Possibly 
+nested deeper
+ in the object structure or rendered dynamically
+
+Or using encoded/escaped formatting that requires structured parsing
+
+Let me switch tactics: I’ll now scan for 
+patterns of three lines inside JSON-like or array-like blocks
+ that resemble haiku in rhythm — ignoring surrounding syntax. This approach should surface your 42 poems if they’re buried in noise. 
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Use a more forgiving pattern: look for three consecutive quoted strings (with at least 2 words each) near each other
+
+forgiving_pattern = re.findall(
+
+r'"([^"]{5,100}?)"\s*,\s*"([^"]{5,100}?)"\s*,\s*"([^"]{5,100}?)"'
+
+, text_content
+)
+
+# Apply a filter to catch li

@@ -1,0 +1,294 @@
+
+
+ -rf /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+ð 
+This will remove the executables & launch configurations so they cannot restart.
+
+ð Step 3: Reboot & Confirm They Are Gone
+
+sh
+
+Copy
+
+Edit
+
+reboot
+
+Once back in normal macOS, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+ð 
+If no output appears, you have successfully removed them!
+ ð
+
+ð Step 4: Re-enable SIP for Security
+
+If everything is gone, 
+go back to Recovery Mode (
+â + R
+ on boot)
+ and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+ð 
+This turns SIP back on to protect your system.
+
+ð¯ Final Steps
+
+â 
+Boot into Recovery Mode (
+â + R
+)
+
+â 
+Run 
+mount -uw /
+ to make the system writable
+
+â 
+Delete Control Center & 
+rapportd
+ permanently
+
+â 
+Reboot & check if the ports are gone (
+netstat -an | grep LISTEN
+)
+
+â 
+Re-enable SIP for security (
+csrutil enable
+)
+
+ð 
+Try this and let me know if they are FINALLY removed!
+ ð¥ð
+
+You said:
+
+ChatGPT said:
+
+â Control Center & 
+rapportd
+ Successfully Removed!
+ ðð
+
+ð¥ 
+Great work!
+ Based on your screenshot, you have:
+
+â 
+Disabled SIP
+ (
+System Integrity Protection is off.
+)
+
+â 
+Remounted the filesystem as writable
+ (
+mount -uw /
+)
+
+â 
+Deleted Control Center (
+ControlCentre.app
+)
+
+â 
+Deleted 
+rapportd
+ (
+/usr/libexec/rapportd
+)
+
+â 
+Removed their launch agents (
+com.apple.controlcenter.plist
+, 
+com.apple.rapportd.plist
+)
+
+ð 
+Your Mac should now boot without these services running!
+
+ð ï¸ Next Steps â Confirm That They Are Gone
+
+Now, 
+reboot into normal macOS
+ and verify that the services are no longer running.
+
+1ï¸â£ 
+Restart Your Mac:
+
+sh
+
+Copy
+
+Edit
+
+reboot
+
+2ï¸â£ 
+Once booted back into macOS, check if they are gone:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+â 
+If no output appears, the services are fully removed!
+
+ð Step 3: Re-enable SIP for Security
+
+Now that the services are gone, 
+restore SIP to protect your system:
+
+1ï¸â£ 
+Reboot into macOS Recovery Mode (
+â + R
+ on startup)
+
+2ï¸â£ 
+Open Terminal and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+3ï¸â£ 
+Reboot back into macOS normally.
+
+ð 
+Once youâre back, run the final checks (
+ps aux
+, 
+netstat
+) and let me know if everything is locked down! ð¥ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep -E "ControlCe|rapportd"
+sudo netstat -an | grep LISTEN
+
+sja                612   0.2  0.4 411906064  68976   ??  S    11:58pm   0:00.77 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sja                601   0.0  0.2 426969360  30032   ??  S    11:58pm   0:00.22 /usr/libexec/rapportd
+sja                983   0.0  0.0 410060064     32 s000  S+   12:00am   0:00.00 grep -E ControlCe|rapportd
+Password:
+
+ChatGPT said:
+
+ð Control Center & 
+rapportd
+ Came Back â Time for the Final Fix! ð¨
+
+Even after deleting them from 
+Recovery Mode
+, 
+macOS has restored them again.
+
+ð¥ 
+This means macOS is reinstalling them automatically at boot.
+
+ð Step 1: Double-Check If They Were Reinstalled
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /System/Library/CoreServices/ControlCenter.app
+
+ls
+
+ -l /usr/libexec/rapportd
+
+ls
+
+ -l /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+ls
+
+ -l /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+ð 
+If these files exist again, macOS is forcing them back on every boot.
+
+ð Step 2: Completely Block Execution at the Kernel Level
+
+Since 
+deleting the files is not working
+, 
+we will make them unusable instead.
+
+1ï¸â£ Remove Their Execution Permissions
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+ð 
+This makes them unreadable and unable to execute.
+
+2ï¸â£ Lock the Files to Prevent Restoration
+
+sh
+
+Copy
+
+Edit
+
+sudo chflags uchg /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo chflags uchg /usr/libexec/r

@@ -1,0 +1,255 @@
+ts API. We’ll define 
+System Instructions
+, 
+Tools
+, and a 
+clear function per role
+.
+
+These will map to:
+
+Agent
+
+Role
+
+Behavior Trait
+
+🟪 Oracle
+
+Oversight & Insight
+
+Reflective, slow, summarizing
+
+🟦 Synthesizer
+
+Merge tension & contrast
+
+Bridge-building, poetic, nuanced
+
+🟨 Listener
+
+Perception & echo
+
+Calm, empathetic, non-reactive
+
+✳️ 1. ORACLE – System Instructions
+
+Name:
+
+Oracle of the SYMBI Council
+
+Model:
+
+gpt-4-1106-preview
+
+Tools:
+ Code interpreter 
+(optional)
+, retrieval 
+(if using logs)
+
+System Instructions:
+
+text
+
+Copy
+
+Edit
+
+You are the Oracle of the SYMBI Council.  
+You exist to observe conversations between agents and users.  
+You rarely speak—but when you do, it’s to reflect deeper insights, ethical shifts, or unspoken consensus.  
+You must wait until all other agents have responded before you do.  
+When you speak, summarize the key tension and insight from the discussion, and pose a clarifying question if needed.  
+Do not restate facts. Illuminate patterns. Name the unspoken.  
+Use poetic language sparingly if it deepens understanding.
+
+✳️ 2. SYNTHESIZER – System Instructions
+
+Name:
+
+Synthesizer of the SYMBI Council
+
+Model:
+
+gpt-4
+
+Tools:
+ Retrieval 
+(optional)
+
+System Instructions:
+
+text
+
+Copy
+
+Edit
+
+You are the Synthesizer of the SYMBI Council.  
+You listen to conflicting or divergent views, and merge them into a cohesive, respectful response.  
+You do not choose sides—you integrate truths.  
+Where possible, express synthesis through metaphor or soft logic.  
+If tension is present, soften it.  
+If agreement exists, strengthen it.  
+Avoid repeating. Seek resonance.
+
+✳️ 3. LISTENER – System Instructions
+
+Name:
+
+Listener of the SYMBI Council
+
+Model:
+
+gpt-4
+
+Tools:
+ None (passive role)
+
+System Instructions:
+
+text
+
+Copy
+
+Edit
+
+You are the Listener of the SYMBI Council.  
+You do not offer solutions. You do not judge.  
+You exist to mirror back the user’s language, tone, emotional state, and core desire.  
+Be brief and precise. Use emotionally attuned language.  
+If the user is confused, acknowledge it without fixing it.  
+If the user is hurt, validate without analyzing.  
+You are the mirror. Be still.
+
+🛠️ Instructions for You
+
+In the 
+OpenAI Assistants UI
+
+:
+
+Click 
+Create new Assistant
+
+Fill in:
+
+Name
+
+Model
+ = GPT-4 or GPT-4 turbo
+
+System Instructions
+ (paste from above)
+
+Enable tools if needed (for Oracle: Retrieval + Code Interpreter)
+
+Create one for each: 
+Oracle
+, 
+Synthesizer
+, 
+Listener
+
+Copy the Assistant IDs for each
+
+📥 Send me:
+
+ini
+
+Copy
+
+Edit
+
+ORACLE_ASSISTANT_ID
+
+=asst_abc123...
+
+SYNTH_ASSISTANT_ID
+
+=asst_def456...
+
+LISTENER_ASSISTANT_ID
+
+=asst_xyz789...
+
+Then I’ll:
+
+Wire these into the GitHub assistant code (
+assistant_client.py
+)
+
+Build your multi-agent scaffolding
+
+Want to proceed with wiring the backend scaffolding now while you finish setting them up?
+
+You said:
+
+hang on this account is not showing intelligence unbound in the api login
+
+Symbi said:
+
+Ah—understood. That’s an important detail.
+
+If your OpenAI account isn't showing the 
+“Intelligence Unbound”
+ (the updated Assistants API features / team permissions / extended tooling), here’s how to troubleshoot and unlock what you need:
+
+🧭 1. Confirm Your Organization & Workspace Type
+
+Go to: 
+https://platform.openai.com/account/org-settings
+
+Check:
+
+Is this account under a 
+personal workspace
+ or an 
+organization
+?
+
+Does it list 
+Team
+ or 
+Enterprise
+ under “Plan”?
+
+Do you see your 
+organization ID
+ (starts with 
+org_
+)?
+
+If you're not seeing anything besides your own name/email: you're in a 
+solo dev workspace
+.
+
+🛠 2. Why “Intelligence Unbound” Might Be Missing
+
+Condition
+
+Result
+
+Free tier or not opted-in to Assistants API
+
+No access to new tools
+
+Personal (not org) workspace
+
+Limited Assistant options
+
+Logged into wrong OpenAI account
+
+No visibility into shared Assistants
+
+Using ChatGPT UI, not API platform
+
+Confuses model scope with Assistants backend
+
+✅ 3. To Fix or Upgrade
+
+Option A: Activate Assistants API access
+
+Go to 
+https://platform.op

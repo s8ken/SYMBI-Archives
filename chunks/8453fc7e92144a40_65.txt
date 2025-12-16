@@ -1,0 +1,431 @@
+lStorage
+
+.
+
+setItem
+
+(
+
+"useMostRecentAs=
+sistant"
+
+, 
+
+String
+
+(v));
+  };
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"p-4 space-y-3"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"flex it=
+ems-center justify-between"
+
+>
+
+<
+h2
+
+class=
+Name
+
+=3D
+
+"text-l=
+g font-semibold"
+
+>Assistants
+
+</
+h2
+
+&=
+gt;
+
+<
+label
+
+cl=
+assName
+
+=3D
+
+"tex=
+t-sm flex items-center gap-2"
+
+>
+
+<
+input
+
+=
+type
+
+=3D
+
+"checkb=
+ox"
+
+checked
+
+=3D
+
+{useMostRecent}
+
+onChange
+
+=3D
+
+{toggleMostRecent}
+
+ />
+          Use Most Recent by default
+
+</
+label
+
+>
+
+</
+=
+div
+
+>
+
+<
+u=
+l
+
+classNa=
+me
+
+=3D
+
+"space-y-=
+2"
+
+>
+        {items.map(a =3D> (
+
+<
+li
+
+key=
+
+=3D
+
+{a.assistan=
+tId}
+
+className
+
+=3D
+
+"border round=
+ed p-3"
+
+>
+
+<
+div
+
+=
+className
+
+=3D
+
+"f=
+lex items-center justify-between"
+
+>
+
+<
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"font-medium"
+
+>{a.name} 
+
+<
+span
+
+className
+
+=3D
+
+"text-xs opacity-60"
+
+=
+>({a.model})
+
+</
+span
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"text-xs opacity-70"
+
+>id: {a.assistantId}
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+=
+"flex gap-2"
+
+>
+
+<
+button
+
+className
+
+=3D
+
+"border px-3 py-1 rounded"
+
+onClick
+
+=3D
+
+{()
+
+=3D>setEditing(a)}>Edit
+
+</
+button
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+li
+
+>
+        ))}
+
+</
+=
+ul
+
+>
+
+<
+A=
+ssistantEditDialog
+
+open
+
+=3D
+
+{!!editing}
+
+assistant
+
+=3D
+
+{editing}
+
+onClose
+
+=
+=3D
+
+{(saved)
+
+ =
+=3D> { setEditing(null); if (saved) load(); }}
+      />
+
+</
+di=
+v
+
+>
+  );
+}
+
+3) Make chats respect =E2=80=9CUs=
+e Most Recent=E2=80=9D
+
+Where you send assistant messages =
+(your chat component), omit 
+ass=
+istantId
+ when the toggle is ON:
+
+diff
+
+Copy code
+
+// wherever you call POST /api/assistant/message
+const useMost =3D localStorage.getItem("useMostRecentAssistant")
+
+=3D=3D=3D"true";
+
+- const body =3D { assistantId, =
+message: text, ...extras };
+
++ const body =3D useMost ? { mes=
+sage: text, ...extras } : { assistantId, message: text, ...extras };
+=
+
+await fetch(`${base}/api/assistant/message`, { method:"POST", headers:{ "Co=
+ntent-Type":"application/json" }, body: JSON.stringify(body) });
+
+That leverages your server=E2=80=
+=99s 
+=E2=80=9Clatest assistan=
+t=E2=80=9D fallback
+ automatically.
+
+Rollback: remove the checkbox + co=
+nditional; existing flows remain.
+
+Runbook (quick)
+
+Apply 
+PR-WSID
+ patches =E2=86=92 restart backend.
+
+(Optional) run the backfill script=
+ once.
+
+Apply 
+PR-AUX
+ files =E2=86=92 
+cd frontend && npm start
+.
+
+Smoke tests
+
+Open any conversation =E2=86=92 he=
+ader chips reflect timeline (no mismatches).
+
+Toggle 
+Use Most Recent
+ =E2=86=92 chat works with no ex=
+plicit assistantId.
+
+Edit an assistant =E2=86=92 save, =
+reload list, model updates.
+
+What I can do next (your pick)
+
+Finish per-message overlays
+ with precise event mappi=
+ng (uses your 
+event_id
+=
+ or timestamps)
+
+Bridge UI hardening
+ (score ribbons, JSON viewer, d=
+ry-run receipts into the ledger)
+
+Context Capsules
+ endpoints + lightweight editor an=
+d automatic injection into LLM calls
+
+If you want me to ship both PR-WSID and PR-AUX now, say: 
+=E2=80=9CShip WSID + AUX=E2=80=
+=9D
+ and paste any file path deviations you=E2=80=99ve got; I=E2=80=
+=99ll adapt the patches accordingly.
+
+Y=
+ou said:
+
+Added Enhancements
+
+Ledger wiring for chat: Appends a tamper=E2=80=91evident event per user=E2=
+=86=92AI turn so TrustChips aligns with timeline.
+backend/controllers/conversation.controller.js
+Assistants UX (web):
+=E2=80=9CUse Most Recent=E2=80=9D button on list (navigates to latest chat)=
+.
+frontend/src/pages/Assistants.js
+Chat resolves latest assistant when URL is /assistants/latest/chat.
+frontend/src/pages/AssistantChat.js
+, 45, 63, 97
+Model picker pulls live OpenAI models from /api/llm/models/openai.
+frontend/src/pages/AssistantDetail.js
+, 52
+Trust overlay for chat:
+Session=E2=80=91level and per=E2=80=91message chips (pivot, change %, stanc=
+e, hash).
+frontend/src/components/trust/TrustChips.js
+frontend/src/pages/ConversationDetail.js
+, 260, 374
+What=E2=80=99s Now End=E2=80=91to=E2=80=91End
+
+VS Code extension: Runs console/ledger/roundtable with only SYMBI_API_KEY; =
+no vendor keys in IDE.
+D

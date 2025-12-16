@@ -1,0 +1,326 @@
+essary changes.
+
+System Updates:
+
+Future macOS updates may re-enable these protections or overwrite modifications, potentially requiring you to repeat the process.
+
+Recommendation:
+
+After completing your modifications, re-enable SIP and the Authenticated Root Requirement to maintain system security:
+
+eclecticlight.co
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+Always ensure you have a current backup before making such changes.
+
+Sources
+
+You said:
+
+do I need to made the hdd writable or anything like that? given what we have just done I want to make sure you have given me all the steps so I don't have to restart 4 times 
+
+ChatGPT said:
+
+I understand your desire to minimize restarts and ensure a smooth process. 
+To modify system files on macOS, especially when aiming to disable AirPlay by altering the 
+AirPlayUIAgent
+, you'll need to disable both 
+System Integrity Protection (SIP)
+ and the 
+Authenticated Root Requirement
+.
+ Additionally, 
+you'll need to 
+mount the system volume as writable
+ to make the necessary changes.
+ Here's a consolidated step-by-step guide:
+
+stackoverflow.com
+
++3
+
+Apple Stack Exchange
+
++3
+
+eclecticlight.co
+
++3
+
+â ï¸ Important Note:
+
+Modifying system files can affect your Mac's functionality. Ensure you have 
+backed up your data
+ before proceeding.
+
+1ï¸â£ Disable System Integrity Protection (SIP) and Authenticated Root
+
+Restart Your Mac in Recovery Mode:
+
+Shut down your Mac.
+
+Press the power button and immediately hold down 
+Command (â) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Disable SIP and Authenticated Root:
+
+In Terminal, type:
+
+Apple Developer Forums
+
++7
+
+stackoverflow.com
+
++7
+
+karol-mazurek.medium.com
+
++7
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+disable
+
+csrutil authenticated-root 
+
+disable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+2ï¸â£ Mount the System Volume as Writable
+
+Identify the System Volume:
+
+Open 
+Terminal
+.
+
+Run:
+
+reddit.com
+
++1
+
+stackoverflow.com
+
++1
+
+bash
+
+Copy
+
+Edit
+
+mount
+
+Look for a line that mentions the system volume, typically something like 
+/dev/disk1s5s1 on / (apfs, sealed, local, read-only, journaled)
+.
+
+Gist
+
++1
+
+Apple Developer Forums
+
++1
+
+Create a Mount Point:
+
+Run:
+
+Wikipedia
+
+bash
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ /System/Volumes/Update/mnt
+
+Mount the System Volume as Writable:
+
+Replace 
+/dev/disk1s5s1
+ with your actual system volume identifier found in step 1.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo mount -o nobrowse -t apfs /dev/disk1s5s1 /System/Volumes/Update/mnt
+
+3ï¸â£ Modify the 
+AirPlayUIAgent
+
+Navigate to the Mounted System Volume:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ /System/Volumes/Update/mnt/System/Library/CoreServices/
+
+Disable 
+AirPlayUIAgent
+:
+
+Rename or remove the 
+AirPlayUIAgent
+:
+
+eclecticlight.co
+
++2
+
+eclecticlight.co
+
++2
+
+Wikipedia
+
++2
+
+bash
+
+Copy
+
+Edit
+
+sudo 
+
+mv
+
+ AirPlayUIAgent.app AirPlayUIAgent_DISABLED.app
+
+4ï¸â£ Create a New Snapshot and Bless It
+
+Create a New Snapshot:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo bless --folder /System/Volumes/Update/mnt/System/Library/CoreServices --bootefi --create-snapshot
+
+Restart Your Mac:
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo reboot
+
+5ï¸â£ Re-enable SIP and Authenticated Root
+
+Restart Your Mac in Recovery Mode:
+
+Shut down your Mac.
+
+Press the power button and immediately hold down 
+Command (â) + R
+ until the Apple logo appears.
+
+Open Terminal in Recovery Mode:
+
+In the top menu, click on 
+Utilities
+ and select 
+Terminal
+.
+
+Enable SIP and Authenticated Root:
+
+In Terminal, type:
+
+bash
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+csrutil authenticated-root 
+
+enable
+
+Press 
+Enter
+ after each command.
+
+Restart your Mac.
+
+â ï¸ Caution:
+
+Disabling SIP and Authenticated Root reduces your system's security. Ensure you 
+re-enable
+ them after making the necessary changes to maintain protection against malicious software.
+
+If you encounter any issues or have further questions, feel free to ask!
+
+Sources
+
+You said:
+
+is this using his script?
+
+C

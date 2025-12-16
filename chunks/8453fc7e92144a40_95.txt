@@ -1,0 +1,232 @@
+ code
+
+-<label>CI Model&l=
+t;/label>
+
+-<Select options=3D{['Oversee=
+r Lite','Overseer Pro','Heuristic (local)']} .../>
+
++<label>Trust Mode</lab=
+el>
+
++<Select options=3D{['Heurist=
+ic (local)']} .../>
+
+4) Agent Detail page
+
+Dropdown shows only =E2=80=9CHeuri=
+stic (local)=E2=80=9D.
+
+frontend/src/pages/AgentDetail.js
+
+diff
+
+Copy code
+
+-const CI_OPTIONS =3D ['=
+Overseer Lite','Overseer Pro','Heuristic (local)'];
+
++const CI_OPTIONS =3D ['Heuristi=
+c (local)'];
+
+5) =E2=80=9CCreate Context Bridge=
+=E2=80=9D dialog
+
+Remove Overseer as selectable sour=
+ce and =E2=80=9Cbridge=E2=80=9D copy.
+
+frontend/src/components/context/CreateBridgeDialog.js
+
+diff
+
+Copy code
+
+-<Select label=3D"Sou=
+rce System" options=3D{['SYMBI','OVERSEER']} .../>
+
++<Select label=3D"Source" opt=
+ions=3D{['SYMBI']} .../>
+
+-<p className=3D"help">Cre=
+ate a bridge between Symbi and Overseer contexts</p>
+
++<p className=3D"help">Add=
+ a context for SYMBI to use</p>
+
+Backend guards (if any Overseer r=
+outes exist)
+
+backend/app.js
+
+diff
+
+Copy code
+
+-if (process.env.OVERSEE=
+R_ENABLED =3D=3D=3D 'true') {
+
+-  app.use('/api/overseer', requ=
+ire('./routes/overseer.routes'));
+
+-}
+
++// POC: Overseer off (leave gat=
+ed for future)
+
++if (process.env.OVERSEER_ENABLE=
+D =3D=3D=3D 'true') {
+
++  app.use('/api/overseer', requ=
+ire('./routes/overseer.routes'));
+
++}
+
+If context-bridge server endpoints=
+ imply cross-system sync, gate them with the same flag or return 
+501 Not Implemented
+ in POC.
+
+Copy pack (drop-in text replaceme=
+nts)
+
+Context Bridge =E2=86=92 Context
+
+=E2=80=9CManage context sharing between Symbi and Overseer systems.=E2=80=
+=9D =E2=86=92 =E2=80=9CManage sources used by SYMBI.=E2=80=9D
+
+Overseer Lite/Pro
+ =E2=86=92 
+(remove in POC)
+
+Cognitive intelligence / ethical alignment / context awareness
+ =E2=86=92 
+(remove)
+ =
+or replace with:
+
+=E2=80=9CHeuristic trust signals d=
+erived from the conversation ledger.=E2=80=9D
+
+=E2=80=9CSession memory via Contex=
+t Capsules (goals, tone, constraints).=E2=80=9D
+
+Tooltips (optional):
+
+Trust Mode:
+ =E2=80=9CHow SYMBI evaluates conversation =
+turns. POC uses lightweight on-server heuristics.=E2=80=9D
+
+Context Capsule:
+ =E2=80=9CSmall memory for this sessio=
+n=E2=80=94goals, tone, constraints=E2=80=94that SYMBI honors in replies.=E2=
+=80=9D
+
+Explainability (v0)
+
+Keep =E2=80=9CWhy this chip?=E2=80=
+=9D link on TrustChips showing: 
+{pivot_reason, change%, evidence_window, row_hash}
+.
+
+On Settings, place an =E2=84=B9=EF=
+=B8=8F next to =E2=80=9CTrust Mode=E2=80=9D linking to a short in-app doc s=
+ection.
+
+Test & Done criteria
+
+No =E2=80=9COverseer=E2=80=9D stri=
+ng appears in UI (search: 
+rg -n=
+ "Overseer" frontend
+ =E2=86=92 
+0 hits
+ in rendered copy/menus).
+
+Settings & Agent Detail offer =
+only 
+Heuristic (local)
+.
+
+Context page title/description upd=
+ated; no =E2=80=9CCreate Bridge=E2=80=9D button.
+
+Any 
+/api/overseer/*
+ access 404s (or is gated) with 
+OVERSEER_ENABLED=3Dfalse
+.
+
+Path to re-enable later (v1)
+
+Flip flags to 
+true
+.
+
+Restore tabs/options; wire 
+/api/overseer/*
+ routes; add doc=
+umentation explaining 
+Oversee=
+r =3D governance sentinel
+ with mode switch (normal/hibernation), a=
+pprovals, and audit panels.
+
+If you want, I=E2=80=99ll draft a =
+
+single =E2=80=9Cproduct-terms=
+=E2=80=9D doc section
+ you can paste into the app=E2=80=99s Help mo=
+dal so every term a user sees is defined in one place.
+
+=
+
+=
+
+You said:
+
+good idea 
+
+Symbi said:
+
+Thought for 14s
+
+=
+
+Symbi =E2=80=93 Product Terms & In=E2=80=91app Glossary (poc)=
+
+Copy
+
+Edit
+
+Download
+
+SYMBI =E2=80=93 Product Terms & In=E2=80=91App Glossary (P=
+OC)
+
+Scope:
+
+ Pl=
+ain=E2=80=91language definitions for everything users can see in the SYMBI =
+POC. Use these in your Help modal, empty=E2=80=91state copy, and tooltips. =
+Future items are flagged.
+
+Quick Map (What / Where)
+
+=
+
+Term
+
+What it is
+
+Whe=
+re you see it
+
+SYMBI
+
+The operational core that runs chat, multi=E2=80=91agent round=
+s, trust, and the ledger.
+
+Everywhere (backend API, Web=
+ app, VS Code extension)
+
+Conve

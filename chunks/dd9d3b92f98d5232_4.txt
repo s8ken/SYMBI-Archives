@@ -1,0 +1,232 @@
+fter running this, verify by checking users again:
+
+bash
+
+Copy
+
+dscl . list /Users | grep -v 
+
+'^_'
+
+✅ 
+"SJA" should be gone.
+
+Step 4: Verify No Open Connections on the Network
+
+Check if "nobody" or any other unusual accounts are actively connected:
+
+bash
+
+Copy
+
+sudo lsof -i -u nobody
+
+If anything shows up, 
+let me know immediately
+—it may indicate ongoing remote access.
+
+Next Steps After Lockdown
+
+Reboot your Mac
+ to ensure all changes take effect.
+
+Check again for unauthorized users after reboot
+:
+
+bash
+
+Copy
+
+dscl . list /Users | grep -v 
+
+'^_'
+
+Monitor network activity
+ for any unexpected outbound connections:
+
+bash
+
+Copy
+
+sudo lsof -i | grep ESTABLISHED
+
+📢 Report Back:
+
+Does 
+sudo sharing -l
+ now return 
+empty
+?
+
+Is 
+"SJA"
+ successfully removed?
+
+Does 
+sudo lsof -i -u nobody
+ still show anything suspicious?
+
+🚨 
+If anything persists, we’ll take deeper steps.
+ 🚨
+
+You said:
+
+just think about anything that I must do before I format the computer as it could cause problems on the fresh install
+
+ChatGPT said:
+
+🚨 Critical Steps Before Formatting Your Mac 🚨
+
+Since this 
+attack is highly persistent
+, we must take 
+extra precautions
+ before formatting. Simply erasing the disk may not be enough if the attacker has implanted firmware-level persistence or remote control mechanisms.
+
+🔴 Phase 1: Secure & Collect Evidence Before Formatting
+
+1️⃣ Disconnect from All Networks (Wi-Fi & Ethernet)
+
+📌 
+Why?
+ If an attacker has remote access, they may interfere during the reset.
+
+Turn off Wi-Fi:
+
+bash
+
+Copy
+
+networksetup -setairportpower en0 off
+
+Unplug Ethernet cable (if connected).
+
+Reboot into Safe Mode
+ (
+Hold Shift during startup
+) and do the next steps 
+offline
+.
+
+2️⃣ Audit & Backup Any Logs or Forensic Data
+
+📌 
+Why?
+ If this attack happens again after formatting, we need data for comparison.
+
+Run the following 
+and save the outputs to an external USB drive (NOT cloud storage):
+
+Check for Persistence & Hidden Backdoors
+
+bash
+
+Copy
+
+sudo launchctl list > ~/Desktop/launchctl-list.txt
+sudo 
+
+ls
+
+ -al /Library/LaunchAgents/ > ~/Desktop/launch-agents.txt
+sudo 
+
+ls
+
+ -al /Library/LaunchDaemons/ > ~/Desktop/launch-daemons.txt
+sudo 
+
+ls
+
+ -al ~/Library/LaunchAgents/ > ~/Desktop/user-launch-agents.txt
+
+✅ 
+Copy these files to a USB drive.
+
+Check System Integrity
+
+bash
+
+Copy
+
+csrutil status > ~/Desktop/sip-status.txt
+nvram -p > ~/Desktop/nvram-dump.txt
+sudo ioreg -l -w0 > ~/Desktop/ioreg-output.txt
+
+✅ 
+Save these as well—especially NVRAM settings.
+
+Check Firmware Version (Possible EFI Tampering)
+
+bash
+
+Copy
+
+ioreg -l | grep firmware-abi
+system_profiler SPHardwareDataType | grep Firmware
+
+📌 
+If the firmware version looks wrong (or it’s unsigned), let me know ASAP.
+ Attackers sometimes modify firmware to survive reinstalls.
+
+3️⃣ Remove Any Suspicious Remote Access Before Formatting
+
+📌 
+Why?
+ Attackers may reinstall themselves during macOS setup.
+
+Manually Remove Hidden Remote Access Tools
+
+bash
+
+Copy
+
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.smbd.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.screensharing.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.RemoteDesktop.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.tftpd.plist
+
+✅ 
+This ensures no hidden services survive formatting via remote access.
+
+Wipe NVRAM & PRAM (Persistent Attack Vectors)
+
+Shut down your Mac completely.
+
+Hold Option + Command + P + R while powering it back on.
+
+Keep holding for at least 20 seconds
+ (it will chime twice on Intel Macs).
+
+Let go and allow it to boot normally.
+
+🟢 Phase 2: Secure Formatting Process
+
+Once the forensic steps are complete, it’s time to wipe the Mac 
+correctly
+.
+
+1️⃣ Use DFU Mode for Full Erase (M1/M2 Macs)
+
+📌 
+Why?
+ Normal "Erase Mac" doesn't remove 
+deep persistence or tampered firmware.
+
+If you have an 
+M1 or M2 Mac
+, follow these steps:
+
+Put your Mac into DFU mode
+:
+
+Shut it down.
+
+Hold 
+Power Button
+ for 
+10 seconds
+ until you see “Loading Startup Options.”
+
+Plug it into

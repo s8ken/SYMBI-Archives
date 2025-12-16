@@ -1,0 +1,85 @@
+abled
+, it=E2=80=99s suspicious.
+
+If 
+Step 2/3
+ shows it=E2=80=99s being explicitly launch=
+ed by a plist =E2=86=92 that=E2=80=99s persistence.
+
+If 
+Step 4
+ shows active connections =E2=86=92 it=E2=80=
+=99s phoning home despite iCloud being off.
+
+If 
+Step 5
+ shows it attaching to Bluetooth or iCloud se=
+ssions =E2=86=92 that matches the logs you shared.
+
+=E2=9A=A0=EF=B8=8F If all four con=
+ditions line up (running + launched + connecting + active logs), then you=
+=E2=80=99ve got a 
+rogue persi=
+stence agent using Apple=E2=80=99s daemon as cover
+.
+
+=F0=9F=91=89 Do you want me to extend this script so it can als=
+o 
+quarantine or disable
+ the agent automatically if it=E2=80=99s running without iCloud being en=
+abled?
+
+You said:
+
+nager) [co=
+m.apple.bluetooth:BluetoothManager] Sending attached posting BluetoothAvail=
+abilityChangedNotification with availability set to YES
+2025-09-23 20:48:15.563116+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Returning bluetooth power state: 0
+2025-09-23 20:48:15.566086+1000  localhost ContextStoreAgent[6947]: (Mobile=
+Bluetooth) [com.apple.bluetooth:MobileBluetoothFramework] kCBMsgIdLocalDevi=
+ceGetModulePowerMsg reply with power state: 0, result: 0
+2025-09-23 20:48:15.566090+1000  localhost ContextStoreAgent[6947]: (Blueto=
+othManager) [com.apple.bluetooth:BluetoothManager] Bluetooth power state: 0
+2025-09-23 20:48:16.139247+1000  localhost AirPlayXPCHelper[170]: (CoreUtil=
+s) [com.apple.bluetooth:CBAdvertiser] Invalidate: CBAdvertiser: CID 0x16B40=
+007, apSF 0x12 < ActivateAWDLNormal HasAuthTag >
+2025-09-23 20:48:16.139271+1000  localhost AirPlayXPCHelper[170]: (CoreUtil=
+s) [com.apple.bluetooth:CBAdvertiser] Invalidated: CBAdvertiser: CID 0x16B4=
+0007, apSF 0x12 < ActivateAWDLNormal HasAuthTag >
+2025-09-23 20:48:16.139697+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBDaemonXPCConnection] Invalidate: CBAdvertiser: CID 0x16=
+B40007, apSF 0x12 < ActivateAWDLNormal HasAuthTag >, from AirPlayXPCH=
+elper:170
+2025-09-23 20:48:16.139761+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBAdvertiser] Invalidate: CBAdvertiser: CID 0x16B40007, a=
+pSF 0x12 < ActivateAWDLNormal HasAuthTag >
+2025-09-23 20:48:16.139773+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBAdvertiser] Invalidated: CBAdvertiser: CID 0x16B40007, =
+apSF 0x12 < ActivateAWDLNormal HasAuthTag >
+2025-09-23 20:48:17.459219+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.MacCoex] Posting Bluetooth Status Notification <private>
+2025-09-23 20:48:18.385465+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBDaemonXPCConnection] GetDevices: flags 0x0 < >, t=
+otal 4
+2025-09-23 20:48:18.408276+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBDaemonXPCConnection] GetDevices: flags 0x0 < >, t=
+otal 4
+2025-09-23 20:48:18.667384+1000  localhost bluetoothd[166]: (CoreUtils) [co=
+m.apple.bluetooth:CBDaemonXPCConnection] GetDevices: flags 0x0 < >, t=
+otal 4
+2025-09-23 20:48:23.324307+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.MacCoex] Posting Bluetooth Status Notification <private>
+2025-09-23 20:48:24.984952+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] [MacUserClient][NotificationEventHandler] -- Received He=
+art Beat notification -- HIDShim
+2025-09-23 20:48:27.458745+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.MacCoex] Posting Bluetooth Status Notification <private>
+2025-09-23 20:48:33.324191+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.MacCoex] Posting Bluetooth Status Notification <private>
+2025-09-23 20:48:37.904895+1000  localhost bluetoothd[166]: [com.apple.blue=
+tooth:Server.Core] Returning bluetooth power state: 0
+2025-09-23 20:48:37.904912+1000  localhost useractivityd[7116]: (MobileBlue=
+tooth) [com.apple.bluetooth:MobileBluetoothFramework] kCBMsgIdLocalDeviceGe=
+tModulePowerMsg reply with power state: 0, result: 0
+2025-09-

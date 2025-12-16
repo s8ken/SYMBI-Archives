@@ -1,0 +1,209 @@
+ctual version you found.
+
+📌 This tells Autopsy where to find 
+libtsk_jni.dylib
+.
+
+🔥 Step 3: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+./autopsy
+
+📌 
+If it works, it should now launch correctly!
+ 🎉
+
+🔥 Step 4: (If Still Failing) Manually Copy 
+libtsk_jni.dylib
+
+If it 
+still doesn’t work
+, let’s 
+force Autopsy to use the correct library
+:
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p autopsy-4.21.0/lib
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.11.1/lib/libtsk_jni.dylib autopsy-4.21.0/lib/
+
+📌 
+Now Autopsy has direct access to the missing library.
+
+🚀 
+Try this and let me know if Autopsy launches correctly now! 🔍💀
+
+You said:
+
+Warning: sleuthkit 4.13.0 is already installed and up-to-date.
+To reinstall 4.13.0, run:
+  brew reinstall sleuthkit
+sja@SJAs-MacBook-Pro bin % find /opt/homebrew -name "libtsk_jni.dylib" 2>/dev/null
+
+/opt/homebrew/lib/libtsk_jni.dylib
+/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/sleuthkit/4.11.1/lib:$DYLD_LIBRARY_PATH
+
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/sleuthkit/4.13.0/lib:$DYLD_LIBRARY_PATH 
+
+sja@SJAs-MacBook-Pro bin % ./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 01:37:06.198 java[7884:37344] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Autopsy STILL Can’t Find 
+libtsk_jni
+ – Let's Force It to Work! 🔥
+
+You're on the 
+right track
+, but 
+Autopsy still isn’t recognizing 
+libtsk_jni.dylib
+
+. We’re going to 
+manually place it in the right location
+ and make sure Java sees it.
+
+🔥 Step 1: Manually Copy 
+libtsk_jni.dylib
+ to Autopsy’s 
+lib
+ Directory
+
+Since Autopsy 
+isn't finding the JNI library
+, let’s 
+place it directly inside its folder
+:
+
+sh
+
+Copy
+
+Edit
+
+mkdir
+
+ -p ~/Downloads/autopsy-4.21.0/lib
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib ~/Downloads/autopsy-4.21.0/lib/
+
+📌 
+Now, Autopsy has direct access to the missing library.
+
+🔥 Step 2: Set the Library Path Properly
+
+We need to 
+explicitly tell Java where to look for this library
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=~/Downloads/autopsy-4.21.0/lib:
+
+$DYLD_LIBRARY_PATH
+
+📌 
+This makes sure Java looks for 
+libtsk_jni.dylib
+ in the right place.
+
+🔥 Step 3: Run Autopsy Again
+
+Now, try launching it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+📌 
+If everything is set correctly, it should now launch!
+ 🚀
+
+🔥 Step 4: (If Still Failing) Use 
+sudo
+
+If Autopsy 
+still refuses to load
+, try running it with 
+sudo
+ to ensure full access:
+
+sh
+
+Copy
+
+Edit
+
+sudo ./autopsy
+
+📌 
+This can sometimes bypass permission issues with Java.
+
+🚀 
+Try these steps and let me know if Autopsy finally launches! 🔍💀
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 01:39:00.434 java[8037:39292] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+2025-03-18 01:40:47.908 java[8162:40743] +[IMKClient subclass]: chose IMKClient_Modern
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Au

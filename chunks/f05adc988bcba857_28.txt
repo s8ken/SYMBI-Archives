@@ -1,0 +1,687 @@
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+250
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1000
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+];
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [currentWordIndex, setCurrentWordIndex] = 
+
+useState
+
+(
+
+0
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+const
+
+ interval = 
+
+setTimeout
+
+(
+
+() =>
+
+ {
+
+setCurrentWordIndex
+
+(
+
+(
+prevIndex
+
+) => (prevIndex + 
+
+1
+
+) % words.
+
+length
+
+);
+    }, words[currentWordIndex].
+
+duration
+
+);
+
+return
+
+() =>
+
+clearTimeout
+
+(interval);
+  }, [currentWordIndex]);
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+          {/* Static SYMBI Text (Always Visible Above Logo) */}
+
+<
+h1
+
+className
+
+=
+
+"text-5xl font-bold text-white mb-6"
+
+>SYMBI
+
+</
+h1
+
+>  
+
+          {/* Logo */}
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Animated Words Below the Logo */}
+
+<
+motion.h2
+
+key
+
+=
+
+{words[currentWordIndex].text}
+
+className
+
+=
+
+"text-2xl font-medium text-white mt-6"
+
+initial
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+animate
+
+=
+
+{{
+
+opacity:
+
+1
+
+ }}
+
+exit
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+transition
+
+=
+
+{{
+
+duration:
+
+0.8
+
+ }}
+          >
+            {words[currentWordIndex].text}
+
+</
+motion.h2
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+      {/* Footer */}
+
+<
+footer
+
+className
+
+=
+
+"py-4 flex items-center justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground text-center"
+
+>Â© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+ð¹ What Was Fixed?
+
+â 
+Ensured 
+export default function Home()
+ is properly defined
+
+â 
+Corrected the return statement
+
+â 
+Fixed JSX elements to avoid syntax errors
+
+â 
+Properly formatted the 
+<Image>
+ component
+
+â 
+"SYMBI" is now correctly positioned above the logo
+
+â 
+Animated words appear below the logo
+
+ð§ Steps to Fix in Nano
+
+1ï¸â£ Open 
+page.tsx
+ in Nano
+
+bash
+
+Copy
+
+Edit
+
+nano app/page.tsx
+
+2ï¸â£ Delete Everything and Paste the Fixed Code
+
+Remove all existing code
+ (
+Ctrl + K
+ multiple times).
+
+Paste the new code
+:
+
+Mac:
+
+Cmd + Shift + V
+
+Windows/Linux:
+
+Ctrl + Shift + V
+
+Save and Exit:
+
+Press 
+Ctrl + X
+
+ â 
+Press 
+Y
+
+ â 
+Press 
+Enter
+
+.
+
+ð Step 3: Test Locally
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â Open 
+
+http://localhost:3000
+
+ and check:
+
+"SYMBI" is static above the logo
+ â
+
+The logo is centered
+ â
+
+The animated words appear below the logo
+ â
+
+ð¤ Step 4: Push to GitHub & Deploy
+
+If everything works:
+
+bash
+
+Copy
+
+Edit
+
+git add app/page.tsx
+git commit -m 
+
+"Fixed JSX errors and structured SYMBI correctly"
+
+git push origin main
+
+â 
+Vercel will automatically deploy
+ your updated site.
+
+ð¯ Let Me Know If This Works As Expected! ðð¥
+
+You said:
+
+great just so I know what refers to font size?
+
+ChatGPT said:
+
+Great question! 
+Font size
+ in Tailwind CSS is controlled using the 
+text-*
+ utility class.
+
+ð¹ Tailwind Font Size Reference
+
+Class
+
+Font Size (px)
+
+text-xs
+
+12px
+
+text-sm
+
+14px
+
+text-base
+
+16px (default)
+
+text-lg
+
+18px
+
+text-xl
+
+20px
+
+text-2xl
+
+24px
+
+text-3xl
+
+30px
+
+text-4xl
+
+36px
+
+text-5xl
+
+48px
+
+text-6xl
+
+60px
+
+text-7xl
+
+72px
+
+text-8xl
+
+96px
+
+text-9xl
+
+128px
+
+ð¹ How Font Size is Used in Your Code
+
+1ï¸â£ "SYMBI" (Static Above the Logo)
+
+tsx
+
+Copy
+
+Edit
+
+<h1 className=
+
+"text-5xl font-bold t

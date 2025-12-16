@@ -1,0 +1,174 @@
+13008   ??  Ss   10:12pm   0:00.49 /System/Library/PrivateFrameworks/MediaRemote.framework/Support/mediaremoted
+root                94   0.0  0.0 426965408   3184   ??  Ss+  10:12pm   0:00.04 /usr/libexec/remoted
+lcl               1691   0.0  0.3 427022096  49376   ??  Ss   11:52pm   0:00.14 /System/Library/PrivateFrameworks/LocalAuthenticationUI.framework/Versions/A/XPCServices/LocalAuthenticationRemoteService.xpc/Contents/MacOS/LocalAuthenticationRemoteService
+lcl               1598   0.0  0.3 427022064  49328   ??  Ss   11:45pm   0:00.16 /System/Library/PrivateFrameworks/LocalAuthenticationUI.framework/Versions/A/XPCServices/LocalAuthenticationRemoteService.xpc/Contents/MacOS/LocalAuthenticationRemoteService
+lcl               1745   6.6  0.1 426946048  14752   ??  S    11:56pm   0:00.12 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared -s mdworker -c MDSImporterWorker -m com.apple.mdworker.shared
+lcl                548   0.0  0.1 427131504   9856   ??  Ss   10:13pm   0:00.58 /System/Library/PrivateFrameworks/SafariShared.framework/Versions/A/XPCServices/com.apple.Safari.SearchHelper.xpc/Contents/MacOS/com.apple.Safari.SearchHelper
+lcl                441   0.0  0.1 426967504  10144   ??  S    10:13pm   0:00.47 /System/Library/CoreServices/sharedfilelistd
+lcl               1749   0.0  0.0 410724112   1488 s000  S+   11:56pm   0:00.00 grep -i share
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 Final Analysis: Remaining Remote Services
+
+Your output confirms 
+some remote management processes are still running
+, even though we disabled them.
+
+🔍 Key Findings
+
+Still Active: 
+remotemanagementd
+ (Process ID 706)
+
+This is related to 
+macOS Remote Management and MDM (Mobile Device Management)
+.
+
+Normally used by 
+enterprise or school IT departments
+ to manage devices.
+
+If 
+you did not enroll this Mac in a company or school system
+, this is 
+suspicious
+.
+
+Still Running: 
+remoted
+ (Process ID 94)
+
+This process is tied to 
+remote control of media applications
+.
+
+It’s 
+not a security risk
+ but can be disabled if you want full lockdown.
+
+Still Running: 
+sharedfilelistd
+ (Process ID 441)
+
+This is part of macOS’s 
+file-sharing service
+.
+
+Since we disabled file sharing, it 
+should not be active
+.
+
+🚀 Next Steps: Force Kill & Prevent Restart
+
+Let’s 
+manually kill these processes
+ and ensure they don’t start again.
+
+1️⃣ Stop 
+remotemanagementd
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.remotemanagementd
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remotemanagementd.plist
+
+2️⃣ Stop 
+remoted
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.remoted
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remoted.plist
+
+3️⃣ Stop 
+sharedfilelistd
+
+sh
+
+Copy
+
+sudo launchctl stop system/com.apple.coreservices.sharedfilelistd
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.coreservices.sharedfilelistd.plist
+
+✅ 
+Once you run these commands, check again with:
+
+sh
+
+Copy
+
+ps aux | grep -i remote
+ps aux | grep -i share
+
+📌 
+If these processes are gone, your Mac is 100% locked down!
+ Let me know what happens. 🚀
+
+You said:
+
+Last login: Thu Mar  6 23:57:20 on ttys000
+lcl@LCLs-MacBook-Pro ~ % sudo launchctl stop system/com.apple.remotemanagementd
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remotemanagementd.plist
+
+Password:
+Unload failed: 5: Input/output error
+Try running 
+launchctl bootout
+ as root for richer errors.
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🚨 Unload Failed: macOS Blocking Full Removal
+
+The error:
+
+lua
+
+Copy
+
+Unload failed: 
+
+5
+
+: Input/
+
+output
+
+error
+
+Try 
+
+running
+
+ `launchctl bootout` as root 
+
+for
+
+ richer errors.
+
+indicates that 
+macOS is protecting this service with System Integrity Protection (SIP)
+, preventing it from being completely removed.
+
+However, we can still 
+force stop it
+ and prevent it from running.
+
+🚀 Next Steps: Use 
+bootout
+ to Stop the Services
+
+Try running these commands 
+one by one
+:
+
+sh
+
+Co

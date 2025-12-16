@@ -1,0 +1,558 @@
+pm.me-folder/symbi-ai-website
+
+sja@SJAs-MacBook-Pro symbi-ai-website % grep -r 'className="dark"' .
+
+sja@SJAs-MacBook-Pro symbi-ai-website % grep -r 'color-scheme:"dark"' .
+
+sja@SJAs-MacBook-Pro symbi-ai-website % x
+
+ChatGPT said:
+
+ð¥ 
+Interestingâyour search didnât return any results.
+ That means the 
+"dark"
+ class 
+might be applied dynamically in JavaScript
+ rather than being hardcoded.
+
+ð¹ Step 1: Manually Check the Common Files
+
+Since 
+grep
+ didnât find it, 
+letâs manually open these files
+ and search inside them:
+
+1ï¸â£ Open 
+app/layout.tsx
+
+Run this command to open it in Terminal using 
+Nano
+:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+Or, if you use 
+VS Code
+, run:
+
+bash
+
+Copy
+
+Edit
+
+code app/layout.tsx
+
+ð 
+Look for 
+<html className="dark">
+ or anything modifying 
+className
+ dynamically.
+
+If found, replace it with:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+>{children}
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+2ï¸â£ Check 
+components/theme-provider.tsx
+
+If the issue 
+isnât in 
+layout.tsx
+
+, then it might be inside the 
+theme provider
+.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+nano components/theme-provider.tsx
+
+ð Look for 
+anything modifying 
+className
+ or 
+document.body.classList
+ dynamically.
+
+If found, wrap it in a 
+
+useEffect
+
+ like this:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [theme, setTheme] = 
+
+useState
+
+(
+
+"dark"
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setTheme
+
+(
+
+document
+
+.
+
+documentElement
+
+.
+
+classList
+
+.
+
+contains
+
+(
+
+"dark"
+
+) ? 
+
+"dark"
+
+ : 
+
+"light"
+
+);
+  }, []);
+
+return
+
+<
+div
+
+className
+
+=
+
+{theme}
+
+>{children}
+
+</
+div
+
+>;
+}
+
+ð¹ Step 2: Restart and Test
+
+After making changes:
+
+1ï¸â£ 
+Save & Exit Nano
+ (
+CTRL + X
+, then 
+Y
+, then 
+Enter
+)
+
+2ï¸â£ 
+Restart your Next.js server
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+3ï¸â£ 
+Check Safari Console Again
+ (
+CMD + Option + C
+)
+
+ð¹ Step 3: Push Fixes & Redeploy
+
+If the error is gone:
+
+1ï¸â£ 
+Push changes to GitHub
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed hydration issue for dark mode"
+
+git push origin main
+
+2ï¸â£ 
+Go to Vercel & Click "Redeploy"
+
+ð¥ 
+Try checking those files and let me know if you find anything!
+ ðð
+
+You said:
+
+    generator: 'v0.dev'
+}
+
+export default function RootLayout({
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={fals$
+          {children}
+        </ThemeProvider>
+
+ChatGPT said:
+
+ð¥ 
+You found it! The issue is in your 
+RootLayout
+ component.
+ ðð
+
+Your 
+
+ThemeProvider
+
+ is applying 
+defaultTheme="dark"
+, which is likely causing the 
+hydration mismatch
+ because the server and client might be seeing different themes.
+
+ð¹ Step 1: Fix the Hydration Issue
+
+Modify your 
+RootLayout
+ component in 
+app/layout.tsx
+ (or wherever you found it) 
+to ensure dark mode is only applied after hydration.
+
+â Update 
+RootLayout.tsx
+ to This:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+>
+
+<
+ThemeProv

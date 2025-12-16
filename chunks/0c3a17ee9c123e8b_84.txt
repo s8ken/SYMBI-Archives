@@ -1,0 +1,262 @@
+/sja/Documents/symbi-main-site/node_modules/next/dist/build/polyfills/polyfill-nomodule.js from pack: Error: invalid bit length repeat
+ ⨯ ./sanity.config.ts:2:1
+Module not found: Can't resolve 'sanity'
+  1 | import siteSettings from './schemas/siteSettings'
+> 2 | import { defineConfig } from 'sanity'
+    | ^
+  3 | import { deskTool } from 'sanity/desk'
+  4 | import { visionTool } from '@sanity/vision'
+  5 | import page from './schemas/page'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/studio/[[...index]]/page.tsx
+ GET /studio 500 in 2009ms
+ ⨯ ./sanity.config.ts:2:1
+Module not found: Can't resolve 'sanity'
+  1 | import siteSettings from './schemas/siteSettings'
+> 2 | import { defineConfig } from 'sanity'
+    | ^
+  3 | import { deskTool } from 'sanity/desk'
+  4 | import { visionTool } from '@sanity/vision'
+  5 | import page from './schemas/page'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/studio/[[...index]]/page.tsx
+
+Vercel Deployment Expert GPT said:
+
+Thanks for the full error trace — you're really close! Let's squash these two core issues cleanly:
+
+❗️ PRIMARY ISSUES
+
+✅ 
+Issue 1: 
+Module not found: Can't resolve 'sanity'
+
+This means 
+sanity
+ is not properly installed, or was removed during a package shuffle.
+
+✅ 
+Issue 2: Corrupted Webpack Cache ("invalid bit length repeat")
+
+This happens when 
+.next/cache
+ becomes corrupted — totally fixable.
+
+🧼 
+STEP-BY-STEP FIX
+
+✅ 1. 
+Delete 
+.next
+ and corrupted cache
+
+bash
+
+Copy
+
+rm
+
+ -rf .next
+
+You can also clean NPM if needed:
+
+bash
+
+Copy
+
+rm
+
+ -rf node_modules package-lock.json
+npm cache clean --force
+
+✅ 2. 
+Reinstall All Dependencies
+
+Ensure you're using the right compatible versions of everything:
+
+bash
+
+Copy
+
+npm install --legacy-peer-deps
+
+This ensures compatibility, especially for Sanity v3+ with Next.js 15 and React 18.
+
+✅ 3. 
+Install Sanity Core Packages
+
+Now re-install the missing 
+sanity
+ packages:
+
+bash
+
+Copy
+
+npm install sanity @sanity/vision @sanity/client @sanity/image-url next-sanity --legacy-peer-deps
+
+✅ 4. 
+Restart Dev Server
+
+Once all installs are complete:
+
+bash
+
+Copy
+
+npm run dev
+
+Then open:
+
+👉 
+
+http://localhost:3001/studio
+
+🔁 Recap
+
+Problem
+Solution
+
+Can't resolve 'sanity'
+
+Reinstall with 
+npm install sanity ...
+
+invalid bit length repeat
+
+Delete 
+.next
+ + clear 
+node_modules
+
+Studio 404 or 500
+Ensure 
+[[...index]]/page.tsx
+ exists and points to 
+sanity.config.ts
+
+✅ Verify This File Exists
+
+app/studio/[[...index]]/page.tsx
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+Try those steps in order and let me know — I’ll stay with you through the fix. You're on the home stretch now 💪🚀
+
+You said:
+
+haven't installed core package yet: sja@SJAs-MacBook-Pro symbi-main-site % rm -rf node_modules package-lock.json
+npm cache clean --force
+
+npm warn using --force Recommended protections disabled.
+sja@SJAs-MacBook-Pro symbi-main-site % npm install --legacy-peer-deps
+
+added 365 packages, and audited 366 packages in 1m
+
+66 packages are looking for funding
+  run 
+npm fund
+ for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run 
+npm audit
+ for details.
+sja@SJAs-MacBook-Pro symbi-main-site %  
+
+Vercel Deployment Expert GPT said:
+
+Great, you've cleaned the cache and reinstalled dependencies. Now let's 
+install the missing Sanity core packages
+ and get everything running.
+
+✅ 
+Step 1: Install Sanity Core Packages
+
+Now, install the 
+Sanity-related dependencies
+:
+
+bash
+
+Copy
+
+npm install sanity @sanity/vision @sanity/client @sanity/image-url next-sanity --legacy-peer-deps
+
+This will ensure you have:
+
+sanity
+ → Core Sanity SDK
+
+@sanity/vision
+ → Query tes

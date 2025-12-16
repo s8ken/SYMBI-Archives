@@ -1,0 +1,259 @@
+udio
+
+🔹 How to Fix Port 3000 Being in Use
+
+If you prefer 
+running on port 3000
+, first 
+stop the current process
+ (
+Ctrl + C
+) and run:
+
+bash
+
+Copy
+
+lsof -i :3000
+
+This will show 
+which process is using port 3000
+.
+
+To 
+kill the process
+, run:
+
+bash
+
+Copy
+
+kill
+
+ -9 <PID>
+
+Then restart:
+
+bash
+
+Copy
+
+npm run dev
+
+🔹 Next Steps
+
+Confirm if the website and Sanity Studio work on 
+3001
+
+If there are errors, 
+send me the error messages
+ so I can debug them! 🚀🔥
+
+You said:
+
+BuildError@http://localhost:3001/_next/static/chunks/%5Broot%20of%20the%20server%5D__3a40d6d2._.js:17247:50
+react-stack-bottom-frame@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:12388:33
+renderWithHooks@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:3402:42
+updateFunctionComponent@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:4726:36
+beginWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:5358:47
+runWithFiberInDEV@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:631:28
+performUnitOfWork@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7947:114
+workLoopSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7840:57
+renderRootSync@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7823:25
+performWorkOnRoot@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:7558:225
+performWorkOnRootViaSchedulerTask@http://localhost:3001/_next/static/chunks/node_modules_react-dom_82bb97c6._.js:8386:26
+performWorkUntilDeadline@http://localhost:3001/_next/static/chunks/node_modules_beb00741._.js:1462:72
+
+Vercel Deployment Expert GPT said:
+
+🚨 Next.js BuildError (React 19 & Sanity Conflict)
+
+Your 
+Next.js app is crashing on build
+ due to a 
+React 19 + Sanity compatibility issue
+ or a 
+broken component in your layout
+.
+
+🔹 Step 1: Find the Actual Error in the Terminal
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+📌 
+What you’re seeing is a minified stack trace.
+ We need the actual 
+error message from the terminal output
+.
+
+🔹 Step 2: Debug Possible Causes
+
+Check for 
+one of these common issues
+:
+
+1️⃣ Missing 
+"use client"
+ in a Component
+
+If 
+any file inside 
+app/
+ folder
+ (e.g., 
+layout.tsx
+, 
+page.tsx
+) is 
+using hooks (
+useState
+, 
+useEffect
+)
+ or the 
+Sanity client
+, make sure 
+it includes
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+🔹 
+Check 
+layout.tsx
+, 
+page.tsx
+, and any Sanity-related files
+.
+
+2️⃣ Fix Sanity Studio Route
+
+If 
+Sanity Studio isn’t loading
+, ensure your Studio route (
+/studio
+) is correctly set up.
+
+Open:
+
+bash
+
+Copy
+
+nano app/studio/[[...tool]]/page.tsx
+
+Paste this:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+✅ 
+Fixes metadata issues in React 19.
+
+3️⃣ Restart Everything
+
+bash
+
+Copy
+
+rm
+
+ -rf .next
+npm run dev
+
+✅ 
+Check if the error appears again.
+
+🚀 If It Still Fails, Send Me the Full Terminal Error Log
+
+I need the 
+exact error from the terminal
+ (not just the stack trace) to debug further! 😊🔥
+
+You said:
+
+./sanity.config.ts:14:1
+Module not found: Can't resolve './sanity/structure'
+  12 | import {apiVersion, dataset, projectId} from './sanity/env'
+  13 | import {schema} from './sanity/schemaTypes'
+> 14 | import {structure} from './sanity/structure'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 |
+  16 | export default defineConfig({
+  17 |   basePath: '/studio',
+
+https://nextjs.org/docs/messages/module-not-found
+
+./node_modules/@sanity/vision/lib/components/VisionGui.js:15:19
+Module not found: Can't resolve '@sanity/base/components'
+  13 | var _ui = require("@sanity/ui");
+  14 | var _client = _interopRequireDefault(require("part:@sanity/base/client"));
+> 15 | var _components = require("@sanity/base/components");
+     |    

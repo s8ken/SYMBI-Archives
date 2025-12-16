@@ -1,0 +1,224 @@
+s through it.
+
+ð¹ 
+Block unknown devices from your network
+ using your router settings.
+
+5ï¸â£ Check for Hidden Monitoring Tools
+
+ð¹ 
+List all installed applications & check for suspicious ones:
+
+sh
+
+Copy
+
+ls
+
+ -l /Applications/
+
+ð¹ 
+List all running background processes:
+
+sh
+
+Copy
+
+ps aux
+
+Look for 
+anything unusual or apps you donât recognize.
+
+ð¹ 
+List all startup items (could indicate persistence):
+
+sh
+
+Copy
+
+sudo 
+
+ls
+
+ -l /Library/LaunchAgents /Library/LaunchDaemons ~/Library/LaunchAgents
+
+If you see 
+unexpected files
+, they could be used to restart malware.
+
+You can delete them with:
+
+sh
+
+Copy
+
+sudo 
+
+rm
+
+ -rf /Library/LaunchAgents/[suspicious_file]
+
+6ï¸â£ Secure Your Apple ID & Google Accounts
+
+ð¹ 
+Check your Apple ID for unknown devices:
+
+Go to
+
+Apple ID Devices
+
+Remove any devices you donât recognize.
+
+ð¹ 
+Change your Apple ID & Google passwords
+
+If hackers 
+controlled your account
+, they may have re-added themselves after the reset.
+
+ð¹ 
+Disable âSign in with Googleâ for all apps.
+
+Final Steps: Consider a Full Factory Reset
+
+If you still suspect hidden backdoors, the best option is 
+to erase your Mac and reinstall macOS.
+
+Boot into macOS Recovery
+ by 
+holding Command (â) + R
+ while turning on your Mac.
+
+Use 
+Disk Utility
+ to 
+erase your drive completely
+ (select 
+APFS
+ format).
+
+Reinstall macOS fresh.
+
+â ï¸ 
+Do NOT restore from a backup
+ unless youâre sure itâs clean. Hackers could have hidden malware inside.
+
+ð¨ Summary of Critical Steps
+
+â 
+Disable AirPlay & Remote Access
+ (kill AirPlayUIAgent, stop screen sharing).
+
+â 
+Check for unauthorized apps & monitoring software
+ (screen recording, startup items).
+
+â 
+Secure your network & remove unknown devices.
+
+â 
+Change Apple ID, Google, and Wi-Fi passwords.
+
+â 
+Consider a full factory reset if needed.
+
+ð¬ Next Steps: Let Me Know What You Find!
+
+Run these checks and tell me if you 
+see anything suspicious.
+
+If youâre 
+still seeing strange activity
+, weâll dig deeper.
+
+Youâre not alone in thisâletâs fully take back control of your Mac! ð
+
+You said:
+
+ user@Mes-MacBook-Pro ~ % tccutil dump ScreenCapture
+
+tccutil: Usage: tccutil reset SERVICE [BUNDLE_ID]
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+The 
+tccutil dump
+ command doesnât work in recent macOS versions. Instead, letâs check screen recording permissions manually and then reset them if needed.
+
+1ï¸â£ Check for Unauthorized Apps with Screen Recording Access
+
+Since we canât list them via Terminal, manually check:
+
+Go to
+ â 
+System Settings > Privacy & Security > Screen Recording
+
+Look for any 
+apps that have access
+.
+
+If you see anything suspicious, click the toggle to turn it off.
+
+2ï¸â£ Reset Screen Recording Permissions
+
+If you suspect unauthorized apps 
+previously had access
+, reset all permissions:
+
+ð¹ 
+Run this command in Terminal
+ to remove all app permissions for screen recording:
+
+sh
+
+Copy
+
+tccutil reset ScreenCapture
+
+This forces all apps to 
+ask for permission again
+.
+
+If hackers were using a hidden app, 
+they will lose access unless they request it again.
+
+3ï¸â£ Monitor for Future Screen Recording Attempts
+
+If someone tries to enable screen recording again, youâll get a pop-up asking for permission. 
+If this happens unexpectedly, deny it immediately.
+
+ð Next Steps
+
+Let me know if you find suspicious apps in Screen Recording settings.
+
+If the problem persists, weâll check for hidden processes running on your Mac. ð
+
+You said:
+
+yes ops has screen recording access
+
+ChatGPT said:
+
+ð¨ OPS Has Screen Recording AccessâThis Could Be Malicious
+
+OPS is 
+not a standard macOS process
+ and could be a 
+monitoring tool, malware, or unauthorized software
+ that hackers installed to spy on your screen activity.
+
+ð´ 
+Immediate Action: Revoke Its Access
+
+Go to
+
+System Settings > Privacy & Security > Screen Recording
+
+Click the toggle next to OPS to turn it OFF
+
+Click the "-" (minus) button
+ to 
+remove it completely
+
+ð Next Steps to In

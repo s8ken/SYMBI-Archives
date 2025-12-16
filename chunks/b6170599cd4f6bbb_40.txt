@@ -1,0 +1,266 @@
+OA	pri.authdns.ripe.net. dns.ripe.net. 1742194743 3600 600 864000 3600
+
+;; Query time: 35 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Mon Mar 17 22:15:40 AEDT 2025
+;; MSG SIZE  rcvd: 113
+
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð Reverse Lookup for 
+151.101.3.6
+ â No Domain Found (
+NXDOMAIN
+)
+
+Your 
+
+dig -x 151.101.3.6
+
+ request returned 
+NXDOMAIN
+ (Non-Existent Domain), meaning:
+
+The IP is valid but does not resolve to a known hostname.
+
+It belongs to an organization that does not publicly expose reverse DNS records.
+
+It could be a CDN (Content Delivery Network) like Fastly or Cloudflare, often used by websites & apps.
+
+ð  Next Steps â Letâs Investigate Further
+
+â 
+Run 
+dig
+ for the second IP (
+185.70.42.22
+)
+
+sh
+
+Copy
+
+Edit
+
+dig -x 185.70.42.22
+
+ð This will check if the 
+second IP has an identifiable hostname.
+
+â 
+Check If Any Process Is Using These IPs
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 151.101.3.6
+sudo lsof -i -P | grep 185.70.42.22
+
+ð 
+This tells us which app is responsible for these connections.
+
+â 
+Use 
+whois
+ from an External Source (If macOS Blocks It)
+
+Since 
+whois
+ timed out earlier, try using 
+an online WHOIS lookup tool
+:
+
+ð¹ 
+For 
+151.101.3.6
+
+ â 
+WHOIS Lookup
+
+ð¹ 
+For 
+185.70.42.22
+
+ â 
+WHOIS Lookup
+
+ð If 
+151.101.3.6
+ is a 
+CDN like Fastly, Cloudflare, or Akamai
+, itâs likely safe.
+
+ð If 
+
+185.70.42.22
+ is unknown
+, we should 
+block it in LuLu until we confirm itâs safe
+.
+
+ð Next Step: Run 
+dig -x 185.70.42.22
+ and 
+lsof
+ & Let Me Know What You Find!
+
+ð If 
+an unknown process is using these IPs
+, weâll find and block it. ð
+
+You said:
+
+;; QUESTION SECTION:
+;22.42.70.185.in-addr.arpa.	IN	PTR
+
+;; ANSWER SECTION:
+22.42.70.185.in-addr.arpa. 263	IN	PTR	185-70-42-22.protonmail.ch.
+
+;; Query time: 32 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Mon Mar 17 22:15:28 AEDT 2025
+;; MSG SIZE  rcvd: 94
+
+ChatGPT said:
+
+ð Reverse Lookup for 
+185.70.42.22
+ â Belongs to ProtonMail (
+protonmail.ch
+)
+
+Your 
+
+dig -x 185.70.42.22
+
+ request confirms that this IP belongs to 
+ProtonMail
+ (ð¨ð­ Switzerland).
+
+ð  What This Means
+
+â 
+If you use ProtonMail or ProtonVPN
+, this IP is likely a 
+Proton service checking for updates or handling encrypted mail traffic
+.
+
+â 
+If you donât use ProtonMail/VPN right now
+, itâs worth investigating 
+why your Mac is still connecting to Proton servers.
+
+ð Next Steps â Letâs Confirm Whatâs Using ProtonMailâs IP
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 185.70.42.22
+
+ð This will 
+show the exact process or app
+ on your Mac making connections to ProtonMail.
+
+ð Should You Block This IP?
+
+â 
+If youâre actively using ProtonMail or ProtonVPN
+ â 
+No action needed
+ (expected behavior).
+
+â 
+If you arenât running ProtonVPN/Mail right now
+ â 
+Possible hidden process or residual connection.
+
+Check running ProtonVPN processes:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i proton
+
+If ProtonVPN is 
+not running
+, but this connection is 
+active
+, consider 
+blocking it in LuLu
+:
+
+Open LuLu â Rules
+
+Block outgoing connections
+ for 
+185.70.42.22
+.
+
+Apply & Save.
+
+ð Next Steps:
+
+ð¹ 
+Run 
+lsof -i -P | grep 185.70.42.22
+ & Let Me Know What Process is Using It!
+
+ð¹ If ProtonVPN 
+isnât running
+, weâll check for 
+stealth processes
+ using this connection. ðð
+
+You said:
+
+yes I use protonmail
+
+ChatGPT said:
+
+â ProtonMail Connection is Expected â No Immediate Concern!
+ ð
+
+Since you 
+use ProtonMail
+, the connection to 
+185.70.42.22
+
+is normal
+ and not a security risk. Itâs likely:
+
+Your email client syncing with ProtonMail servers
+
+Background checks for Proton services
+
+ProtonVPN (if youâve used it recently, even if itâs off now, residual connections may exist)
+
+ð  Final Security Check (Optional)
+
+If you 
+want to ensure nothing else is secretly using ProtonMail servers
+, run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep 185.70.42.22
+
+ð This will show if 
+any unexpected process
+ (outside of ProtonMail apps) is

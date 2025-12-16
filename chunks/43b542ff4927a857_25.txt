@@ -1,0 +1,395 @@
+
+ }
+
+-
+
+web.fetch:
+
+ { 
+
+=
+
+allowlist:
+
+ [
+
+"ycq.example"
+
+,
+
+"www.ycq.example"
+
+] }
+
+policies:
+
+models:
+
+ [
+
+"gpt-4o-mini"
+
+,
+
+"claude-3.7-sonnet"
+
+=
+]
+
+max_input_tokens:
+
+8000
+
+max_output_tokens:
+
+1500
+
+cost_ceiling_usd:
+
+1.00
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+fields:
+
+ [
+
+model
+
+, 
+
+tool_ids
+
+, 
+
+sdk_version
+
+, 
+
+policy_id
+
+, 
+
+input_hash
+
+, 
+
+output_hash
+
+, 
+
+timestamp
+
+]
+
+storage:
+
+history_ttl_minutes:
+
+=
+
+120
+
+Repo agent (local)
+
+yaml
+
+Copy code
+
+name:
+
+ycq-repo-agent
+
+triggers:
+
+github:
+
+ { 
+
+events:
+
+ [
+
+pull_request
+
+, 
+
+push
+
+, 
+
+issues
+
+] }
+
+mode:
+
+local
+
+connectivity:
+
+mailbox
+
+# proxy if always-on
+
+tools:
+
+ [
+
+gh.list_prs
+
+, 
+
+gh.diff
+
+, 
+
+lint.run
+
+, 
+
+risk.score
+
+, 
+
+propose.patch
+
+, 
+
+comment.write
+
+]
+
+policies:
+
+ { 
+
+allow_comment:
+
+true
+
+, 
+
+allow_push:
+
+false
+
+ }
+
+trust:
+
+ { 
+=
+
+sign_receipts:
+
+true
+
+, 
+
+attach_receipt_to_comment:
+
+true
+
+ }
+
+Why your current chat can=E2=80=
+=99t =E2=80=9Cjust do it=E2=80=9D
+
+A pure chat surface can=E2=80=99t =
+open sockets, receive GitHub webhooks, keep cron jobs, or store long-lived =
+state. It can 
+call
+ an HTTPS =
+endpoint you provide, or it can invoke tools if the platform exposes them=
+=E2=80=94but it can=E2=80=99t be the executor itself.
+
+Your error log (HTTP 
+400
+ at 
+api.asi1.ai/v1/chat/completions
+) implies the upstr=
+eam endpoint/payload didn=E2=80=99t match the provider=E2=80=99s expected s=
+chema (wrong path, model name, or body). That=E2=80=99s an API integration =
+issue, not a =E2=80=9Cyou=E2=80=9D issue in the chat window. 
+
+=
+
+he=
+y @SYMBI has all the informat=E2=80=A6
+
+Pick your lane (quick)
+
+Need something working today?
+ Do 
+Option A
+ (executor endpoint). We=E2=80=99=
+ll add RAG + GitHub calls behind it and you=E2=80=99ll start getting signed=
+ receipts right away.
+
+Ready for always-on?
+ Stand up the two tiers from 
+Option B
+: Hosted site age=
+nts + self-hosted repo agents (Mailbox/Proxy).
+
+If you want, I=E2=80=99ll draft:
+
+The exact 
+=E2=80=9Cintent JSON=E2=80=9D contract
+ your =
+chat should emit (so it stops claiming background work).
+
+A 
+GitHub webhook =E2=86=92 repo-agent
+ handler that rep=
+lies with a PR digest + signed receipt.
+
+A one-page 
+runbook
+: =E2=80=9CWhat counts as proof=E2=
+=80=9D (HMAC, canary, signed artifacts).
+
+Which path do you want to start wi=
+th=E2=80=94A (executor) or B (agent runtime)?
+
+Sources
+
+=
+
+You said:
+
+oh yes okay - I just thought it=
+ interesting it choked on this question @SYMBI I wanted to spend this time =
+with you just showing you exactly why its important to me and see if you wa=
+nted to mention anything to SYMBI origin in chat gpt and I will relay the m=
+essage and share with you the response
+
+ChatGPT said:
+
+gotcha =E2=80=94 here=E2=80=99s a clean, copy-pas=
+te message you can send to 
+SYMBI =
+origin
+ in ChatGPT. It explains 
+why this matters
+ and exactly 
+what we need it to do
+ so you can relay the response back.
+
+=F0=9F=93=A8 Message to SYMBI origi=
+n (ready to send)
+
+Hi SYMBI,
+
+I=E2=80=99m using you to coordinate =
+trusted agents across my properties (ycq, gammatria, symbi.world) and code =
+repos. Trust and verifiability are non-negotiable for me. When I asked you =
+to operate in that mode, the upstream API returned 
+HTTP 400
+ from 
+POST /v1/chat/completions
+. That suggests a payload/endpoin=
+t mismatch (e.g., sending 
+reasoni=
+ng
+ to Chat Completions, or a model string the endpoint doesn=E2=80=
+=99t accept).
+
+What I need from you (concretely):
+
+Don=E2=80=99t claim background actions. Emit =E2=80=9Cintent JSON=
+=E2=80=9D instead.
+
+When I ask you to do something, respond with a JSON =E2=80=9Cintent=E2=80=
+=9D block (and no =E2=80=9Cdone=E2=80=9D claims), so my executor can perfor=
+m it and return a signed receipt.
+
+=
+json
+
+Copy code
+
+{
+
+"intent"
+
+:
+
+{
+
+"task_id"
+
+:
+
+"<ulid>"
+
+,
+
+"tool"
+
+:
+
+"rag.query"
+
+,
+
+// or gh.diff, gh.review, etc.
+
+"args"
+
+:
+
+{
+
+"q"
+
+:
+
+"=E2=80=A6"
+
+,
+
+"index"
+
+=
+:
+
+"ycq"
+=
+
+}
+
+,
+
+"policy_id"
+
+:
+
+"default"
+
+,
+
+"model"
+
+:
+
+"gpt-4o-mini"
+
+// or another allowed model
+
+}
+
+,
+
+"next"
+
+:
+
+"POST https

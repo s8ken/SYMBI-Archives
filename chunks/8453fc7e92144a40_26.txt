@@ -1,0 +1,127 @@
+ackend/controllers/ledger.controller.js:1
+Endpoints/controllers
+Analysis turn: backend/controllers/analysis.controller.js:1
+Insights timeline: backend/controllers/insights.controller.js:1
+Guardrails Engine (v0)
+
+Controller composes apology, scope alignment, dual-track preface, then appe=
+nds the original draft.
+File: backend/controllers/guardrails.controller.js:1
+Routes Registration
+
+Files:
+backend/routes/events.routes.js:1 (POST /, GET /ledger)
+backend/routes/analysis.routes.js:1 (POST /turn)
+backend/routes/guardrails.routes.js:1 (POST /apply)
+backend/routes/insights.routes.js:1 (GET /timeline)
+backend/routes/ledger.routes.js:1 (GET /)
+Mounted in backend/app.js:1
+/api/events, /api/ledger, /api/analyze, /api/guardrails, /api/insights
+OpenAI Enhancements
+
+Models endpoint
+GET /api/llm/models/openai tries dynamic openai.models.list() (fallback to =
+static), surfaces newest models prominently.
+Static includes gpt-4o and gpt-4o-mini.
+File: backend/controllers/llm.controller.js:1
+Code review default model
+Defaults to gpt-4o for OpenAI reviews.
+File: backend/controllers/llm.controller.js:406
+Assistants
+Create accepts tools and defaults to gpt-4o.
+List returns most recent first.
+New: GET /api/assistant/latest, PUT /api/assistant/:assistantId (update).
+POST /api/assistant/message now uses the most recent assistant if assistant=
+Id omitted.
+Files:
+Controller: backend/controllers/assistant.controller.js:1
+Service: backend/services/assistant.service.js:420
+Routes: backend/routes/assistant.routes.js:1
+Security & Infra (previous fixes kept)
+
+JWT: no unsafe default; required in non-test.
+Files: backend/controllers/auth.controller.js:10, backend/middleware/auth.m=
+iddleware.js:12
+CORS: centralized, env-driven (CORS_ORIGINS), dev open; prod allowlist.
+File: backend/app.js:38
+Socket.IO: JWT auth + conversation room ownership checks; client passes tok=
+en.
+Server: backend/server.js:1
+Client: frontend/src/pages/ConversationDetail.js:1
+API keys: select:false, never returned in responses.
+backend/models/user.model.js:14, backend/controllers/user.controller.js:66,=
+112
+Config
+
+Add to .env.example:1
+CORS_ORIGINS=3Dhttp://localhost:3000,http://localhost:3001
+Optional LEDGER_SIGNING_KEY (ed25519 PEM)
+Quick Try (JWT required)
+
+Ingest an event
+POST /api/events
+body: { "session_id":"<uuid>", "prompt":"...", "response":"...", "mod=
+el_vendor":"openai", "model_name":"gpt-4o" }
+returns: { ledger: { prev_hash, row_hash, signature } }
+Analyze a turn
+POST /api/analyze/turn
+body: { "session_id":"<uuid>", "prompt":"...", "response":"..." }
+Apply guardrails
+POST /api/guardrails/apply
+body: { "draft_response":"...", "signals":{"pivot":true,"apology_needed":tr=
+ue}, "scope":"creative" }
+Timeline
+GET /api/insights/timeline?session_id=3D<uuid>
+What=E2=80=99s left (optional next steps)
+
+Add Redis/bullmq worker for async analysis/RAG and metric aggregation.
+Add Postgres-based ledger (pgcrypto + pgvector) if you want to mirror or mi=
+grate from Mongo.
+Expose a Gateway SDK (JS/Python) to wrap model calls and mirror events.
+Extend insights with better change-point (CUSUM/BOCPD) and per-session metr=
+ics.
+Wire a simple Review Console view for the new APIs.
+Want me to add a minimal frontend =E2=80=9CReview Console=E2=80=9D page sho=
+wing the ledger timeline and detected pivots next?
+
+Symbi said:
+
+Got it. We=E2=80=99ll ship a 
+minimal, fast Review Console
+ tha=
+t reads your new ledger/insights APIs and highlights pivots=E2=80=94no bloa=
+t, no new deps. I=E2=80=99ll stay approval-gated.
+
+PLAN RC-001 =E2=80=94 =E2=80=9CRevi=
+ew Console=E2=80=9D (read-only UI + fetch)
+
+Goal:
+ Add a frontend page to inspect a session=E2=80=99s =
+ledger timeline and detected pivots.
+
+Blast radius:
+ Low (new=
+ files + one route).
+
+Assumptions:
+ Frontend =
+is React with MUI; JWT lives in 
+l=
+ocalStorage.token
+; API base =3D 
+NEXT_PUBLIC_API_BASE
+ (fallback to same-origin).
+
+Steps
+
+Add a tiny API client (
+frontend/src/lib/api.js
+).
+
+Add 
+ReviewConsole
+ page (
+frontend/src/pages/ReviewConsole.js
+).
+
+A

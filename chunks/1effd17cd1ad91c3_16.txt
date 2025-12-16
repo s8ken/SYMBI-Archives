@@ -1,0 +1,148 @@
+hich rou=
+te you pick!
+
+=
+
+You said:
+
+Version: 1.3.0
+[2025-07-23 11:55:54] ERROR: Build error: Project directory /Users/admin/Li=
+brary/Caches/ms-playwright does not have package.json.
+[2025-07-23 11:55:54] WARN: Build failed, but continuing with start. Some f=
+eatures may not work correctly.
+BYPASS: No database configuration found, defaulting to pglite
+[2025-07-23 11:55:54] INFO: Using global @elizaos/server installation
+[2025-07-23 11:55:54] ERROR: Failed to load module @elizaos/server: Resolve=
+Message: Cannot find module '@elizaos/server' from '/Users/admin/Library/Ca=
+ches/ms-playwright/package.json'
+[2025-07-23 11:55:54] ERROR: An error occurred:
+    message: "(Error) Cannot find module '@elizaos/server' in project at /U=
+sers/admin/Library/Caches/ms-playwright.\nPlease ensure it's installed by r=
+unning:\n  bun add @elizaos/server\n\nOriginal error: ResolveMessage: Canno=
+t find module '@elizaos/server' from '/Users/admin/Library/Caches/ms-playwr=
+ight/package.json'"
+    stack: [
+      "Error: Cannot find module '@elizaos/server' in project at /Users/adm=
+in/Library/Caches/ms-playwright.",
+      "Please ensure it's installed by running:",
+      "bun add @elizaos/server",
+      "",
+      "Original error: ResolveMessage: Cannot find module '@elizaos/server'=
+ from '/Users/admin/Library/Caches/ms-playwright/package.json'",
+      "at load (/Users/admin/.bun/install/global/node_modules/@elizaos/cli/=
+dist/chunk-2ALAPQLV.js:4414:17)",
+      "at load (/Users/admin/.bun/install/global/node_modules/@elizaos/cli/=
+dist/chunk-2ALAPQLV.js:4389:14)",
+      "at startAgents (/Users/admin/.bun/install/global/node_modules/@eliza=
+os/cli/dist/index.js:4751:43)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:55:54] ERROR: Error details: Cannot find module '@elizaos/se=
+rver' in project at /Users/admin/Library/Caches/ms-playwright.
+Please ensure it's installed by running:
+  bun add @elizaos/server
+
+Original error: ResolveMessage: Cannot find module '@elizaos/server' from '=
+/Users/admin/Library/Caches/ms-playwright/package.json'
+[2025-07-23 11:55:54] ERROR: Stack trace: Error: Cannot find module '@eliza=
+os/server' in project at /Users/admin/Library/Caches/ms-playwright.
+Please ensure it's installed by running:
+  bun add @elizaos/server
+
+Original error: ResolveMessage: Cannot find module '@elizaos/server' from '=
+/Users/admin/Library/Caches/ms-playwright/package.json'
+    at load (/Users/admin/.bun/install/global/node_modules/@elizaos/cli/dis=
+t/chunk-2ALAPQLV.js:4414:17)
+    at load (/Users/admin/.bun/install/global/node_modules/@elizaos/cli/dis=
+t/chunk-2ALAPQLV.js:4389:14)
+    at startAgents (/Users/admin/.bun/install/global/node_modules/@elizaos/=
+cli/dist/index.js:4751:43)
+    at processTicksAndRejections (native:7:39)
+Server process exited with code 1
+SYMBIs-MacBook-Pro:ms-playwright admin$ 
+
+=
+
+=
+
+ChatGPT said:
+
+Ahh okay, that error happened because of a 
+small mistake in how the symlink was crea=
+ted
+ =E2=80=94 you accidentally ran 
+elizaos dev
+ from inside the 
+ms-playwright
+ cache directory instead of your actual pr=
+oject directory.
+
+=F0=9F=92=A5 What Went Wrong
+
+You ran this:
+
+b=
+ash
+
+Copy code
+
+cd
+
+ /U=
+sers/admin/Library/Caches/ms-playwright
+elizaos dev
+
+But that directory has 
+no project files, no 
+package.json
+
+, and no ElizaOS config =E2=
+=80=94 so it crashed trying to find 
+@elizaos/server
+.
+
+=E2=9C=85 How to Fix It
+
+Let=E2=80=99s cleanly backtrack and =
+do just the symlink (not start ElizaOS from there):
+
+Go back to your actual project:
+
+b=
+ash
+
+Copy code
+
+cd
+
+ ~/=
+symbi
+
+Create the symlink there (ONLY ONCE):
+
+b=
+ash
+
+Copy code
+
+ln
+
+ -s=
+ /Users/admin/Library/Caches/ms-playwright/chromium-1181 /Users/admin/Libra=
+ry/Caches/ms-playwright/chromium_headless_shell-1155
+
+Now start ElizaOS again from the right place:
+
+b=
+ash
+
+Copy code
+
+elizaos dev
+
+=F0=9F=8E=AF Reminder:
+
+Never run 
+elizaos dev
+ from system folders or Playwright cache=
+s =E2=80=94 always from the root of your ElizaOS project (in your

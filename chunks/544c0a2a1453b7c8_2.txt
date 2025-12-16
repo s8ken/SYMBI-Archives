@@ -1,0 +1,255 @@
+
+
+Let=
+=E2=80=99s turn that into a buildable system. I=E2=80=99ll outline a compac=
+t, end-to-end design you can implement and scale.
+
+SYMBI Atlas =E2=80=94 from archives=
+ =E2=86=92 mapped ideas =E2=86=92 illustrated story
+
+Outcomes
+
+Single corpus
+ of everything (docs, PDFs, HTML/webarchives=
+, TXT).
+
+Idea graph
+ linking themes, decisions, and statuses: 
+captured / integrated / parked / dismiss=
+ed
+.
+
+Storyboard engine
+ that converts major arcs into scene pro=
+mpts for image generation (e.g., Midjourney).
+
+Provenance + timeline
+ so we always know 
+where
+ a concept came from and 
+how
+ it evolved.
+
+Architecture (high level)
+
+Ingestor
+ =E2=86=92 
+Normalizer
+ =E2=86=92 
+Chunker
+ =E2=86=92 
+Annotator
+ =E2=86=92 
+I=
+ndexer
+ =E2=86=92 
+Atlas=
+ UI
+
+Sidecar pipelines:
+
+Dedup/near-dup
+ (perceptual & semantic).
+
+Storyboard generator
+ (scenes + prompts).
+
+Exporters
+ (CSV/JSON, deck, sitemap of ideas).
+
+Ingestion & Normalization
+
+File adapters
+
+PDF: 
+pdfminer
+/
+pypdf
+ =E2=86=92 text + layout cues.
+
+DOCX: 
+python-docx
+.
+
+HTML/WebArchive: extract embedded H=
+TML, strip scripts/styles, keep headings, dates, links.
+
+TXT/MD: direct read.
+
+Metadata capture
+
+File path, created/modified, sourc=
+e URL (if any), mime, language, checksum (SHA-256), size.
+
+Normalization
+
+Unicode cleanup, paragraph reflow,=
+ heading hierarchy, quoted blocks flagged, code fences preserved.
+
+Split into 
+chunks
+ (~800=E2=80=931200 tokens) with over=
+lap; store section path (H1/H2 chain).
+
+Dedup & Versioning
+
+Exact:
+ checksum equality.
+
+Near-dup:
+ MinHash (shingling) + cosine sim on embeddin=
+gs; mark canonical =E2=86=92 versions.
+
+Threading:
+ if titles/first H1 match =C2=B1 date proxim=
+ity, link as revisions.
+
+Idea & Conversation Extractio=
+n
+
+Topic passes:
+
+Pass 1: keyphrase & entity ext=
+raction (people, projects, artifacts).
+
+Pass 2: cluster chunks by embeddin=
+g =E2=86=92 candidate =E2=80=9Cidea threads=E2=80=9D.
+
+Conversation reconstruction:
+ order items by timestamp;=
+ group by author/source when known; link Q=E2=86=92A turns if patterns like=
+ =E2=80=9CQ:=E2=80=9D/=E2=80=9CA:=E2=80=9D or reply markers detected.
+
+Decision mining:
+ look for verbs + markers (=E2=80=9Cde=
+cide=E2=80=9D, =E2=80=9Cship=E2=80=9D, =E2=80=9Cdefer=E2=80=9D, =E2=80=9Cki=
+ll=E2=80=9D, =E2=80=9Cadopt=E2=80=9D) and modal cues; attach 
+status
+.
+
+Status Model (how we tell what=E2=
+=80=99s captured/integrated/etc.)
+
+Heuristics + human confirm:
+
+Integrated
+: mentions of =E2=80=9Cshipped/launched/implemente=
+d/merged/used in=E2=80=A6=E2=80=9D, linked to a later artifact.
+
+Parked/Left off table
+: =E2=80=9Cpark=E2=80=9D, =E2=80=9Clate=
+r=E2=80=9D, =E2=80=9Cdefer=E2=80=9D, =E2=80=9Csomeday=E2=80=9D, backlog tag=
+s with no later references.
+
+Dismissed
+: =E2=80=9Cwon=E2=80=99t=E2=80=9D, =E2=80=9Crejecte=
+d=E2=80=9D, =E2=80=9Ckilled=E2=80=9D, explicit rationale.
+
+Captured (unresolved)
+: appears in clusters but no decision m=
+arkers.
+
+Expose a 
+Kanban
+ in the UI for manual overrides (truth =
+> heuristic).
+
+Data Model (minimal, extensible)
+
+documents(id, path, title, type, created_at, modified_at, source_=
+url, checksum)
+
+chunks(id, document_id, section_path, text, start_idx, end_idx, e=
+mbedding)
+
+entities(id, type, value)
+
+ideas(id, title, summary)
+
+mentions(id, idea_id, chunk_id, confidence)
+
+relationships(src_id, dst_id, type, weight)
+  // idea=E2=86=
+=94idea, idea=E2=86=94entity
+
+decisions(id, idea_id, status, rationale, decided_at, source_chun=
+k_id)
+
+scenes(id, idea_id, order_idx, beat, prompt, image_url)
+
+Storyboard & Image Prompting
+
+Beat detection
+: pick top N arcs by centrality + novelt=
+y over time.
+
+Scene template (example for Midjourney)
+
+vbnet
+
+Copy code
+
+/imagine prompt:
+[Beat Title]: [
+
+1
+
+=E2=80=93
+
+2
+
+ s=
+entence visual description]
+
+Symbols:
+
+ [
+
+3
+
+ iconic objects 
+
+from
+
+ the 
+
+text
+
+]
+
+Setting:
+
+ [time=
+/place/mood 
+
+from
+
+ corpus]
+
+Style:
+
+ cinemat=
+ic, documentary, subtle surreal accents
+
+Text
+
+ overlay:=
+ none
+
+Aspect:
+
+ --ar 
+
+16
+
+:
+
+9
+
+  --v 
+
+6
+
+Auto-generate 
+Symbols
+ from ent

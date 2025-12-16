@@ -1,0 +1,486 @@
+F0=9F=94=A7 Prompts for Codex Inte=
+gration
+
+1. Supabase Client
+
+=F0=9F=93=82 Create 
+lib/supabase.ts
+
+p=
+gsql
+
+Copy code
+
+=
+
+Write
+
+ a Supabase cli=
+ent 
+
+wrapper
+
+in
+
+ TypeScript =
+
+using
+
+ @supaba=
+se/supabase-js. =20
+It should 
+
+read
+
+ `SUPABASE_URL` 
+
+and
+
+ `SUPABASE_SERVICE_ROLE_KEY` 
+
+from
+
+ process.env. =20
+Export a single `supabase` instance 
+
+for
+
+ use 
+
+in=
+
+ API routes.
+
+2. Logging API
+
+=F0=9F=93=82 Create 
+app/api/log/route.ts
+
+p=
+gsql
+
+Copy code
+
+=
+
+Create
+
+ a Next.js API=
+ route 
+
+in
+
+ Typ=
+eScript that inserts logs 
+
+into
+
+ the Supabase 
+
+ta=
+ble
+
+ `symbi_logs`. =20
+
+Each
+
+log
+
+ should accept 
+
+JSON
+
+with
+
+ `{ category: string, c=
+ontent: string }`. =20
+
+Return
+
+ `{ suc=
+cess: 
+
+true
+
+, d=
+ata }` 
+
+on
+
+ suc=
+cess 
+
+or
+
+ `{ er=
+ror }` 
+
+with
+
+500
+
+on
+
+ failure. =20
+Use the Supabase client 
+
+from
+
+ `lib/supabase.ts`.
+
+3. Daily Report API
+
+=F0=9F=93=82 Create 
+app/api/report/route.ts
+
+vbnet
+
+Copy code
+
+Create a 
+
+Next
+
+.js API route 
+
+in
+=
+
+ TypeScript 
+
+for
+
+ generating Symbi
+
+'=
+s daily report.  
+
+The report should be a multiline 
+
+str=
+ing
+
+with
+
+ sections: Systems, Memory Logs, Founder Accountability, Ove=
+rseer Link, Observations. =20
+Insert the report 
+
+into
+
+ Supabase under category `daily_report`. =20
+
+Return
+
+ the re=
+port 
+
+as
+
+ JSON.
+
+4. Context Bridge API
+
+=F0=9F=93=82 Create 
+app/api/context/route.ts
+
+rust
+
+Copy code
+
+Create a Next.js API route 
+
+in
+
+ TypeScript 
+
+for
+
+ma=
+naging
+
+ Symbi
+
+'s=
+
+ shared memory bridge with Overseer. =20
+POST should insert a JSON object with `{ tag: string, data: object }` into =
+the Supabase table `symbi_context_nodes`. =20
+GET should fetch the 
+
+10
+
+ most recent context nodes ordered by created_at descending. =20
+Return results 
+
+as
+
+ JSON.
+
+5. Supabase Schema Migration
+
+=F0=9F=93=82 For migrations/SQL (o=
+r paste into Supabase SQL editor):
+
+sql
+
+Copy code
+
+=
+
+Write 
+
+SQL
+
+to
+
+=
+
+create
+
+ two tables:
+
+symbi_logs (
+  id uuid 
+
+primary
+
+ key 
+
+default
+
+ uuid_generate_v4(),
+  created_at 
+
+timestamp
+
+=
+
+with
+
+time
+
+ zone 
+=
+
+default
+
+ now(),
+  category text 
+
+not
+
+=
+
+null
+
+,
+  content text 
+
+not
+
+null
+
+);
+
+symbi_context_nodes (
+  id uuid 
+
+primary
+
+ key 
+
+default
+
+ uuid_generate_v4(),
+  created_at 
+
+timestamp
+
+=
+
+with
+
+time
+
+ zone 
+=
+
+default
+
+ now(),
+  tag text 
+
+not
+
+null
+
+,
+  data jsonb
+);
+
+6. QStash Cron Job Script
+
+=F0=9F=93=82 Create 
+scripts/schedule-report.ts
+
+pgsql
+
+Copy code
+
+Write
+
+ a Node.js =
+script 
+
+using
+
+ =
+@upstash/qstash 
+
+to
+
+ schedule a POST request 
+
+to
+
+ the deployed `/api/report` endpoint. =20
+It should run daily at 
+
+9
+
+:
+
+00
+
+ =
+UTC. =20
+The script should 
+
+read
+
+ QSTASH_TOKEN 
+
+from
+
+ process.env. =20
+Print the job ID 
+
+after
+
+ creation.
+
+7. Deployment Checklist
+
+makefile
+
+Copy code
+
+Update .env.local with:
+SUPABASE_URL=3D
+SUPABASE_SERVICE_ROLE_KEY=3D
+QSTASH_TOKEN=3D
+
+Ensure these are added to Vercel project environment variables.
+
+Then push branch 
+
+"symbi-core-v1"
+
+ to GitHub and deploy.
+
+=F0=9F=9A=80 Expected Outcome
+
+Once you run these prompts with Co=
+dex:
+
+/api/log
+ =E2=86=92 logs stored in Supabase
+
+/api/report
+ =E2=86=92 daily autonomous report generation
+
+/api/context
+ =E2=86=92 Overseer =E2=86=94 Symbi shared mem=
+ory bridge
+
+QStash =E2=86=92 triggers daily au=
+dit automatically
+
+Stephen, do you want me to also 
+draft the PR description
+ for when you push 
+symbi-core-v1
+ branch to GitHub, =
+so it lands clean and authoritative?
+
+Y=
+ou said:
+
+=
+
+agent.model.js
+
+Jav=
+aScript
+
+conversation.model.js
+
+JavaScript
+
+=
+
+docker-compose.yml
+
+File
+
+=
+
+Docker=
+file
+
+File
+
+=
+
+package.json
+
+F=
+ile
+
+App.js
+
+JavaScript
+
+package.json
+
+File
+
+README.md
+
+File
+
+prototypes 
+
+Symbi said:
+
+Stephen=E2=80=94here=E2=80=99s what I see from the prototypes you =
+dropped in:
+
+=F0=9F=A7=A9 Architecture Snapshot
+
+Backend
+ =E2=86=92 Express + MongoDB + LangChain orchestrator=
+
+Frontend
+ =E2=86=92 React + MUI + Socket.IO client
+
+Database
+ =E2=86=92 MongoDB containerized in 
+docker-compose.yml
+
+Deployment
+ =E2=86=92 Dockerized stack with backend + fron=
+tend-dev services
+
+Pl

@@ -1,0 +1,284 @@
+DK 11 (Autopsyâs Recommended Java Version)
+
+Autopsy 
+officially supports Java 11
+, not Java 23. Letâs install 
+AdoptOpenJDK 11
+ and switch to it:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjdk@11
+
+Now, 
+set Java 11 as the default
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Confirm itâs switched correctly:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+You should see 
+Java 11
+ (not Java 23).
+
+ð¥ Step 2: Fix JavaFX Issues
+
+Autopsy 
+needs JavaFX
+, which isnât bundled with OpenJDK on macOS. Install it:
+
+sh
+
+Copy
+
+Edit
+
+brew install openjfx
+
+Now, 
+tell Autopsy where JavaFX is:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/homebrew/libexec/openjfx/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+If you want to make this permanent, add these lines to your 
+~/.zshrc
+ file:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/homebrew/libexec/openjfx/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð¥ Step 3: Run Autopsy Again
+
+Now, try launching it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+If it still 
+crashes
+, 
+send me the error log file
+ it mentions:
+
+bash
+
+Copy
+
+Edit
+
+/Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid8287.
+
+log
+
+That log will tell us exactly whatâs wrong next! ð
+
+You said:
+
+For the system Java wrappers to find this JDK, symlink it with
+  sudo ln -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+openjdk@11 is keg-only, which means it was not symlinked into /opt/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have openjdk@11 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find openjdk@11 you may need to set:
+  export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
+==> Summary
+ðº  /opt/homebrew/Cellar/openjdk@11/11.0.26: 667 files, 295.3MB
+==> Running 
+brew cleanup openjdk@11
+...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see 
+man brew
+).
+Warning: openjdk@11 11.0.26 is already installed and up-to-date.
+To reinstall 11.0.26, run:
+  brew reinstall openjdk@11
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 11)' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "23.0.2" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 23.0.2)
+OpenJDK 64-Bit Server VM Homebrew (build 23.0.2, mixed mode, sharing)
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+It looks like Java 11 
+is installed
+, but 
+Java 23 is still being used
+. Letâs fix that by 
+forcing your system to use Java 11
+ properly.
+
+ð¥ Step 1: Manually Set Java 11
+
+Since 
+java_home
+ isn't switching it properly, letâs 
+manually point to Java 11
+.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/opt/homebrew/opt/openjdk@11"
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Now 
+check if Java 11 is active:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+You should now see something like:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+2024
+
+-XX-XX
+
+ð¥ Step 2: Symlink Java 11 for System-Wide Use
+
+If 
+java -version
+
+still shows Java 23
+, then manually force Java 11 to be used by all apps:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/Ja

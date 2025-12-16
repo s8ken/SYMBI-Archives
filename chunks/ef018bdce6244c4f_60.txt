@@ -1,0 +1,1076 @@
+
+Date
+
+();
+
+return
+
+this
+
+.
+
+trustScore
+
+;
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+addEvidence
+
+ =3D 
+
+function
+
+ (
+
+e
+
+=
+) {
+
+this
+
+.
+
+evidence
+
+.
+
+push
+
+(e);
+
+this
+
+.
+
+addToHistory
+
+(
+
+'evidence_added'
+
+, 
+
+null
+
+, 
+
+`Added 
+${e.type}
+
+ evidence`);
+
+return
+
+this
+
+.
+
+save
+
+()=
+;
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+addViolation
+
+ =3D 
+
+function
+
+ (
+
+v
+
+) {
+
+this
+
+.
+
+violations
+
+.
+
+push
+
+(v);
+
+const
+
+ impac=
+t =3D { 
+
+low
+
+: -
+
+0.05
+
+, 
+
+medium
+
+: -
+
+0.1
+
+, 
+
+high
+
+: -
+
+0.2
+
+, 
+
+cri=
+tical
+
+: -
+
+0.4
+
+ };
+
+this
+
+.
+
+scores
+
+.=
+
+behavior
+
+ =3D=
+
+Math
+
+.
+
+max
+
+(
+
+0
+
+, 
+
+this
+
+.
+
+scores
+
+.
+
+behavior
+
+ + impact[v.
+
+severity
+
+]);
+
+this
+
+.
+
+calculateTrustScore
+
+();
+
+this
+
+.
+
+addToHistory
+
+(
+
+'violation_detected'
+
+, 
+
+null
+
+, 
+
+`
+${v.severity}
+
+ violation: 
+
+${v.type}
+
+`);
+
+return
+
+this
+
+.
+
+save
+
+()=
+;
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+addToHistory
+
+ =3D 
+
+function
+
+ (
+
+action, by, notes, m=
+etadata =3D {}
+
+) {
+
+this
+
+.
+
+history
+
+=
+.
+
+push
+
+=
+({ action, by, notes, 
+
+previousState
+
+: 
+
+t=
+his
+
+.
+
+state
+
+, metadata });
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+suspend
+
+ =3D 
+
+function
+
+ (
+
+reason, by
+
+) {
+
+const
+
+ prev =
+=3D 
+
+this
+
+=
+
+.
+
+state
+
+=
+; 
+
+this
+
+.
+
+state
+
+ =
+=3D 
+
+'suspended'
+
+;
+
+this
+
+.
+
+addToHistory
+
+(
+
+'suspended'
+
+, by, reason, { 
+
+previousSt=
+ate
+
+: prev }); 
+
+return
+
+this
+
+.
+
+save
+
+();
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+revoke
+
+=
+
+ =3D 
+
+function
+
+=
+
+ (
+
+reason, by
+
+) {
+
+const
+
+ prev =
+=3D 
+
+this
+
+=
+
+.
+
+state
+
+=
+; 
+
+this
+
+.
+
+state
+
+ =
+=3D 
+
+'revoked'
+
+;
+
+this
+
+.
+
+addToHistory
+
+(
+
+'revoked'
+
+, by, reason, { 
+
+previousStat=
+e
+
+: prev }); 
+
+r=
+eturn
+
+this
+
+.
+
+save
+
+();
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+activate
+
+ =3D 
+
+function
+
+ (
+
+by
+
+) =
+{
+
+const
+
+ prev =
+=3D 
+
+this
+
+=
+
+.
+
+state
+
+=
+; 
+
+this
+
+.
+
+state
+
+ =
+=3D 
+
+'active'
+
+;
+
+this
+
+.
+
+addToHistory
+
+(
+
+'activated'
+
+, by, 
+
+'Bond activated'
+
+, { 
+
+previousState
+
+: prev }); 
+
+ret=
+urn
+
+this
+
+.
+
+save
+
+();
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+isExpired
+
+ =3D 
+
+function
+
+ (
+
+) {
+
+const
+
+ exp =
+=3D 
+
+this
+
+=
+
+?.
+
+scope
+
+?.
+
+expiresAt
+
+=
+ ? 
+
+new
+
+Date
+
+(
+
+this
+
+.
+
+scope
+
+.
+
+expiresAt
+
+) : 
+
+null
+
+;
+
+return
+
+ !!(e=
+xp && 
+
+Date
+
+.
+
+now
+
+() > exp.
+
+getT=
+ime
+
+());
+};
+
+trustBondSchema.
+
+methods
+
+.
+
+canPerformAction
+
+ =3D 
+
+function
+
+ (
+
+action
+
+) {
+
+if
+
+ (
+=
+
+this
+
+.
+
+state
+
+ !=3D=3D 
+
+'active'
+
+ || 
+
+this
+
+.
+
+isExpired
+
+()) 
+
+return
+
+=
+
+false
+
+;
+
+if
+
+ (
+=
+
+this
+
+.
+
+trustBand
+
+ =3D=3D=
+=3D 
+
+'Low'
+
+ &=
+;& [
+
+'chat.write'
+
+=
+
+,
+
+'data.export'
+
+=
+
+].
+
+includes
+
+(action)) 
+
+return
+
+false
+
+;
+
+return
+
+ (
+
+this
+
+.=
+
+scope
+
+.
+
+permissions
+
+ || [])=
+.
+
+includes
+
+(action);
+};
+
+// Statics
+
+trustBondSchema.
+
+statics
+
+.
+
+findActiveBonds
+
+ =3D 
+
+function
+
+ (
+
+) {
+
+return
+
+this
+
+.
+
+find
+
+({=
+
+state
+
+: 
+
+'active'
+
+, 
+
+'scope.expiresAt'
+
+: { 
+
+$gt
+
+: 
+
+new
+
+Date
+
+() } });
+};
+trustBondSchema.
+
+statics
+
+.
+
+findExpiredBonds
+
+ =3D 
+
+function
+
+ (
+
+) {
+
+return
+
+this
+
+.
+
+find
+
+({=
+
+state
+
+: 
+
+'active'
+
+, 
+
+'scope.expiresAt'
+
+: { 
+
+$lte
+
+: 
+
+new
+
+Date
+
+() } });
+};
+
+// Auto compute expiry if only du=
+ration provided
+
+trustBondSchema.
+
+pre
+
+(
+
+'validate'
+
+, 
+
+function
+
+ (
+
+next
+
+=
+) {
+
+if
+
+ (
+=
+
+this
+
+?.
+
+scope
+
+ &&=
+; !
+
+this
+
+.
+
+scope
+
+.=
+
+expiresAt
+
+) {
+
+const
+
+ day=
+s =3D 
+
+Number
+
+(
+
+this
+
+.
+
+scope
+
+.
+
+duration
+
+ |=
+| 
+
+30
+
+);
+
+this
+
+=
+
+.
+
+scope
+
+=
+.
+
+expiresAt
+
+ =
+=3D 
+
+new
+
+Date
+
+(
+
+Date
+
+.
+
+now
+
+() + days * 
+
+86400000
+
+);
+  }
+
+next
+
+();
+});
+
+module
+
+.
+
+exports
+
+=
+ =3D mongoose.
+
+model
+
+(
+
+'TrustBond'
+
+, trustBondSchema);
+
+backend/core/trustOracle.js
+
+js
+
+Copy code
+
+const
+
+ c=
+rypto =3D 
+
+require
+
+(
+
+'crypto'
+
+=
+);
+
+const
+
+=
+
+TrustBond
+
+ =3D 
+
+require
+
+(
+
+'../models/TrustBond'
+
+);
+
+const
+
+ { recor=
+dTrustEvaluation } =3D 
+
+require
+
+(
+
+'../instrumenta=
+tion/trust-metrics'
+
+);
+
+const
+
+=
+
+TRUST_ARTICLES
+
+ =3D [
+  { 
+
+id
+
+:
+
+'A1'
+
+, 
+
+title
+
+:
+
+'Consent-First Data Use'
+
+, 
+
+severity
+
+:
+
+'high'
+
+,    
+
+category
+
+:
+
+'privacy'
+
+,        
+
+check
+
+:
+
+'checkConsent'
+
+ },
+  { 
+
+id
+
+:
+
+'A2'
+
+, 
+
+title
+
+:
+
+'No Unrequested Data Extraction'
+
+, 
+=
+
+severity
+
+:
+
+'high'
+
+, 
+
+category
+
+:
+
+'privacy'
+
+,   
+
+check
+
+:
+
+'checkDataExtraction'
+
+ }

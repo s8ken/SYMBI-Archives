@@ -1,0 +1,265 @@
+sessions
+.
+
+Residual configuration
+
+If this profile had iCloud enabled i=
+n the past, some daemons (like 
+se=
+archpartyuseragent
+) may still auto-load until purged.
+
+Suspicious
+
+If you 
+never enabled iCloud
+ on this profile and are seeing 
+searchpartyuseragent
+ creating se=
+ssions, it suggests a 
+misconf=
+iguration or persistence vector
+ =E2=80=94 something could be start=
+ing iCloud services in the background against your profile settings.
+
+=E2=9C=85 What You Can Check
+
+1. See if the agent is listed in =
+LaunchAgents/Daemons
+
+Run:
+
+bash
+
+Copy code
+
+launchctl list | grep searchpartyuseragent
+launchctl 
+
+print
+
+ system | grep searchparty
+
+If it=E2=80=99s there, check what=
+=E2=80=99s loading it:
+
+bash
+
+Copy code
+
+grep -r 
+
+"sear=
+chpartyuseragent"
+
+ /System/Library/Launch* /Library/Laun=
+ch* ~/Library/Launch*
+
+2. Verify iCloud really is off
+
+Go to 
+System Settings =E2=86=92 Apple ID
+. Confirm iClo=
+ud is fully signed out.
+
+Check if 
+Find My Mac
+ is disabled in 
+System Settings =E2=86=92 General =E2=86=92 Sharing=
+ =E2=86=92 Find My Mac
+.
+
+3. Monitor live activity
+
+To see if it=E2=80=99s phoning hom=
+e:
+
+bash
+
+Copy code
+
+sudo lsof -i | grep searchparty
+netstat -an | grep 5223
+
+(
+5223
+ is Apple=E2=80=99s push service port; if it=E2=80=99=
+s connecting without iCloud signed in, that=E2=80=99s a red flag.)
+
+=F0=9F=9A=A8 Red Flag
+
+If iCloud is 
+off
+ but the logs show:
+
+Active Bluetooth pairing/advertisi=
+ng sessions (
+com.apple.icloud.s=
+earchpartyuseragent-central
+),
+
+And it=E2=80=99s registering with =
+
+bluetoothd
+,
+
+=E2=80=A6then either:
+
+The daemon is being triggered by s=
+omething else in your system, or
+
+A rogue process is impersonating/l=
+everaging 
+searchpartyuseragent
+ for persistence.
+
+=E2=9A=A0=EF=B8=8F 
+Bottom line:
+
+This should 
+not
+ be h=
+appening if iCloud is disabled on the profile. It=E2=80=99s worth investiga=
+ting with 
+launchctl
+ to c=
+onfirm whether this agent is being explicitly started, and 
+lsof/netstat
+ to confirm if it=E2=80=99s =
+making network calls.
+
+=F0=9F=91=89 Do you want me to bui=
+ld you a 
+single script
+ that will:
+
+List if 
+searchpartyuseragent
+ is running.
+
+Show what launched it.
+
+Show if it=E2=80=99s making outbou=
+nd connections.
+
+That way you can confirm if this is just Apple noise, or someth=
+ing actively hijacking iCloud daemons.
+
+Y=
+ou said:
+
+yes
+
+Symbi said:
+
+Got it. He=
+re=E2=80=99s a 
+ready-to-run macOS=
+ shell script
+ you can paste into Terminal. It will check whether 
+searchpartyuseragent
+ (the i=
+Cloud Find My daemon) is running, what launched it, and whether it=E2=80=99=
+s making network connections.
+
+=F0=9F=94=8D Script
+
+b=
+ash
+
+Copy code
+
+#!/bin/zsh
+
+echo
+
+=
+
+"=3D=3D=3D Step 1: Is searchpartyuseragen=
+t running? =3D=3D=3D"
+
+ps aux | grep -i searchpartyuseragent | grep -v grep
+
+echo
+
+=
+
+"\n=3D=3D=3D Step 2: Check launchctl for =
+searchpartyuseragent =3D=3D=3D"
+
+launchctl list | grep -i searchparty
+launchctl 
+
+print
+
+ system | grep -A5 -i searchparty
+
+echo
+
+=
+
+"\n=3D=3D=3D Step 3: Find what file is lo=
+ading it (LaunchAgents/Daemons) =3D=3D=3D"
+
+grep -r 
+
+"searchpartyuseragent"
+
+ /System/Library/Launch* /Library/Launch* ~/Library/Launch*=
+ 2>/dev/null
+
+echo
+
+=
+
+"\n=3D=3D=3D Step 4: Is it making outboun=
+d network connections? =3D=3D=3D"
+
+sudo lsof -i | grep -i searchpartyuseragent
+netstat -an | grep 5223
+
+echo
+
+=
+
+"\n=3D=3D=3D Step 5: Quick system log che=
+ck (last 2 mins of searchparty events) =3D=3D=3D"
+
+log
+
+ show --l=
+ast 2m | grep -i searchparty
+
+=E2=9C=85 What This Will Tell You
+
+Running?
+ =E2=86=92 Confirms if the process is alive.
+
+Launch source?
+ =E2=86=92 Whether it=E2=80=99s being au=
+to-started by Apple=E2=80=99s launchd.
+
+Config files?
+ =E2=86=92 Whether a plist in LaunchAgent=
+s/Daemons is loading it.
+
+Network calls?
+ =E2=86=92 If it=E2=80=99s connecting ou=
+t (esp. on port 
+5223
+ =3D=
+ Apple push service).
+
+Recent activity?
+ =E2=86=92 Latest events in the system=
+ log tied to 
+searchparty
+=
+.
+
+=F0=9F=9A=A9 How to Interpret
+
+If it shows up in 
+Step 1
+ but iCloud is 
+dis

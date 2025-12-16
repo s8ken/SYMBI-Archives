@@ -1,0 +1,264 @@
+ts 
+
+read
+
+ com.apple.universalaccess)
+
+# Check if the settings file exists
+
+echo
+
+"Current Settings: 
+$CURRENT_SETTINGS
+
+"  
+
+# Debugging output
+
+if
+
+ [ -f 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+" ]; 
+
+then
+
+    LAST_SETTINGS=$(
+
+cat
+
+"
+$ACCESSIBILITY_SETTINGS
+
+")
+
+echo
+
+"Last Settings: 
+$LAST_SETTINGS
+
+"  
+
+# Debugging output
+
+if
+
+ [ 
+
+"
+$CURRENT_SETTINGS
+
+" != 
+
+"
+$LAST_SETTINGS
+
+" ]; 
+
+then
+
+echo
+
+"ALERT: Accessibility settings have changed!"
+
+ | mail -s 
+
+"Accessibility Settings Change Alert"
+
+ your-email@example.com
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+else
+
+echo
+
+"
+$CURRENT_SETTINGS
+
+" > 
+
+"
+$ACCESSIBILITY_SETTINGS
+
+"
+
+fi
+
+Save the script and run it again. The script should now output the current and last settings to the terminal, allowing you to see whatâs happening.
+
+Next Steps:
+
+Check the terminal output
+ after running the updated script. This will help us understand what is being compared and why itâs not triggering the email.
+
+Let me know
+ the output of the script, and weâll figure out the next steps together! ð
+
+You said:
+
+ah yep got it 
+
+ChatGPT said:
+
+ð 
+Awesome!
+ I'm glad it's working now! It sounds like you've successfully set up the script to monitor your accessibility settings and send an alert when changes occur. ð¯ð
+
+If you have any more questions, need further customizations, or want to explore additional security measures, feel free to reach out! I'm here to help! ðð
+
+You said:
+
+working so one more thing - how can I ensure if they do get into my system they are restricted from accessing or doing too much damage in terminal?
+
+ChatGPT said:
+
+To ensure that if someone gains unauthorized access to your system, they are 
+restricted from causing damage
+ through 
+Terminal
+, we need to implement several security measures that 
+limit their access
+ and 
+control system behavior
+.
+
+Here are a few key strategies you can use to safeguard your system:
+
+ð Step 1: Enable FileVault (Full Disk Encryption)
+
+This ensures that 
+your entire disk is encrypted
+ and only accessible by you with the correct password.
+
+Turn on FileVault
+ (if not already enabled):
+
+Go to 
+System Preferences
+ â 
+Security & Privacy
+ â 
+FileVault
+.
+
+Click on 
+Turn On FileVault
+.
+
+This will require your password for decryption, preventing anyone without your password from accessing your files (including via Terminal).
+
+ð Step 2: Use Strong Passwords
+
+Make sure that all your user accounts are protected with 
+strong passwords
+ to prevent unauthorized access.
+
+Change your password
+:
+
+Go to 
+System Preferences
+ â 
+Users & Groups
+.
+
+Change the password for your user account and any other accounts that may be vulnerable.
+
+Consider using a 
+password manager
+ to generate and store strong, unique passwords for each account.
+
+ð Step 3: Limit sudo (Superuser) Access
+
+Restricting 
+
+sudo
+
+ privileges prevents unauthorized users from executing administrative commands.
+
+Modify 
+sudoers
+ file
+:
+
+Open Terminal and type:
+
+sh
+
+Copy
+
+sudo visudo
+
+Edit sudoers file
+ to limit who can run 
+sudo
+ commands:
+
+You can restrict 
+sudo
+ access to only your user account.
+
+For example, ensure your user account is the only one listed under the 
+sudo
+ group.
+
+Disable sudo for other accounts
+:
+
+If you suspect that there are rogue accounts with 
+sudo
+ access, remove their entries or disable them.
+
+ð Step 4: Use a Guest User Account (or disable all other accounts)
+
+If you're concerned about unauthorized access, 
+disable unused accounts
+ or enable a 
+Guest account
+ with limited access.
+
+Disable unused accounts
+:
+
+Go to 
+System Preferences
+ â 
+Users & Groups
+.
+
+Disable any unused accounts to prevent unauthorized access.
+
+Enable Guest User
+ (with restricted access):
+
+Under 
+Users & Groups
+, enable the 
+Guest User
+ account and restrict their ability to modify system files.
+
+Limit the Guest accountâs Terminal access
+:
+
+Disable Terminal
+ for the Guest user by removing Terminal from the 
+Applications folder
+ for that user.
+
+Or, use 

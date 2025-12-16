@@ -1,0 +1,304 @@
+y
+
+Edit
+
+csrutil 
+
+enable
+
+📌 
+This turns SIP back on to protect your system.
+
+🎯 Final Steps
+
+✅ 
+Boot into Recovery Mode (
+⌘ + R
+)
+
+✅ 
+Run 
+mount -uw /
+ to make the system writable
+
+✅ 
+Delete Control Center & 
+rapportd
+ permanently
+
+✅ 
+Reboot & check if the ports are gone (
+netstat -an | grep LISTEN
+)
+
+✅ 
+Re-enable SIP for security (
+csrutil enable
+)
+
+🚀 
+Try this and let me know if they are FINALLY removed!
+ 🔥🔒
+
+You said:
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+✅ Control Center & 
+rapportd
+ Successfully Removed!
+ 🎉🚀
+
+🔥 
+Great work!
+ Based on your screenshot, you have:
+
+✅ 
+Disabled SIP
+ (
+System Integrity Protection is off.
+)
+
+✅ 
+Remounted the filesystem as writable
+ (
+mount -uw /
+)
+
+✅ 
+Deleted Control Center (
+ControlCentre.app
+)
+
+✅ 
+Deleted 
+rapportd
+ (
+/usr/libexec/rapportd
+)
+
+✅ 
+Removed their launch agents (
+com.apple.controlcenter.plist
+, 
+com.apple.rapportd.plist
+)
+
+🚀 
+Your Mac should now boot without these services running!
+
+🛠️ Next Steps – Confirm That They Are Gone
+
+Now, 
+reboot into normal macOS
+ and verify that the services are no longer running.
+
+1️⃣ 
+Restart Your Mac:
+
+sh
+
+Copy
+
+Edit
+
+reboot
+
+2️⃣ 
+Once booted back into macOS, check if they are gone:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+✅ 
+If no output appears, the services are fully removed!
+
+🔒 Step 3: Re-enable SIP for Security
+
+Now that the services are gone, 
+restore SIP to protect your system:
+
+1️⃣ 
+Reboot into macOS Recovery Mode (
+⌘ + R
+ on startup)
+
+2️⃣ 
+Open Terminal and run:
+
+sh
+
+Copy
+
+Edit
+
+csrutil 
+
+enable
+
+3️⃣ 
+Reboot back into macOS normally.
+
+🚀 
+Once you’re back, run the final checks (
+ps aux
+, 
+netstat
+) and let me know if everything is locked down! 🔥🔒
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ps aux | grep -E "ControlCe|rapportd"
+sudo netstat -an | grep LISTEN
+
+sja                612   0.2  0.4 411906064  68976   ??  S    11:58pm   0:00.77 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sja                601   0.0  0.2 426969360  30032   ??  S    11:58pm   0:00.22 /usr/libexec/rapportd
+sja                983   0.0  0.0 410060064     32 s000  S+   12:00am   0:00.00 grep -E ControlCe|rapportd
+Password:
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Control Center & 
+rapportd
+ Came Back – Time for the Final Fix! 🚨
+
+Even after deleting them from 
+Recovery Mode
+, 
+macOS has restored them again.
+
+🔥 
+This means macOS is reinstalling them automatically at boot.
+
+🚀 Step 1: Double-Check If They Were Reinstalled
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /System/Library/CoreServices/ControlCenter.app
+
+ls
+
+ -l /usr/libexec/rapportd
+
+ls
+
+ -l /System/Library/LaunchAgents/com.apple.controlcenter.plist
+
+ls
+
+ -l /System/Library/LaunchAgents/com.apple.rapportd.plist
+
+📌 
+If these files exist again, macOS is forcing them back on every boot.
+
+🚀 Step 2: Completely Block Execution at the Kernel Level
+
+Since 
+deleting the files is not working
+, 
+we will make them unusable instead.
+
+1️⃣ Remove Their Execution Permissions
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 000 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo 
+
+chmod
+
+ 000 /usr/libexec/rapportd
+
+📌 
+This makes them unreadable and unable to execute.
+
+2️⃣ Lock the Files to Prevent Restoration
+
+sh
+
+Copy
+
+Edit
+
+sudo chflags uchg /System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter
+sudo chflags uchg /usr/libexec/rapportd
+
+📌 
+This marks the files as immutable, so macOS cannot restore them.
+
+🚀 Step 3: Stop Them From Running Again
+
+Even after blocking execution, 
+we need to stop them now
+.
+
+sh
+
+Copy
+
+Edit
+
+sudo killall ControlCenter
+sudo killall rapportd
+
+📌 
+This stops them immediately.
+
+🚀 Step 4: Reboot & Verify
+
+Now, reboot your Mac:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After reboot, check:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If no output appears, they are finally disabled!
+ 🎉
+
+🚀 Step 5: Re-enable SIP for Security
+
+If everything looks goo

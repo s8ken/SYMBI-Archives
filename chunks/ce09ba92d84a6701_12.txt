@@ -1,0 +1,350 @@
+g | null>=
+;(null);
+
+  const [receipt, setReceipt] =3D useS=
+tate<string>('');
+
+  async function getDemoReceipt() {
+
+ =
+   setLoading(true); setError(null);
+
+    try {
+
+      const res =3D await fetch('/api/receipts/=
+demo', {
+
+        method: 'POST',
+
+        headers: { 'content-type': 'application/json' },
+
+        body: JSON.stringify({ actor: 'demo@ycq', i=
+ntent: 'verify-demo', inputs: { q: 'hello world' }, outputs: { a: 'hi!' } }=
+)
+
+      });
+
+      i=
+f (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json =3D await res.text();
+
+    =
+  setReceipt(json);
+
+      try { localStorage.se=
+tItem('ycq_last_receipt', json); } catch {}
+
+   =
+ } catch (e: any) {
+
+      setError(e.message ||=
+ 'Failed to fetch receipt');
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
+  function openVerifier() {
+
+    if (!receipt) return setError('Fetch a demo receipt first.');
+
+    const hash =3D '#r=3D' + b64u(receipt);
+
+Usage in 
+
+=
+
+app/trust-demo/page.tsx
+
+import ReceiptDemo from '.=
+/ReceiptDemo';
+
+export default function Page(){
+
+  return (
+
+    <main className=3D"prose prose-zinc max-w-4=
+xl mx-auto px-4 py-10">
+
+      <h1>Trus=
+t Demo</h1>
+
+      <p>See how YCQ So=
+nate signs actions and lets anyone verify them, client=E2=80=91side.</p&=
+gt;
+
+      <ReceiptDemo />
+
+    </main>
+
+  );
+
+}
+
+2) Optional auto=E2=80=91load in 
+
+/public/verifier.html
+
+Add this sni=
+ppet near the bottom of your existing 
+
+verifier.html
+
+ script so the page auto=E2=80=91loads a receipt passed via =
+the URL hash or from 
+
+localStorage
+
+.
+
+<
+script
+>
+
+// Auto-load from URL has=
+h (#r=3Dbase64url(json)) or localStorage fallback
+
+  (
+function
+(){
+
+try
+{
+
+const
+
+t
+ =3D 
+document
+.
+getE=
+lementById
+(
+'receipt'
+);
+
+if
+(
+location
+.
+hash
+.
+startsWith
+(
+'#r=3D'
+)){
+
+const
+
+b64
+ =3D 
+location
+.
+hash
+.
+slice
+(
+3
+).
+replace
+(
+/-/g
+,
+'+'
+).
+replace
+(
+/_/g
+,
+'/'
+);
+
+const
+
+json
+ =3D 
+decodeURIComponent
+(
+escape
+(
+atob
+(
+b64
+)))=
+;
+
+t
+.
+value
+ =3D 
+json
+;
+
+      } 
+else
+ {
+
+const
+
+cached
+ =3D 
+localStorage
+.
+getItem
+(
+'ycq_=
+last_receipt'
+);
+
+if
+(
+cached
+) 
+t
+.
+value
+ =3D 
+cached
+;
+
+      }
+
+if
+(
+t
+.
+value
+){
+
+document
+.
+=
+getElementById
+(
+'verdict'
+).
+className
+ =3D 
+'muted'
+;
+
+document
+.=
+
+getElementById
+(
+'verd=
+ict'
+).
+textContent
+ =3D 
+'Receipt pre=E2=80=91loaded =E2=80=94 click Verify'
+;
+
+      }
+
+    }
+catch
+{}
+
+  })();
+
+</
+script
+>
+
+=
+
+3) README (YC reviewer=E2=80=91friendly)
+
+Add thi=
+s section to the top=E2=80=91level README in the site repo so reviewers can=
+ reproduce quickly.
+
+## YCQ Sonate =E2=80=94 60=E2=80=91second Verify D=
+emo
+
+**Goal:** =
+Mint a signed Trust Receipt and verify it entirely in your browser.
+
+### Live demo
+
+1. Go to https://yseeku.com/trust-demo
+
+2. Click **Get Demo Receipt**
+
+3. C=
+lick **Verify in Browser** =E2=86=92 a new tab opens at `/verifier.html` wi=
+th the receipt pre=E2=80=91loaded
+
+4. Click **Ve=
+rify** and confirm both checks are **OK** (entry_hash + signature)
+
+### Local
+
+```bash
+
+pnpm install
+
+pnpm dev
+
+# in another tab:
+
+curl -X POST http://localhost:3000/api/receipts/d=
+emo -H 'content-type: application/json' -d '{"inputs":{"q":"hello"},"output=
+s":{"a":"hi"}}'
+
+# then open http://localhost:30=
+00/trust-demo
+
+Security =
+notes
+
+Demo keys are for 
+
+verification only
+
+. Production rec=
+eipts are signed by a managed key; the public key is available at 
+
+/.well-known/ycq-receipt-pubkey
+
+.
+
+No PII is logged by the demo; verification happens 
+
+fully client=E2=80=91side
+
+ using Web Cryp=
+to.
+
+=
+
+---
+
+## 4) Final wiring checks (quick)
+
+- Add a top=E2=80=91of=E2=80=91page CTA on the h=
+omepage: **See a Trust Receipt =E2=86=92 /trust-demo**
+
+- Ensure `verifier.html` is included in your Next.js `public/` fold=
+er and deploys to the root path.
+
+- Confirm the =
+public key endpoint returns your base64url Ed25519 key; link it from the ve=
+rifier page footer.
+
+Amazing =E2=80=94 I=E2=80=99ve=
+ added:
+
+A client-side 
+Trust Demo
+ component with buttons: Get Demo Rec=
+eipt =E2=86=92 Verify in Browser =E2=86=92 Copy.
+
+Auto-preload l

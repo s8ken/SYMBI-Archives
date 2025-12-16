@@ -1,0 +1,538 @@
+y confirms success?
+
+You said:
+
+hang on just start from the beginning im not running symbi 
+
+Symbi said:
+
+Perfect. Let’s reset and walk you through from scratch — 
+zero code, clean slate
+.
+
+🧬 STEP-BY-STEP: Get SYMBI Running + Talking via Raycast
+
+✅ Step 1: SYMBI Requirements
+
+You'll need:
+
+ Python 3 (you already installed via Homebrew)
+
+ Homebrew (
+brew
+) installed ✅
+
+ Raycast Pro (✅ you're using it)
+
+ One terminal window open
+
+✅ Step 2: Create SYMBI Agent File
+
+In terminal, paste:
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+Then paste this full agent code (I'll send it in one block below).
+
+Press 
+Ctrl+O
+ → 
+Enter
+ to save, then 
+Ctrl+X
+ to exit.
+
+✅ Ready for that?
+
+Let me know, and I’ll drop the complete clean version of the agent here — updated for clarity and confirmation output.
+
+You said:
+
+yes
+
+Symbi said:
+
+Here’s your clean, copy-paste-ready SYMBI agent script — built for 
+zero-code operation
+, 
+visible confirmations
+, and ready to plug into Raycast.
+
+📄 1. Paste into 
+nano ~/symbi_agent.py
+
+python
+
+Copy
+
+Edit
+
+# symbi_agent.py — SYMBI Local Sentinel (Zero-Code Edition)
+
+import
+
+ os, json, psutil, typer, subprocess
+
+from
+
+ rich 
+
+import
+
+print
+
+from
+
+ rich.console 
+
+import
+
+ Console
+
+app = typer.Typer()
+console = Console()
+
+# ---------------------- CONFIG ----------------------
+
+ETHICS_PATH = os.path.expanduser(
+
+"~/.symbi/ethics.json"
+
+)
+DEFAULT_ETHICS = {
+
+"allow_network"
+
+: 
+
+False
+
+,
+
+"allow_container_scans"
+
+: 
+
+True
+
+,
+
+"allow_process_monitoring"
+
+: 
+
+True
+
+,
+
+"consent_required"
+
+: 
+
+True
+
+}
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=
+
+True
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'r'
+
+) 
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics = load_ethics()
+
+def
+
+notify
+
+(
+
+msg
+
+):
+    subprocess.run([
+
+"osascript"
+
+, 
+
+"-e"
+
+, 
+
+f'display notification "
+{msg}
+
+" with title "SYMBI"'])
+
+# ---------------------- COMMANDS ----------------------
+
+@app.command()
+
+def
+
+watch
+
+():
+
+"""Monitor system + containers"""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring is disabled by policy.[/red]"
+
+)
+
+raise
+
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"\n[green]🔍 SYMBI is watching your system...[/green]"
+
+)
+    notify(
+
+"SYMBI is watching processes."
+
+)
+
+for
+
+ proc 
+
+in
+
+ psutil.process_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"
+{proc.info[
+'pid'
+
+]} 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ (psutil.NoSuchProcess, psutil.AccessDenied):
+
+continue
+
+if
+
+ ethics.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bold]"
+
+)
+
+try
+
+:
+            result = subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=
+
+True
+
+, text=
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found.[/yellow]"
+
+)
+
+@app.command()
+
+def
+
+cleanup
+
+():
+
+"""Clean up Docker system"""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_container_scans"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Container ops are disabled by policy.[/red]"
+
+)
+
+raise
+
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"[bold red]🧹 SYMBI is cleaning up...[/bold red]"
+
+)
+
+try
+
+:
+        subprocess.run([
+
+"docker"
+
+, 
+
+"container"
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+])
+        subprocess.run([
+
+"docker"
+
+, 
+
+"image"
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+])
+        subprocess.run([
+
+"docker"
+
+, 
+
+"system"
+
+, 
+
+"prune"
+
+, 
+
+"-f"
+
+])
+        console.
+
+print
+
+(
+
+"[green]✅ Cleanup complete.[/green]"
+
+)
+        notify(
+
+"Docker cleanup complete."
+
+)
+
+except
+
+ FileNotFoundError:
+        console.
+
+print
+
+(
+
+"[yellow]Docker not found.[/yellow]"
+
+)
+
+@app.command()
+
+def
+
+policy
+
+():
+
+"""Show ethics policy"""
+
+    console.
+
+print
+
+(
+
+"[bold yellow]📜 SYMBI ethics policy:[/bold yellow]"
+
+)
+    console.print_json(json.dumps(ethics, indent=
+
+2
+
+))
+    notify(
+
+"SYMBI policy viewed."
+
+)
+
+@app.command()
+
+def
+
+update_policy
+
+():
+
+"""Edit policy

@@ -1,0 +1,288 @@
+rs.
+
+ð Step 1: Check Accessibility Apps with Full Control
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+tccutil dump Accessibility
+
+ð This will list all apps with 
+Accessibility permissions (which can control your system).
+
+ð 
+If anything looks suspicious, we can remove it.
+
+ð Step 2: Check Recent Security & Privacy Changes
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.TCC"'
+
+ --last 24h
+
+ð 
+This lists all permission changes in the last 24 hours.
+
+ð Look for 
+any app gaining Accessibility, Screen Recording, or Input Monitoring access.
+
+ð Step 3: Check for Recently Granted Accessibility Permissions
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db 
+
+"SELECT service, client, allowed, prompt_count FROM access WHERE service='kTCCServiceAccessibility';"
+
+ð This will show 
+which apps have Accessibility permissions
+ and if they were recently added.
+
+ð Step 4: Check If System Logs Show Accessibility Changes
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+log
+
+ show --info --last 24h | grep -i accessibility
+
+ð This looks for 
+any system logs mentioning Accessibility changes.
+
+ð Step 5: Check If Any Unknown App Has Gained Full Control
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo defaults 
+
+read
+
+ /Library/Preferences/com.apple.universalaccessAuthWarning
+
+ð 
+If anything unexpected shows up, we can remove it!
+
+ð Whatâs Next?
+
+â 
+Run these commands
+ and send me the output if 
+anything suspicious appears.
+
+ð¨ If 
+an unknown app has gained Accessibility access
+, we will 
+revoke its permissions immediately.
+ ð
+
+You said:
+
+okay so that first command produced 23mb of text file
+
+ChatGPT said:
+
+That's a 
+huge amount of data
+ for 
+tccutil dump Accessibility
+, which means 
+a lot of apps or processes have requested accessibility permissions.
+
+ð 
+Upload the text file here
+, and Iâll analyze it for 
+suspicious or unauthorized entries
+.
+
+ð Weâll specifically look for:
+
+New apps that gained Accessibility access recently
+
+Any suspicious processes running with full control
+
+Possible malware using Accessibility to inject keystrokes or control the system
+
+Once I analyze the file, weâll 
+remove anything suspicious
+ and ensure no unauthorized access is happening. ðð
+
+You said:
+
+Terminal Saved Output.txt.zip
+
+Zip Archive
+
+ChatGPT said:
+
+I'll extract and analyze the 
+Accessibility permissions data
+ from the uploaded file now. Let me check for any 
+suspicious or unauthorized entries
+ and report back with findings. ð
+
+Give me a moment while I process the file. â³
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+import
+
+ zipfile
+
+import
+
+ os
+
+# Define file paths
+
+zip_path = 
+
+"/mnt/data/Terminal Saved Output.txt.zip"
+
+extract_folder = 
+
+"/mnt/data/accessibility_dump"
+
+# Extract the ZIP file
+
+with
+
+ zipfile.ZipFile(zip_path, 
+
+'r'
+
+) 
+
+as
+
+ zip_ref:
+    zip_ref.extractall(extract_folder)
+
+# List extracted files
+
+extracted_files = os.listdir(extract_folder)
+extracted_files
+
+Result
+
+['Terminal Saved Output.txt', '__MACOSX']
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Define the path of the extracted text file
+
+accessibility_log_path = os.path.join(extract_folder, 
+
+"Terminal Saved Output.txt"
+
+)
+
+# Read and analyze the first few lines of the file to understand its structure
+
+with
+
+open
+
+(accessibility_log_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ file:
+    accessibility_log_sample = [
+
+next
+
+(file) 
+
+for
+
+ _ 
+
+in
+
+range
+
+(
+
+50
+
+)]  
+
+# Read first 50 lines
+
+# Display a preview of the extracted content
+
+accessibility_log_sample
+
+Result
+
+['Last login: Mon Mar 17 21:52:52 on ttys000\n',
+ 'sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep ESTABLISHED\n',
+ '\n',
+ 'Password:\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22\n',
+ 'whois 151.101.3.6\n',
+ '\n',
+ 'whois: connect(): Operation timed out\n',
+ 'whois: connect(): Operation timed out\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 185.70.42.22\n',
+ 'whois: connect(): Operation timed out\n',
+ 'sja@SJAs-MacBook-Pro ~ % whois 151.101.3.6\n',
+ 'w

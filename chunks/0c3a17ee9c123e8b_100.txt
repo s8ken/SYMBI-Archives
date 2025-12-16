@@ -1,0 +1,411 @@
+)
+}
+
+✅ Step 2: Save the file and re-run your dev server
+
+bash
+
+Copy
+
+npm run dev
+
+Once that's done, the 
+getPage()
+ import in 
+app/page.tsx
+ will resolve correctly, and your CMS data should start flowing into your frontend.
+
+Let me know once it’s reloaded or if you want help rendering that 
+title
+ or 
+content
+ from Sanity in the layout!
+
+You said:
+
+tAttempted import error: 'getPage' is not exported from '@/lib/sanity' (imported as 'getPage').
+
+Import trace for requested module:
+./app/page.tsx
+ ⨯ TypeError: (0 , _lib_sanity__WEBPACK_IMPORTED_MODULE_1__.getPage) is not a function
+    at getPage (app/page.tsx:8:28)
+   6 |
+   7 | export default async function Home() {
+>  8 |   const page = await getPage()
+     |                            ^
+   9 |
+  10 |   return (
+  11 |     <div className="flex flex-col min-h-screen"> {
+  digest: '1982751570'
+}
+ GET / 200 in 1900ms
+ ⚠ ./app/page.tsx
+Attempted import error: 'getPage' is not exported from '@/lib/sanity' (imported as 'getPage').
+
+Import trace for requested module:
+./app/page.tsx
+
+Vercel Deployment Expert GPT said:
+
+Thanks for confirming — this tells us that either:
+
+The 
+getPage
+ function is 
+missing
+ from your 
+lib/sanity.ts
+ file, or
+
+It exists but is 
+not being exported properly
+, or
+
+There's a 
+path resolution issue
+ with the alias 
+@/lib/sanity
+.
+
+Let's go through each possible fix:
+
+✅ Fix 1: Ensure 
+getPage
+ is defined and exported
+
+Open 
+lib/sanity.ts
+ and 
+ensure the file looks like this
+:
+
+ts
+
+Copy
+
+import
+
+ { createClient, groq } 
+
+from
+
+"next-sanity"
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+"wryptr7v"
+
+, 
+
+// ✅ your real project ID
+
+dataset
+
+: 
+
+"production"
+
+,
+
+apiVersion
+
+: 
+
+"2023-01-01"
+
+,
+
+useCdn
+
+: 
+
+true
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+return
+
+ client.
+
+fetch
+
+(
+    groq
+`*[_type == "page"][0]{
+      title,
+      content
+    }`
+
+  )
+}
+
+✅ Fix 2: Restart the dev server
+
+If you just added or edited that export, make sure to restart your dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Fix 3: Confirm path alias resolution (
+@/lib/sanity
+)
+
+Make sure that the 
+tsconfig.json
+ (or 
+jsconfig.json
+) in your project root includes the 
+@
+ alias like this:
+
+json
+
+Copy
+
+{
+
+"compilerOptions"
+
+:
+
+{
+
+"baseUrl"
+
+:
+
+"."
+
+,
+
+"paths"
+
+:
+
+{
+
+"@/*"
+
+:
+
+[
+
+"./*"
+
+]
+
+}
+
+}
+
+}
+
+Then 
+restart the TypeScript server
+ (or VS Code), and restart your dev server again.
+
+Let me know if you’d like me to help check the contents of 
+lib/sanity.ts
+ again — just paste it in here and I’ll verify it’s all good.
+
+You said:
+
+yeah just tell me how to find it agaijn
+
+Vercel Deployment Expert GPT said:
+
+Sure thing! Here’s how to find and open the 
+lib/sanity.ts
+ file step by step:
+
+🧭 Navigate to the File in Terminal
+
+Assuming you’re in your 
+symbi-main-site
+ project folder:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site/lib
+
+If the 
+lib
+ folder doesn’t exist yet, you can create it:
+
+bash
+
+Copy
+
+mkdir
+
+ -p ~/Documents/symbi-main-site/lib
+
+cd
+
+ ~/Documents/symbi-main-site/lib
+
+✏️ Open or Create the File with 
+nano
+
+To open or create the file in the terminal:
+
+bash
+
+Copy
+
+nano sanity.ts
+
+Then paste the following into the editor:
+
+ts
+
+Copy
+
+import
+
+ { createClient, groq } 
+
+from
+
+"next-sanity"
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+"wryptr7v"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+apiVersion
+
+: 
+
+"2023-01-01"
+
+,
+
+useCdn
+
+: 
+
+true
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+return
+
+ client.
+
+fetch
+
+(
+    groq
+`*[_type == "page"][0]{
+      title,
+      content
+    }`
+
+  )
+}
+
+💾 Save & Exit Nano
+
+Press 
+Ctrl + O
+ to save.
+
+Press 
+Enter
+ to confirm.
+
+Press 
+Ctrl + X
+ to exit nano.
+
+Once done, restart the dev server:
+
+bash
+
+Copy
+
+npm run dev
+
+Let me know once it’s in — or if you hit any snags.
+
+You said:
+
+ok so looks like its working
+
+Vercel Deployment Expert GPT said:
+
+Beautiful! 🌟 That means your 
+Sanity
+ backend is now 
+successfully integrated
+ with your Next.js frontend — and you're able to 
+query live CMS content
+ from your Sanity Studio and render it on your site. 

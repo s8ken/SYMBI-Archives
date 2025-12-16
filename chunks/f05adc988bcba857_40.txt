@@ -1,0 +1,232 @@
+lict)
+
+Your 
+Next.js app is crashing on build
+ due to a 
+React 19 + Sanity compatibility issue
+ or a 
+broken component in your layout
+.
+
+ð¹ Step 1: Find the Actual Error in the Terminal
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð 
+What youâre seeing is a minified stack trace.
+ We need the actual 
+error message from the terminal output
+.
+
+ð¹ Step 2: Debug Possible Causes
+
+Check for 
+one of these common issues
+:
+
+1ï¸â£ Missing 
+"use client"
+ in a Component
+
+If 
+any file inside 
+app/
+ folder
+ (e.g., 
+layout.tsx
+, 
+page.tsx
+) is 
+using hooks (
+useState
+, 
+useEffect
+)
+ or the 
+Sanity client
+, make sure 
+it includes
+:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+ð¹ 
+Check 
+layout.tsx
+, 
+page.tsx
+, and any Sanity-related files
+.
+
+2ï¸â£ Fix Sanity Studio Route
+
+If 
+Sanity Studio isnât loading
+, ensure your Studio route (
+/studio
+) is correctly set up.
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano app/studio/[[...tool]]/page.tsx
+
+Paste this:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+â 
+Fixes metadata issues in React 19.
+
+3ï¸â£ Restart Everything
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .next
+npm run dev
+
+â 
+Check if the error appears again.
+
+ð If It Still Fails, Send Me the Full Terminal Error Log
+
+I need the 
+exact error from the terminal
+ (not just the stack trace) to debug further! ðð¥
+
+You said:
+
+./sanity.config.ts:14:1
+Module not found: Can't resolve './sanity/structure'
+  12 | import {apiVersion, dataset, projectId} from './sanity/env'
+  13 | import {schema} from './sanity/schemaTypes'
+> 14 | import {structure} from './sanity/structure'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 |
+  16 | export default defineConfig({
+  17 |   basePath: '/studio',
+
+https://nextjs.org/docs/messages/module-not-found
+
+./node_modules/@sanity/vision/lib/components/VisionGui.js:15:19
+Module not found: Can't resolve '@sanity/base/components'
+  13 | var _ui = require("@sanity/ui");
+  14 | var _client = _interopRequireDefault(require("part:@sanity/base/client"));
+> 15 | var _components = require("@sanity/base/components");
+     |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | var _vision = _interopRequireDefault(require("config:@sanity/vision"));
+  17 | var _localState = require("../util/localState");
+  18 | var _parseApiQueryString = _interopRequireDefault(require("../util/parseApiQueryString"));
+
+https://nextjs.org/docs/messages/module-not-found
+
+./sanity.config.ts:9:1
+Module not found: Can't resolve 'sanity/structure'
+   7 | import {visionTool} from '@sanity/vision'
+   8 | import {defineConfig} from 'sanity'
+>  9 | import {structureTool} from 'sanity/structure'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
+  12 | import {apiVersion, dataset, projectId} from './sanity/env'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./node_modules/next-sanity/lib/esm/studio.js:3:1
+Export Studio doesn't exist in target module
+  1 | import {jsxs as $4289s$jsxs, Fragment as $4289s$Fragment, jsx as $4289s$jsx} from "react/jsx-runtime";
+  2 | import {memo as $4289s$memo, useCallback as $4289s$useCallback, useMemo as $4289s$useMemo} from "react";
+> 3 | import {Studio as $4289s$Studio, defaultTheme as $4289s$defaultTheme} from "sanity";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import {createGlobalStyle as $4289s$createGlobalStyle, css as $4289s$css, ServerStyleSheet as $4289s$ServerStyleSheet} from "styled-components";
+  5 | import $4289s$nexthead from "next/head";
+  6 | import $4289s$nextdocument from "next/document";
+
+The export Studio was not found in module [project]/node_modules/sanity/placeholder.js [app-rsc] (ecmascript).
+The module has no exports at all.
+All exports of the module are s

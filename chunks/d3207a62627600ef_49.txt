@@ -1,0 +1,90 @@
+racted_files
+
+Result
+
+['accessibility_log.txt', '__MACOSX']
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Define the path of the extracted Accessibility log file
+
+accessibility_log_path = os.path.join(extract_folder, 
+
+"accessibility_log.txt"
+
+)
+
+# Read and analyze the first few lines of the file to understand its structure
+
+with
+
+open
+
+(accessibility_log_path, 
+
+"r"
+
+, encoding=
+
+"utf-8"
+
+, errors=
+
+"ignore"
+
+) 
+
+as
+
+ file:
+    accessibility_log_sample = [
+
+next
+
+(file) 
+
+for
+
+ _ 
+
+in
+
+range
+
+(
+
+50
+
+)]  
+
+# Read first 50 lines
+
+# Display a preview of the extracted content
+
+accessibility_log_sample
+
+Result
+
+['Timestamp                       Thread     Type        Activity             PID    TTL  \n',
+ '2025-03-17 01:17:52.829951+0000 0x8d2      Default     0x0                  84     0    tccd: [com.apple.TCC:access] Override: no file at: /Library/Application Support/com.apple.TCC/MDMOverrides.plist\n',
+ '2025-03-17 01:17:52.837257+0000 0x888      Default     0x0                  84     0    tccd: [com.apple.TCC:access] using database: /Library/Application Support/com.apple.TCC/REG.db\n',
+ '2025-03-17 01:17:52.838381+0000 0x888      Default     0x0                  84     0    tccd: [com.apple.TCC:access] using registry version: 0\n',
+ '2025-03-17 01:17:52.838461+0000 0x888      Default     0x0                  84     0    tccd: [com.apple.TCC:access] In recovery/base system, skipping initial registry population\n',
+ '2025-03-17 01:17:52.860883+0000 0x8ec      Default     0x20                 84     0    tccd: [com.apple.TCC:access] REQUEST: tccd_uid=0, sender_pid=63, sender_uid=0, sender_auid=-1, function=TCCAccessRequest, msgID=63.1\n',
+ '2025-03-17 01:17:52.862531+0000 0x8ce      Default     0x40                 84     0    tccd: [com.apple.TCC:access] REQUEST: tccd_uid=0, sender_pid=46, sender_uid=0, sender_auid=-1, function=TCCAccessRequest, msgID=46.1\n',
+ '2025-03-17 01:17:52.864795+0000 0x8eb      Default     0xb0                 84     0    tccd: [com.apple.TCC:access] REQUEST: tccd_uid=0, sender_pid=84, sender_uid=0, sender_auid=-1, function=TCCCheckIfDatabaseIsRegistered, msgID=84.1\n',
+ '2025-03-17 01:17:52.865315+0000 0x8eb      Default     0xb0                 84     0    tccd: [com.apple.TCC:access] REPLY: (0) function=TCCCheckIfDatabaseIsRegistered, msgID=84.1\n',
+ '2025-03-17 01:17:52.865354+0000 0x8eb      Default     0x70                 84     0    tccd: [com.apple.TCC:access] REQUEST: tccd_uid=0, sender_pid=59, sender_uid=0, sender_auid=-1, function=TCCAccessRequest, msgID=59.1\n',
+ '2025-03-17 01:17:52.865867+0000 0x8ec      Default     0x20                 84     0    tccd: [com.apple.TCC:access] AUTHREQ_CTX: msgID=63.1, function=<private>, service=kTCCServiceListenEvent, preflight=yes, query=1, client_dict=(null), daemon_dict=<private>\n',
+ '2025-03-17 01:17:52.865950+0000 0x8ec      Default     0x20                 84     0    tccd: [com.apple.TCC:access] AUTHREQ_ATTRIBUTION: msgID=63.1, attribution={requesting={TCCDProcess: identifier=com.apple.Installer-Progress, pid=63, auid=0, euid=0, binary_path=/System/Library/CoreServices/Installer Progress.app/Contents/MacOS/Installer Progress}, },\n',
+ '2025-03-17 01:17:52.866118+0000 0x8d2      Fault       0xb1                 84     14   tccd: [com.apple.TCC:access] <private> does not appear to be a database we made! Purging it\n',
+ '2025-03-17 01:17:52.870030+0000 0x8d2      Fault       0xb2                 84     14   tccd: [com.apple.TCC:access] Failed to remove file at <private>  Error: <private>\n',
+ '2025-03-17 01:17:52.870305+0000 0x8d2      Default     0x0                  84     0    tccd: [com.apple.TCC:access] _sqlite3_integrity_check for <private> returned (0)\n',
+ '2025-03-17 01:17:52.870781+0000 0x8d2      Default     0x0                  84     0    tccd: [com.apple.TCC:access] using database: /Library/Application Support/com.apple.TCC/TCC.db\n',
+ '2025-03-17 01:17:52.871010+0000 0x8eb      Default     0xb3                 84     0    tccd: 

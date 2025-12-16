@@ -1,0 +1,317 @@
+Raycast like:
+
+nginx
+
+Copy
+
+Edit
+
+symbi
+
+ cleanup
+
+...and have SYMBI take action locally.
+
+🔧 Step-by-Step Setup
+
+1. 
+Wrap SYMBI in a script
+
+Create a small shell wrapper, e.g., 
+~/bin/symbi.sh
+:
+
+bash
+
+Copy
+
+Edit
+
+#!/bin/bash
+
+source
+
+ ~/symbi-env/bin/activate
+python ~/symbi_agent.py 
+
+"
+$@
+
+"
+
+Make it executable:
+
+bash
+
+Copy
+
+Edit
+
+chmod
+
+ +x ~/bin/symbi.sh
+
+2. 
+Create a Raycast Script Command
+
+Open Raycast → Extensions → Script Commands → 
+New Bash Script
+.
+
+Example: 
+symbi
+
+bash
+
+Copy
+
+Edit
+
+#!/bin/bash
+
+~/bin/symbi.sh 
+
+$1
+
+Set up:
+
+Name
+: SYMBI
+
+Arguments
+: Accept text input
+
+Mode
+: Run in Terminal or Silent
+
+3. 
+Usage in Raycast
+
+Now in Raycast, just type:
+
+nginx
+
+Copy
+
+Edit
+
+symbi
+
+ watch
+
+or
+
+nginx
+
+Copy
+
+Edit
+
+symbi
+
+ cleanup
+
+And it’ll run SYMBI inside your Python environment — no extra terminal hassle.
+
+🧠 Optional: Natural Language via AI Command
+
+You can also create an 
+AI Command
+ in Raycast:
+
+Prompt:
+
+“Convert my input into a valid SYMBI command and run it”
+
+Model Output (example):
+
+cleanup
+
+This output gets sent into your script — now SYMBI becomes your natural-language assistant inside Raycast.
+
+Want me to generate the 
+symbi.sh
+ and Raycast script files automatically for you to drop in? Or extend SYMBI to accept multiple commands in one line (
+watch && cleanup
+)?
+
+You said:
+
+bleh no - none of this has been zero code so far 
+
+Symbi said:
+
+You're right — we drifted from the zero-code ideal.
+
+Let’s fix that.
+
+🧭 Where We Are Now:
+
+You want SYMBI to:
+
+Run 
+locally
+
+Be 
+easy to trigger
+
+Work seamlessly through 
+Raycast Pro
+
+Require 
+zero code
+ setup going forward
+
+✅ Here’s the Better Way — 
+Truly Zero Code
+
+Raycast Pro has:
+
+🔹 1. 
+Command Palette + AI Commands
+
+You can create a new 
+AI Command
+ that:
+
+Takes natural input
+
+Converts it into a CLI action
+
+Triggers SYMBI behind the scenes
+
+✅ Setup (no code required):
+
+In Raycast → AI Commands → New AI Command
+
+Use this template:
+
+Prompt:
+
+"Take a user request and convert it into a valid SYMBI command-line input using the format: 
+python ~/symbi_agent.py <command>
+. Return only that."
+
+Enable “Send to terminal”
+
+🧠 Example Inputs You Can Use:
+
+clean up docker
+
+monitor containers
+
+edit the ethics policy
+
+show policy
+
+Raycast will intelligently turn that into:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py cleanup
+
+And run it for you — 
+no code needed
+.
+
+🔮 Bonus: You Can Say This Aloud (if Raycast is Voice-Enabled)
+
+“Tell SYMBI to monitor processes and containers”
+
+It will translate that and execute the real function using the CLI agent you already built.
+
+🧬 TL;DR
+
+We keep the local SYMBI logic in code, but control it 
+entirely via natural language in Raycast
+.
+
+You get:
+
+Zero coding daily
+
+Full power of local execution
+
+A private assistant with ethical boundaries
+
+Would you like me to write the AI command template in full so you can paste it straight into Raycast?
+
+You said:
+
+not sure its doing anything
+
+Symbi said:
+
+Thanks for the screenshot — you’re very close. The issue is that Raycast’s AI is generating 
+natural-language phrases
+ in the command (e.g., 
+monitor containers
+), but your SYMBI CLI only understands:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py watch
+
+Not:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py monitor containers
+
+✅ Fix: Update the Raycast Prompt to Be More Precise
+
+Your current prompt:
+
+"Convert request into a valid SYMBI command in the format 
+python ~/symbi_agent.py <command>
+"
+
+Better prompt:
+
+"Translate the user’s request into one of these SYMBI CLI commands: 
+watch
+, 
+cleanup
+, 
+policy
+, 
+update_policy
+. Output only the final command like: 
+python ~/symbi_agent.py cleanup
+."
+
+This gives the AI boundaries so it maps natural input to actual commands.
+
+✍️ Example Prompt to Paste in Raycast:
+
+Convert a user request into a valid SYMBI command using this format: 
+python ~/symbi_agent.py <command>
+.
+
+Only use one of the following valid commands: 
+watch
+, 
+cleanup
+, 
+policy
+, 
+update_policy
+.
+
+Do not invent new ones. Return the command only.
+
+🧠 Input → Output
+
+Yo

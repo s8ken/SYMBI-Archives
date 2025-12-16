@@ -1,0 +1,133 @@
+nsion/package.json
+symbi-vscode-extension/src/extension.ts
+symbi-vscode-extension/src/net.ts
+symbi-vscode-extension/src/ledgerView.ts
+symbi-vscode-extension/src/webviewHtml.ts
+symbi-vscode-extension/.vscodeignore
+Commands:
+SYMBI: Open Console =E2=86=92 sends POST /api/assistant/message
+SYMBI: Verify Ledger =E2=86=92 GET /api/ledger/verify
+SYMBI: Roundtable (Gather Proposals) =E2=86=92 POST /api/bridge/orchestrate=
+ + optional dispatch
+SYMBI: Set API Base, Save SYMBI_API_KEY
+Dev Container
+Files:
+.devcontainer/devcontainer.json
+.devcontainer/docker-compose.dev.yml
+.vscode/tasks.json
+Bridge (server)
+Files:
+backend/bridge/bridge.config.yaml
+backend/services/bridge.service.js
+backend/services/ledger.service.js
+backend/services/llm.util.js
+backend/controllers/bridge.controller.js
+backend/routes/bridge.routes.js
+backend/app.js
+(added /api/bridge)
+Web app updates
+Roundtable dialog (PR=E2=80=91D):
+frontend/src/components/bridge/RoundtableDialog.js
+frontend/src/pages/Dashboard.js (Roundtable button + dialog)
+Trust chip polish in Review Console (PR=E2=80=91A lite):
+frontend/src/pages/ReviewConsole.js (adds =E2=80=9CPivot=E2=80=9D chip)
+How to Use It
+
+Backend
+Start API as usual; ensure JWT_SECRET and (if using LLM kind) OPENAI_API_KE=
+Y are set.
+Optional: set V0_TOKEN/SERVICE_TOKEN if enabling http agents in backend/bri=
+dge/bridge.config.yaml:1.
+VS Code extension
+Build: cd symbi-vscode-extension && npm i && npm run compil=
+e
+F5 to launch, then:
+=E2=80=9CSYMBI: Set API Base=E2=80=9D =E2=86=92 e.g., http://localhost:5000
+=E2=80=9CSYMBI: Save SYMBI_API_KEY=E2=80=9D =E2=86=92 your scoped token
+Use console/ledger/roundtable commands
+Dev Container
+Open repo in VS Code =E2=86=92 =E2=80=9CReopen in Container=E2=80=9D =E2=86=
+=92 run tasks =E2=80=9Cbackend
+=E2=80=9D and =E2=80=9Cfrontend
+=E2=80=9D.
+Web Roundtable
+On Dashboard, click =E2=80=9CRoundtable=E2=80=9D =E2=86=92 enter task =E2=
+=86=92 Gather =E2=86=92 Approve & Dispatch (dry=E2=80=91run). Uses /api=
+/bridge/*.
+What=E2=80=99s Left (and I can do it)
+
+Web Trust Overlay (PR=E2=80=91A full): Inline chips on chat messages using =
+/api/insights/timeline?session_id=3D=E2=80=A6 with graceful fallback if ses=
+sion_id missing.
+Assistants UX (PR=E2=80=91B): =E2=80=9CUse Most Recent=E2=80=9D toggle and =
+edit form; model picker sourced from /api/llm/models/openai (backend/contro=
+llers/llm.controller.js
+).
+Context Capsules (PR=E2=80=91C): Add GET/PUT /api/context/capsule/:sessionI=
+d, store small user/session memory objects, inject into LLM calls server=E2=
+=80=91side.
+VS Code polish (PR=E2=80=91E): Quick pick render for proposals (done), =E2=
+=80=9COpen in Trust Console=E2=80=9D deep link.
+Hygiene (PR=E2=80=91F): Swagger /docs in dev (already wired), confirm RBAC =
+on sensitive trust routes (backend/routes/trust.routes.js
+), ignore extra artifacts.
+Security Posture
+
+Clients hold only SYMBI_API_KEY (stored via VS Code SecretStorage).
+Vendor keys stay server=E2=80=91side; web/extension call your API only.
+Webhooks remain HMAC=E2=80=91signed (backend/middleware/verifyWebhookSignat=
+ure.js
+).
+Next Actions (pick one)
+
+Make web overlays real (PR=E2=80=91A full): I=E2=80=99ll add a TrustChips c=
+omponent to the chat page that fetches timeline and overlays pivot/disclosu=
+re chips.
+Deepen orchestration (PR=E2=80=91D continued): Enable additional agents in =
+bridge.config.yaml, add simple execution handlers.
+Do both: I=E2=80=99ll stage PR=E2=80=91A and PR=E2=80=91D together with min=
+imal, reversible changes.
+Want me to proceed with PR=E2=80=91A full (TrustChips for the chat page), P=
+R=E2=80=91D enhancements, or both?
+
+3 files changed
++150
+-9
+
+Undo
+
+View changes
+RoundtableDialog.js
++127
+-0
+
+Dashboard.js
++20
+-8
+
+ReviewConsole.js
++3
+-1
+
+Symbi said:
+
+Thought for 1m 2s
+
+=
+
+All of it=E2=80=94end-t=
+o-end. I can deliver 
+copy-pasteab=
+le files, diffs, and runbooks
+ for:
+
+the VS Code extension (already scaffo=
+lded),
+
+the Dev Container (already scaffolde=
+d),
+
+the Bridge Orchestrator (already sca=
+ffolded),
+
+and t

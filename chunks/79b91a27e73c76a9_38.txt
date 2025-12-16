@@ -1,0 +1,295 @@
+’s worth digging into.
+
+Enable Oversight to monitor camera/microphone access
+ and check for unauthorized remote sessions.
+
+Let me know if you want to 
+deepen the investigation
+ with further Wireshark filtering! 🚀
+
+You said:
+
+I don't think the vpn is running 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 VPN Not Running, But Cloudflare & Suspicious Traffic Found – Possible Remote Access?
+
+Since 
+your VPN isn’t running
+, but we still see outbound connections to 
+Cloudflare IPs (
+104.18.32.47
+, 
+104.18.41.158
+)
+ and 
+high-numbered ports (
+58256
+, 
+58258
+)
+, this 
+could be a sign of:
+
+1️⃣ 
+A backdoor or Remote Access Trojan (RAT)
+ secretly exfiltrating data.
+
+2️⃣ 
+A hidden service using Cloudflare as a proxy
+ (some malware does this to hide its C2 server).
+
+3️⃣ 
+A misconfigured system process reaching out unnecessarily
+ (less likely).
+
+🚀 Next Steps – Let’s Investigate Further
+
+Now that we suspect 
+possible unauthorized remote access
+, let’s go deeper:
+
+1️⃣ Check Active Network Connections (Again)
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep ESTABLISHED
+
+📌 This will show 
+which process is responsible for the connections
+ to Cloudflare or other unknown IPs.
+
+2️⃣ Find the Process Using High-Numbered Ports (
+58256
+, 
+58258
+)
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -anp | grep 5825
+
+📌 If this shows a 
+process name and PID (Process ID)
+, we can trace it further.
+
+3️⃣ Scan for Remote Access Tools (RATs)
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i remote
+ps aux | grep -i agent
+ps aux | grep -i vnc
+
+📌 This checks for 
+known remote access programs
+ like 
+TeamViewer, AnyDesk, RATs, or hidden remote shells
+.
+
+4️⃣ Check for Hidden Users on Your Mac
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+dscl . list /Users
+
+📌 Look for 
+any unknown user accounts
+ that shouldn’t be there.
+
+5️⃣ Monitor Your Microphone & Camera (OverSight)
+
+Since 
+some malware uses Cloudflare to exfiltrate audio/video recordings
+, keep 
+OverSight running
+ to catch any unauthorized access:
+
+sh
+
+Copy
+
+Edit
+
+open /Applications/OverSight.app
+
+📌 If anything tries to use your 
+camera/mic
+, 
+OverSight will warn you!
+
+6️⃣ Block Unknown Outbound Traffic with LuLu
+
+If you see 
+an unknown process using Cloudflare
+, 
+block it in LuLu
+:
+
+1️⃣ Open 
+LuLu
+ → 
+Rules
+
+2️⃣ 
+Manually block connections to 
+104.18.32.47
+, 
+104.18.41.158
+
+3️⃣ 
+Deny any new outbound connections from unknown apps
+
+🚀 Let’s Act Fast – Run These & Share What You Find!
+
+📌 **Run 
+lsof -i
+, `
+
+You said:
+
+Last login: Mon Mar 17 21:52:52 on ttys000
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i -P | grep ESTABLISHED
+
+Password:
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 No Active Network Connections Found – What This Means
+
+✅ You ran:
+
+sh
+
+Copy
+
+Edit
+
+sudo lsof -i -P | grep ESTABLISHED
+
+…and 
+nothing appeared
+. This means:
+
+1️⃣ 
+No active outbound connections exist right now.
+
+2️⃣ 
+Whatever was connecting to Cloudflare earlier has stopped.
+
+3️⃣ 
+The suspicious activity could have been temporary or stealth-based.
+
+🚀 Next Steps – Let’s Dig Deeper
+
+Even though no active connections 
+right now
+, we should still check 
+if anything left traces behind.
+
+1️⃣ Find What Was Using Ports 
+58256
+, 
+58258
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -anp | grep 5825
+
+📌 This checks if any process 
+recently used these high-numbered ports
+.
+
+2️⃣ Look for Hidden Remote Access Tools (RATs)
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -i remote
+ps aux | grep -i agent
+ps aux | grep -i vnc
+
+📌 
+If you see anything unusual
+, let me know!
+
+3️⃣ Check for Hidden Users on Your Mac
+
+sh
+
+Copy
+
+Edit
+
+dscl . list /Users
+
+📌 If you see any 
+weird or unknown usernames
+, someone may have 
+created a hidden account for persistence
+.
+
+4️⃣ List All Scheduled Background Tasks
+
+Some malware 
+hides in scheduled tasks
+. Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo crontab -l
+crontab -l
+
+📌 
+If anything weird shows up
+, let me know!
+
+5️⃣ Monitor Live Network Traffic in Wireshark
+
+If you suspect 
+something might still be active
+, open 
+Wireshark
+ and:
+
+1️⃣ Start a 
+new capture
+ on your active interface (
+en

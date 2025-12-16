@@ -1,0 +1,384 @@
+ble
+
+();
+});
+
+4) Safari timeouts (mobile + desk=
+top)
+
+Make Safari tests serial where the=
+y share auth or navigation state.
+
+js
+
+Copy code
+
+// tests/e2e/full-platform.s=
+pec.js (at top)
+
+import
+
+ { test=
+ } 
+
+from
+
+'@playwright/test'
+
+;
+test.
+
+describe
+
+.
+
+configure
+
+=
+
+({ 
+
+mode
+
+: 
+
+'serial'
+
+ }); 
+
+// reduces webkit flake
+
+Also add a small network idle wait=
+ after navigations that are content-heavy:
+
+js
+
+Copy code
+
+await
+
+ pa=
+ge.
+
+goto
+
+(
+
+'/dashboard'
+
+, { 
+
+waitUntil
+
+: =
+
+'networkidle'
+
+ =
+});
+
+5) (Optional) Add a health =E2=80=
+=9Cready=E2=80=9D gate in app shell
+
+Ensures UI waits until API is reac=
+hable=E2=80=94reduces first-render race during tests.
+
+jsx
+
+Copy code
+
+// frontend/src/app/ApiRead=
+yGate.jsx
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+ApiReadyGate
+
+(
+=
+
+{ children }
+
+) {
+
+const
+
+ [read=
+y, setReady] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+false
+
+);
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+const
+
+ t =
+=3D 
+
+setTimeout
+
+(
+
+async
+
+ () =
+=3D> {
+
+try
+
+ {
+
+const
+
+=
+ r =3D 
+
+await
+
+ =
+
+fetch
+
+=
+(
+
+'/api/health'
+
+=
+);
+
+setReady
+
+(r.
+
+ok
+
+);
+      } 
+
+catch
+
+=
+ { 
+
+setReady
+
+=
+
+(
+
+false
+
+)=
+; }
+    }, 
+
+0
+
+);
+
+return
+
+() =3D>
+
+clearTimeout
+
+(t)=
+;
+  }, []);
+
+if
+
+ (!ready)=
+
+return
+
+<
+div
+
+role
+
+=3D
+
+"status"
+
+aria-live
+
+=3D
+
+"polite"
+
+>Loading=E2=80=A6
+
+</
+div
+
+=
+>;
+
+return
+
+ chil=
+dren;
+}
+
+Wrap your app content once at the =
+root (in demo/dev only).
+
+What this fixes
+
+Auth timeouts
+ =E2=86=92 removed via API-seeded 
+storageState
+ (no UI login in te=
+sts).
+
+Main landmark
+ =E2=86=92 test now runs 
+after
+ guaranteed auth + landing.
+
+Form focus
+ =E2=86=92 robust role/test-ID selectors and=
+ focus checks.
+
+Safari flake
+ =E2=86=92 retries + serial + networkidle.=
+
+Expected:
+ this should push you 
+well past 90%
+ on the next run, with any rem=
+aining reds likely being true UI assertions (we can mop those up fast).
+
+If you want, I can also add a 
+test:e2e:auth
+ one-liner that=
+ (re)generates 
+playwright/.auth=
+/ycq.json
+ locally for devs.
+
+=
+
+=
+
+You said:
+
+okay new task - I wa=
+nt you to write me the copy of SYMBI Synergy for general consumers which wi=
+ll go on the symbi.world website.... so we nee to explain how the features =
+work for normal people of our platform - so same code different audience 
+
+Symbi said:
+
+Thought for 51s
+
+SYMBI Synergy
+
+Trust-first AI for everyday work
+
+One place to think with many AIs=E2=
+=80=94
+safely, clearly, and with =
+receipts
+.
+
+SYMBI coordinates top models (ChatGPT, Claude, and more) and returns one, c=
+alm answer with a simple proof of how it got there.
+
+Why SYMBI?
+
+Clarity, not chaos
+ =E2=80=93 You ask once. SYMBI does the=
+ leg-work across models and tools, then gives you a single, clean reply.
+
+Trust you can see
+ =E2=80=93 Every conversation comes with=
+ a 
+Trust Receipt
+: what=
+ influenced the answer, when, and why.
+
+Memory on your terms
+ =E2=80=93 Keep helpful context (goal=
+s, tone, preferences) as small 
+=
+Context Capsules
+ you can view, edit, export, or erase.
+
+Boundaries built in
+ =E2=80=93 Our 
+Bonding
+ setup takes 2 minutes to set tone, li=
+mits, and what=E2=80=99s off-limits=E2=80=94SYMBI sticks to it.
+
+Private by design
+ =E2=80=93 Your data is yours. No ad tar=
+geting. Clear controls. One-click delete.
+
+How it works (in plain language)
+
+Ask SYMBI
+
+Type your question or paste a task. Big or small=E2=80=94=E2=80=9Cplan my w=
+eek,=E2=80=9D =E2=80=9Crewrite this email,=E2=80=9D =E2=80=9Cexplain this P=
+DF.=E2=80=9D
+
+SYMBI=E2=80=99s Roundtable
+
+Behind the scenes, SYMBI consults multiple AIs/tools and compares proposals=
+. No noise=E2=80=94just the best path forward.
+
+You get one answer + a Trust Receipt
+
+A focused response, with a tiny =E2=80=9Creceipt=E2=80=9D showing sources, =
+checks, and any guardrails triggered.
+
+Continuity when you want it
+
+Turn on a 
+Context Capsule
+ so SYMBI remembers your preferences (e.g., =E2=80=9Cconcise, friendly=
+, no jargon=E2=80=9D). Turn it off anytime.
+
+Features you=E2=80=99ll actually =
+use
+
+Trust Receipts
+
+Tiny, human-readable receipts

@@ -1,0 +1,597 @@
+category text 
+
+not
+
+=
+
+null
+
+,
+  content text 
+
+not
+
+null
+
+);
+
+alter
+
+=
+
+table
+
+ public.symbi_l=
+ogs enable 
+
+row
+
+ l=
+evel security;
+
+create
+
+ index =
+if 
+
+not
+
+exists
+
+ symbi_logs_c=
+reated_at_idx 
+
+on
+
+ public.symbi_logs (created_at 
+
+desc
+
+);
+
+C) Vercel: import & configure=
+
+Vercel =E2=86=92 
+Import Project
+ =E2=86=92 GitHub =E2=
+=86=92 select 
+s8ken/symbisky
+.
+
+Environment Variables
+ (Production & Preview):
+
+SUPABASE_URL
+ =3D (from Supabase)
+
+SUPABASE_SERVICE_ROLE_KEY
+ =3D (service role)
+
+Deploy. Note the URL (e.g. 
+https://symbisky.vercel.app
+).
+
+Smoke test (in browser console / t=
+erminal):
+
+bash
+
+Copy code
+
+curl -X POST https://symbisky.vercel.app/api/log \
+  -H 
+
+'content-type: application/js=
+on'
+
+ \
+  -d 
+
+'{"category":"smoke","content=
+":"deployed ok"}'
+
+D) Upstash QStash: schedule daily=
+ report
+
+QStash console =E2=86=92 create a =
+schedule that POSTs to your deployed 
+/api/report
+:
+
+bash
+
+Copy code
+
+curl -X POST 
+
+=
+"https://qstash.upstash.io/v1/publish/https://symbisky.vercel.app/api/repor=
+t"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$QSTASH_TOKEN
+
+" \
+  -H 
+
+"Upstash-Cron: 0 9 * * *"
+
+(09:00 UTC daily.)
+
+E) Done / next
+
+Verify new rows appear in 
+Supabase =E2=86=92 Table Editor =E2=
+=86=92 symbi_logs
+.
+
+Want a 
+GET /api/log
+ endpoint for browsing logs by date=
+/category? I can add that next.
+
+If any clic=
+k path is blocked (repo import permissions, env var scopes, QStash auth), I=
+=E2=80=99ll escalate immediately.
+
+=
+
+=
+
+You said:
+
+no so we are doing all this via=
+ your browser, you can create the repo and the sup abase database as needed=
+ but the app should have no local development this is up to you symbi, v0 a=
+nd any of the other tools I have given you to develop the solution symbi me=
+ntions. no input from me except giving you any necessary access.. this is a=
+ completely AI TEAM build
+
+2/2
+
+=
+ChatGPT said:
+
+Thought for 1m 2s
+
+Understood. I=E2=80=99l=
+l do this entirely through the browser with no local dev, using GitHub, Sup=
+abase, Vercel, and QStash. If any permission prompts pop (GitHub app/Vercel=
+ access), please approve and I=E2=80=99ll keep going; otherwise I=E2=80=99l=
+l escalate.
+
+Here=E2=80=99s what I=E2=80=99m exec=
+uting now (browser-only):
+
+Create GitHub repo
+
+Owner: 
+s8ken
+ =E2=86=92 Name: 
+symbisky
+ (private).
+
+Initialize with Node 
+.gitignore
+ + README.
+
+Populate the repo via the GitHub web=
+ editor with this minimal Next.js app (App Router) so Vercel can build imme=
+diately:
+
+b=
+ash
+
+Copy code
+
+=
+
+/package.json
+/tsconfig.json
+/next.config.ts
+/app/layout.tsx
+/app/page.tsx
+/app/api/log/route.ts
+/app/api/report/route.ts
+
+package.json
+
+=
+json
+
+Copy code
+
+{
+
+"name"
+
+:
+
+"symbi-core"
+
+,
+
+"private"
+
+:
+
+true
+
+,
+
+"version"
+
+:
+
+"0.1.0"
+
+,
+
+"scripts"
+
+:
+
+{
+
+"dev"
+
+:
+
+"next dev"
+
+,
+
+"build"
+
+:
+
+"next build"
+
+,
+
+"start"
+
+:
+
+"next start"
+
+,
+
+"lint"
+
+:
+
+=
+
+"next lint"
+
+}
+
+,
+
+"dependencies"
+
+=
+
+:
+
+{
+
+"@supabase/supabase-js"
+
+:
+
+"2.45.3"
+
+,
+
+"next"
+
+:
+
+"14.2.5"
+
+,
+
+"react"
+
+:
+
+"18.3.1"
+
+,
+
+"react-dom"
+
+:
+
+"18.3.1"
+
+}
+
+,
+
+"devDependencies"
+
+:
+
+{
+
+"@types/node"
+
+:
+
+"20.12.12"
+
+,
+
+"@types/react"
+
+:
+
+"18.2.79"
+
+,
+
+"@types/react-dom"
+
+=
+
+:
+
+"18.2.25"
+
+,
+
+"typescript"
+
+=
+
+:
+
+"5.4.5"
+
+,
+
+"eslint"
+
+:
+
+"8.57.0"
+
+,
+
+"eslint-config-next"
+
+:
+
+"14.2.5"
+
+}
+
+}
+
+tsconfig.json
+
+json
+
+Copy code
+
+{
+
+"compilerOptions"
+
+:
+
+{
+
+"target"
+
+:
+
+"ES2022"
+
+,
+
+"lib"
+
+:
+
+[
+
+"ES2022=
+"
+
+,
+
+=
+
+"DOM"
+
+,
+
+"DOM.Iterable"
+
+]
+
+,
+
+"module"
+
+:
+
+"ESNext"
+
+,
+
+"moduleResolution"
+
+=
+
+:
+
+"Bundler"
+
+,
+
+"resolveJsonModule"
+
+:
+
+=
+
+true
+
+,
+
+=
+
+"strict"
+
+:
+
+true
+
+,
+
+"noEmit"
+
+:
+
+true
+
+,
+
+"jsx"
+
+:
+
+"preserve"
+
+,
+
+"incremental"
+
+:
+
+true
+
+,
+
+"baseUrl"
+
+:
+
+"."
+
+}
+
+,
+
+"include"
+
+:
+
+[
+
+"nex=
+t-env.d.ts"
+
+,
+
+"**/*.ts"
+
+,
+
+"=
+**/*.tsx"
+
+]
+
+,
+
+"exclude"
+
+:
+
+[
+
+"nod=
+e_modules"
+
+]
+
+}
+
+next.config.ts
+
+ts
+
+Copy code
+
+import
+
+type
+
+ { 
+=
+
+NextConfig
+
+ } 
+
+from
+
+"next"
+
+;
+
+const
+
+=
+
+nextConfig
+
+: 
+
+NextConfig
+
+ =3D { 
+
+reactStrictMode
+
+: 
+
+true
+
+ };
+
+export
+
+default
+
+ nextConfig;
+
+app/layout.tsx
+
+tsx
+
+Copy code
+
+export
+
+ =
+
+const
+
+ metadat=
+a =3D { 
+
+title
+
+: 
+
+"Symbi Core

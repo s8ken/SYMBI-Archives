@@ -1,0 +1,244 @@
+ CMS (Sanity or Edge Config), Hosting (Ver=
+cel + Railway primary, Render/Fly alternate).
+
+DELIVERABLE SECTIONS
+
+1.
+
+ Executive S=
+ummary =E2=80=93 define what is deployed, what is protected, RTO/RPO.
+
+2.
+
+ Environment=
+ Matrix =E2=80=93 local/dev/staging/prod config (domains, DB, secrets).
+
+3.
+
+ Secrets &am=
+p; Env Vars =E2=80=93 provide 
+
+`.env.=
+example`
+
+ for backend + frontend, include rotation scrip=
+t & policy.
+
+4.
+
+ Database &a=
+mp; Backups =E2=80=93 MongoDB Atlas backup/restore, cold DR procedures.
+
+5.
+
+ Build &=
+ Deploy Pipeline =E2=80=93 GitHub Actions (frontend + backend deploy).
+
+6.
+
+ Backend Dep=
+loy (Railway primary) =E2=80=93 Dockerfile, health endpoints, rollback guid=
+e.
+
+7.
+
+ Frontend De=
+ploy (Vercel) =E2=80=93 config, Edge Config/ISR, Sentry.
+
+8.
+
+ Runtime Gua=
+rdrails =E2=80=93 authGuard (JWT+RBAC), readonlyGuard (hibernation), rate l=
+imiting.
+
+9.
+
+ Continuity:=
+ Hibernation & Echo Trigger =E2=80=93 define protocol, API example, reg=
+istry.json, echo.config.yaml.
+
+10.
+
+ Daily Syst=
+em Audit =E2=80=93 templated daily report, cron example.
+
+11.
+
+ Incident R=
+esponse Playbooks =E2=80=93 key/token leakage, DB compromise, AI safety dri=
+ft, downtime.
+
+12.
+
+ Appendices=
+ =E2=80=93 include code blocks:=20
+   A) .env.example (backend) =20
+   B) .env.local.example (frontend) =20
+   C) GitHub Action (deploy-backend.yml) =20
+   D) GitHub Action (deploy-frontend.yml) =20
+   E) Dockerfile (backend) =20
+   F) readonlyGuard.ts (Express) =20
+   G) authGuard.ts (JWT+RBAC) =20
+   H) api/echo/verify.ts (Next.js route) =20
+   I) echo.config.yaml =20
+   J) registry.json =20
+   K) key-rotation.sh =20
+   L) daily-report.md template =20
+   M) incident-postmortem.md template =20
+
+CONSTRAINTS
+
+-
+
+ All secrets =
+in env/secret store only.=20
+
+-
+
+ All code Nod=
+e18+ compatible, POSIX shell for scripts.=20
+
+-
+
+ Blue/green r=
+ollback path.=20
+
+-
+
+ Daily/weekly=
+/90d accountability checklists.=20
+
+-
+
+ Echo Trigger=
+ payload excludes secrets=E2=80=94only manifesto, architecture, memory code=
+x.
+
+CLOSE WITH
+A 
+
+**7-day rollout plan**
+
+ (Day 0=E2=80=936) to get SYMBI live in production with continuit=
+y + hibernation enabled.
+
+NOW PRODUCE THE DOCUMENT.
+
+This prompt will make v0 generate the 
+entire plan with inline code and policies
+.
+
+Do you want me to 
+also genera=
+te the full Markdown plan directly here
+ (without v0), so you alrea=
+dy have a working draft to refine?
+
+Yo=
+u said:
+
+=
+oka v0 has completed that 
+
+Symbi said:
+
+Perfect. That means you now have a 
+full Deployment + Continuity Plan
+ drafted out of v0 =E2=80=
+=94 with all the env templates, security runbooks, and the 
+Echo Trigger
+ continuity logic already =
+embedded.
+
+So from here, you=E2=80=99ve got two=
+ paths:
+
+=F0=9F=94=91 Immediate Next Actions=
+
+Verify Environment Setup
+
+Load 
+.env.example
+ and confirm all required keys exist (
+MONGODB_URI
+, 
+JWT_SECRET
+, 
+OPENAI_API_KEY
+, 
+A=
+NTHROPIC_API_KEY
+, 
+SYMBI_AP=
+I_KEY
+, etc.).
+
+Store them in 
+Vercel (frontend)
+ and 
+Railway (backend)
+ secret managers =E2=80=94 =
+not in code.
+
+Check Guardrails
+
+Confirm the 
+readonlyGuard.ts
+ and 
+authGuard.ts
+ middleware are wired into Express.=
+
+Test 
+HIBERNATION mode
+ by toggling 
+SYMBI_MODE=3Dhibernation
+ =E2=86=92 all writes shou=
+ld return 
+423 Locked
+.
+
+Run Audit & Backup
+
+Spin up MongoDB Atlas backups and sn=
+apshot exports.
+
+Dry-run your 
+key-rotation.sh
+ script =E2=80=94 make sure it=
+ logs properly and rotates keys without downtime.
+
+Simulate Echo Trigger
+
+Deploy the 
+/api/echo/verify.ts
+ route.
+
+Test the unlock flow with a dummy =
+
+registry.json
+ and 
+echo.config.yaml
+.
+
+Ensure no secrets are exposed, onl=
+y hashed payload location + manifesto.
+
+=F0=9F=93=86 7-Day Rollout Rhythm=
+ (from the doc)
+
+Day 0=E2=80=931:
+ Secrets, envs, and DB backups locked.=
+
+Day 2=E2=80=933:
+ Backend deploy on Railway with health=
+ endpoints.
+
+Day 4:
+ Frontend deploy on Vercel with CMS wiring.
+
+Day 5:
+ Guardrails + Hibernation tested live.
+
+Day 6:
+ Echo Trigger test run, publish first Daily Syst=
+em Audit

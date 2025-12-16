@@ -1,0 +1,213 @@
+ your screen to another unknown device (Apple TV, Mac, etc.).
+
+🛠 Next Step: Find Out If Your iPad Was Used for Mirroring
+
+Since you actively use the iPad, we need to confirm 
+if it was being used for legitimate purposes or if someone else accessed it.
+
+✅ Step 1: Check Sidecar Connections
+
+Run this on your 
+Mac
+ (to see if an iPad was used as a display):
+
+sh
+
+Copy
+
+system_profiler SPDisplaysDataType | grep 
+
+"Sidecar"
+
+🔍 
+What to Look For:
+
+If your 
+iPad appears
+, it means Sidecar was used for screen mirroring.
+
+If an 
+unknown device appears
+, that’s a problem.
+
+✅ Step 2: Check AirPlay Connection History
+
+Run this on your 
+Mac
+ (to see if your screen was sent elsewhere):
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay
+
+🔍 
+What to Look For:
+
+Look for 
+"LastConnected"
+ → This may show the 
+last AirPlay device your Mac connected to.
+
+If an 
+unknown Apple TV, Mac, or device appears
+, that may have received your screen.
+
+✅ Step 3: Check iPad Screen Recording & Streaming
+
+Since the iPad was used, let's check if it was 
+streaming or recording
+ the screen:
+
+📱 
+On Your iPad:
+
+Go to Settings → Control Center
+
+Check if "Screen Recording" is in the Control Center
+
+If it is, swipe down and check if it was recently activated.
+
+Go to Settings → General → AirPlay & Handoff
+
+Check if 
+AirPlay Mirroring
+ was turned on recently.
+
+📩 
+Let me know if anything suspicious appears!
+
+📩 Next Steps
+
+1️⃣ 
+Check if your iPad was actively used for Sidecar (
+system_profiler SPDisplaysDataType
+).
+
+2️⃣ 
+Find out if your screen was AirPlayed to another device (
+defaults read /Library/Preferences/com.apple.airplay
+).
+
+3️⃣ 
+Check your iPad's screen recording & AirPlay settings.
+
+🚨 
+If your iPad was mirroring your Mac screen, we need to confirm if it was then rebroadcasted.
+ Run these steps and let me know what you find!
+
+You said:
+
+user@Mes-MacBook-Pro ~ % system_profiler SPDisplaysDataType | grep "Sidecar"
+
+user@Mes-MacBook-Pro ~ %    
+
+ChatGPT said:
+
+Since 
+Sidecar did not return any results
+, that means:
+
+1️⃣ 
+Your iPad was NOT actively used as a Sidecar display at this moment.
+
+2️⃣ 
+If your Mac screen was sent to your iPad, it may have been done through AirPlay instead.
+
+3️⃣ 
+We now need to check AirPlay logs to see if an unknown device was involved.
+
+🛠 Next Step: Check If AirPlay Was Used
+
+Since 
+Sidecar is not the culprit
+, let’s confirm if 
+AirPlay was used to mirror your Mac’s screen
+ to another device.
+
+✅ Run This in Terminal
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay
+
+🔍 
+What to Look For:
+
+"LastConnected"
+ → This may show the 
+last AirPlay device your Mac connected to.
+
+If an 
+unknown Apple TV, Mac, or other device appears
+, it may have received your screen.
+
+📩 
+Copy the output here, and I’ll help analyze it.
+
+📩 Next Steps
+
+1️⃣ 
+Check if AirPlay was used to send your screen to another device (
+defaults read /Library/Preferences/com.apple.airplay
+).
+
+2️⃣ 
+If we find an unknown device, we will trace it further.
+
+🚨 
+Since Sidecar wasn’t used, we now focus on AirPlay as the most likely method.
+ Run this and let me know what you find!
+
+You said:
+
+user@Mes-MacBook-Pro ~ % system_profiler SPDisplaysDataType | grep "Sidecar"
+
+user@Mes-MacBook-Pro ~ % defaults read /Library/Preferences/com.apple.airplay
+
+{
+    "receiver-active" = 0;
+}
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+🔍 Analysis of Your AirPlay and Sidecar Checks
+
+1️⃣ 
+Sidecar is NOT active
+ → Your Mac was NOT using your iPad as a secondary display.
+
+2️⃣ 
+AirPlay is NOT currently active (
+receiver-active = 0
+)
+ → Your Mac is NOT currently acting as an AirPlay receiver.
+
+🚨 What This Means
+
+Right now, neither Sidecar nor AirPlay are actively mirroring your screen.
+
+However, this 
+does NOT rule out past AirPlay connections
+ or 
+remote screen sharing via another method.
+
+If your screen was streamed, it was likely done through:
+
+A previous AirPlay connection (logs may have been erased).
+
+A third-party app (Zoom, OBS, another streaming tool).
+
+A hidden screen-sharing

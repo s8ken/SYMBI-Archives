@@ -1,0 +1,353 @@
+ add a recursion limit or a 
+Set
+ of visited identifiers:
+
+ts
+
+Copy code
+
+if
+
+ (visi=
+ted.
+
+has
+
+(did)) 
+
+throw
+
+new
+
+=
+
+Error
+
+(
+
+"Circular DID reference"
+
+);
+visited.
+
+add
+
+=
+
+(did);
+
+Regressive Risk:
+ caching layer in 
+resolution/
+ might persist stale DID document=
+s.
+
+=E2=86=92 Add TTL or version checks before reusing cached documents.
+
+3. 
+Trust Scoring (
+=
+scoring.ts
+)
+
+Risk:
+ floating-point precision in trust weighting (esp=
+ecially if using dynamic decay functions).
+
+=E2=86=92 May cause divergence between identical evaluations on different m=
+achines.
+
+=E2=9C=85 
+Fix:
+ normalize scores to fixed decimals (e.g=
+. 5 dp) before persistence.
+
+ts
+
+Copy code
+
+const
+
+ no=
+rmalized =3D 
+
+Number
+
+(score.
+
+toFixed=
+
+(
+
+5
+
+));
+
+Potential regression:
+ if 
+persistence/
+ changed trust model schema between versi=
+ons, older stored trust states may deserialize incorrectly.
+
+=E2=9C=85 Add version tagging in persisted trust records.
+
+4. 
+Validator (
+vali=
+dator.ts
+)
+
+Likely Purpose:
+ validates credentials, claims, or proo=
+fs.
+
+Risk:
+ partial validation bypasses if chaining 
+Promise.all
+ on validators withou=
+t 
+await
+.
+
+ts
+
+Copy code
+
+// =E2=9D=8C bad
+
+Promise
+
+.=
+
+all
+
+(v=
+alidators.
+
+map
+
+(
+
+fn
+
+ =3D> 
+
+fn
+
+(data)));
+
+// =E2=9C=85 good
+
+await
+
+=
+
+Promise
+
+.
+=
+
+all
+
+(validato=
+rs.
+
+map
+
+(
+
+fn=
+
+ =3D> 
+
+fn
+
+(data)));
+
+=E2=9C=85 Add end-to-end tests wit=
+h invalid credentials to confirm all validators run.
+
+5. 
+Persistence Layer (
+persistence/
+)
+
+Risk:
+ silent write failures if asynchronous DB writes =
+aren=E2=80=99t awaited.
+
+=E2=9C=85 Add retry logic or wrap =
+I/O in a transaction abstraction.
+
+6. 
+Audit + Revocation
+
+Audit:
+ ensure immutable event logs =E2=80=94 append-on=
+ly.
+
+=E2=86=92 =E2=9C=85 Use cryptographic hashes for audit record linking.
+
+Revocation:
+ verify entries propagate across persistenc=
+e and resolution caches =E2=80=94 revocation lag can cause trust ghosting.
+
+7. 
+Index and Types
+
+index.ts
+ =E2=80=94 should only re-export 
+public
+ modules.
+
+=E2=9C=85 Ensure private helpers l=
+ike 
+crypto.ts
+ or raw sch=
+emas aren=E2=80=99t exported unintentionally.
+
+types.ts
+ =E2=80=94 this is often a silent regression magne=
+t.
+
+=E2=9C=85 Use discriminated unions=
+ instead of loose generics.
+
+=E2=9C=85 Add doc comments for eve=
+ry exported interface to help with auto-doc generation.
+
+=F0=9F=A7=A0 Improvement Opportun=
+ities
+
+Area
+
+Suggestion
+
+Benefit
+
+Testing
+
+Expa=
+nd 
+__tests__
+ coverage fo=
+r revocation + audit
+
+Prevent trust-state drift
+
+Telemetry
+
+Add tracing hoo=
+ks (
+monitoring/
+) into tr=
+ust operations
+
+Debug distributed trust issues
+
+Schema evolution
+
+Add sema=
+ntic version in 
+schemas/
+=
+
+Safe fu=
+ture migrations
+
+Crypto abstraction
+
+Provide unified 
+TrustCryptoProvider
+ interface
+=
+
+Decouple env=
+ dependencies
+
+Docs
+
+Auto-generate trust API reference from 
+types.ts
+ via 
+typedoc
+
+Maintains consistency
+
+=F0=9F=A7=A9 Recommended Next Ste=
+p
+
+To give you 
+concrete improvement diffs
+, I can open one=
+ of the following next:
+
+=F0=9F=94=90 
+crypto.ts
+ =E2=80=94 to review keygen/sign/ver=
+ify logic (most bug-prone)
+
+=F0=9F=A7=AE 
+scoring.ts
+ =E2=80=94 to inspect trust-weight =
+propagation
+
+=E2=9C=85 
+validator.ts
+ =E2=80=94 to check validation compl=
+eteness
+
+Which one do you want to open first?
+
+=
+
+You said:
+
+SYMBI-Symphony/src/core/trust/crypto.ts at m=
+ain =C2=B7 s8ken/SYMBI-Symphony
+
+opened crypto.ts
+
+ChatGPT said:
+
+Perfect =F0=
+=9F=91=8D =E2=80=94 you=E2=80=99re now viewing 
+crypto.ts
+, which defines SYMBI=E2=80=99s 
+cryptographic verification module
+.
+
+Here=E2=80=99s a concise breakdown o=
+f what it does =E2=80=94 plus potential 
+bugs, regressions, and improvement ideas
+:
+
+=F0=9F=94=8D 
+Summary of the Module
+
+Implements cryptographic signature verification
+ for:
+
+Ed25519
+ (used for DIDs and credentials)
+
+ES256K
+ (Ethereum/secp256k1)
+
+RS256
+ (RSA/JWT)
+
+Canonicalizes JSON
+ deterministically via 
+JCS (RFC 8785)
+.
+
+Includes secure helpers:
+
+generateSecureRandom()
+, 
+generateSecureApiKey()
+, 
+generateNonce()
+
+timingSafeEqual(

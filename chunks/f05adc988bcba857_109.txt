@@ -1,0 +1,348 @@
+run dev
+
+Once your app is running again:
+
+Head to 
+http://localhost:3001/studio
+
+Try editing and saving a document (like your test page)
+
+If the network error is still happening, weâll double-check:
+
+CORS settings
+ for your project at 
+https://www.sanity.io/manage
+
+Make sure 
+localhost:3000
+ and 
+localhost:3001
+ are both added as allowed origins under 
+API â CORS Origins
+
+Let me know if the save works now or if weâre still hitting that error ð
+
+You said:
+
+sameerror
+
+ChatGPT said:
+
+Got it â since the 
+same network error
+ is persisting when saving a document in Sanity Studio, even with correct config, weâre likely dealing with a 
+CORS misconfiguration
+ or 
+invalid auth/token environment
+. Let's troubleshoot this with precision:
+
+â 1. 
+Confirm CORS Origins
+
+Go to 
+
+sanity.io/manage
+
+ â your 
+symbi
+ project â 
+API > CORS Origins
+.
+
+Make sure 
+these origins are added
+:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+http:
+
+//localhost:3001
+
+Also tick:
+
+ Allow credentials
+
+ Allow all methods
+
+Save changes.
+
+â 2. 
+Verify Token + Permissions
+
+If youâre using a token in a 
+.env.local
+ or inside 
+sanityClient
+ config, ensure:
+
+It's 
+correctly scoped
+ (read+write)
+
+The token is 
+NOT expired
+
+The user who owns the token has 
+editor
+ or 
+administrator
+ role
+
+You can regenerate a token at:
+
+sanity.io/manage > API > Tokens
+
+Example 
+.env.local
+:
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=sk...yourTokenHere...
+
+Update your 
+lib/sanity.ts
+ (if using 
+@sanity/client
+) to include:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'@sanity/client'
+
+export
+
+const
+
+ sanityClient = 
+
+createClient
+
+({
+
+projectId
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_PROJECT_ID
+
+!,
+
+dataset
+
+: process.
+
+env
+
+.
+
+NEXT_PUBLIC_SANITY_DATASET
+
+!,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+
+token
+
+: process.
+
+env
+
+.
+
+SANITY_API_TOKEN
+
+, 
+
+// needed for write
+
+})
+
+ð 3. Restart Everything
+
+After fixing:
+
+CORS origins
+
+.env.local
+ and token
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then go to 
+http://localhost:3001/studio
+, edit and try saving the doc again.
+
+If youâre still stuck after this, paste your 
+
+.env.local
+
+ contents here (just redact the token), and Iâll validate it for you ð
+
+You said:
+
+there's nothing in tokens
+
+ChatGPT said:
+
+Ah â that explains it. ð If there are 
+no tokens
+ listed in your project's API section, then Sanity Studio canât perform 
+authenticated actions
+ like saving documents, especially from localhost development environments.
+
+Letâs fix that now:
+
+â 
+Create a Sanity API Token
+
+Go to your projectâs API settings:
+
+https://www.sanity.io/manage/projects/wryptr7v/settings/api
+
+Scroll down to 
+Tokens
+
+Click 
+âAdd API tokenâ
+
+Give it a name like 
+Local Studio Dev
+
+Set 
+Permissions
+ to:
+
+ð 
+Editor (read + write)
+
+Click 
+âCreate Tokenâ
+
+Copy the token 
+immediately
+ â you wonât be able to view it again.
+
+ð ï¸ Add It to 
+.env.local
+
+In your 
+symbi-main-site
+ project root, open or create a file called 
+.env.local
+ and add:
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+Replace 
+skYourCopiedTokenHere
+ with the actual token you copied.
+
+Then restart the dev server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+ð§  Why this matters
+
+Without the token:
+
+Your local Studio canât 
+write to the dataset
+
+Sanityâs API rejects any mutations
+
+Youâll see errors like:
+
+Request error while attempting to reach...
+
+Once the token is added and the server is restarted, go back to 
+http://localhost:3001/studio
+ and try saving again â it should work now!
+
+Let me know if you want me to validate your 
+.env.local
+ or the sanity client setup.
+
+You said:
+
+point mre to the file 
+
+ChatGPT said:
+
+Absolutely â here's exactly where to go and how to edit it:
+
+ð Location of the File
+
+Navigate to your 
+project root folder
+:
+
+bash
+
+Copy

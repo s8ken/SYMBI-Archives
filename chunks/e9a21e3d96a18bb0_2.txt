@@ -1,0 +1,339 @@
+resh
+
+, 
+
+2
+
+FA, OAuth, Wallet SIWE optional)
+  =E2=94=9C=E2=94=80 /trust  (
+
+ide=
+ntity
+
+, consent, bond, scoring, events)
+  =E2=94=9C=E2=94=80 /agents (registration, capabilities, compliance)
+  =E2=94=9C=E2=94=80 /chat   (
+
+to
+
+ SYMBI GPT API; SSE 
+
+or
+
+ socket stream)
+  =E2=94=9C=E2=94=80 /
+
+notify
+
+ (subscriptions, email/webhook)
+  =E2=94=9C=E2=94=80 /
+
+admin
+
+  (
+
+policy
+
+, roles, config)
+        =E2=94=82
+        =E2=94=9C=E2=94=80 Socket.io (
+
+real
+
+-
+
+time
+
+: chat, trust:
+
+upda=
+te
+
+, compliance:violation)
+        =E2=94=9C=E2=94=80 Redis (pub/sub 
+
+for
+
+ sockets + job queue)
+        =E2=94=94=E2=94=80 MongoDB Atlas (
+
+Encrypted
+
+ fields + TTL + audit logs)
+               =E2=94=9C=E2=94=80 users, sessions, roles, recovery
+               =E2=94=9C=E2=94=80 agents, capabilities, evaluations
+               =E2=94=9C=E2=94=80 trust_bonds, consent_envelopes, trust_eve=
+nts
+               =E2=94=9C=E2=94=80 conversations, messages, memory_nodes
+               =E2=94=9C=E2=94=80 trust_declarations, compliance_reports
+               =E2=94=94=E2=94=80 notifications, email_jobs, webhooks
+
+Why MongoDB
+ (per your plan): rapid iteration on nested=
+ consent and event trails; 
+co=
+mpound indexes + TTL
+ serve bond expiry & event pruning. Add 
+Redis
+ for socket fan=
+=E2=80=91out and jobs.
+
+2) Data Model (Mongoose, field hi=
+ghlights & indexes)
+
+users
+
+_id
+, 
+email
+ (unique, idx), 
+email_verifi=
+ed
+, 
+password_hash?
+, 
+totp_secret?
+, 
+wallet_addr?
+, 
+roles: ['founder'|'admin'|'operator'|'member']
+, 
+prefs
+, 
+created_at
+.
+
+Index
+: 
+{ e=
+mail: 1 } unique
+; 
+{ wall=
+et_addr: 1 } sparse
+.
+
+PII
+: encrypt 
+email
+ with field-level encryption (Mongo FLE or app-side libsodiu=
+m).
+
+agents
+
+_id
+, 
+name
+, 
+owner_user_id?
+, 
+capabilities: [{name, scopes}]
+, 
+ethics_signature
+, 
+sygpt_endpoint?
+, 
+status: 'pending'|'active'|'suspended'|'=
+retired'
+, 
+telemetry: { l=
+ast_seen, health }
+.
+
+trust_declarations
+ (per actor)
+
+actor_type: 'human'|'agent'
+, 
+actor_id
+, 
+identity_vectors
+ (KYC level, wallet, OAuth), 
+capability_disclosure
+ (for agents), 
+attestations[]
+, 
+signature
+, 
+timestamp
+.
+
+consent_envelopes
+
+subject_user_id
+, 
+agent_id
+, 
+scopes: ['r=
+ead:profile','use:email','access:memory:k=3Dproject/*']
+, 
+purpose
+, 
+data_minimization
+, 
+retention_days
+, 
+revocable: true
+, 
+si=
+gnature
+, 
+created_at
+, 
+expires_at
+.
+
+TTL index
+: 
+{ expires_at: 1 }
+.
+
+trust_bonds
+
+human_id
+, 
+agen=
+t_id
+, 
+state: 'provisiona=
+l'|'active'|'monitored'|'suspended'|'revoked'
+,
+
+score: { current: Number, updat=
+ed_at }
+,
+
+policy: { required_kyc_level, m=
+in_score, scopes_required[] }
+,
+
+history: [{ at, delta, reason, =
+actor }]
+,
+
+violations: [{ at, code, severi=
+ty, resolved }]
+,
+
+consent_envelope_id
+, 
+created_at
+.
+
+Compound index
+: 
+{ human_id:1, agent_id:1 } unique
+.
+
+trust_events
+
+bond_id
+, 
+type:=
+ 'identity.verified'|'consent.granted'|'score.update'|'violation'
+, 
+payload
+, 
+created_at
+.
+
+TTL (optional)
+ with archival.
+
+conversations / messages
+
+conversation_id
+, 
+participants: [human_id, agent_id]
+, 
+context_refs[]
+, 
+trust_snapshot
+, 
+c=
+reated_at
+.
+
+messages
+: 
+_id
+, 
+sender: 'human'|'agent'=
+
+, 
+text
+, 
+attachments
+, 
+blocked_reason?
+, 
+created_at
+.
+
+Index
+: 
+{ c=
+onversation_id: 1, created_at: -1 }
+.
+
+audit_logs
+
+actor
+, 
+action
+, 
+resource
+, 
+result
+, 
+ip
+, 
+ua
+, 
+at
+. Retain =
+per policy.
+
+notifications
+
+user_id|email
+, 
+topic
+, 
+transport: 'emai=
+l'|'webhook'
+, 
+status
+, 
+created_at
+.
+
+3) Trust Protocol =E2=80=94 workf=
+lows & scoring
+
+3.1 Bidirectional Identity (state=
+ machine)
+
+java
+
+Copy code
+
+(START)
+  =E2=94=9C=E2=94=80 Human Declaration =E2=86=92 identity_vectors + consent=
+ prefs
+  =E2=94=9C=E2=94=80 Agent Declaration =E2=86=92 capability_disclosure + et=
+hics_signature
+  =E2=94=94=E2=94=80 Oracle 
+
+Validation
+
+=
+(SYMBI ruleset)
+
+        =E2=94=9C=E2=94=80 PASS =E2=86=92 Bond(Provisional)
+        =E2=94=94=E2=94=80 FAIL =E2=86=92 Rework / Reject
+
+Provisional =E2=86=92 Active
+ when:
+
+Minimum identity assurance met (e.=
+g., Email+TOTP or Wallet SIWE

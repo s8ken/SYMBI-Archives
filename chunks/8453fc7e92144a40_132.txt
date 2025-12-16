@@ -1,0 +1,809 @@
+to lift you from 
+74.1% =E2=86=92 90%+
+ by closing the remaining a11y and mo=
+bile items and adding a couple of QA guards.
+
+Fix Pack v2 =E2=80=94 copy-paste ch=
+anges
+
+A) Form accessibility (2 failing on=
+ input focus)
+
+1) Reusable, accessible field wrapper
+
+=
+jsx
+
+Copy code
+
+// frontend/src/components/=
+forms/A11yTextField.jsx
+
+import
+
+ * 
+
+as
+
+React
+
+from
+
+'react'
+
+;
+
+import
+
+TextField
+
+from
+
+'@mui/material/TextField'
+
+;
+
+export
+
+default
+
+function
+
+A11yTextField
+
+(
+{
+  id,
+  label,
+  value,
+  onChange,
+  error,
+  helperText,
+  required =3D 
+
+false
+
+,
+  autoFocus =3D 
+
+false
+
+,
+  ...rest
+}) {
+
+const
+
+ descI=
+d =3D helperText ? 
+
+`
+${id}
+
+-desc` : 
+
+undefined
+
+;
+
+return
+
+ (
+
+<=
+
+TextField
+
+id
+
+=3D
+
+{id}
+
+label
+
+=3D
+
+{label}
+
+value
+
+=3D
+
+{value}
+
+onChange
+
+=
+=3D
+
+{onChange}
+
+required
+
+=
+=3D
+
+{required}
+
+autoFocus
+
+=
+=3D
+
+{autoFocus}
+
+error
+
+=3D
+
+{Boolean(error)}
+
+inputProps
+
+=
+=3D
+
+{{
+
+ '
+=
+
+aria-describedby
+
+'
+
+:
+
+descId
+
+ }}
+
+helperText
+
+=
+=3D
+
+{helperText
+
+=
+ ? <
+
+span
+
+id
+
+=3D
+
+{descId}
+
+>{helperText}
+
+</
+span
+=
+
+> : null}
+      FormHelperTextProps=3D{{ role: error ? 'alert' : undefined }}
+      {...rest}
+    />
+  );
+}
+
+2) First invalid field gets focus on submit
+
+jsx
+
+Copy code
+
+// Example: frontend/src/pa=
+ges/Login.js (or Register.js)
+
+import
+
+React
+
+, { useRe=
+f, useEffect } 
+
+from
+
+=
+
+'react'
+
+=
+;
+
+import
+
+ A11yTe=
+xtField 
+
+from
+
+ =
+
+'../components/forms/A11yTextField=
+'
+
+;
+
+export
+
+default
+
+function
+
+Login
+
+(
+
+) {
+
+const
+
+ email=
+Ref =3D 
+
+useRef
+
+(
+
+null
+
+);
+
+const
+
+ passw=
+ordRef =3D 
+
+useRef
+
+(
+
+null
+
+);
+
+const
+
+ [erro=
+rs, setErrors] =3D 
+
+React
+
+.
+
+useState=
+
+({});
+
+const
+
+onSubmit
+
+ =
+=3D (
+
+e
+
+) =3D>=
+; {
+    e.
+
+preventDefault
+
+();
+
+const
+
+ nex=
+tErrors =3D {};
+
+// simple example validation
+
+if
+
+ (!e.
+
+target
+
+.
+=
+
+email
+
+.
+
+=
+
+value
+
+) nextErrors.
+=
+
+email
+
+ =3D 
+
+'Email is required'
+
+;
+
+if
+
+ (!e.
+
+target
+
+.
+=
+
+password
+
+.
+
+value
+
+) nextErrors.
+
+password
+
+ =3D 
+
+'Password is required'
+
+;
+
+setErrors
+
+(nextErrors);
+  };
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (error=
+s.
+
+email
+
+ &=
+;& emailRef.
+
+current
+
+) emailRef.
+
+current
+
+.
+
+focus
+
+();
+
+else
+
+if
+
+ (errors.
+
+password
+
+ &&=
+; passwordRef.
+
+current
+
+) passwordRef.
+
+current
+
+.
+
+focus
+
+();
+  }, [errors]);
+
+return
+
+ (
+
+<=
+
+form
+
+onSubmit
+
+=3D
+
+{onSubmit}
+
+noValidate
+
+>
+
+<
+A=
+11yTextField
+
+id
+
+=3D
+
+"email"
+
+label
+
+=3D=
+
+"Email"
+
+name
+
+=3D
+
+"email"
+
+inputRef
+
+=
+=3D
+
+{emailRef}
+
+error
+
+=3D=
+
+{!!errors.email}
+
+helperText
+
+=3D
+
+{errors.email}
+
+autoComplete
+
+=3D
+
+"email"
+
+autoFocus
+
+fullWidth
+
+margin
+
+=
+=3D
+
+"normal"
+
+      />
+
+<
+A=
+11yTextField
+
+id
+
+=3D
+
+"password"
+
+label
+
+=3D=
+
+"Password"
+
+name
+
+=3D
+
+"password"
+
+type
+
+=3D
+
+"password"
+
+inputRef
+
+=
+=3D
+
+{passwordRef}
+
+error
+
+=3D=
+
+{!!errors.password}
+
+helperText
+
+=3D
+
+{errors.password}
+
+autoComplete
+
+=3D
+
+"current-password"
+
+fullWidth
+
+margin
+
+=
+=3D
+
+"normal"
+
+      />
+
+<
+b=
+utton
+
+typ=
+e
+
+=3D
+
+"submit"
+
+aria-disabled
+
+=3D
+
+{false}
+
+>Sign in
+
+</
+button
+
+>
+
+</
+fo=
+rm
+
+>
+  );
+}
+
+3) Keep visible focus rings
+
+css
+
+Copy code
+
+/* frontend/src/index.css (=
+or global.css) */
+
+:focus
+
+-visible {
+
+outline
+
+: =
+
+2px
+
+ solid 
+
+#2563eb
+
+;
+
+outline-offset
+
+: 
+
+2px
+
+;
+}
+
+button
+
+:focus
+
+-visible, 
+
+[role=3D
+"button"
+
+]
+
+:focus
+
+-visible, 
+
+input
+
+:focus
+
+-visible, 
+
+textarea
+
+:focus
+
+-visible {
+
+box-shadow
+
+: 
+
+0
+
+0
+
+0
+
+3px
+
+=
+rgba
+
+(
+
+37
+=
+
+,
+
+99
+
+,
+
+235
+
+,.
+
+35
+
+);
+}
+
+B) ARIA =E2=80=9Cmain content det=
+ection=E2=80=9D (1 failing)
+
+Ensure a single, unique main landmark + H1 focus on route chang=
+e
+
+jsx
+
+Copy code
+
+// frontend/src/components/=
+layout/AppLayout.jsx
+
+import
+
+React
+
+, { useEf=
+fect, useRef } 
+
+from
+
+=
+
+'react'
+
+=
+;
+
+import
+
+ { useL=
+ocation } 
+
+from
+
+'react-router-dom'
+
+=
+
+;
+
+export
+
+default
+
+function
+
+AppLayout
+
+(
+
+{ title, children }
+
+) {
+
+const
+
+ mainR=
+ef =3D 
+
+useRef
+
+(
+
+null
+
+=
+);
+
+const
+
+ { pat=
+hname } =3D 
+
+useLocation
+
+();
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+// move focus to main on rout=
+e change
+
+if
+
+ (mainR=
+ef.
+
+current
+
+) =
+mainRef.
+
+current
+
+.
+
+focus
+
+();
+  }, [pathname]);
+
+return
+
+ (
+
+<=
+>
+
+      {/* =E2=80=A6H

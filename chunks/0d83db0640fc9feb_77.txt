@@ -1,0 +1,180 @@
+e permissions of your 
+camera
+, 
+microphone
+, and 
+screen sharing
+ access via 
+Terminal
+ on macOS, you can follow these steps:
+
+1. 
+Check Active Camera and Microphone Access
+
+Unfortunately, there isnât a direct Terminal command that lists 
+real-time
+ camera or microphone access across all applications. However, you can check the system logs to see if any apps or processes are using your camera or microphone.
+
+Using 
+log
+ to check for camera/mic activity:
+
+To look for any activity related to camera or microphone access, you can use the 
+log
+ command in the Terminal to view system logs. Hereâs how:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera"'
+
+ --info
+
+This command will show logs related to the camera. If an app or process is accessing the camera, it may appear here.
+
+Similarly, for microphone activity:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "microphone"'
+
+ --info
+
+This will return logs related to microphone activity, such as when apps try to access it.
+
+2. 
+Revoke Camera and Microphone Access via Privacy Settings
+
+While you can't directly change camera or microphone permissions from Terminal, you can manipulate privacy preferences via system files. For example, to 
+disable camera access for specific apps
+, you would need to manually edit or reset those permissions in 
+System Preferences
+.
+
+Hereâs how to reset the 
+camera
+ access list for apps:
+
+bash
+
+Copy
+
+tccutil reset Camera
+
+This command will reset the camera permissions, which effectively means no apps will have access unless you manually enable them again from 
+System Preferences
+.
+
+Similarly, you can reset the 
+microphone
+ access list by running:
+
+bash
+
+Copy
+
+tccutil reset Microphone
+
+This will reset the microphone permissions and prevent apps from accessing it until you explicitly allow it again through System Preferences.
+
+3. 
+Check Screen Recording Access via Terminal
+
+You can check and reset 
+screen recording permissions
+ through the 
+tccutil
+ command, but itâs a bit trickier because this permission is stored under a different category. You can reset it by running:
+
+bash
+
+Copy
+
+tccutil reset ScreenCapture
+
+This will reset screen recording permissions, and youâll need to manually grant screen recording access again through 
+System Preferences
+.
+
+4. 
+List All App Permissions (Camera, Microphone, etc.)
+
+To see all the apps that have access to camera, microphone, or screen capture, youâll need to navigate the systemâs 
+TCC
+ (Transparency, Consent, and Control) database. Unfortunately, this cannot be directly queried via Terminal without some additional tools or workarounds, but you can view the files at the following locations:
+
+Camera permissions are stored in:
+
+/Library/Application Support/com.apple.TCC/TCC.db
+
+Microphone permissions are stored in:
+
+/Library/Application Support/com.apple.TCC/TCC.db
+
+Screen recording permissions are also managed in the same database.
+
+You can inspect these files directly, but 
+modifying
+ them manually without a proper interface (like System Preferences) could cause issues and isn't recommended.
+
+5. 
+Monitor Connections (Network Usage)
+
+You can monitor network activity (which could reveal if any unauthorized apps are sending data to the internet) using the 
+netstat
+ command or 
+lsof
+ to identify open connections.
+
+View active connections using 
+netstat
+:
+
+bash
+
+Copy
+
+netstat -an | grep ESTABLISHED
+
+This will show any established network connections, which could give you insight into suspicious activity related to apps accessing your camera, mic, or other resources remotely.
+
+View open files and network activity with 
+lsof
+:
+
+bash
+
+Copy
+
+sudo lsof -i -n
+
+This will show you open files and network connections. If an application is secretly accessing your camera or microphone and sending data, it may show up in this list.
+
+Summary of Commands to Check or Reset Permissions:
+
+Camera access
+:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera"'
+
+ --info
+tccutil reset

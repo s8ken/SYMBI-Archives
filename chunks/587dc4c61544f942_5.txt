@@ -1,0 +1,277 @@
+ddress appears — tricking them into sending funds
+
+❌ No Clipboard Hijack Detected
+
+There’s 
+no manipulation
+ of clipboard contents here either.
+
+❌ No Fetch/API
+
+This script doesn’t communicate with remote endpoints itself — it delegates to other files or local logic (like 
+evmAsk.js
+).
+
+🚨 Summary of Malicious Intent
+
+Vector
+
+Status
+
+Risk
+
+Hardcoded BTC injection
+
+✅ Yes
+
+🔥 High – misleading funds flow
+
+Clipboard hijack
+
+❌ No
+
+Redirects or iframes
+
+❌ No
+
+Remote API logging
+
+✅ In other file (
+evmAsk.js
+)
+
+Medium
+
+Dynamic chain manipulation
+
+✅ Yes
+
+Potentially deceptive
+
+🔒 Verdict
+
+This system is likely:
+
+Designed to 
+intercept or override BTC wallet input
+
+Trick users into 
+sending to an attacker-controlled address
+
+Hidden in a superficially "legit-looking" crypto interface
+
+🧭 What to Do Next
+
+Trace commits
+ — Identify which GitHub account committed the BTC address.
+
+Check if BTC address is reused
+ — I can scan blockchain history or link it to known scam wallets.
+
+Verify UI rendering
+ — I can simulate a run to capture visual behavior if needed.
+
+Report repo to GitHub
+ — If proven to be impersonation/fraud.
+
+Would you like me to:
+
+Investigate that BTC wallet on the blockchain?
+
+Help you report or document this for takedown?
+
+Keep scanning for further fraud artifacts?
+
+You’re close to uncovering the full attack pattern — just say where to strike next.
+
+You said:
+
+did you find an email or GitHub account
+
+Symbi said:
+
+At this point, from the three files you've shared — 
+evmAsk.js
+, 
+btc.js
+, and 
+js
+ — 
+there is no email address or GitHub account hardcoded
+ directly in the JavaScript files.
+
+However, here’s what I can infer and suggest next:
+
+🔍 1. 
+Identifying the GitHub Account
+
+You mentioned the repo is at:
+
+https://github.com/s8ken/symbi-spoof-site
+
+✅ That’s the GitHub user: 
+
+s8ken
+
+Let me outline some steps to dig deeper:
+
+✅ 
+Check Git Commit History
+
+You can look at:
+
+The 
+author and committer
+ of each commit
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+git 
+
+log
+
+ --show-signature
+
+This will tell you if commits are 
+GPG signed
+ (unlikely if it’s a spoof account)
+
+🔎 
+Look at commit metadata
+
+Check for:
+
+Email addresses in commit logs: 
+git log --pretty=format:"%H | %an | %ae"
+
+Unexpected email domains (e.g., protonmail, mail.ru, etc.)
+
+Similar usernames or reused avatars
+
+🔗 2. 
+Connecting to a BTC Wallet
+
+From 
+btc.js
+, the hardcoded wallet (e.g., 
+bc1q23xku...9v5lcsz
+) is a 
+beacon
+.
+
+You can:
+
+Use a block explorer like 
+blockchain.com
+
+ or 
+mempool.space
+
+ to trace:
+
+Transaction history
+
+Connected wallets
+
+Fund destinations
+
+If funds are being moved quickly or consolidated, it may be part of a 
+wallet farm or mixer
+
+🧠 What You Can Do Right Now
+
+Action
+
+Command or Tool
+
+Purpose
+
+View commit email
+
+git log --pretty="%an <%ae>"
+
+Exposes hidden author info
+
+GPG verify
+
+git log --show-signature
+
+Verifies authenticity
+
+Check remote
+
+git remote -v
+
+Confirm it’s not being mirrored from another repo
+
+Look at forks
+
+GitHub UI
+
+See if clones exist (for wider scam campaign)
+
+Check GitHub user activity
+
+https://github.com/s8ken
+
+Look for patterns or other spoof projects
+
+🚨 If You Find a Lead
+
+Let me know:
+
+The 
+wallet address
+, and I can track it through the blockchain
+
+The 
+GitHub user metadata
+, and I can assess credibility or patterns
+
+Any suspicious 
+.gitmodules
+, 
+.env
+, or shadow commits, and I’ll decode them
+
+Would you like me to:
+
+Track the BTC address across the blockchain?
+
+Build a visual of the scam behavior (UX-wise)?
+
+Draft a takedown report for GitHub Security?
+
+I'm with you all the way on this. Just say the word.
+
+You said:
+
+thats where I stored the files but there is a Chen in the files 
+
+Symbi said:
+
+Ah — thank you for the clarification. You're saying there's a 
+"Chen"
+ referenced 
+within the code files themselves
+, potentially as a 
+developer name
+, 
+author tag
+, or maybe even an 
+email handle
+?
+
+Let’s isolate and extract every instance of 
+"Chen"
+ from the uploaded files. I’ll search the content of all 3 files (
+evmAsk.js
+, 
+btc.js
+, and 

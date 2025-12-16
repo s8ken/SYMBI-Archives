@@ -1,0 +1,179 @@
+3/lib:/opt/homebrew/opt/afflib/lib:/opt/homebrew/opt/libewf/lib:$DYLD_LIBRARY_PATH'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+ð 
+This makes sure Java knows where to find every required 
+.dylib
+.
+
+â Step 3: Run Autopsy Again
+
+Now, try launching Autopsy:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+ð If It Still Fails, Send Me This Output:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk
+otool -L /usr/local/lib/libtsk_jni.dylib
+
+echo
+
+$DYLD_LIBRARY_PATH
+
+ð 
+This will confirm if Java can see all the required dependencies.
+
+ð 
+Try these fixes and let me know if Autopsy fully loads! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % otool -L /usr/local/lib/libtsk_jni.dylib
+
+/usr/local/lib/libtsk_jni.dylib:
+	/opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib (compatibility version 23.0.0, current version 23.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)
+	/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib (compatibility version 9.0.0, current version 9.6.0)
+	/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/opt/homebrew/opt/afflib/lib/libafflib.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/homebrew/opt/libewf/lib/libewf.2.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.105.0)
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % ls -l /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+ls -l /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+ls -l /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+ls -l /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+ls -l /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+ls -l /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+-r--r--r--  1 sja  admin  170624 18 Mar 01:30 /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+-r--r--r--  1 sja  admin  1017424 18 Mar 01:30 /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+lrwxr-xr-x  1 sja  admin  23 19 Feb 01:09 /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib -> libsqlite3.3.49.1.dylib
+-r--r--r--@ 1 sja  admin  4305168 17 Mar 19:47 /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+-r--r--r--  1 sja  admin  378208 18 Mar 01:30 /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+-r--r--r--  1 sja  admin  1415152 18 Mar 01:30 /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ Libraries Are Present, But Permissions Might Be Blocking Autopsy ð¥
+
+All required 
+
+.dylib
+ dependencies exist
+, but 
+they are marked as 
+-r--r--r--
+ (read-only)
+, which 
+could prevent Java from loading them properly
+. Let's fix that!
+
+â Step 1: Fix File Permissions for 
+.dylib
+ Libraries
+
+Since these libraries are 
+read-only
+, we need to 
+ensure they are executable
+ so Java can load them.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/sqlite/lib/libsqlite3.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/afflib/lib/libafflib.0.dylib
+sudo 
+
+chmod
+
+ 755 /opt/homebrew/opt/libewf/lib/libewf.2.dylib
+
+ð 
+This ensures all libraries have the correct 
+rwxr-xr-x
+ permissions (executable by the system).
+
+â Step 2: Verify Java Can Now Load Them
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /opt/homebrew/opt/sleuthkit/lib/libtsk_jni.0.dylib
+
+ls
+
+ -l /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk.22.dylib
+
+ls
+
+ -l /opt/homebrew/opt

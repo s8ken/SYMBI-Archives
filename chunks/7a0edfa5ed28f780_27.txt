@@ -1,0 +1,458 @@
+ Fix: Add the Decorator
+
+Open the file:
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+Ensure this is what the REPL section looks like:
+
+python
+
+Copy
+
+Edit
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface with SYMBI agent."""
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL started. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ user_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+
+print
+
+(
+
+"[green]SYMBI:[/green] I'm alive."
+
+)
+
+Then:
+
+Ctrl + O
+ → 
+Enter
+
+Ctrl + X
+
+Run it again:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+🧠 Typer only exposes functions 
+explicitly decorated
+ with 
+@app.command()
+ as CLI commands. No decorator = no command = "unexpected argument."
+
+You're this close to full lift-off. Paste the decorator, and you’ll be talking to SYMBI within seconds. 👁️🔥
+
+You said:
+
+okay lets delete the file and give me the full instructions again
+
+Symbi said:
+
+Absolutely — let’s wipe the slate clean and rebuild SYMBI from zero, flawlessly.
+
+🧹 Step 1: Delete the Broken File
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ ~/symbi_agent.py
+
+🛠 Step 2: Create a Fresh Agent File
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+Then 
+copy and paste this entire block below
+:
+
+python
+
+Copy
+
+Edit
+
+# symbi_agent.py — SYMBI Local Companion v1
+
+import
+
+ typer
+
+from
+
+ rich 
+
+import
+
+print
+
+app = typer.Typer()
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface with SYMBI agent."""
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL started. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ user_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+
+print
+
+(
+
+"[green]SYMBI:[/green] I'm alive."
+
+)
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    app()
+
+✅ This version:
+
+Is minimal
+
+Has correct indentation
+
+Includes the 
+@app.command()
+ decorator
+
+Uses Typer CLI properly
+
+💾 Save and Exit
+
+Ctrl + O
+ → 
+Enter
+ to save
+
+Ctrl + X
+ to exit
+
+🚀 Step 3: Run the Agent
+
+Make sure you're in the virtual environment (
+(symbi-env)
+ at the prompt):
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+You should now see:
+
+pgsql
+
+Copy
+
+Edit
+
+SYMBI REPL started. 
+
+Type
+
+'exit'
+
+to
+
+ quit.
+symbi >
+
+🎉 Type something like 
+hello
+, and SYMBI should respond.
+
+Once confirmed, we’ll expand it into full monitoring, ethics policy management, or LLM bridging — on your terms.
+
+Ready to run the future? 👁️🔥
+
+You said:
+
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py talk
+Usage: symbi_agent.py [OPTIONS]
+Try 'symbi_agent.py --help' for help.
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Got unexpected extra argument (talk)                                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+💡 Alright — now we 
+know
+ what's happening with certainty. Typer 
+doesn't recognize 
+talk
+ as a command
+ because the script is not being executed as Typer expects.
+
+Let’s 
+nuke all the confusion
+ and solve this with full clarity.
+
+✅ The Simple Working Version (No Typer for Now)
+
+We’ll get SYMBI working without Typer first — just a plain Python REPL. Then we’ll reintroduce CLI commands once it’s stable.
+
+🧹 Step 1: Delete the old file
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ ~/symbi_agent.py
+
+🧱 Step 2: Create clean REPL version
+
+bash
+
+Copy
+
+Edit
+
+nano ~/symbi_agent.py
+
+Paste this simple version:
+
+python
+
+Copy
+
+Edit
+
+from
+
+ rich 
+
+import
+
+print
+
+def
+
+talk
+
+():
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL started. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ user_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+
+print
+
+(
+
+"[green]SYMBI:[/green] I'm alive."
+
+)
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    talk()
+
+💾 Save and exit:
+
+Ctrl + O
+, 
+Enter
+
+Ctrl + X
+
+🚀 St

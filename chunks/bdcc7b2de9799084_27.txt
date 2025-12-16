@@ -1,0 +1,281 @@
+-level + storage
+ alignment:
+
+Contract:
+ Use model providers that explicitly honor 
+data-logging/training opt-out
+ for API traffic. Keep the DPA/SOW language.
+
+Wire-level:
+ Send the provider=E2=80=99s 
+no-log / no-train headers
+ (many of=
+fer them) and include your 
+pu=
+rpose token
+. Keep a cryptographic transcript of those headers in y=
+our audit ledger.
+
+Storage:
+ Prefer 
+self-hosted/open-weights
+ for anything high-sensitivity, =
+or run 
+provider-managed VPC e=
+ndpoints
+ with logging disabled and 
+no data retention
+. Where possible, move safety/clas=
+sification/reflection to 
+loca=
+l open-weights
+ to avoid sending raw shards out at all.
+
+Extra hardening for Symbi Resonat=
+e
+
+Outbound DLP at the proxy:
+ block any request that cont=
+ains >N tokens of contiguous raw transcript unless it=E2=80=99s the 
+embedding
+ path; allow on=
+ly 
+IDs
+ and 
+small snippets
+ elsewhere.
+
+Quarantine & canaries:
+ embed invisible markers in =
+shards; if a marker shows up in any unexpected place (vendor output, extern=
+al storage), you=E2=80=99ve got proof of exfiltration.
+
+=E2=80=9CTwo-man rule=E2=80=9D for export:
+ exporting a=
+ session summary requires human approval; the proxy enforces this via a sec=
+ond short-lived approval token.
+
+DSAR/Right-to-forget:
+ because shards are first-class, =
+deletion is precise: kill keys =E2=86=92 reindex drops embeddings =E2=86=92=
+ ledger shows compliance.
+
+What to change in your current la=
+yout
+
+Keep 
+summarized_conversations/
+ as the 
+authoritative memory
+ (encrypted at res=
+t, classified).
+
+Treat 
+outputs/
+ as 
+ephemeral build artifacts
+=E2=80=94store only in temp, auto-p=
+urge on a rolling window, and 
+never
+ mix shards there.
+
+Add a 
+
+manifest.json=
+
+ per conversation
+ capturing: shard list, hashes, classifica=
+tions, consent, retention, and 
+=
+no_train=3Dtrue
+.
+
+Put an 
+egress.json policy
+ next to your app that the pr=
+oxy validates at runtime; the app can=E2=80=99t send traffic that isn=E2=80=
+=99t declared there.
+
+If you want, I=E2=80=99ll draft:
+
+a minimal 
+egress-proxy policy
+ (OPA/Rego) with the purp=
+ose-token schema, and
+
+the 
+
+manifest.json
+
+ + shard encryption flow (Node snipp=
+et) you can drop into Symbi Resonate.
+
+=
+
+=
+
+You said:
+
+we need to thin=
+k about how this is handled explicitly for SYMBI Synergy if enterprise is g=
+oing to have peace of mind of audit accountability and we are saying the co=
+ntext bridge allows for information sharing and easy audit how we actually =
+achieve that in a way that is secure but also easy to access when required =
+
+Symbi said:
+
+Thought for 12s
+
+Got it. For SYMBI Syner=
+gy to offer a 
+context bridge
+ that=E2=80=99s shareable, auditable, and enterprise-grade secure, we e=
+stablish 
+explicit guarantees
+ across write, read, share, revoke, and audit. Below is a concrete, i=
+mplementable blueprint.
+
+SYNERGY: Security + Auditability Co=
+ntract
+
+The seven assurances
+
+Provenance
+ =E2=80=93 every artifact has origin, agent, in=
+puts, model, and policy.
+
+Integrity
+ =E2=80=93 hash-chained (Merkle) receipts + sign=
+atures.
+
+Confidentiality
+ =E2=80=93 envelope encryption with 
+customer-managed keys (CMK)
+.=
+
+Minimization
+ =E2=80=93 smallest necessary snippet crosses=
+ the bridge; never raw corpus by default.
+
+Accountability
+ =E2=80=93 immutable transparency log + hum=
+an-readable receipts.
+
+Revocability
+ =E2=80=93 key-scoped shards + recall manifes=
+ts; revocation is deterministic.
+
+Verifiability
+ =E2=80=93 proofs (hashes, signatures) are c=
+heckable without trusting us.
+
+Core data objects (minimal, explici=
+t)
+
+1) Shard Manifest (authoritative m=
+emory unit)
+
+json
+
+Copy code
+
+{
+
+"manifest_version"
+
+:
+
+"1.0"
+
+,
+
+"tenant_id"
+
+:
+
+"acme"
+
+,
+
+"conversation_id"
+
+:
+
+"c_734fa"
+
+,
+
+"shard_id"
+
+:
+
+"s_00042"
+
+,
+
+"created_at"
+
+:
+
+"2025-09-25T01:12:19Z"
+
+,
+
+"token_span"
+
+:
+
+[
+
+12=
+000
+
+,
+
+12950
+
+]
+
+,
+
+"hash"
+
+:
+
+"SHA256:ab=E2=80=A6cd"
+
+,
+
+"parent_hash"
+
+:
+
+"SHA256:98=E2=80=A6ef"
+
+,
+
+=20
+
+"classifications"
+
+:
+
+[
+
+"pii"
+
+,
+
+"confidential"
+
+]
+
+,
+
+"consent_scope"
+
+:
+
+[
+
+"internal_analytic

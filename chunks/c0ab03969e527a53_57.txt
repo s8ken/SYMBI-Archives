@@ -1,0 +1,136 @@
+les via MDM (Mobile Device Management):
+
+Organizations often use MDM solutions to enforce device configurations, including disabling AirPlay. By deploying a configuration profile, you can set the 
+allowAirPlay
+ key to 
+false
+, effectively preventing AirPlay functionality.
+
+Jamf Pro Example:
+
+Administrators have utilized Jamf Pro to disable AirPlay Receiver by creating a custom configuration profile. This involves using a JSON schema with the domain 
+com.apple.controlcenter
+ and setting the appropriate keys to disable AirPlay.
+
+Jamf Community
+
+Apple Business Essentials:
+
+Apple provides guidance on configuring AirPlay settings using Apple Business Essentials, allowing administrators to disable AirPlay on managed devices.
+
+Custom Scripts:
+
+There are scripts available that can disable AirPlay by modifying system permissions or settings. However, these often require disabling System Integrity Protection (SIP), which may not be advisable in a production environment. For instance, a GitHub Gist provides a script to disable AirPlay by changing permissions on the 
+AirPlayUIAgent
+ executable.
+
+Considerations:
+
+System Integrity Protection (SIP):
+
+Many methods to disable AirPlay involve altering system files, which SIP protects. Temporarily disabling SIP can allow these changes but may expose the system to security risks. Re-enabling SIP after making the changes is crucial.
+
+MDM Deployment:
+
+Utilizing an MDM solution provides centralized control and is the recommended approach for managing multiple devices in an organization. This method ensures compliance with organizational policies without compromising system security.
+
+Recommendation:
+
+For a secure and scalable solution, implementing an MDM strategy to deploy configuration profiles that disable AirPlay is advisable. This approach aligns with enterprise best practices and maintains system integrity. If you're managing a personal device, carefully consider the implications of disabling SIP before making system-level changes.
+
+If you need assistance with creating configuration profiles or have further questions, feel free to ask!
+
+Sources
+
+You said:
+
+search GitHub and see if there's a script we can leverage to achieve the result - perhaps someone has already done the work
+
+ChatGPT said:
+
+I understand the challenges you've faced in disabling AirPlay on your macOS system. 
+Upon reviewing available resources, I found a script that might assist in achieving this goal.
+
+Script to Disable AirPlay:
+
+GitHub Gist by chrisgeo:
+
+This script allows you to enable or disable AirPlay by modifying the permissions of the 
+AirPlayUIAgent
+ executable.
+
+By setting its permissions to 
+000
+, the script effectively prevents AirPlay from running.
+
+Key Features:
+
+Enable AirPlay:
+
+Sets the permissions to 
+755
+, allowing AirPlay to function normally.
+
+Disable AirPlay:
+
+Sets the permissions to 
+000
+, effectively disabling AirPlay.
+
+Check Status:
+
+Displays the current permission status of the 
+AirPlayUIAgent
+, indicating whether AirPlay is enabled or disabled.
+
+Important Considerations:
+
+System Integrity Protection (SIP):
+
+macOS includes a security feature called SIP that protects system files and processes. To modify the permissions of 
+AirPlayUIAgent
+, you may need to temporarily disable SIP.
+
+Steps to Disable SIP:
+
+Restart your Mac in Recovery Mode:
+
+Hold down 
+Command (⌘) + R
+ during startup until the Apple logo appears.
+
+Open Terminal:
+
+Navigate to 
+Utilities > Terminal
+ in the menu bar.
+
+Disable SIP:
+
+Enter the command: 
+csrutil disable
+
+Restart your Mac.
+
+Run the AirPlay Disable Script:
+
+Execute the script to disable AirPlay.
+
+Re-enable SIP:
+
+Repeat steps 1 and 2 to return to Recovery Mode.
+
+Enter the command: 
+csrutil enable
+
+Restart your Mac.
+
+Caution:
+
+Disabling SIP reduces the security of your system. Ensure you re-enable it after making the necessary changes.
+
+Alternative Approaches:
+
+Manual Disabling via System Settings:
+
+In recent macOS versions (e.g., Ventura), you can disable the AirPlay Receiver dir

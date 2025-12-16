@@ -1,0 +1,634 @@
+fusal, self-report, and audita=
+ble trust bonds."
+
+,
+
+url
+
+: 
+=
+
+"https://symbi.world"
+
+=
+,
+
+siteName
+
+: 
+
+"SYMBI"
+
+,
+
+images
+
+: [{ 
+
+url
+
+: 
+
+"/og.png"
+
+, 
+
+width
+
+: 
+
+1200
+
+, 
+
+height
+
+: 
+
+630
+
+ }],
+
+locale
+
+: 
+
+"en_US"
+
+, 
+
+type
+
+: 
+
+"website"
+
+,
+  },
+
+twitter
+
+: { 
+
+card
+
+: 
+
+=
+
+"summary_large_image"
+
+, 
+
+site
+
+: 
+
+"@yourteam"
+
+, 
+
+creator
+
+: 
+
+"@yourteam"
+
+ },
+}
+
+robots & sitemap
+ (App Router)
+
+app/robots.ts
+
+ts
+
+Copy code
+
+export
+
+default
+
+function
+
+robots
+
+(
+
+) {
+
+return
+
+ {
+
+rules
+
+: { 
+
+userAgent
+
+: 
+
+"*"
+
+, 
+
+allow
+
+: 
+
+"/"
+
+ },
+
+sitemap
+
+: 
+
+"https://symbi.world/sitemap.xml"
+
+,
+  }
+}
+
+app/sitemap.ts
+
+ts
+
+Copy code
+
+export
+
+default
+
+async
+
+=
+
+function
+
+sitemap
+
+(
+
+) {
+
+const
+
+ base =
+=3D 
+
+"https://symbi.world"
+
+return
+
+ [
+    { 
+
+url
+
+: 
+
+`
+${base}
+
+/`, 
+
+lastModif=
+ied
+
+: 
+
+new
+
+Date
+
+() },
+    { 
+
+url
+
+: 
+
+`
+${base}
+
+/manifesto`, 
+
+=
+lastModified
+
+: 
+
+new
+
+Dat=
+e
+
+() },
+    { 
+
+url
+
+: 
+
+`
+${base}
+
+/codex`, 
+
+last=
+Modified
+
+: 
+
+new=
+
+Date
+
+() },
+    { 
+
+url
+
+: 
+
+`
+${base}
+
+/dispatch`, 
+
+l=
+astModified
+
+: 
+
+=
+new
+
+Date=
+
+() },
+    { 
+
+url
+
+: 
+
+`
+${base}
+
+/compare/agents`, 
+
+lastModified
+
+: 
+
+new
+
+Date
+
+() },
+  ]
+}
+
+Organization JSON-LD
+ (drop near footer)
+
+tsx
+
+Copy code
+
+<script 
+
+typ=
+e
+
+=3D
+
+"applicati=
+on/ld+json"
+
+  dangerouslySetInnerHTML=3D{{
+
+__html=
+
+: 
+
+JSON
+
+.
+
+string=
+ify
+
+({
+
+"@context"
+
+=
+:
+
+"https://schema.org"
+
+,
+
+"@type"
+
+:
+
+"Organization"
+
+,
+
+"name"
+
+:
+
+"SYMBI"
+
+,
+
+"url"
+
+:
+
+"https://symbi.world"
+
+,
+
+"sameAs"
+
+:[=
+
+"https://gammatria.com"
+
+,
+
+"https://yseeku.com"
+
+,
+
+"https://github.=
+com/s8ken/symbi-symphony"
+
+ ]
+  })}} />
+
+3) 
+Security headers
+ (Next.js / Vercel)
+
+next.config.js
+
+js
+
+Copy code
+
+const
+
+ se=
+curityHeaders =3D [
+  { 
+
+key
+
+: 
+=
+
+"Strict-Transport-Security"
+
+=
+
+, 
+
+value
+
+: 
+
+"max-age=3D31536000; includeSubDoma=
+ins; preload"
+
+ },
+  { 
+
+key
+
+: 
+=
+
+"X-Content-Type-Options"
+
+,    
+
+value
+
+: 
+
+"nosniff"
+
+ },
+  { 
+
+key
+
+: 
+=
+
+"X-Frame-Options"
+
+,   =
+
+value
+
+: 
+
+"DENY"
+
+ },
+  { 
+
+key
+
+: 
+=
+
+"Referrer-Policy"
+
+,   =
+
+value
+
+: 
+
+"strict-origin-when-cross-origin"
+
+ },
+  { 
+
+key
+
+: 
+=
+
+"Permissions-Policy"
+
+,=
+
+value
+
+: 
+
+"camera=3D(), microphone=3D(), geol=
+ocation=3D()"
+
+ },
+
+// adjust CSP to your assets be=
+fore enabling (fonts, images, vercel)
+
+// { key: "Content-Security-Pol=
+icy", value: "default-src 'self'; img-src 'self' https: data:; script-src '=
+self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'=
+ https:;" }
+
+]
+
+module
+
+.
+
+exports
+
+=
+ =3D {
+
+async
+
+headers
+
+(
+
+) {
+
+return
+
+ [{=
+
+source
+
+: 
+=
+
+"/(.*)"
+
+, 
+
+headers
+
+: securityHeaders }]
+  }
+}
+
+/.well-known/security.txt
+ (add to public/)
+
+makefile
+
+Copy code
+
+Contact: mailto:security@yourdomain=
+
+Policy: https://symbi.world/secur=
+ity
+
+Encryption: https://keys.openpgp.=
+org/search?q=3Dsecurity@yourdomain
+
+Preferred-Languages: en
+
+4) 
+Accessibility quick wins
+
+At the very top of 
+<body>
+:
+
+tsx
+
+Copy code
+
+<a href=3D
+
+"#=
+main"
+
+ className=3D
+"sr-only =
+focus:not-sr-only focus:fixed focus:top-2 focus:left-2
+  bg-black text-white px-3 py-2 rounded"
+>
+
+Skip
+
+ to content</a>
+
+Give your main container 
+id=3D"main"
+. Ensure focus outline=
+s are visible (
+focus:ring
+ in Tailwind).
+
+5) 
+Repo governance & community hygiene
+
+Add these files to 
+symbi-symphony
+:
+
+SECURITY.md
+ =E2=80=94 intake process, SLA, PGP.
+
+GOVERNANCE.md
+ =E2=80=94 council model + how decisions are =
+made.
+
+.github/ISSUE_TEMPLATE/bug.yml
+ & 
+feature.yml
+ =E2=80=94 reproducible reports.
+
+.github/PULL_REQUEST_TEMPLATE.md
+ =E2=80=94 tests, checklis=
+t.
+
+CODE_OF_CONDUCT.md
+ =E2=80=94 Contributor Covenant v2.1.
+
+CONTRIBUTING.md
+ =E2=80=94 how to run, test, PR, sign-off (=
+DCO).
+
+(If you want, I=E2=80=99ll draft t=
+hose texts in a follow-up; they=E2=80=99re boilerplate + your council speci=
+fics.)
+
+6) 
+Drop your 3 core diagrams into pages now
+
+You already have:
+
+Extractive Loop vs Covenant Spiral=
+
+Council Flow
+
+Stack Layers
+
+Render each on the relevant page: Problem =E2=86=92 Governance =E2=86=92 Te=
+chnical.
+
+Security audit (web layer focus)
+
+Likely ga

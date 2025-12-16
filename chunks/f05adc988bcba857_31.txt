@@ -1,0 +1,743 @@
+define 
+editable pages
+ in Sanity.
+
+1ï¸â£ Open 
+schemas/page.ts
+ in Your Sanity Project
+
+Create a new file:
+
+bash
+
+Copy
+
+Edit
+
+nano schemas/page.ts
+
+Paste this 
+schema
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save and exit 
+(Ctrl + X â Y â Enter).
+
+2ï¸â£ Register the Schema
+
+Open 
+
+sanity.config.ts
+
+ and 
+add the new schema
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Now, you can 
+add/edit pages
+ in 
+Sanity Studio (CMS Dashboard).
+
+ð¹ Step 3: Integrate Your Own GPT Model for AI Content
+
+1ï¸â£ Install OpenAI SDK
+
+bash
+
+Copy
+
+Edit
+
+npm install openai
+
+2ï¸â£ Create an API Route to Generate Content
+
+In your 
+Next.js project
+, create:
+
+bash
+
+Copy
+
+Edit
+
+nano app/api/generate-content/route.ts
+
+Paste this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+import
+
+OpenAI
+
+from
+
+"openai"
+
+;
+
+const
+
+ openai = 
+
+new
+
+OpenAI
+
+({
+
+apiKey
+
+: process.
+
+env
+
+.
+
+OPENAI_API_KEY
+
+,
+});
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+const
+
+ response = 
+
+await
+
+ openai.
+
+completions
+
+.
+
+create
+
+({
+
+model
+
+: 
+
+"your-gpt-model-id"
+
+,
+      prompt,
+
+max_tokens
+
+: 
+
+200
+
+,
+    });
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+content
+
+: response.
+
+choices
+
+[
+
+0
+
+].
+
+text
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: 
+
+"Failed to generate content."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+3ï¸â£ Secure Your API Key
+
+Add 
+your GPT API key
+ to 
+.env.local
+:
+
+env
+
+Copy
+
+Edit
+
+OPENAI_API_KEY=your-api-key
+
+Restart the server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â Now, your site 
+can generate AI-assisted content
+ via 
+POST /api/generate-content
+.
+
+ð¹ Step 4: Add an AI Button to Sanity CMS
+
+1ï¸â£ Open 
+schemas/page.ts
+ Again
+
+Add an AI 
+button
+ inside the 
+fields
+:
+
+ts
+
+Copy
+
+Edit
+
+defineField
+
+({
+
+name
+
+: 
+
+"aiGenerate"
+
+,
+
+title
+
+: 
+
+"AI Generate"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+
+components
+
+: {
+
+input
+
+: 
+
+(
+{ value, onChange }
+
+) => (
+
+<
+button
+
+type
+
+=
+
+"button"
+
+onClick
+
+=
+
+{async
+
+ () => {
+          const res = await fetch("/api/generate-content", {
+            method: "POST",
+            body: JSON.stringify({ prompt: "Write content for " + value }),
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          onChange(data.content);
+        }}
+      >
+        Generate with AI
+
+</
+button
+
+>
+    ),
+  },
+}),
+
+2ï¸â£ Restart Sanity Studio
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â Now, when 
+editing pages
+, youâll see a 
+"Generate with AI"
+ button inside the CMS.
+
+ð¹ Step 5: Display Sanity Content on Your Next.js Website
+
+1ï¸â£ Install the Sanity Client
+
+In your 
+Next.js project
+, run:
+
+bash
+
+Copy
+
+Edit
+
+npm install @sanity/client
+
+2ï¸â£ Fetch Sanity Data in 
+page.tsx
+
+Modify your homepage:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+"@sanity/client"
+
+;
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+apiVersion
+
+: 
+
+"2023-03-21"
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+});
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [pageData, setPageData] = 
+
+useState
+
+(
+
+null
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+async
+
+function
+
+fetchData
+
+(
+
+) {
+
+const
+
+ data = 
+
+await
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page"][0]`
+
+);
+

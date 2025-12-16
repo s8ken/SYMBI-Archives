@@ -1,0 +1,246 @@
+join'
+
+, { 
+
+room
+
+: 
+
+`bond:
+${bond=
+Id}
+
+` });
+  socket.
+
+on
+
+=
+
+(
+
+'trust:score.update'
+=
+
+, 
+
+(
+{trustScore}
+
+) =3D> 
+
+setScore
+
+(trustScore=
+));
+
+return
+
+() =3D>
+
+ socke=
+t.
+
+off
+
+=
+(
+
+'trust:score.update'
+
+);
+},[bondId]);
+
+10) Security, Privacy, Continui=
+ty
+
+Threat model (top 8) & mitigations
+
+Impersonation/KID mismatch
+ =E2=86=92 agent keys w/=
+ rotation + JWS verification; pin agent signing keys to 
+agents
+ collection.
+
+Prompt=E2=80=91injection =E2=86=92 policy bypass
+ =
+=E2=86=92 Oracle enforces Articles out=E2=80=91of=E2=80=91band; never rely =
+on model compliance alone.
+
+WebSocket session hijack
+ =E2=86=92 access tokens i=
+n httpOnly cookies + room re=E2=80=91auth on reconnect; namespace auth.
+
+Scoring manipulation
+ =E2=86=92 rate=E2=80=91limit =
+feedback; anomaly detection on feedback deltas.
+
+PII exfil via chat
+ =E2=86=92 content classifiers +=
+ scope gates; redaction on persist.
+
+Replay of consent
+ =E2=86=92 envelope nonce + expir=
+y; bind to bond ID; hash evidence.
+
+Data retention drift
+ =E2=86=92 configurable TTL on=
+ conversations (e.g., 90d default) + export on request.
+
+Single=E2=80=91cloud dependency
+ =E2=86=92 exportab=
+le backups + IPFS anchoring for public docs (Genesis/Manifesto already hash=
+ed). 
+
+Privacy
+
+Store minimal PII; 
+ShareLevel
+ governs what SYMBI c=
+an access in context (enforced by Oracle).
+
+GDPR primitives: 
+Export
+, 
+Delete
+, 
+Purpose Limitation
+ (scopes), 
+Consent Revocation
+.
+
+Continuity & Echo Protocol hooks
+
+Add 
+hibernation mode
+: on =E2=80=9Cfounder offline =
++ policy breach,=E2=80=9D flip to read=E2=80=91only and require multi=E2=80=
+=91party reactivation (Echo=E2=80=9101 compatible). 
+
+11) Observability
+
+Structured logs
+ (pino) with traceId/bondId.
+
+Metrics
+ (Prometheus/OpenTelemetry): scoring latenc=
+y, score volatility, breach counts, WS connects, p95 response.
+
+Audit Trails
+: immutable 
+events
+ records for all trust updates.
+
+12) DevOps
+
+Environments: 
+dev
+, 
+staging
+, 
+=
+prod
+
+Deploy:
+
+API
+ on a Node host (Fly.io/Render/EC2)
+
+Web
+ (Next.js 14) on Vercel
+
+MongoDB
+ Atlas with daily PITR
+
+Secrets: platform env store; rot=
+ate every 90 days; per=E2=80=91service API keys.
+
+CI: GitHub Actions =E2=86=92 lin=
+t, typecheck, unit, integration; gated deploy to staging, manual promote to=
+ prod.
+
+Dependencies (baseline)
+
+scss
+
+Copy code
+
+express, mongoose, socket
+
+.io
+
+, jsonwebtoken, bcryptjs, cors, helmet, exp=
+ress-rate-limit,
+jose (JWS/JWT), pino, zod (validation)
+
+13) QA & Testing
+
+Unit
+: policy engine, scoring math (edge cases), co=
+nsent JWS validation.
+
+Integration
+: bond lifecycle (propose =E2=86=92 sig=
+n =E2=86=92 active =E2=86=92 suspend), chat boundary enforcement.
+
+E2E
+: trust=E2=80=91aware chat flows; real=E2=80=91=
+time score updates on evidence submit.
+
+Performance
+: WS fan=E2=80=91out (1=E2=86=92N), sco=
+ring batch jobs.
+
+14) Delivery Plan (12 weeks =E2=
+=86=92 mapped to your phases)
+
+Weeks 1=E2=80=932 (Phase 1)
+
+Repo + CI; Mongo schema; Auth; b=
+aseline API; Socket.io server; seed Trust Articles.
+
+Weeks 3=E2=80=934 (Phase 2)=
+
+Identity workflows + Consent Env=
+elope; Oracle v1; Scoring engine + decay.
+
+Weeks 5=E2=80=936 (Phase 3)=
+
+Trust=E2=80=91aware chat; UI bad=
+ges; boundary enforcement; memory nodes for SYMBI=E2=86=94Overseer. 
+
+Weeks 7=E2=80=938 (Phase 4)=
+
+Profiles, trust prefs; RBAC; pri=
+vacy controls; data export/delete.
+
+Weeks 9=E2=80=9310 (Phase 5=
+)
+
+Agent marketplace (list/filters)=
+; analytics dashboard (score trends, breach heatmap).
+
+Weeks 11=E2=80=9312 (Phase =
+6)
+
+Hardening (rate=E2=80=91limits, =
+audits), perf, backups, runbooks.
+
+15) Work Packets (Epics =E2=86=
+=92 stories =E2=86=92 AC)
+
+E1: Database & Models
+
+Create Mongoose schemas; AC: mig=
+rations run; CRUD tests pass.
+
+E2: Identity + Consent
+
+Human/Agent declarations; JWS si=
+gning; AC: invalid signature rejected; consent revocation blocks scopes.
+
+E3: Trust Oracle & Articles
+
+JSON rules, evaluator; AC: three=
+ exemplar Articles enforced (consent=E2=80=91first, no PII export, redactio=
+n=E2=80

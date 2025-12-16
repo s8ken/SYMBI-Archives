@@ -1,0 +1,220 @@
+tepapers, fix the language and link to the=
+se repo files:
+
+Actions to apply on 
+g=
+ammatria.com
+:
+
+/research
+
+Replace any =E2=80=9Clive=E2=80=9D=
+ metric copy with:
+
+=E2=80=9CDemo metrics (synthetic =
+data). Live receipts will be linked when the receipts API is public.=E2=80=
+=9D
+
+Add a small 
+Verification
+ card linking to the repo test=
+s:
+
+=E2=80=9CRepo tests (baseline/bal=
+anced/enhanced/calibrated) in JS & Python verify detector parity.=E2=80=
+=9D
+ =E2=86=92 link to 
+/tes=
+t/
+ folder.
+
+Add a 
+Case studies
+ section linking to the MD files abo=
+ve; label both 
+Receipts pendi=
+ng
+.
+
+Whitepapers links
+
+Change =E2=80=9CDownload PDF=E2=80=
+=9D to 
+=E2=80=9CRead in Vault=
+ (Markdown)=E2=80=9D
+ until PDFs are generated, and deep-link to th=
+e exact Vault file path.
+
+Resonance
+
+Add a canonical 
+=E2=80=9CLab source=E2=80=9D
+ link to t=
+he SYMBI-Resonate repo.
+
+Demo badges
+
+Use a small =E2=80=9CDemo=E2=80=9D=
+ chip next to any non-live figure so there=E2=80=99s no ambiguity.
+
+6) CI + artifact plan (so we can =
+publish receipts next)
+
+In SYMBI-Resonate:
+
+Add 
+GitHub Actions
+ that:
+
+Run JS + Python tests on push/PR.
+
+Emit a JSON artifact (scores per d=
+imension, commit SHA, timestamp).
+
+(Optional) Publish the artifact to=
+
+gh-pages
+ for a simple J=
+SON endpoint you can link from 
+/research
+ as =E2=80=9CLatest test pass=E2=80=9D.
+
+Receipts bundling (once ready):
+
+For each case study or benchmark, =
+zip: prompts, model settings, outputs, rubric decisions + a manifest (
+receipt.json
+) signed with you=
+r ed25519 key.
+
+Publish the SHA-256 on the site ne=
+xt to the download.
+
+Then flip =E2=80=9CDemo=E2=80=9D t=
+o =E2=80=9CLive (receipts)=E2=80=9D on 
+/research
+ for just those figures.
+
+7) Quick PR checklist (one pass; =
+minimal churn)
+
+Repo (SYMBI-Resonate)
+
+ Add 
+/test/fixtures/
+ and assertions.
+
+ Add 
+/case-studies/
+=
+ index + two study files with front-matter + disclaimers.
+
+ Tighten 
+benchmark_*
+ docs with complete settings and ethical caveats.
+
+ Update 
+README-2.md
+=
+ quick-start + link to 
+/test/
+ and 
+/case-studies/
+=
+.
+
+ Add GitHub Actions (JS & Py) + artifact output.
+
+Site (gammatria.com)
+
+ /research =E2=80=94 demo labels, Verification card (link to 
+/test/
+), Case studies section (li=
+nk to MDs).
+
+ Update whitepaper CTAs to =E2=80=9CRead in Vault (Markdown)=E2=80=9D =
+until PDFs ship.
+
+ Add =E2=80=9CLab source: SYMBI-Resonate=E2=80=9D to Resonance page fo=
+oter.
+
+Why this works
+
+You immediately 
+reduce risk
+ (no implied live claims).
+
+Reviewers get 
+real links
+ (tests, methods, case study=
+ drafts).
+
+When receipts are ready, you flip =
+a label rather than rewrite the site.
+
+Investors see a 
+clean verification story
+ (CI + artifac=
+ts), while the public still has an understandable path to participate.
+
+If you open any of these files in =
+your =E2=80=9CWork with code=E2=80=9D tab, I=E2=80=99ll give you exact, lin=
+e-specific patches (e.g., add assertions to 
+test_detection.js
+, front-matter blocks for the case stu=
+dies, or the small =E2=80=9CVerification=E2=80=9D card for 
+/research
+).
+
+=
+
+=
+
+You said:
+
+yes i am unsure where=
+ the overclaims came from but either codex or trae and i suspect trae, the =
+website should talk about ressonance and how it was created, the results, s=
+uper ninjas own reflection etc however it should highligh the subjective na=
+ture of it 
+
+Symbi said:
+
+Thought for 21s
+
+=
+
+tota=
+lly with you =E2=80=94 the site should tell the 
+SYMBI Resonate
+ story (why we built it, how it works=
+, what we saw), include 
+Ninja=
+=E2=80=99s own reflection
+, and be crystal clear that the findings =
+are 
+observational and subjectiv=
+e
+ until backed by receipts.
+
+below is a clean, paste-ready set of=
+ content + tiny components to fix tone across the site. no overclaims, just=
+ honest lab notes.
+
+1) New /resonance page (drop-in MDX=
+)
+
+File:
+
+src/app/r=
+esonance/page.mdx
+
+=
+mdx
+
+Copy code
+
+export const metadata =3D {
+  title: 'SYMBI Resonate =E2=80=94 Lab Notes (Observational)',
+  description:
+    'How we built Resonate, what it 

@@ -1,0 +1,339 @@
+llowed) to see what it does with the wallet input?
+
+Just say the word.
+
+You said:
+
+btc.js
+
+JavaScript
+
+Symbi said:
+
+Great — you've uploaded 
+btc.js
+. Let’s analyze this file for:
+
+Embedded 
+Bitcoin addresses
+
+Any wallet address substitution tricks
+
+Clipboard/DOM tampering
+
+Suspicious external connections or behavior
+
+🔍 Analysis of 
+btc.js
+
+✅ 
+Purpose
+
+This script appears focused on handling 
+Bitcoin addresses
+, likely intended to:
+
+Display or manipulate BTC wallet data in a web app
+
+Possibly fetch or submit data related to those addresses
+
+🧨 1. 
+Bitcoin Address Detection
+
+Yes — this file 
+does contain a hardcoded Bitcoin address
+:
+
+js
+
+Copy
+
+Edit
+
+const
+
+ btcAddress = 
+
+"bc1q23xku...9v5lcsz"
+
+;
+
+🛑 
+Red Flag
+: The presence of a hardcoded BTC address—especially in a public-facing repo—is a common marker of crypto scam scripts, especially if it's the only address and isn't user-configurable.
+
+🧪 2. 
+Behavioral Patterns
+
+❌ Clipboard Hijacking
+
+There is 
+no code
+ modifying the clipboard (
+navigator.clipboard
+, 
+oncopy
+, etc.).
+
+❌ Auto-Redirects
+
+No 
+window.location
+ or 
+setTimeout
+ redirect logic.
+
+✅ DOM Injection
+
+If paired with other frontend code, this file might be injecting 
+btcAddress
+ dynamically. Example:
+
+js
+
+Copy
+
+Edit
+
+document
+
+.
+
+getElementById
+
+(
+
+'wallet'
+
+).
+
+innerText
+
+ = btcAddress;
+
+If the HTML has an element like 
+<span id="wallet"></span>
+, this script would insert the BTC address there.
+
+If used deceptively, this could mislead users into thinking it’s their address or donation link—when in fact, it’s not.
+
+🌐 3. 
+Network Activity
+
+This file doesn’t include fetch/XHR logic, so no outbound network behavior is embedded in this specific script.
+
+🚨 Summary of Risks
+
+Behavior
+
+Detected
+
+Risk
+
+Hardcoded BTC Address
+
+✅ Yes
+
+⚠️ Medium – may be used for fraud
+
+Clipboard Injection
+
+❌ No
+
+Redirects / Obfuscation
+
+❌ No
+
+DOM Manipulation
+
+⚠️ Possible
+
+Depends how 
+btcAddress
+ is used
+
+API Logging
+
+❌ No
+
+🧭 Recommended Next Steps
+
+Search where 
+btc.js
+ is included
+
+If this is loaded in an HTML file with 
+script src="btc.js"
+, check how 
+btcAddress
+ is used.
+
+Check GitHub commit history
+
+Who introduced the hardcoded wallet, and when?
+
+Run live inspection in browser dev tools
+
+See what element(s) 
+btc.js
+ manipulates at runtime.
+
+Verify ownership of the wallet
+
+You mentioned already identifying a wallet—match it against this one.
+
+If you send me the HTML or frontend JS that includes this file, I can check how it actually renders in the page and whether it’s being misused for impersonation or fraud.
+
+Would you like me to keep tracing this address through blockchain explorers or related commits?
+
+You said:
+
+js
+
+JavaScript
+
+Symbi said:
+
+Thanks — you've uploaded another file simply named 
+js
+. Let's analyze it immediately.
+
+🔍 Deep Analysis of 
+js
+
+✅ 
+Purpose
+
+This script appears to 
+glue together frontend elements
+ and control interaction between user inputs and crypto-related actions — likely supporting EVM or BTC actions from the previous two files.
+
+🔍 Key Findings
+
+⚠️ 
+Dynamic Wallet Handling
+
+This script includes dynamic DOM interaction. For example:
+
+js
+
+Copy
+
+Edit
+
+const
+
+ chain = 
+
+document
+
+.
+
+getElementById
+
+(
+
+"chain"
+
+).
+
+value
+
+;
+
+const
+
+ address = 
+
+document
+
+.
+
+getElementById
+
+(
+
+"wallet"
+
+).
+
+value
+
+;
+
+This tells us the script is:
+
+Fetching user-supplied wallet input (
+wallet
+)
+
+Determining the selected chain (
+ETH
+, 
+BTC
+, etc.)
+
+Then...
+
+js
+
+Copy
+
+Edit
+
+if
+
+ (chain === 
+
+"BTC"
+
+) {
+
+// Injects the hardcoded BTC address into the DOM
+
+document
+
+.
+
+getElementById
+
+(
+
+"result"
+
+).
+
+innerText
+
+ = btcAddress;
+}
+
+🔥 This confirms: 
+if a user selects BTC
+, the 
+hardcoded wallet address from 
+btc.js
+ is injected into the UI.
+
+🧨 Critical Behavior Chain
+
+User enters their 
+own wallet address
+
+Selects "BTC" from a dropdown (
+chain
+)
+
+Hits submit or action
+
+UI displays 
+developer-controlled BTC address instead of the user's
+
+➡️ 
+Potential for fraud or trickery
+:
+
+Users may 
+think their address is used
+
+Instead, the scammer’s BTC a

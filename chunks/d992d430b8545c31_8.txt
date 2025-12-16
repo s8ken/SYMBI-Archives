@@ -1,0 +1,123 @@
+er. Is port 3000 in use?"
+    stack: [
+      "Error: Failed to start server. Is port 3000 in use?",
+      "at serve (unknown)",
+      "at [kRealListen] (node:_http_server:554:41)",
+      "at listen (node:_http_server:531:35)",
+      "at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6332:21)",
+      "at new Promise (native:1:11)",
+      "at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6323:16)",
+      "at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/index.js:4793:18)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:45:40] ERROR: Port 3000 is already in use. Please try a different port or stop the process using that port.
+[2025-07-23 11:45:40] ERROR: Failed to start server on port 3000:
+    message: "(Error) Failed to start server. Is port 3000 in use?"
+    stack: [
+      "Error: Failed to start server. Is port 3000 in use?",
+      "at serve (unknown)",
+      "at [kRealListen] (node:_http_server:554:41)",
+      "at listen (node:_http_server:531:35)",
+      "at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6332:21)",
+      "at new Promise (native:1:11)",
+      "at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6323:16)",
+      "at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/index.js:4793:18)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:45:40] ERROR: An error occurred:
+    message: "(Error) Failed to start server. Is port 3000 in use?"
+    stack: [
+      "Error: Failed to start server. Is port 3000 in use?",
+      "at serve (unknown)",
+      "at [kRealListen] (node:_http_server:554:41)",
+      "at listen (node:_http_server:531:35)",
+      "at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6332:21)",
+      "at new Promise (native:1:11)",
+      "at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6323:16)",
+      "at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/index.js:4793:18)",
+      "at processTicksAndRejections (native:7:39)"
+    ]
+[2025-07-23 11:45:40] ERROR: Error details: Failed to start server. Is port 3000 in use?
+[2025-07-23 11:45:40] ERROR: Stack trace: Error: Failed to start server. Is port 3000 in use?
+    at serve (unknown)
+    at [kRealListen] (node:_http_server:554:41)
+    at listen (node:_http_server:531:35)
+    at <anonymous> (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6332:21)
+    at new Promise (native:1:11)
+    at start (/Users/admin/symbi/node_modules/@elizaos/server/dist/index.js:6323:16)
+    at startAgents (/Users/admin/symbi/node_modules/@elizaos/cli/dist/index.js:4793:18)
+    at processTicksAndRejections (native:7:39)
+Server process exited with code 1
+
+ChatGPT said:
+
+Thanks for posting the logs — you're in excellent shape except for 
+one small final issue
+:
+
+❌ Error: 
+Port 3000 is already in use
+
+This just means something (probably another ElizaOS or dev server) is still running in the background on port 
+3000
+.
+
+✅ Fix It:
+
+Option 1: Kill whatever’s using port 3000
+
+Run this in your terminal:
+
+bash
+
+Copy
+
+Edit
+
+lsof -i :3000
+
+That’ll show you the process using port 3000 (e.g., Node, Bun, etc.). Then:
+
+bash
+
+Copy
+
+Edit
+
+kill
+
+ -9 <PID>
+
+Replace 
+<PID>
+ with the actual process ID from the above.
+
+Option 2: Start ElizaOS on a different port
+
+If you want to run multiple agents or projects at once:
+
+bash
+
+Copy
+
+Edit
+
+elizaos dev --port 3001
+
+(Or any other available port.)
+
+Once it boots without errors, open your browser to 
+http://localhost:3001
+ (or whichever port you chose), and you’ll be right back in business.
+
+Let me know which way you go and I’ll help verify it’s working!
+
+You said:
+
+To update your account to use zsh, please run 
+chsh -s /bin/zsh
+.
+For more details, please visit https://support.apple.com/kb/HT208050.
+SYMBIs-MacBook-Pro:~ admin$ lsof -i :3000
+COMMAND    PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+co

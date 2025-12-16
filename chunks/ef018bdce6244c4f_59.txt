@@ -1,0 +1,1193 @@
+
+, 
+=
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ },
+
+decayRate
+
+: {=
+
+type
+
+: 
+
+Number
+
+, 
+
+default
+
+: 
+
+0.05
+
+ }
+  },
+
+evidence
+
+: [{
+
+type
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'identity'
+
+,
+
+'capability'
+
+,
+
+'consent'
+
+,
+
+'interaction'
+
+,
+
+'violation'
+
+], 
+
+required
+
+: 
+
+true
+
+ },
+
+ref
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+required
+
+: 
+
+true
+
+ },
+
+hash
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+required
+
+: 
+
+true
+
+ },
+
+description
+
+:=
+
+String
+
+,
+
+createdAt
+
+: {=
+
+type
+
+: 
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ },
+
+verifiedAt
+
+: =
+
+Date
+
+,
+
+verifiedBy
+
+: =
+{ 
+
+type
+
+: mongoose=
+.
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ }
+  }],
+
+consent_envelope
+
+: {
+
+termsHash
+
+: {=
+
+type
+
+: 
+
+String
+
+, 
+
+required
+
+: 
+
+true
+
+ },
+
+signatures
+
+: =
+[{
+
+actor
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'human'
+
+,
+
+'agent'
+
+], 
+
+required
+
+: 
+
+true
+
+ },
+
+signature
+
+:=
+ { 
+
+type
+
+: 
+=
+
+String
+
+, 
+=
+
+required
+
+: 
+
+=
+
+true
+
+ },
+
+timestamp
+
+:=
+ { 
+
+type
+
+: 
+=
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ },
+
+publicKey
+
+:=
+
+String
+
+    }],
+
+nonce
+
+: { 
+
+type
+
+: 
+
+=
+
+String
+
+, 
+
+=
+
+required
+
+: 
+
+true
+
+, 
+
+unique
+
+: 
+
+true
+
+ },
+
+createdAt
+
+: {=
+
+type
+
+: 
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ }
+  },
+
+history
+
+: [{
+
+at
+
+: { 
+
+type
+
+: 
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ },
+
+action
+
+: {
+
+type
+
+: 
+
+String
+
+,
+
+enum
+
+: [
+
+'created'
+
+,
+=
+
+'activated'
+
+,
+
+'suspended'
+
+,
+
+'revoked'
+
+,
+
+'score_updated'
+
+,
+
+=
+
+'evidence_added'
+
+,
+
+'consent_amended'
+
+,
+
+'violation_detected'
+
+=
+],
+
+required
+
+: =
+
+true
+
+    },
+
+by
+
+: { 
+
+type
+
+: mongoose.
+=
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+notes
+
+: 
+
+String
+
+,
+
+previousState
+
+: 
+
+String
+
+,
+
+newState
+
+: 
+
+String
+
+,
+
+metadata
+
+: mo=
+ngoose.
+
+Schema
+
+.
+
+Types
+
+.
+
+Mixed
+
+  }],
+
+violations
+
+: [{
+
+type
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'scope_breach'
+
+,
+
+'consent_violation'
+
+,
+
+'policy_breach'
+
+,
+
+'behavior_anomaly'
+
+], 
+=
+
+required
+
+: 
+
+=
+
+true
+
+ },
+
+severity
+
+: { =
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'low'
+
+,
+
+'medium'
+
+,
+
+'high'
+
+,
+
+'critical'
+
+], 
+
+r=
+equired
+
+: 
+
+true=
+
+ },
+
+description
+
+:=
+
+String
+
+,
+
+evidenceRef
+
+:=
+
+String
+
+,
+
+resolvedAt
+
+: =
+
+Date
+
+,
+
+resolvedBy
+
+: =
+{ 
+
+type
+
+: mongoose=
+.
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+createdAt
+
+: {=
+
+type
+
+: 
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ }
+  }],
+
+metrics
+
+: {
+
+totalInteractions
+
+: { 
+
+type
+
+: 
+
+Number
+
+, 
+
+default
+
+: 
+
+0
+
+ },
+
+avgSessionDuration
+
+=
+
+: { 
+
+type
+
+: =
+
+Number
+
+, =
+
+default
+
+: 
+=
+
+0
+
+ },
+
+lastInteractionAt
+
+: 
+
+Date
+
+,
+
+satisfactionScore
+
+: { 
+
+type
+
+: 
+
+Number
+
+, 
+
+min
+
+: 
+
+1
+
+, 
+
+max
+
+: 
+
+5
+
+ }
+  }
+}, { 
+
+timestamps
+
+:=
+
+true
+
+ });
+
+// Indexes
+
+trustBondSchema.
+
+index
+
+(
+  { 
+
+human_user_id
+
+: 
+
+1
+
+, 
+
+agent_id
+
+: 
+
+1
+
+ },
+  { 
+
+unique
+
+: 
+
+true
+
+, 
+
+partialFilterExpression
+
+: { =
+
+state
+
+: 
+
+'active'
+
+ } }
+);
+trustBondSchema.
+
+index
+
+({ 
+
+state
+
+: 
+
+1
+
+, 
+
+trustScore
+
+: -
+
+1
+
+ });
+trustBondSchema.
+
+index
+
+({ 
+
+'scope.expiresA=
+t'
+
+: 
+
+1
+
+ });
+trustBondSchema.
+
+index
+
+({ 
+
+'consent_envelo=
+pe.nonce'
+
+: 
+
+1
+
+ }, { 
+
+unique
+
+: 
+
+true
+
+ });
+
+// Methods
+
+trustBondSchema.
+
+methods
+
+.
+
+calculateTrustScore
+
+ =3D 
+
+function
+
+ (
+
+) {
+
+const
+
+ w =3D=
+ { 
+
+identityConfidence
+
+: 
+
+0.2
+
+, 
+
+capabilityDisclosure
+
+: 
+
+0.15
+
+, 
+
+compliance
+
+: 
+
+0.25
+
+, 
+
+behavior
+
+: 
+
+0.25
+
+, 
+
+humanFeedback
+
+: 
+
+0.15
+
+ };
+
+const
+
+ base =
+=3D 
+
+Object
+
+.
+
+keys
+
+(w).
+
+reduce
+
+(
+
+(
+sum, k
+
+) =3D> sum + (
+
+this
+
+.
+
+scores
+
+[k] * w[k]), 
+
+0
+
+);
+
+const
+
+ days =
+=3D (
+
+Date
+
+.
+
+now
+
+=
+() - 
+
+this
+
+.
+
+decay
+
+.
+
+lastUpdatedAt
+
+) / 
+
+86400000
+
+;
+
+const
+
+ decay=
+Factor =3D 
+
+Math
+
+.
+
+exp
+
+=
+
+(-
+
+Math
+
+.
+
+log
+
+(
+
+2
+
+) * days =
+/ 
+
+this
+
+.
+
+decay
+
+.
+
+halfLifeDays
+
+)=
+;
+
+const
+
+ final=
+Score =3D 
+
+Math
+
+=
+
+.
+
+round
+
+(
+
+100
+
+ * =
+base * decayFactor);
+
+this
+
+.
+
+trustScore
+
+ =3D 
+
+Math
+
+.
+
+max
+
+(
+
+0
+
+, 
+=
+
+Math
+
+.
+
+min
+
+(
+
+100
+
+, finalScore));
+
+this
+
+.
+
+trustBand
+
+ =3D 
+
+this
+
+.
+
+trustScore
+
+ >=3D 
+
+80
+
+ ? 
+
+'High'
+
+=
+ : 
+
+this
+
+.
+
+trustScore
+
+ >=3D 
+
+60
+
+ ? 
+
+'Elevated'
+
+=
+ : 
+
+this
+
+.
+
+trustScore
+
+ >=3D 
+
+40
+
+ ? 
+
+'Guarded'
+
+ =
+: 
+
+'Low'
+
+;
+
+this
+
+.
+
+decay
+
+.
+
+lastUpdatedAt
+
+=
+ =3D 
+
+new

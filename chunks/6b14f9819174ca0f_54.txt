@@ -1,0 +1,347 @@
+───────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+  × You're importing a component that needs 
+useState
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·                     ────────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ ⨯ ./app/layout.tsx
+Error:   × You're importing a component that needs 
+useEffect
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·          ─────────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+  × You're importing a component that needs 
+useState
+. This React hook only works in a client component. To fix, mark the file (or its parent) with the 
+"use client"
+ directive.
+  │ 
+  │  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  │ 
+  │ 
+   ╭─[/Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website/app/layout.tsx:1:1]
+ 1 │ import { useEffect, useState } from "react";
+   ·                     ────────
+ 2 │ import { ThemeProvider } from "next-themes";
+ 3 │ import { Inter } from "next/font/google";
+   ╰────
+
+Import trace for requested module:
+./app/layout.tsx
+ GET / 500 in 1847ms
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+The error is clear: Next.js requires 
+"use client";
+ in 
+app/layout.tsx
+, but it’s still not being recognized properly.
+ Let’s 
+fix it properly this time.
+ 🚀😈
+
+🔹 Step 1: Modify 
+app/layout.tsx
+ Properly
+
+1️⃣ Open 
+app/layout.tsx
+ in 
+Nano
+:
+
+bash
+
+Copy
+
+nano app/layout.tsx
+
+2️⃣ 
+Make sure the very first line is exactly this:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+This 
+must
+ be the very first line, before any imports.
+
+3️⃣ 
+Replace everything inside 
+app/layout.tsx
+ with this:
+
+tsx
+
+Copy
+
+"use client"
+
+;  
+
+// ✅ Ensures this runs only on the client side
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"next-themes"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,  
+}: Readonly<{
+  children: React.ReactNode
+}>
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+        {isClient ? (
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"dark"
+
+enableSystem
+
+=
+
+{false}
+
+>
+            {children}
+
+</
+ThemeProvider
+
+>
+        ) : (
+
+<>
+
+{children}
+
+</>
+
+        )}
+
+</
+body
+
+>
+    </html>
+  );
+}
+
+✅ 
+Why This Fix Works:
+
+"use client";
+ is now 
+correctly placed at the top
+ (Next.js requires it to be the first line).
+
+Ensures dark mode logic only runs on the client
+ to prevent hydration mismatches.
+
+Prevents Next.js from trying to run hooks (
+useEffect
+, 
+useState
+) on the server.
+
+🔹 Step 2: Save & Exit
+
+1️⃣ 
+Press 
+CTRL + X
+
+2️⃣ 
+Press 
+Y
+
+ (to confirm save)
+
+3️⃣ 
+Press 
+Enter
+
+ (to exit Nano)
+
+🔹 Step 3: Restart the Next.js Server
+
+Since we changed an important layout file, restart the dev server:
+
+1️⃣ 
+Stop the server (if running):
+
+bash
+
+Copy
+
+CTRL + C
+
+2️⃣ 
+Restart it:
+
+bash
+
+Copy
+
+npm run dev
+
+3️⃣ 
+Test 

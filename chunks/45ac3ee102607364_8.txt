@@ -1,0 +1,108 @@
+it’s best to open 
+System Settings
+ manually and disable those options under the Sharing section.
+
+Check for Documentation Updates:
+
+Review the latest documentation or GitLab issues for iTerm2 to see if there’s a new recommended way to script these settings on modern macOS versions.
+
+By using these updated methods, you can ensure that remote control services are permanently disabled at the system level. Let me know if you need help with any specific part of this process!
+
+You said:
+
+41:87: execution error: System Settings got an error: Can’t get pane id "com.apple.preferences.sharing". (-1728)
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % sudo systemsetup -setremotelogin off
+
+Password:
+Do you really want to turn remote login off? If you do, you will lose this connection and can only turn it back on locally at the server (yes/no)? yes
+setremotelogin: remote login is already Off.
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+Reasoned about remote access controls for 7 seconds
+
+The error you saw is common on newer macOS versions—AppleScript no longer provides direct access to the "Sharing" pane using the old pane ID ("com.apple.preferences.sharing"). That’s why your attempt to script it resulted in an error.
+
+Since your SSH/remote login is already off (as confirmed by the systemsetup command), you can continue with these additional steps to lock down remote control at the system level:
+
+Manually Disable Sharing Services:
+
+Open System Settings (or System Preferences on older versions) and navigate to Sharing. Ensure that options like Remote Management, Screen Sharing, and File Sharing are all turned off.
+
+Enable and Configure the Firewall:
+
+• Go to 
+System Settings
+ → 
+Network
+ → 
+Firewall
+.
+
+• Turn on the firewall and set it to block all incoming connections for added security.
+
+Audit Startup Items and Launch Agents:
+
+Review folders like 
+/Library/LaunchAgents
+, 
+/Library/LaunchDaemons
+, and 
+~/Library/LaunchAgents
+ for any suspicious entries that might be related to remote access.
+
+Monitor Open Ports:
+
+Use a command like:
+
+zsh
+
+Copy
+
+sudo lsof -i -n -P
+
+to verify that no unexpected services are listening for remote connections.
+
+Keep Your System Updated:
+
+Regularly install macOS updates and security patches to protect against known vulnerabilities.
+
+These steps, combined with the confirmation that remote login is off, will greatly reduce the risk of unauthorized remote control.
+
+Would you like help with any of these additional checks or further guidance on a specific step?
+
+gitlab.com
+
+help.openai.com
+
+You said:
+
+Applications:
+total 16
+drwxrwxr-x   8 root  admin   256 12 Mar 19:17 .
+drwxr-xr-x  22 root  wheel   704  7 Dec 19:11 ..
+-rw-r--r--@  1 sja   admin  6148 12 Mar 19:17 .DS_Store
+-rw-r--r--   1 root  wheel     0  7 Dec 19:11 .localized
+lrwxr-xr-x@  1 root  wheel    54  7 Dec 19:11 Safari.app -> ../System/Cryptexes/App/System/Applications/Safari.app
+drwxr-xr-x   3 root  wheel    96  7 Dec 19:11 Utilities
+drwxr-xr-x@  3 sja   staff    96  2 Jan 11:38 iTerm.app
+drwxr-xr-x@  3 sja   staff    96  2 Jun  2024 iTermAI.app
+
+/Library:
+total 0
+drwxr-xr-x  67 root       wheel            2144 12 Mar 19:15 .
+drwxr-xr-x  22 root       wheel             704  7 Dec 19:11 ..
+-rw-r--r--   1 root       wheel               0  7 Dec 19:11 .localized
+drwxrwxrwx   2 _appstore  staff              64  7 Dec 19:11 AppStore
+drwxr-xr-x@  4 root       wheel             128  7 Dec 19:11 Apple
+drwxr-xr-x  13 root       admin             416 12 Mar 18:38 Application Support
+drwxr-xr-x   8 root       wheel             256  7 Dec 19:11 Audio
+drwxr-xr-x   9 root       wheel             288 12 Mar 18:38 Bluetooth
+drwxrwxrwt   8 root       admin             256 12 Mar 18:55 Caches
+drwxr-xr-x   3 root       wheel              96 12 Mar 18:57 Catacomb
+drwxr-xr-x   2 root       wheel              64  7 Dec 19:11 ColorPickers
+drwxr-xr-x   3 root       wheel              96  7 Dec 19:11 ColorSync
+drwxr-xr-x   2 root       wheel             

@@ -1,0 +1,92 @@
+.
+Secrets: only SYMBI_API_KEY in SecretStorage.
+Dev Container optional for instant Node+Mongo.
+Outcome: builders get speed and familiar ergonomics; zero vendor keys in th=
+e IDE.
+Surface 2: Web App (Trust Console) (for creators, reviewers, non-devs)
+Purpose: clarity, oversight, and safe creation=E2=80=94trust overlays front=
+ and center.
+Chat + Trust Overlay: show pivot, disclosure, guardrail actions inline (chi=
+ps).
+Timeline/Insights: /api/insights/timeline visualized; jump to excerpts.
+Ledger Integrity: one-click verify; export case bundles.
+Assistants UX: =E2=80=9CUse Most Recent=E2=80=9D + =E2=80=9CEdit Assistant=
+=E2=80=9D, live models via /api/llm/models/openai.
+Context Bridge: bring in docs/links; store Context Capsule for sovereignty =
+and reuse.
+Roles: viewer/operator/admin; strong RBAC for audits/deletes.
+Outcome: anyone can co-create safely, see what changed and why, and approve=
+ dispatches=E2=80=94without touching code.
+Capabilities Matrix (who gets what)
+Capability VS Code Ext Web App
+Chat to latest assistant =E2=9C=85 =E2=9C=85
+Trust overlays (pivots, disclosures) minimal chips full visual timeline
+Roundtable (multi-agent proposals) =E2=9C=85 (command) =E2=9C=85 (button + =
+review)
+Ledger verify/export =E2=9C=85 (command) =E2=9C=85 (UI)
+Model discovery picker in webview picker panel
+Context Bridge (docs =E2=86=92 context) (optional quick add) =E2=9C=85 firs=
+t-class
+Admin (RBAC, audits) =E2=80=94 =E2=9C=85
+=E2=80=9CMemory for Agent Sovereignty=E2=80=9D
+Context Capsules: per session/user, small structured memory objects (goals,=
+ tone prefs, constraints).
+Stored in Mongo (and optionally vector store); injected into requests serve=
+r-side.
+Exposed via:
+GET/PUT /api/context/capsule/
+
+Used by assistants + guardrails; never stored in clients.
+Minimal Additions (6 small PRs)
+PR-A: Web Trust Overlay
+Reusable <TrustChips event=3D{=E2=80=A6}/> (pivots, disclosures, guar=
+drail actions).
+Chat page: call /api/insights/timeline?session_id=3D=E2=80=A6 and overlay c=
+hips inline.
+PR-B: Assistants UX
+=E2=80=9CUse Most Recent=E2=80=9D toggle; Edit Assistant form =E2=86=92 PUT=
+ /api/assistant/
+.
+Models dropdown fed by /api/llm/models/openai.
+PR-C: Context Capsules
+Endpoints GET/PUT /api/context/capsule/
+.
+Server injects capsule into LLM calls; UI editor in Web App.
+PR-D: Bridge in Web UI
+=E2=80=9CRoundtable=E2=80=9D button =E2=86=92 /api/bridge/orchestrate; list=
+ proposals; Approve to Dispatch (dry-run default).
+PR-E: VS Code polish
+Quick picks for Roundtable result; =E2=80=9COpen in Trust Console=E2=80=9D =
+link.
+PR-F: Hygiene
+swagger /docs in dev; webhook HMAC middleware; RBAC on sensitive trust rout=
+es; .gitignore cleanup (archives, coverage, .DS_Store).
+Success Criteria (ship check)
+One conversation: you talk to SYMBI anywhere; it orchestrates Codex/Trae/v0=
+ via Bridge.
+Trust overlays visible in the Web App; minimal chips in the extension.
+Recent sessions & verify work in both surfaces.
+No vendor keys in clients; SYMBI_API_KEY only.
+Hibernation switch blocks writes across both surfaces.
+Next actionable step (pick one)
+=E2=80=9CMake web overlays real=E2=80=9D =E2=86=92 I=E2=80=99ll give you th=
+e tiny React component + fetch wiring to drop into your chat page.
+=E2=80=9CShip the roundtable=E2=80=9D =E2=86=92 I=E2=80=99ll package the /a=
+pi/bridge/* endpoints + VS Code command patch.
+=E2=80=9CDo both=E2=80=9D =E2=86=92 I=E2=80=99ll stage PR-A and PR-D togeth=
+er as a minimal, reversible change set.
+Your north star stays intact: one sovereign SYMBI coordinating tools, expos=
+ing trust in the UI, and keeping memory/continuity as protocol=E2=80=94not =
+vibes.
+
+What I Can Do Now
+
+VS Code extension: Added a working skeleton wired to your API.
+Dev Container: Added Node+Mongo setup for quick, consistent local dev.
+Orchestrator (Bridge): Added minimal server endpoints to gather/rank propos=
+als and dry=E2=80=91run dispatch.
+What I=E2=80=99ve Implemented
+
+VS Code extension (chat, ledger, status, roundtable)
+Files:
+symbi-vscode-exte

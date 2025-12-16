@@ -1,0 +1,126 @@
+y Edit the Autopsy Startup Script
+
+1ï¸â£ Open the Autopsy startup script in a text editor:
+
+sh
+
+Copy
+
+Edit
+
+nano ~/Downloads/autopsy-4.21.0/bin/autopsy
+
+2ï¸â£ Scroll down and 
+find the line
+ that looks like this:
+
+sh
+
+Copy
+
+Edit
+
+exec
+
+"
+$JAVA
+
+" ...
+
+(This is where Java is being executed to run Autopsy.)
+
+3ï¸â£ 
+Add this line
+ right 
+before
+ the 
+exec "$JAVA"
+ line:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+4ï¸â£ 
+Save & exit
+:
+
+Press 
+CTRL + X
+
+Press 
+Y
+ to confirm changes
+
+Press 
+Enter
+
+ð¥ Step 3: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+If it still fails, let me know 
+what error you get next! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
+./autopsy
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0xa) at pc=0x000000000bad4007, pid=8287, tid=259
+#
+# JRE version: OpenJDK Runtime Environment Homebrew (23.0.2) (build 23.0.2)
+# Java VM: OpenJDK 64-Bit Server VM Homebrew (23.0.2, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# C  0x000000000bad4007
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /Users/sja/Downloads/autopsy-4.21.0/bin/hs_err_pid8287.log
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/Homebrew/homebrew-core/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+./../platform/lib/nbexec: line 434:  8287 Abort trap: 6           "/opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home/bin/java" -Djdk.home="/opt/homebrew/Cellar/openjdk/23.0.2/libexec/openjdk.jdk/Contents/Home" -classpath "/Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-modules.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-lookup.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-ui.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util.jar" -Dnetbeans.dirs="/Users/sja/Downloads/autopsy-4.21.0/autopsy:/Users/sja/Downloads/autopsy-4.21.0/CoreTestLibs:/Users/sja/Downloads/autopsy-4.21.0/harness:/Users/sja/Downloads/autopsy-4.21.0/java:" -Dnetbeans.home="/Users/sja/Downloads/autopsy-4.21.0/platform" '-Xdock:name=autopsy' '-Xdock:icon=./../../autopsy.icns' '-Xms24m' '-Xmx4G' '-XX:+UseStringDeduplication' '-Dprism.order=sw' '--add-opens=java.base/java.lang=ALL-UNNAMED' '--add-opens=java.base/java.net=ALL-UNNAMED' '--add-opens=java.desktop/javax.swing=ALL-UNNAMED' '--add-opens=javafx.controls/javafx.scene.control.skin=ALL-UNNAMED' '--add-exports=java.desktop/sun.awt=ALL-UNNAMED' '--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED' '--add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED' -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/Users/sja/Library/Application Support/autopsy/dev/var/log/heapdump.hprof" -Djava.security.manager=allow org.netbeans.Main --cachedir "/Users/sja/Library/Caches/autopsy/dev" --userdir "/Users/sja/Library/Application Support/autopsy/dev" "--branding" "autopsy" 0<&0
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+Alright, we're getting closer! The 
+SIGBUS error
+ and 
+JavaFX warnings
+ suggest that 
+Autopsy isnât fully compatible with OpenJDK 23
+ on macOS 
+(especially on Apple Silicon - ARM64)
+. This crash happens when Java tries to access an invalid memory address, often due to 
+library mismatches or architecture issues.
+
+ð¥ Step 1: Install OpenJ

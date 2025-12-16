@@ -1,0 +1,578 @@
+ Static SYMBI heading */}
+
+<
+h1
+
+className
+
+=
+
+"text-8xl font-bold text-white mb-6"
+
+>SYMBI
+
+</
+h1
+
+>
+
+      {/* Logo below heading */}
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+fill
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+sizes
+
+=
+
+"(max-width: 768px) 160px, 160px"
+
+ />
+
+</
+div
+
+>
+
+      {/* Animated text below logo */}
+
+<
+div
+
+className
+
+=
+
+"mt-6"
+
+>
+
+<
+AnimatedWords
+
+ />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+</div>
+
+The 
+AnimatedWords
+ component was likely imported from a separate component file like:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+AnimatedWords
+
+from
+
+"@/components/AnimatedWords"
+
+;
+
+ð§  So your page 
+component is 
+Home()
+ in 
+app/page.tsx
+
+, and inside that are:
+
+SYMBI
+ heading (
+<h1>
+)
+
+Logo image
+
+A component (likely 
+AnimatedWords
+) for animated text â possibly created with Framer Motion.
+
+ð Want to Confirm Where That Component Is?
+
+If you're unsure where 
+AnimatedWords
+ lives, just run:
+
+bash
+
+Copy
+
+Edit
+
+grep -r 
+
+"AnimatedWords"
+
+ .
+
+This will search your codebase for the component's location and usage.
+
+Would you like me to help you make the 
+AnimatedWords
+ dynamic via Sanity too? Or were you asking about editing that animation specifically?
+
+You said:
+
+no it was in the most recently shared file - terminal output or similar
+
+ChatGPT said:
+
+Perfect â just reviewed the last file you uploaded (
+Terminal Saved Output1.txt
+) and yes, youâre right. The animated text logic is 
+built directly into 
+app/page.tsx
+
+, without importing a separate component. Hereâs what it includes:
+
+â It contains this in-line animation setup:
+
+tsx
+
+Copy
+
+Edit
+
+const
+
+messages
+
+: { 
+
+text
+
+: 
+
+string
+
+; 
+
+duration
+
+: 
+
+number
+
+ }[] = [
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+""
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+250
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1000
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+]
+
+Then it's rendered with this logic:
+
+tsx
+
+Copy
+
+Edit
+
+<motion.
+
+div
+
+  key={index}
+  initial={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+  animate={{ 
+
+opacity
+
+: 
+
+1
+
+ }}
+  exit={{ 
+
+opacity
+
+: 
+
+0
+
+ }}
+  transition={{ 
+
+duration
+
+: 
+
+0.5
+
+ }}
+  className=
+
+"text-white text-2xl md:text-4xl font-semibold h-12 flex items-center justify-center"
+
+/>
+
+And it loops via 
+useEffect
+, cycling the words with 
+setTimeout
+.
+
+ð So the animated words are 
+built directly into 
+page.tsx
+
+.
+
+You donât need to look for a separate component â itâs all right there.
+
+Would you like to 
+make that list dynamic
+ from Sanity now? Or possibly 
+extract this into a reusable component
+ like 
+<AnimatedWords />
+ to clean things up?
+
+You said:
+
+sorry let me clarify - I am starting terminal from scratch so I need to navigate to my project folder and find the text file again
+
+ChatGPT said:
+
+Got it! Here's how to get back into your project folder and open the file again via terminal:
+
+â 
+Step-by-Step to Navigate & Open the File
+
+Open Terminal
+ and type:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Documents/symbi-main-site
+
+List all files to find your saved output:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+If the file is still in the root folder of the project, you should see something like:
+
+Copy
+
+Edit
+
+Terminal\ Saved\ Output1.txt
+
+Open the file using 
+nano
+:
+
+bash
+
+Copy
+
+Edit
+
+nano Terminal\ Saved\ Output1.txt
+
+(The backslashes 
+\
+ escape the spaces in the filename.)
+
+ð§  Pro Tip
+
+If you're unsure where the file went, you can search for it:
+
+bash
+
+Copy
+
+Edit
+
+find . -n

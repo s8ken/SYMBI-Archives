@@ -1,0 +1,667 @@
+se AI models
+, weâll 
+connect Replicate to your Next.js site
+.
+
+ð Install Replicate SDK
+
+Inside your project, run:
+
+bash
+
+Copy
+
+Edit
+
+npm install replicate
+
+ð Create an API Route for AI Models
+
+Weâll use 
+Next.js API routes
+ to call 
+Replicate
+.
+
+ð Create a new file:
+
+ð 
+app/api/replicate/route.ts
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+import
+
+Replicate
+
+from
+
+"replicate"
+
+;
+
+const
+
+ replicate = 
+
+new
+
+Replicate
+
+({
+
+auth
+
+: process.
+
+env
+
+.
+
+REPLICATE_API_TOKEN
+
+, 
+
+// Store this in Vercel env variables
+
+});
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+const
+
+ output = 
+
+await
+
+ replicate.
+
+run
+
+(
+
+"stability-ai/stable-diffusion"
+
+, {
+
+input
+
+: { prompt },
+  });
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+image
+
+: output });
+}
+
+ð¹ 
+What this does:
+
+Receives a text prompt
+ from the frontend.
+
+Calls Replicateâs API
+ to generate an AI image.
+
+Sends back the AI-generated image URL.
+
+3ï¸â£ Create a Frontend Component for AI Generation
+
+Now, letâs 
+add a simple UI
+ that lets users 
+input text and get AI results
+.
+
+ð Create a file:
+
+ð 
+components/ReplicateAI.tsx
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+ReplicateAI
+
+(
+
+) {
+
+const
+
+ [prompt, setPrompt] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [image, setImage] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+generateImage
+
+ = 
+
+async
+
+ (
+
+) => {
+
+const
+
+ res = 
+
+await
+
+fetch
+
+(
+
+"/api/replicate"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ prompt }),
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+    });
+
+const
+
+ data = 
+
+await
+
+ res.
+
+json
+
+();
+
+setImage
+
+(data.
+
+image
+
+);
+  };
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center justify-center p-4"
+
+>
+
+<
+input
+
+type
+
+=
+
+"text"
+
+placeholder
+
+=
+
+"Enter a prompt..."
+
+value
+
+=
+
+{prompt}
+
+onChange
+
+=
+
+{(e)
+
+ => setPrompt(e.target.value)}
+        className="p-2 border rounded text-black"
+      />
+
+<
+button
+
+onClick
+
+=
+
+{generateImage}
+
+className
+
+=
+
+"mt-2 p-2 bg-blue-600 text-white rounded"
+
+>
+        Generate AI Image
+
+</
+button
+
+>
+
+      {image && (
+
+<
+img
+
+src
+
+=
+
+{image}
+
+alt
+
+=
+
+"Generated AI"
+
+className
+
+=
+
+"mt-4 rounded shadow-lg"
+
+ />
+      )}
+
+</
+div
+
+>
+  );
+}
+
+ð¹ 
+What this does:
+
+Users enter a 
+prompt
+
+The button 
+sends the prompt to Replicate
+
+The generated 
+AI image appears below
+
+4ï¸â£ Add ReplicateAI Component to Your Homepage
+
+Now, add the 
+ReplicateAI.tsx
+ component inside 
+your 
+page.tsx
+ file
+:
+
+ð 
+app/page.tsx
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+ReplicateAI
+
+from
+
+"@/components/ReplicateAI"
+
+; 
+
+// Import AI component
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+>
+            SYMBI AI
+
+</
+h1
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-2xl md:text-3xl font-medium text-white"
+
+>
+            AI-Powered Image Generation
+
+</
+h2
+
+>
+
+          {/* Replicate AI Component */}
+
+<
+ReplicateAI
+
+ />
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+<
+footer
+
+className
+
+=
+
+"py-4"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground"
+
+>Â© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+5ï¸â£ Add REPLICATE_API_TOKEN in Vercel
+
+1ï¸â£ **Go to Vercel â Project Settings â Environment
+
+You said:
+
+so I should empty the folder to start - lets go one at a time
+
+ChatGPT said:
+
+ð Step 1: Start Fresh â Empty the Folder
+
+Alright, let's 
+wipe everything clean
+ and do this properly, step by step.
+
+1ï¸â£ Delete Everything in the Current Project Folder
+
+Run this in 
+your project folder (
+symbi
+)
+:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf .git node_m

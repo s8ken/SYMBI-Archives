@@ -1,0 +1,291 @@
+
+ls
+
+ -l /usr/local/lib/libtsk_jni.dylib
+
+If it still 
+doesn’t work
+, force copy it again:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib /usr/local/lib/
+sudo 
+
+chmod
+
+ 755 /usr/local/lib/libtsk_jni.dylib
+
+✅ Step 2: Install OpenCV (
+opencv_java2413
+) for Autopsy
+
+Autopsy 
+depends on OpenCV
+ for image processing, but it’s 
+missing the required library
+.
+
+📌 
+Install OpenCV via Homebrew:
+
+sh
+
+Copy
+
+Edit
+
+brew install opencv
+
+📌 
+Copy the missing OpenCV Java library to 
+/usr/local/lib/
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/opencv/*/share/java/opencv4/opencv-*.jar ~/Downloads/autopsy-4.21.0/platform/lib/
+sudo 
+
+cp
+
+ /opt/homebrew/Cellar/opencv/*/lib/libopencv_java*.dylib /usr/local/lib/
+
+📌 
+Verify the OpenCV library exists:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep opencv
+
+✅ Step 3: Fix JPEG2000 Support for PDF Parsing
+
+Autopsy 
+relies on Apache PDFBox
+, which 
+needs JPEG2000 support
+ for PDF images.
+
+📌 
+Install the required libraries:
+
+sh
+
+Copy
+
+Edit
+
+brew install jai-imageio
+
+📌 
+Ensure it’s available for Java:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"
+$JAVA_OPTS
+
+ -Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="$JAVA_OPTS -Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+✅ Step 4: Install SQLite JDBC Driver
+
+Autopsy 
+needs SQLite-JDBC
+ to process SQLite databases.
+
+📌 
+Download the SQLite-JDBC jar file:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.39.3.0/sqlite-jdbc-3.39.3.0.jar
+
+📌 
+Move it to Autopsy’s 
+platform/lib/
+ directory:
+
+sh
+
+Copy
+
+Edit
+
+mv
+
+ sqlite-jdbc-3.39.3.0.jar ~/Downloads/autopsy-4.21.0/platform/lib/
+
+✅ Step 5: Restart Autopsy
+
+Now, 
+restart Autopsy with all the fixes
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+🚀 If Anything Still Fails, Send Me This Output
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l /usr/local/lib | grep libtsk_jni
+
+ls
+
+ -l /usr/local/lib | grep opencv
+java -XshowSettings:properties | grep java.library.path
+
+📌 This will confirm if Java can see all required libraries.
+
+🚀 
+Try these fixes and let me know if Autopsy fully loads! 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % sudo install_name_tool -add_rpath /usr/local/lib /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
+export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH
+echo 'export DYLD_LIBRARY_PATH=/usr/local/lib:$DYLD_LIBRARY_PATH' >> ~/.zshrc
+source ~/.zshrc
+
+Password:
+/Library/Developer/CommandLineTools/usr/bin/install_name_tool: warning: changes being made to the file will invalidate the code signature in: /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java
+sja@SJAs-MacBook-Pro bin % ls -l /usr/local/lib/libtsk_jni.dylib
+
+lrwxr-xr-x  1 root  wheel  58 18 Mar 02:13 /usr/local/lib/libtsk_jni.dylib -> /opt/homebrew/Cellar/sleuthkit/4.13.0/lib/libtsk_jni.dylib
+sja@SJAs-MacBook-Pro bin % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🚨 Warning: "Changes being made will invalidate the code signature" 🔥
+
+The 
+
+install_name_tool
+ warning
+ means that modifying the Java binary 
+breaks its macOS code signature
+, which could cause issues with security policies (SIP). 
+However, this is usually fine for debugging
+.
+
+✅ Step 1: Force Java to Recognize 
+libtsk_jni.dylib
+ Without Modifying Java
+
+Since the 
+symlink
+ exists (
+libtsk_jni.dylib
+ is properly linked), but Autopsy 
+still isn’t loading it
+, let’s 
+force Java to explicitly load it
+ without modifying its internal structure.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_OPTS=
+
+"-Djava.library.path=/usr/local/lib"
+
+echo
+
+'export JAVA_OPTS="-Djava.library.path=/usr/local/lib"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Then, 
+check if Java sees the correct library path
+:
+
+sh
+
+Copy
+
+Edit
+
+java -XshowSettings:properties | grep java.library.path
+
+📌 
+If 
+/usr/local/lib
+ appears, proceed to the next step.
+
+✅ Step 2: Manually Load 
+libtsk

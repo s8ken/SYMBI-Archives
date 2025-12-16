@@ -1,0 +1,196 @@
+on';
+> import siteSettings from './schemas/siteSettings';
+| import page from './schemas/page';
+| export default defineConfig({
+
+Import trace for requested module:
+./sanity.config.ts
+./app/studio/[[...index]]/page.tsx
+ ○ Compiling /studio/[[...index]] ...
+ ⨯ ./sanity.config.ts
+Module parse failed: Identifier 'siteSettings' has already been declared (5:7)
+| import { deskTool } from 'sanity/desk';
+| import { visionTool } from '@sanity/vision';
+> import siteSettings from './schemas/siteSettings';
+| import page from './schemas/page';
+| export default defineConfig({
+
+Import trace for requested module:
+./sanity.config.ts
+./app/studio/[[...index]]/page.tsx
+ GET /studio 500 in 203ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/sja/Documents/symbi-main-site/.next/cache/webpack/client-development-fallback/2.pack.gz_' -> '/Users/sja/Documents/symbi-main-site/.next/cache/webpack/client-development-fallback/2.pack.gz'
+
+Vercel Deployment Expert GPT said:
+
+🚨 You're Seeing This Error:
+
+vbnet
+
+Copy
+
+Module
+
+ parse failed: Identifier 
+
+'siteSettings' has already been declared
+
+This means your 
+sanity.config.ts
+ file 
+imports 
+siteSettings
+ twice
+, likely due to a copy-paste or merge conflict.
+
+✅ 
+Fix the Duplicate Import
+
+🔍 Step 1: Open 
+sanity.config.ts
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+🔧 Step 2: Look for This:
+
+ts
+
+Copy
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+;
+...
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+; 
+
+// 🔴 duplicate!
+
+✅ Step 3: Remove the Duplicate
+
+Your imports should look like this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+And your schema config should be:
+
+ts
+
+Copy
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+},
+
+✅ Step 4: Save and Exit
+
+In 
+Nano
+:
+
+Ctrl + X
+ → 
+Y
+ → 
+Enter
+
+🔁 Step 5: Restart the Server
+
+bash
+
+Copy
+
+npm run dev
+
+Then visit:
+
+👉 
+
+http://localhost:3001/studio
+
+✅ What Should Happen:
+
+The 
+500 error disappears
+
+The 
+Sanity Studio loads
+ with your 
+siteSettings
+ and 
+page
+ schemas
+
+Let me know when you're in! We'll then connect your logo or text to be fully CMS-powered 🔥
+
+You said:
+
+sja/Documents/symbi-main-site/node_modules/next/dist/shared/lib/error-source.js|webpack from pack: Error: invalid bit length repeat
+<w> [webpack.cache.PackFileCacheStrategy] Restoring failed for Compilation/codeGeneration|/Users/sja/Documents/symbi-main-site/node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[7].oneOf[3].use[1]!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/client/components/react-dev-overlay/pages/ErrorBoundary.js|webpack from pack: Error: invalid bit length repeat
+<w> [webpack.cache.PackFileCacheStrategy] Restoring failed for Compilation/codeGeneration|/Users/sja/Documents/symbi-main-site/node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[7].oneOf[3].use[1]!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/stack-frame.js|webpack from pack: Error: invalid bit length repeat
+<w> [webpack.cache.PackFileCacheStrategy] Restoring failed for Compilation/codeGeneration|/Users/sja/Documents/symbi-main-site/node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[7].oneOf[3].use[1]!/Users/sja/Documents/symbi-main-site/node_modules/next/dist/client/components/react-dev-overlay/internal/components/ShadowPortal.js|webpack from pack: Error: in

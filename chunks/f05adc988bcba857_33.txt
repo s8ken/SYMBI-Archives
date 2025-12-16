@@ -1,0 +1,445 @@
+Work?
+
+1ï¸â£ 
+Sanity Studio (CMS) â Stores Page Content
+
+Example: "Homepage Title = SYMBI", "Text = Coming Soon"
+
+2ï¸â£ 
+Next.js Fetches This Content
+
+The website dynamically loads the latest data.
+
+3ï¸â£ 
+AI Assistant Generates Content (Optional)
+
+If enabled, AI can suggest 
+headlines, blog posts, or text
+ inside the Studio.
+
+ð¹ Step 1: Open Sanity Studio
+
+After running:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Visit:
+
+ð 
+
+http://localhost:3333
+
+(Youâll see the Sanity Studio dashboard where you can edit your content.)
+
+ð¹ Step 2: What Can You Edit in the Studio?
+
+Homepage Title
+
+Animated Words List
+
+Text, Images, Videos
+
+Future Pages (Blog, About, etc.)
+
+ð¯ Next Steps
+
+Open Sanity Studio (
+http://localhost:3333
+).
+
+Let me know if you see the dashboard!
+
+Weâll now connect it to your Next.js site for real-time updates.
+ ðð¥
+
+You said:
+
+Clean project with no predefined schema types 
+
+ChatGPT said:
+
+ð Sanity Studio is Set Up, But No Schemas Exist
+
+Youâre seeing 
+"Clean project with no predefined schema types"
+ because your Sanity Studio 
+doesnât have any content types (schemas) yet
+. 
+Letâs fix that by defining a schema for your pages.
+ ð§
+
+ð¹ Step 1: Create the Page Schema
+
+Since you want a simple 
+GUI-based editor
+ for your website, let's define a schema for your 
+editable pages
+.
+
+1ï¸â£ Open the 
+schemas
+ Folder
+
+Run this command inside your Sanity project:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ symbi-cms
+
+mkdir
+
+ schemas
+nano schemas/page.ts
+
+(This creates a new 
+page.ts
+ file for your websiteâs content.)
+
+2ï¸â£ Add This Code to 
+schemas/page.ts
+
+Paste the following:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineField, defineType } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+"page"
+
+,
+
+title
+
+: 
+
+"Pages"
+
+,
+
+type
+
+: 
+
+"document"
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+"title"
+
+,
+
+title
+
+: 
+
+"Page Title"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"content"
+
+,
+
+title
+
+: 
+
+"Page Content"
+
+,
+
+type
+
+: 
+
+"text"
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+"image"
+
+,
+
+title
+
+: 
+
+"Image"
+
+,
+
+type
+
+: 
+
+"image"
+
+,
+    }),
+  ],
+});
+
+Save the file 
+(Ctrl + X â Y â Enter).
+
+ð¹ Step 2: Register the Schema
+
+1ï¸â£ Open 
+sanity.config.ts
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+2ï¸â£ Add the New Schema
+
+Find this part:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+Then 
+add your schema inside the 
+schema
+ section
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+Save 
+(Ctrl + X â Y â Enter).
+
+ð¹ Step 3: Restart Sanity Studio
+
+Now, restart your CMS to apply the schema:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Go back to 
+http://localhost:3333
+
+Now, you should see a 
+"Pages"
+ section where you can 
+add/edit content
+.
+
+ð¯ Next Steps
+
+Confirm if you see the "Pages" section in Sanity Studio.
+
+If itâs working, weâll 
+connect it to Next.js
+ so your website updates in real time. ðð¥
+
+You said:
+
+no it also allows me to choose Blog (schema)
+
+ChatGPT said:
+
+ð You See "Blog" as an Option in Sanity Studio? What It Means
+
+If 
+Sanity Studio is suggesting a "Blog" schema
+, that means:
+
+Sanity auto-detected a schema template
+ (probably from a previous install).
+
+It allows you to create Blog pages
+, but 
+you can still define custom schemas like "Pages"
+ for the rest of your site.
+
+ð¹ What Should You Do?
+
+â 
+Option 1: Keep Both (Blog + Pages)
+
+Use "Blog" for future articles.
+
+Create a "Pages" schema
+ for things like the homepage, about, and contact pages.
+
+ð 
+Option 2: Create a Clean Setup (Recommended)
+
+Delete existing schemas
+ and define only what you need.
+
+Follow the steps below to reset and add "Pages."
+
+ð¹ Step 1: Delete Default Schemas
+
+If you want 
+a clean setup without Blog
+, delete all schema files:
+
+bash
+
+Copy
+
+Edit
+
+rm
+
+ -rf schemas/*
+
+ð¹ Step 2: Creat

@@ -1,0 +1,336 @@
+et’s now look one level 
+up
+ to the root of your project (you’re inside 
+lib
+ right now).
+
+✅ Try this from the 
+project root
+:
+
+bash
+
+Copy
+
+cd
+
+ ~/Documents/symbi-main-site
+find . -name 
+
+"sanity.config.ts"
+
+This will search the whole project directory and tell us exactly where 
+sanity.config.ts
+ is (if it exists). Once we find it, we can verify and fix the 
+projectId
+.
+
+Let me know what you get!
+
+You said:
+
+sja@SJAs-MacBook-Pro lib % cd ~/Documents/symbi-main-site
+find . -name "sanity.config.ts"
+
+./sanity.config.ts
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+Perfect — we’ve found your 
+sanity.config.ts
+ file! ✅
+
+Let’s now 
+open and inspect that file
+ to make sure your 
+projectId
+ and 
+dataset
+ are correctly defined.
+
+🔍 Run this command to open the file:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Once inside, look for the 
+projectId
+ field. It should look something like:
+
+ts
+
+Copy
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+  ...
+})
+
+Make sure:
+
+projectId
+ is 
+
+wryptr7v
+
+ (as per your Sanity debug output earlier)
+
+dataset
+ is 
+
+production
+
+ (or whatever dataset you actually created)
+
+No extra characters like colons or quotes in the wrong places
+
+When you're done:
+
+Press 
+Ctrl + O
+ to save
+
+Press 
+Enter
+ to confirm the filename
+
+Press 
+Ctrl + X
+ to exit
+
+Then run:
+
+bash
+
+Copy
+
+npm run dev
+
+And try saving content again from the Studio at 
+http://localhost:3001/studio
+
+Let me know how it goes — we’re super close! 🔥
+
+You said:
+
+import siteSettings from './schemas/siteSettings'
+import { defineConfig } from 'sanity'
+import { deskTool } from 'sanity/desk'
+import { visionTool } from '@sanity/vision'
+import page from './schemas/page'
+
+export default defineConfig({
+  name: 'default',
+  title: 'Symbi Studio',
+  projectId: 'wryptr7v',
+  dataset: 'production',
+  basePath: '/studio',
+  plugins: [deskTool(), visionTool()],
+  schema: {
+    types: [siteSettings, page],
+  },
+})
+
+Vercel Deployment Expert GPT said:
+
+That config looks perfect! ✅
+
+You’ve got:
+
+✅ Correct 
+projectId: 'wryptr7v'
+
+✅ Dataset: 
+'production'
+
+✅ Schema types correctly defined (
+siteSettings
+, 
+page
+)
+
+✅ Essential Sanity tools added (
+deskTool
+, 
+visionTool
+)
+
+🔄 Next Step: Restart your dev server
+
+Just to clear any stale config and connections, run:
+
+bash
+
+Copy
+
+npm run dev
+
+Once your app is running again:
+
+Head to 
+http://localhost:3001/studio
+
+Try editing and saving a document (like your test page)
+
+If the network error is still happening, we’ll double-check:
+
+CORS settings
+ for your project at 
+https://www.sanity.io/manage
+
+Make sure 
+localhost:3000
+ and 
+localhost:3001
+ are both added as allowed origins under 
+API → CORS Origins
+
+Let me know if the save works now or if we’re still hitting that error 👇
+
+You said:
+
+sameerror
+
+Vercel Deployment Expert GPT said:
+
+Got it — since the 
+same network error
+ is persisting when saving a document in Sanity Studio, even with correct config, we’re likely dealing with a 
+CORS misconfiguration
+ or 
+invalid auth/token environment
+. Let's troubleshoot this with precision:
+
+✅ 1. 
+Confirm CORS Origins
+
+Go to 
+
+sanity.io/manage
+
+ → your 
+symbi
+ project → 
+API > CORS Origins
+.
+
+Make sure 
+these origins are added
+:
+
+arduino
+
+Copy
+
+http:
+
+//localhost:3000
+
+http:
+
+//localhost:3001
+
+Also tick:
+
+ Allow credentials
+
+ Allow all methods
+
+Save changes.
+
+✅ 2. 
+Verify Token + Permissions
+
+If you’re using a token in a 
+.env.local
+ or inside 
+sanityClient
+ config, ensure:
+
+It's 
+correctly scoped
+ (read+write)
+
+The token is 
+NOT expired
+
+The user who owns the token has 
+editor
+ or 
+administrator
+ role
+
+You can regenerate a token at:
+
+sanity.io/manage > API > Tokens
+
+Example 
+.env.local
+:
+
+env
+
+Copy
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=sk...yourTokenHere...
+
+Update your 
+lib/sanity.ts
+ (if using 
+@sanity/client
+) to include:
+
+ts
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+'

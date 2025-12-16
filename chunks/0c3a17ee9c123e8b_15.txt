@@ -1,0 +1,522 @@
+
+[08:40:01.655]    ▲ Next.js 15.2.3
+[08:40:01.655] 
+[08:40:01.681]    Creating an optimized production build ...
+[08:40:13.661]  ✓ Compiled successfully
+[08:40:13.667]    Linting and checking validity of types ...
+[08:40:16.389] Failed to compile.
+[08:40:16.389] 
+[08:40:16.390] app/api/replicate/route.ts
+[08:40:16.390] Type error: File '/vercel/path0/app/api/replicate/route.ts' is not a module.
+[08:40:16.390] 
+[08:40:16.411] Next.js build worker exited with code: 1 and signal: null
+[08:40:16.418] error: script "build" exited with code 1
+[08:40:16.427] Error: Command "bun run build" exited with 1
+[08:40:16.735] 
+
+Vercel Deployment Expert GPT said:
+
+🚨 Strange Issue: Build Fails, But Site Works on Vercel
+
+You're experiencing a 
+common Next.js/Vercel quirk
+ where 
+the site looks correct, but the deployment still fails
+ due to a 
+TypeScript module error in 
+route.ts
+
+.
+
+🔍 Why This Happens
+
+Vercel caches previous successful builds
+ – so even if the latest deployment failed, the last working version is still online.
+
+The error is specific to TypeScript & module recognition
+ – Next.js doesn't recognize 
+route.ts
+ as a module during build time.
+
+✅ Step 1: Force TypeScript to Recognize 
+route.ts
+
+Let's 
+explicitly define 
+route.ts
+ as a module
+.
+
+1️⃣ Open 
+route.ts
+
+Use:
+
+bash
+
+Copy
+
+nano app/api/replicate/route.ts
+
+2️⃣ Add This Fix
+
+Replace your current 
+route.ts
+ with 
+this updated version
+:
+
+ts
+
+Copy
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+// ✅ Explicitly declare the file as a module
+
+export
+
+const
+
+ config = {
+
+runtime
+
+: 
+
+"edge"
+
+, 
+
+// Optional: Use 'nodejs' if you're using server-based APIs
+
+};
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ body = 
+
+await
+
+ req.
+
+json
+
+();
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, 
+
+message
+
+: 
+
+"Replicate API is working!"
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+console
+
+.
+
+error
+
+(
+
+"API Error:"
+
+, error);
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+false
+
+, 
+
+error
+
+: 
+
+"Error processing request."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+// Ensure at least one exported function is present
+
+export
+
+async
+
+function
+
+GET
+
+(
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+message
+
+: 
+
+"Replicate API Endpoint"
+
+ });
+}
+
+🛠 Step 2: Save the Fix
+
+Press
+
+Ctrl + X
+ to exit.
+
+Press
+
+Y
+ to confirm saving.
+
+Press
+
+Enter
+ to finalize.
+
+🚀 Step 3: Test Locally
+
+Run:
+
+bash
+
+Copy
+
+npm run build
+
+✅ If 
+it compiles successfully
+, 
+proceed to Step 4
+.
+
+❌ If 
+it fails
+, send me the 
+latest error message
+.
+
+📤 Step 4: Push the Fix to GitHub
+
+If the build works locally, push the fix:
+
+bash
+
+Copy
+
+git add app/api/replicate/route.ts
+git commit -m 
+
+"Fixed TypeScript module issue in API route"
+
+git push origin main
+
+This will trigger 
+a fresh deployment on Vercel
+.
+
+🔍 Step 5: Verify on Vercel
+
+Go to Vercel Dashboard
+ → Your project.
+
+Click on 
+Deployments
+ and check the latest build.
+
+If successful, visit your live site!
+
+🎯 Final Check
+
+If 
+deployment succeeds
+, the issue is fixed.
+
+If 
+it still fails
+, go to 
+Vercel logs
+ and share the error.
+
+You're almost there! 🚀🔥 Let me know if you need more help.
+ 😊
+
+You said:
+
+can you please provide the full script but without the comments haha
+
+Vercel Deployment Expert GPT said:
+
+Sure! Here's the 
+clean version
+ of your 
+route.ts
+ file without comments:
+
+ts
+
+Copy
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+export
+
+const
+
+ config = {
+
+runtime
+
+: 
+
+"edge"
+
+,
+};
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ body = 
+
+await
+
+ req.
+
+json
+
+();
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, 
+
+message
+
+: 
+
+"Replicate API is working!"
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+console
+
+.
+
+error
+
+(
+
+"API Error:"
+
+, error);
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+false
+
+, 
+
+error
+
+: 
+
+"Error processing request."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+export
+
+async
+
+function
+
+GET
+
+(
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+message
+
+: 
+
+"Replicate API Endpoint"
+
+ });
+}
+
+Now, update your 
+
+route.ts
+
+ file

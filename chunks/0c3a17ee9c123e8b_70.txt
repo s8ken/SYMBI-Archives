@@ -1,0 +1,329 @@
+le
+
+: 
+
+"Symbi AI - Intelligent Assistant"
+
+,
+
+description
+
+: 
+
+"Empowering your workflow with advanced artificial intelligence that adapts to your needs."
+
+,
+
+generator
+
+: 
+
+'v0.dev'
+
+}
+
+✅ 
+Now 
+layout.tsx
+ should only contain UI-related code.
+
+3️⃣ 
+Restart the Server
+
+bash
+
+Copy
+
+npm run dev
+
+Then check:
+
+🖥️ 
+Homepage:
+
+http://localhost:3001
+
+🧠 
+Sanity Studio (if enabled):
+
+http://localhost:3001/studio
+
+🔥 
+Why This Works
+
+metadata
+ must be in a server component
+ (it’s static and Next.js injects it at the page level).
+
+Moving it to 
+metadata.ts
+
+ ensures it remains in a 
+server-only file
+, separate from 
+layout.tsx
+.
+
+Let me know if this worked, and we’ll move forward 🚀🔥
+
+You said:
+
+"use client";
+import type React from "react"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+
+const inter = Inter({ subsets: ["latin"] })
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>  
+  )
+}  
+
+import './globals.css'
+
+Vercel Deployment Expert GPT said:
+
+✅ 
+Your 
+layout.tsx
+ is now correctly structured as a client component
+ without the 
+metadata
+ export issue.
+
+🚀 Next Steps
+
+Now that the 
+layout.tsx
+ issue is resolved, you should:
+
+1️⃣ Restart Your Next.js Server
+
+bash
+
+Copy
+
+npm run dev
+
+Check:
+
+Homepage:
+
+http://localhost:3001
+
+Sanity Studio:
+
+http://localhost:3001/studio
+
+2️⃣ (Optional) Add 
+metadata
+ Back in a Server File
+
+Since 
+metadata
+ was removed from 
+layout.tsx
+, you may still want a 
+
+metadata.ts
+
+ file for SEO:
+
+📌 
+Create 
+app/metadata.ts
+
+bash
+
+Copy
+
+nano app/metadata.ts
+
+Paste this:
+
+ts
+
+Copy
+
+export
+
+const
+
+ metadata = {
+
+title
+
+: 
+
+"Symbi AI - Intelligent Assistant"
+
+,
+
+description
+
+: 
+
+"Empowering your workflow with advanced artificial intelligence that adapts to your needs."
+
+,
+
+generator
+
+: 
+
+"v0.dev"
+
+,
+};
+
+✅ Now 
+metadata is handled separately in a server component
+, following Next.js best practices.
+
+3️⃣ Test Everything
+
+Once your server is running, confirm:
+
+✅ 
+No hydration errors
+
+✅ 
+Sanity Studio loads correctly
+
+✅ 
+Homepage works without crashes
+
+Let me know if you hit any new errors or if it’s running smoothly! 🚀🔥
+
+You said:
+
+okay so its rendering correctly but there's still Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used
+
+- A server/client branch 
+if (typeof window !== 'undefined')
+.
+- Variable input such as 
+Date.now()
+ or 
+Math.random()
+ which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+- className="light"
+- style={{color-scheme:"light"}}
+
+Vercel Deployment Expert GPT said:
+
+🚀 
+Fixing the Hydration Error in Next.js
+
+Since your site is rendering 
+but still showing a hydration error
+, the issue is likely caused by:
+
+Mismatched server vs. client HTML
+
+ThemeProvider (
+next-themes
+)
+
+A dynamic variable (
+Date.now()
+, 
+Math.random()
+, etc.) rendering differently between SSR & client
+
+✅ 
+Step 1: Fix ThemeProvider with 
+useEffect
+
+If you're using 
+
+next-themes
+
+, wrap it with a 
+useEffect
+ inside 
+layout.tsx
+:
+
+📍 Open 
+app/layout.tsx
+:
+
+bash
+
+Copy
+
+nano app/layout.tsx
+
+✏️ Update It Like This:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+type
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+import
+
+"./globals.css"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+fro

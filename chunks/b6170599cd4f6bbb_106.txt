@@ -1,0 +1,339 @@
+ ð¥
+
+Your Mac 
+doesn't have Zulu Java 11 installed
+, which is why Autopsy 
+can't find Java
+. Let's 
+install it properly
+ and then make sure Autopsy can detect it.
+
+â Step 1: Install Zulu Java 11
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu11
+
+Once installed, 
+verify that Java 11 exists
+:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+ð 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.XX"
+
+ Zulu ...
+
+â Step 2: Set Zulu Java 11 as Default
+
+Once installed, 
+force macOS to use it
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+ by adding it to 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME="/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 3: Verify Java Again
+
+After setting the new Java path, 
+check if Java 11 is now active
+:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+ð 
+It MUST show Java 11.
+ If not, restart your terminal and check again.
+
+â Step 4: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+ð **Try this and let me know if Aut
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew install --cask zulu11
+
+==> Downloading https://formulae.brew.sh/api/cask.jws.json
+Warning: Cask 'zulu11' is unavailable: No Cask with this name exists.
+==> Downloading https://formulae.brew.sh/api/formula.jws.json
+==> Searching for similarly named casks...
+==> Casks
+zulu         zulu@11      zulu@17      zulu@21      zulu@8       zulufx
+
+To install zulu, run:
+  brew install --cask zulu
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+ChatGPT said:
+
+ð¨ Fixing Zulu Java 11 Installation â Use Correct Cask Name
+
+The correct Homebrew package name for 
+Zulu Java 11
+ is 
+zulu@11
+, not 
+zulu11
+.
+
+â Step 1: Install Zulu Java 11 Properly
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu@11
+
+If that doesnât work, try:
+
+sh
+
+Copy
+
+Edit
+
+brew install --cask zulu
+
+ð 
+Zulu defaults to the latest version, so we may need to switch to Java 11 manually later.
+
+â Step 2: Verify Installation
+
+After installation, check if Java 11 is available:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+or
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11/Contents/Home/bin/java -version
+
+ð 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.XX"
+
+ Zulu ...
+
+â Step 3: Set Zulu Java 11 as Default
+
+Once installed, 
+force your system to use it
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+echo
+
+'export PATH="$JAVA_HOME/bin:$PATH"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 4: Verify Java 11 is Active
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+ð 
+It must show Java 11.
+ If not, restart your terminal and check again.
+
+â Step 5: Try Running Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+ð 
+Try this and let me know if Autopsy finally launches! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew install --cask zulu@11
+
+==> Downloading https://cdn.azul.com/zulu/bin/zulu11.78.15-ca-jdk11.0.26-macosx_
+######################################################################### 100.0%
+==> Installing Cask zulu@11
+==> Running installer for zulu@11 with sudo; the password may be necessary.
+Password:
+installer: Package name is Azul Zulu JDK 11.78+15
+installer: Installing at base path /
+installer: The install was successful.
+ðº  zulu@11 was successfully installed!
+sja@SJAs-MacBook-Pro bin % /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/b

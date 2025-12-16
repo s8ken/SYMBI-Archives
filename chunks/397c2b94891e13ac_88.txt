@@ -1,0 +1,197 @@
+
+
+mdx
+
+Copy code
+
+**Methods:** prompts & tasks in `SYMBI-Resonate/benchmark_=
+prompts.md` =C2=B7 models: [exact variants] =C2=B7 n =3D [count] =C2=B7 tem=
+p/top_p =3D [=E2=80=A6] =C2=B7 safety filters =3D [=E2=80=A6]
+
+Add/keep the receipts stub:
+
+mdx
+
+Copy code
+
+**Receipts:** pending =E2=80=94 links & SHA-256 will be ad=
+ded when the bundle is published in `SYMBI-Resonate/case-studies/claude-vs-=
+deepseek/RECEIPTS/`.
+
+B) Case studies landing: fix dupl=
+icate status
+
+Change the header block to render =
+a single status line:
+
+mdx
+
+Copy code
+
+_Status: Observational. Findings are subjective until receipts=
+ are published._
+
+Quick re-check after changes
+
+/research still shows Demo labels =
+and links to 
+tests
+ (=
+good). 
+
+Gammatria
+
+/case-studies landing shows single=
+ =E2=80=9CStatus: Observational=E2=80=9D and links to =E2=80=9CDetector tes=
+ts=E2=80=9D + =E2=80=9C/case-studies/common=E2=80=9D on GitHub (good). 
+
+Gammatria
+
+Claude vs DeepSeek has qualitative=
+ notes only (until receipts), plus a methods line and receipts placeholder.=
+
+Gammatria
+
+If you want, I can also hand you a=
+ tiny 
+<DemoBadge/>
+=
+ component so you can mark any future numbers as Demo until the receipts la=
+nd.
+
+=
+
+=
+
+Sources
+
+You said:
+
+=
+
+yeah well thats the thing so those numbe=
+rs are based on the analysis ninja ai performed whilst building our tool SY=
+MBI Resonate so whilst those are the numbers it determined when evaluating =
+the conversations i am unsure of what the 'reciepts' would even mean in tho=
+se circumstances so its either we keep the numbers and make it clear that i=
+ts based on our own tool which we want others to try and give their feedbac=
+k on or go with the generic findings you mention above but either way we wa=
+nt to be open about it so that others can go to the repo and experiment wit=
+h it and share their findings
+
+Symbi said:
+
+Thought for 27s
+
+Totally fair: you can keep the numbers 
+as long as you label them as tool-derived and give people a way t=
+o reproduce them
+. Below is a clean way to do that, plus what a =E2=
+=80=9Creceipt=E2=80=9D means for an observational run like this.
+
+The middle path (keep the numbers, =
+add reproducibility)
+
+What to show on the website (paste-=
+ready)
+
+At the top of the Claude vs DeepSeek=
+ page, add a callout like this:
+
+m=
+dx
+
+Copy code
+
+> **Tool-derived metrics (SYMBI Resonate)**
+> Figures on this page were produced by our own detector during developm=
+ent.
+> They are **exploratory and subjective** until replicated. We publish t=
+he exact commit, config, and dataset so you can rerun them and compare.
+> **Commit:** `abc123` =E2=80=A2 **Config:** `configs/claude-vs-deepseek=
+.json` =E2=80=A2 **Dataset:** `case-studies/claude-vs-deepseek/TRANSCRIPTS`
+
+Under your table of numbers, add:
+
+=
+mdx
+
+Copy code
+
+**Receipts (run artifacts)**
+- Run receipt (JSON): `RECEIPTS/composite.json` (sha256: `=E2=80=A6`)
+- Methods: `METHODS.md` (models, temperature/top_p, safety filters, n)
+- Transcripts: `TRANSCRIPTS/*.txt` (redacted when needed)
+
+**Reproduce this run**
+```bash
+git clone https://github.com/s8ken/SYMBI-Resonate.git
+cd SYMBI-Resonate
+git checkout abc123
+npm i
+node scripts/generate_run_receipt.js --config configs/claude-vs-deepseek.js=
+on --out case-studies/claude-vs-deepseek/RECEIPTS
+
+pgsql
+
+Copy code
+
+(Replace `abc123`/paths 
+
+with
+
+ yours.)
+
+---
+
+# What a =E2=80=9Creceipt=E2=80=9D means here
+
+Because these are **lab metrics produced 
+
+by
+
+ your tool**, the receipt 
+
+is
+
+ a **Run Receipt**: a signed 
+
+JSON
+
+ bundle that =
+pins the exact inputs/settings/
+
+co=
+mmit
+
+and
+
+ aggregates the outputs. It=E2=80=99s 
+
+not
+
+ =E2=80=9Cground truth=E2=80=9D;=
+ it=E2=80=99s a **tamper-evident lab note** that others can rerun.
+
+## Minimal Run Receipt (
+
+schema
+
+ + example)
+
+**
+
+Schema
+
+ (com=
+pact):**
+```
+
+json
+
+{
+  "version": "1.0",
+  "study_id": "claude-vs-deepseek",
+  "tool": { "name": "SYMBI-Resonate", "commit": "abc123" },
+  "models": [{ "name": "claude-...", "build": "..." }, { "name": "deepseek-=
+...", "build": "

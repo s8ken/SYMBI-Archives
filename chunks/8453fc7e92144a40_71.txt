@@ -1,0 +1,753 @@
+
+await
+
+InteractionEvent
+
+.
+
+updateMany
+
+(
+    { 
+
+session_id
+
+=
+: { 
+
+$regex
+
+: 
+
+/^[a-f0-9]{24}$/i
+
+ =
+} },
+    [{ 
+
+$set
+
+: { 
+
+session_id
+
+: { 
+
+$concat
+
+: [
+
+'conv:'
+
+, 
+
+'$session_id'
+
+] } } }]
+  );
+
+console
+
+.
+
+log
+
+=
+
+(
+
+'updated:'
+
+, res.
+
+modifiedCount
+
+);
+
+await
+
+ mongo=
+ose.
+
+disconnect
+
+();
+})().
+
+catch
+
+(
+
+e
+
+ =3D> (
+
+console
+
+.
+
+error
+
+(e), process.
+
+exit
+
+(
+
+1
+
+)));
+
+2) TrustChips reads normalized se=
+ssion IDs
+
+frontend/src/components/trust/Tru=
+stChips.js (patch)
+
+diff
+
+Copy code
+
+ export default function TrustChips({ sessionId, compa=
+ct=3Dfalse, at=3Dnull, className=3D"" }) {
+
+-  const [overlays, setOverlays]=
+ =3D React.useState(null);
+
++  const [overlays, setOverlays]=
+ =3D React.useState(null);
+
+   const [err, setErr] =3D React.useState("");
+
++  const sid =3D React.useMemo((=
+) =3D> {
+
++    if (!sessionId) return sess=
+ionId;
+
++    const hex24 =3D /^[a-f0-9]{=
+24}$/i;
+
++    return sessionId.startsWith=
+('conv:') ? sessionId : (hex24.test(sessionId) ? `conv:${sessionId}` : sess=
+ionId);
+
++  }, [sessionId]);
+
+=20
+   React.useEffect(() =3D> {
+
+-    if (!sessionId) return;
+
++    if (!sid) return;
+
+     let on =3D true;
+     (async () =3D> {
+       try {
+         setErr("");
+         const base =3D process.env.NEXT_PUBLIC_API_BASE || "";
+
+-        const res =3D await fet=
+ch(`${base}/api/insights/timeline?session_id=3D${encodeURIComponent(session=
+Id)}`, {
+
++        const res =3D await fet=
+ch(`${base}/api/insights/timeline?session_id=3D${encodeURIComponent(sid)}`,=
+ {
+
+           headers: { "Content-Type": "application/json" }
+         });
+
+3) Context Capsules (model + API =
++ server-side injection)
+
+backend/models/contextCapsule.mod=
+el.js (new)
+
+js
+
+Copy code
+
+const
+
+ { =
+
+Schema
+
+, =
+model } =3D 
+
+require
+
+(
+
+'mongoose'
+
+);
+
+const
+
+=
+
+ContextCapsuleSchema
+
+ =3D 
+
+new
+
+=
+
+Schema
+
+(=
+{
+
+session_id
+
+: { =
+
+type
+
+: 
+
+String
+
+, 
+
+index
+
+: 
+
+true
+
+, 
+
+unique
+
+: 
+
+true
+
+ },
+
+owner_user
+
+: { =
+
+type
+
+: 
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+: 
+
+'User'
+
+ },
+
+capsule
+
+: {
+
+goals
+
+: [
+
+String
+
+],
+
+tone_prefs
+
+: =
+[
+
+String
+
+]=
+,
+
+constraints
+
+:=
+ [
+
+String
+
+=
+],
+
+tags
+
+: [
+
+String
+
+],
+
+notes
+
+: 
+
+String
+
+  },
+
+capsule_hash
+
+: =
+
+String
+
+}, { 
+
+timestamps
+
+:=
+
+true
+
+ });
+
+module
+
+.
+
+exports
+
+=
+ =3D 
+
+model
+
+(
+
+'ContextCapsule'
+
+, 
+
+ContextCapsuleSche=
+ma
+
+);
+
+backend/controllers/capsule.contr=
+oller.js (new)
+
+js
+
+Copy code
+
+const
+
+ cr=
+ypto =3D 
+
+require
+
+(
+
+'crypto'
+
+)=
+;
+
+const
+
+=
+
+ContextCapsule
+
+ =
+=3D 
+
+require
+
+(=
+
+'../models/contextCapsule.model'
+
+);
+
+const
+
+=
+
+HEX24
+
+ =3D 
+
+/^[a-f0-9]{24}$/i
+
+;
+
+const
+
+=
+
+sha256
+
+ =3D (=
+
+s
+
+) =3D> cry=
+pto.
+
+createHash
+
+(
+
+'sha256'
+
+).
+
+update
+
+(s).
+
+digest
+
+(
+
+'hex'
+
+);
+
+function
+
+normalizeSessionId
+
+(
+
+s
+
+) {
+
+if
+
+ (!s) 
+
+return
+
+ s;
+
+if
+
+ (s.
+
+startsWith
+
+=
+(
+
+'conv:'
+
+)) 
+
+return
+
+ s;
+
+return
+
+HEX24
+
+.
+
+test
+
+(s) ? 
+
+`conv:
+${=
+s}
+
+` : s;
+}
+
+exports
+
+.
+
+get
+
+ =3D 
+
+async
+
+ (req, res) =3D&=
+gt; {
+
+const
+
+ sid =
+=3D 
+
+normalizeSessionId
+
+(
+
+String
+
+(req.
+
+params
+
+.
+
+sessionId
+=
+
+));
+
+const
+
+ doc =
+=3D 
+
+await
+
+ContextCapsule
+
+.
+
+findOne
+
+=
+
+({ 
+
+session_id
+
+: sid }).
+
+lean
+
+();
+  res.
+
+json
+
+(doc || { 
+
+session_id
+
+: sid, 
+
+capsule
+
+: {} });
+};
+
+exports
+
+.
+
+put
+
+ =3D 
+
+async
+
+ (req, res) =3D&=
+gt; {
+
+const
+
+ sid =
+=3D 
+
+normalizeSessionId
+
+(
+
+String
+
+(req.
+
+params
+
+.
+
+sessionId
+=
+
+));
+
+const
+
+ body =
+=3D req.
+
+body
+
+=
+?.
+
+capsule
+
+ ||=
+ {};
+
+const
+
+ hash =
+=3D 
+
+sha256
+
+(
+
+JSON
+
+.
+
+stringify
+
+(body));
+
+const
+
+ doc =
+=3D 
+
+await
+
+ContextCapsule
+
+.
+
+findOneAndUpdate
+
+(
+    { 
+
+session_id
+
+=
+: sid },
+    { 
+
+$set
+
+: { 
+
+capsule
+
+: body, 
+
+capsule_hash
+
+: hash,=
+
+owner_user
+
+: req=
+.
+
+user
+
+?.
+
+_id
+
+ } },
+    { 
+
+upsert
+
+: 
+
+true
+
+, 
+
+new
+
+: 
+
+true
+
+ }
+  ).
+
+lean
+
+();
+  res.
+
+json
+
+(doc);
+};
+
+backend/routes/capsule.routes.js =
+(new)
+
+js
+
+Copy code
+
+const
+
+ r =
+=3D 
+
+require
+
+(=
+
+'express'
+
+).
+
+Router
+
+();
+
+const
+
+ { requi=
+reAuth } =3D 
+
+require
+
+(
+
+'../middleware/auth.middl=
+eware'
+
+);
+
+const
+
+ c =3D 
+
+require
+
+(
+
+'../controllers/capsule.controller'
+
+);
+
+r.
+
+use
+
+=
+(requir

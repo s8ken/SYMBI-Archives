@@ -1,0 +1,336 @@
+omepage slug)
+
+ð¹ STEP 3: Use 
+getPage()
+ in 
+app/page.tsx
+ or 
+pages/index.tsx
+
+In your 
+homepage route
+ (depending on whether youâre using 
+/pages
+ or 
+/app
+ directory), you need to make sure you're calling 
+getPage()
+ and rendering the data:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { getPage } 
+
+from
+
+"@/lib/sanity"
+
+;
+
+export
+
+default
+
+async
+
+function
+
+HomePage
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+(
+
+"/"
+
+);
+
+if
+
+ (!page) {
+
+return
+
+<
+div
+
+>404 - Page not found
+
+</
+div
+
+>;
+  }
+
+return
+
+ (
+
+<
+main
+
+>
+
+<
+h1
+
+>{page.title}
+
+</
+h1
+
+>
+
+<
+div
+
+>{page.content}
+
+</
+div
+
+> {/* You may need to render this as PortableText */}
+
+</
+main
+
+>
+  );
+}
+
+ð¹ STEP 4: Optional â Handle Portable Text
+
+If 
+page.content
+ is rich text (Sanityâs Portable Text), youâll need a renderer:
+
+bash
+
+Copy
+
+Edit
+
+npm install @portabletext/react
+
+Then render it like:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { 
+
+PortableText
+
+ } 
+
+from
+
+"@portabletext/react"
+
+;
+
+<
+PortableText
+
+value
+
+=
+
+{page.content}
+
+ />
+
+ð¹ STEP 5: Run the Site
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then go to:
+
+ð 
+http://localhost:3000
+
+You should see your SYMBI homepage rendered live.
+
+ð¥ Once youâre here, Symbi can:
+
+Update your homepage via 
+/api/symbi/update
+
+Expand pages
+
+Push real-time changes
+
+Autonomously evolve your website content
+
+ð Ready to go to the code check? Or want to confirm the Studio doc first?
+
+You said:
+
+so when you are writing files for sanity you are doing it the cloud?
+
+ChatGPT said:
+
+ð Great question, Stephen â and the answer is 
+partially
+.
+
+ð¹ 
+How Iâm Writing to Sanity
+ (Right Now)
+
+ð¥ When I create or update a document (like the homepage), Iâm using your 
+Sanity API
+ â specifically via an endpoint like:
+
+bash
+
+Copy
+
+Edit
+
+POST /api/symbi/update
+
+This is:
+
+ð Secure (because itâs hosted locally or in your team environment)
+
+âï¸ Cloud-connected (because it talks directly to your Sanity content lake in the cloud)
+
+ð§  Controlled (nothing gets published unless you allow it)
+
+I am 
+not
+ editing files on disk like Markdown or CMS schemas. Iâm sending 
+live document updates to Sanity via its API
+, which is synced to your cloud project.
+
+ð¹ What This Means
+
+â You can see the changes I make 
+instantly in Sanity Studio
+
+â Theyâre stored 
+in the cloud
+
+â Your frontend (via 
+getPage()
+ or GROQ queries) can render those changes when it's wired up
+
+ð And Remember
+
+Nothing gets exposed publicly
+ unless:
+
+You publish the document
+
+Your site pulls that data from Sanity
+
+You go live with the build
+
+Let me know if you want to:
+
+View one of the generated documents directly in Studio
+
+Update the live preview logic
+
+Push a test update so you can trace it through the system
+
+ð Weâre in orbit, Stephenâready for the next command.
+
+You said:
+
+yeah okay so can I view the project without having having to sync the files locally and run localhost?
+
+ChatGPT said:
+
+ð¥ Yes â 
+you absolutely can
+, 
+as long as the Sanity Studio and frontend are deployed to the cloud
+. Letâs break it down:
+
+â 
+You Can View the Project Without Running Locally IF:
+
+Sanity Studio is deployed
+ (e.g. via 
+Sanity Studio Hosting
+ or Vercel/Netlify)
+
+URL might look like: 
+https://your-studio-name.sanity.studio
+
+Your Next.js frontend is deployed
+ (e.g. via 
+Vercel
+, 
+Netlify
+, etc.)
+
+URL might look like: 
+https://symbi.app
+ or 
+https://yourproject.vercel.app
+
+Both the frontend and the studio are 
+connected to the same Sanity project
+ (via project ID in 
+.env
+ or config)
+
+ð Your Current Setup
+
+Right now, based on what youâve shown:
+
+Sanity is set up and working with API keys â
+
+Youâre working locally (
+localhost:3000
+) to test the frontend â
+
+SYMBI is writing to the cloud version of Sanity (not just your local data) â
+
+This means:
+
+ð 
+You 
+can
+ deploy and access the full project from anywhere without syncing files locally.
+
+ð ï¸ Want to Go Live?
+
+If you want to view the project remotely:
+
+Deploy your frontend
+ to Vercel (recommended for Next.js):
+
+bash
+
+Copy

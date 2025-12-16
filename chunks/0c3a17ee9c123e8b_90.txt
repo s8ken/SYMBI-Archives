@@ -1,0 +1,603 @@
+ ID
+
+dataset
+
+: 
+
+'production'
+
+,
+
+useCdn
+
+: 
+
+true
+
+, 
+
+// Faster responses, but may show stale data
+
+apiVersion
+
+: 
+
+'2023-01-01'
+
+, 
+
+// Use a recent API version
+
+});
+
+const
+
+ builder = 
+
+imageUrlBuilder
+
+(sanityClient);
+
+export
+
+function
+
+urlFor
+
+(
+
+source: 
+any
+
+) {
+
+return
+
+ builder.
+
+image
+
+(source);
+}
+
+📌 
+Make sure 
+projectId
+ is correct!
+
+You can check it in 
+sanity.config.ts
+ or by running:
+
+sh
+
+Copy
+
+npx sanity debug
+
+✅ 
+Step 2: Fetch Data in 
+app/page.tsx
+
+Now, modify 
+
+app/page.tsx
+
+ to fetch and display your Sanity content.
+
+📌 
+Update 
+app/page.tsx
+
+Open the file:
+
+sh
+
+Copy
+
+nano app/page.tsx
+
+Then, 
+replace its contents with this
+:
+
+tsx
+
+Copy
+
+import
+
+ { sanityClient } 
+
+from
+
+'@/lib/sanity'
+
+;
+
+async
+
+function
+
+getPageData
+
+(
+
+) {
+
+const
+
+ query = 
+
+`*[_type == "page"]{ title, content }`
+
+;
+
+const
+
+ data = 
+
+await
+
+ sanityClient.
+
+fetch
+
+(query);
+
+return
+
+ data;
+}
+
+export
+
+default
+
+async
+
+function
+
+HomePage
+
+(
+
+) {
+
+const
+
+ pages = 
+
+await
+
+getPageData
+
+();
+
+return
+
+ (
+
+<
+main
+
+className
+
+=
+
+"p-6"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-3xl font-bold"
+
+>Pages from Sanity
+
+</
+h1
+
+>
+      {pages.map((page: any, index: number) => (
+
+<
+div
+
+key
+
+=
+
+{index}
+
+className
+
+=
+
+"mt-4 p-4 border rounded"
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-xl font-semibold"
+
+>{page.title}
+
+</
+h2
+
+>
+
+<
+p
+
+>{page.content?.[0]?.children?.[0]?.text}
+
+</
+p
+
+>
+
+</
+div
+
+>
+      ))}
+
+</
+main
+
+>
+  );
+}
+
+✅ 
+Step 3: Restart and Test
+
+Run:
+
+sh
+
+Copy
+
+npm run dev
+
+Then visit:
+
+📌 
+
+http://localhost:3001
+
+✅ You should see 
+Sanity page data displayed on your Next.js site
+ 🎉.
+
+🚀 
+Next Steps
+
+Add 
+dynamic routing
+ for individual pages (
+app/page/[slug].tsx
+).
+
+Make 
+images
+ from Sanity work with 
+next/image
+.
+
+Deploy on 
+Vercel
+ and connect the Studio.
+
+Let me know how it goes! 🚀🔥
+
+You said:
+
+there is a lot of content in that file don't forget its already built
+
+Vercel Deployment Expert GPT said:
+
+Got it! Since your 
+
+page.tsx
+
+ is already built, we’ll just integrate the Sanity data-fetching part 
+without overwriting everything
+. Here’s the best way to proceed:
+
+✅ 
+Step 1: Integrate Sanity Data Fetching in 
+app/page.tsx
+
+Open your existing 
+page.tsx
+
+:
+
+sh
+
+Copy
+
+nano app/page.tsx
+
+Find where your content is rendered
+ (like 
+<h1>
+, 
+<p>
+, etc.).
+
+Modify only the necessary part
+ to inject Sanity data.
+
+✅ 
+Step 2: Modify 
+app/page.tsx
+ Without Breaking Layout
+
+Here’s how you 
+fetch and use Sanity data
+ while keeping your existing design:
+
+🔹 
+Add Imports at the Top
+
+tsx
+
+Copy
+
+import
+
+ { sanityClient } 
+
+from
+
+'@/lib/sanity'
+
+;
+
+🔹 
+Fetch Data in 
+getPageData()
+
+Inside 
+page.tsx
+, add:
+
+tsx
+
+Copy
+
+async
+
+function
+
+getPageData
+
+(
+
+) {
+
+const
+
+ query = 
+
+`*[_type == "page"]{ title, content }`
+
+;
+
+const
+
+ data = 
+
+await
+
+ sanityClient.
+
+fetch
+
+(query);
+
+return
+
+ data;
+}
+
+🔹 
+Inject Sanity Data in Your Existing Layout
+
+Modify your 
+HomePage
+ function:
+
+tsx
+
+Copy
+
+export
+
+default
+
+async
+
+function
+
+HomePage
+
+(
+
+) {
+
+const
+
+ pages = 
+
+await
+
+getPageData
+
+(); 
+
+// Fetch Sanity data
+
+return
+
+ (
+
+<
+main
+
+className
+
+=
+
+"p-6"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-3xl font-bold"
+
+>Welcome to Symbi
+
+</
+h1
+
+>
+
+      {/* Loop Through Sanity Pages */}
+      {pages.map((page: any, index: number) => (
+
+<
+section
+
+key
+
+=
+
+{index}
+
+className
+
+=
+
+"mt-6"
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-xl font-semibold"
+
+>{page.title}
+
+</
+h2
+
+>
+
+<
+p
+
+>{page.content?.[0]?.children?.[0]?.text}
+
+</
+p
+
+>
+
+</
+section
+
+>
+      ))}
+
+</
+main
+
+>
+  );
+}
+
+✅ 
+Step 3: Restart & Verify
+
+sh
+
+Copy
+
+npm run dev
+
+Then go to 
+
+http://localhost:3001
+
+ and check if your Sanity 
+pages are loading
+ inside your existing layout.
+
+🚀 
+Next Steps
+
+If you want to 
+dynamically render individual pages
+, create:
+
+sh
+
+Copy
+
+mkdir
+
+ -p app/page/[slug]
+
+touch
+
+ app/page/[slug]/page.tsx
+
+Then fetch specific pages using 
+slug
+ from Sanity.
+
+Once tested, 
+we can deploy it on Vercel!
+ 🚀🔥
+
+Let me know if it’s working! 🚀
+
+You said:
+
+Terminal Saved Output1.txt
+
+Document
+
+this is what it has now
+
+Vercel Deployment Expert GPT said:
+
+I see you've uploaded a file named 
+"

@@ -1,0 +1,413 @@
+sion issues with the Homebrew directories, and subsequent 
+pyenv
+ commands failed because 
+pyenv
+ isn=E2=80=99t=
+ installed yet. Let=E2=80=99s resolve these issues step-by-step.
+
+1. 
+Resol=
+ve Homebrew Permission Issues
+
+The =
+error indicates that multiple directories under 
+/opt/homebrew
+ (the default Homebrew install=
+ation path on Apple Silicon Macs) are not writable by your user (
+standard
+). This is causing=
+ the 
+brew install pyenv=
+
+ command to fail.
+
+Solution: Fix Homebrew Permissions
+
+Run =
+the following commands to correct the ownership and permissions of the Home=
+brew directories:
+
+Bash
+
+Copy
+
+sudo
+
+ chown
+
+ -R
+
+ standard:ad=
+min
+
+ /opt/homebrew
+
+sudo
+
+ chmod
+
+ -R
+
+ u+=
+w
+
+ /opt/homebrew
+
+Thes=
+e commands:
+
+Change the ownership of all Homebrew dir=
+ectories to your user (
+=
+standard
+) and the 
+admin
+ group.
+
+Ensure your user has write permissions t=
+o these directories.
+
+Verify Homebrew
+
+Afte=
+r fixing permissions, check if Homebrew is working:
+
+Bash
+
+Copy
+
+brew
+
+ doctor
+
+This=
+ will report any remaining issues with your Homebrew setup. If it complains=
+ about other permissions or configurations, address them as suggested.
+
+2. 
+Insta=
+ll 
+pyenv
+
+Once=
+ permissions are fixed, install 
+pyenv
+:
+
+Bash
+
+Copy
+
+brew
+
+ install
+
+ pyenv
+
+This=
+ should now succeed. Verify the installation:
+
+Bash
+
+Copy
+
+pyenv
+
+ --version
+
+=
+
+You =
+should see output like 
+=
+pyenv 2.x.x
+.
+
+3. 
+Set U=
+p 
+pyenv
+
+=
+
+To u=
+se 
+pyenv
+, you ne=
+ed to configure your shell to recognize it. Since you=E2=80=99re using 
+zsh
+ (the default she=
+ll on macOS), add the following lines to your 
+~/.zshrc
+ file:
+
+Bash
+
+Copy
+
+export
+
+ PATH
+
+=3D
+
+"
+
+$HOME
+
+/.pyenv/bin:
+
+$PATH
+
+"
+
+eval
+
+ "$(
+
+pyenv
+
+ i=
+nit 
+
+--path
+
+)"
+
+eval
+
+ "$(
+
+pyenv
+
+ i=
+nit -)"
+
+Appl=
+y the changes:
+
+Bash
+
+Copy
+
+source
+
+ ~/.zshrc
+
+Veri=
+fy that 
+pyenv
+ is=
+ correctly set up:
+
+Bash
+
+Copy
+
+pyenv
+
+ --version
+
+=
+
+4. 
+Insta=
+ll and Use Python 3.9.0
+
+Now =
+you can install Python 3.9.0:
+
+Bash
+
+Copy
+
+pyenv
+
+ install
+
+ 3.9.0
+
+This=
+ may take a few minutes as it downloads and compiles Python. Once installed=
+, set it as the global Python version:
+
+Bash
+
+Copy
+
+pyenv
+
+ global
+
+ 3.9.0
+
+Veri=
+fy the Python version:
+
+Bash
+
+Copy
+
+python3
+
+ --version
+
+It s=
+hould show 
+Python 3.9.0=
+
+. If it still points to 
+/usr/bin/python3
+, ensure 
+pyenv
+ is correctly initialized by checking your PAT=
+H:
+
+Bash
+
+Copy
+
+echo
+
+ $PATH
+
+You =
+should see something like 
+/Users/standard/.pyenv/shims
+ near the beginning of the PATH.
+
+5. 
+Confi=
+rm Python Path
+
+Sinc=
+e you previously checked 
+which python3
+ and got 
+/usr/bin/python3
+, this indicates the system Python is being =
+used. After setting up 
+=
+pyenv
+, run:
+
+Bash
+
+Copy
+
+which
+
+ python3
+
+It s=
+hould now point to 
+~/.p=
+yenv/shims/python3
+. If not, restart your terminal or run 
+source ~/.zshrc
+ again.
+
+6. 
+Optio=
+nal: Address npm Issue from Previous Context
+
+Your=
+ earlier issue with 
+npm=
+ install -g npm@11.5.2
+ also stemmed from permission problems. Since =
+you=E2=80=99re encountering similar permission issues with Homebrew, it=E2=
+=80=99s likely your system has restrictive permissions for development tool=
+s. If you still need to update npm, consider using 
+nvm
+ (Node Version Manager) as recommende=
+d previously to avoid permission issues:
+
+Bash
+
+Copy
+
+curl
+
+ -o-
+
+ https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh
+
+ |
+
+ bash
+
+source
+
+ ~/.zshrc
+
+nvm
+
+ install
+
+ 22
+
+npm
+
+ install
+
+ -g
+
+ n=
+pm@11.5.2
+
+7. 
+Addit=
+ional Notes
+
+Xcode Co=
+mmand Line Tools
+: Since 
+xcode-select --install
+ confirmed the tools are installed, =
+you=E2=80=99re good here. If you need to update them, use:
+
+Bash
+
+Copy
+
+softwareupdate
+
+ --all
+
+ --install
+
+ --force
+
+Homebrew=
+ Maintenance
+: After fixing permissions, keep Homebrew updated:
+
+=
+Bash
+
+=
+
+Copy
+
+brew
+
+ update
+
+brew
+
+ upgrade
+
+Logs
+: If 
+brew install =
+pyenv
+ still fails, check the Homebrew logs in 
+~/Library/Logs/Homebrew/
+ for details.
+
+Python F=
+ramework Path
+: Your original Python issue involved an incorrect pa=
+th. Using 
+pyenv

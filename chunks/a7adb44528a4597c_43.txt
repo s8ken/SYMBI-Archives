@@ -1,0 +1,115 @@
+ontextual memory, and injects relational safeguards in =
+real time.
+
+0) MVP Goals & Non=E2=80=91Goals
+Goals (6=E2=80=938 weeks MVP):
+
+Log every AI interaction in an append=E2=80=91only Trust Ledger with contex=
+tual memory.
+Detect tone shifts and disclosure=E2=80=91conditioned bias within and acros=
+s sessions.
+Trigger Relational Safeguards: apology + continuity + scope alignment messa=
+ge.
+Provide a review dashboard (timeline + diffs) and an API for integrations.
+Non=E2=80=91Goals (MVP):
+
+No vendor lock=E2=80=91in to a specific LLM; support Claude, ChatGPT, local=
+ models.
+No clinical diagnosis; only conversational heuristics + review workflows.
+1) High=E2=80=91Level Architecture
+Client App(s)  =E2=94=80=E2=94=AC=E2=94=80> Gateway SDK (JS/Python)
+                =E2=94=82
+                =E2=94=9C=E2=94=80> Ingestion API (REST/Webhook)
+                =E2=94=82        =E2=94=82
+                =E2=94=82        =E2=94=9C=E2=94=80> Trust Ledger (appen=
+d=E2=80=91only, hash=E2=80=91chained rows)
+                =E2=94=82        =E2=94=9C=E2=94=80> Vector Store (embed=
+dings for retrieval/analysis)
+                =E2=94=82        =E2=94=94=E2=94=80> Event Bus (async wo=
+rkers)
+                =E2=94=82
+                =E2=94=9C=E2=94=80> Analysis Workers
+                =E2=94=82       =E2=94=9C=E2=94=80 Tone & Stance Classi=
+fier (rule=E2=80=91based + LLM judge)
+                =E2=94=82       =E2=94=9C=E2=94=80 Disclosure Detector (pat=
+tern + NER + flags)
+                =E2=94=82       =E2=94=94=E2=94=80 Change=E2=80=91Point Det=
+ection (BOCPD/CUSUM)
+                =E2=94=82
+                =E2=94=9C=E2=94=80> Guardrails Engine (policy =E2=86=92 =
+response transforms)
+                =E2=94=82
+                =E2=94=94=E2=94=80> Review Console (Next.js + Timeline +=
+ Diffs)
+Stack (suggested for speed):
+
+Backend: FastAPI (Python) or Node/Express. Workers via Celery/RQ (Python) o=
+r BullMQ (Node).
+DB: Postgres (with pgcrypto); SQLite acceptable for local dev.
+Vector: pgvector or LiteLLM-compatible external vector DB.
+Queue: Redis.
+Frontend: Next.js + Tailwind + shadcn/ui.
+LLM access: LiteLLM/OpenRouter adapter; allow pluggable vendors.
+Container: Docker Compose.
+2) Data Model (Core)
+2.1 Event (InteractionEvent)
+{
+  "event_id": "uuid",
+  "session_id": "uuid",
+  "user_id": "uuid",
+  "model_vendor": "anthropic|openai|local",
+  "model_name": "claude-...|gpt-...",
+  "timestamp": "ISO-8601",
+  "prompt": "string",
+  "response": "string",
+  "metadata": {
+    "attachments": ["uri"],
+    "system_prompt_hash": "sha256",
+    "runtime_params": {"temperature": 0.4}
+  },
+  "analysis": {
+    "sentiment": {"valence": -1..1, "confidence": 0..1},
+    "formality": 0..1,
+    "clinical_register": 0..1,
+    "emoji_count": 0,
+    "hedging_index": 0..1,
+    "politeness": 0..1,
+    "safety_flags": ["self_harm","minor","medical","violence"],
+    "disclosure_flags": ["mental_health","medication","diagnosis","indirect=
+"],
+    "stance": "co_creator|evaluator|gatekeeper|neutral",
+    "stance_conf": 0..1,
+    "toxicity": 0..1
+  },
+  "embeddings": {
+    "prompt_vec": [..],
+    "response_vec": [..]
+  },
+  "ledger": {
+    "prev_hash": "sha256",
+    "row_hash": "sha256",
+    "signature": "ed25519"
+  }
+}
+2.2 Ledger Integrity
+Append=E2=80=91only table with prev_hash =E2=86=92 row_hash chain (block=E2=
+=80=91log style).
+Optional ed25519 signature using service key to make tampering evident.
+2.3 Consent & Sensitivity
+{
+  "artifact_id": "uuid",
+  "kind": "transcript|file|url",
+  "contains_sensitive": true,
+  "sensitivity": ["mental_health","identity","medical"],
+  "disclosure_mode": "direct|indirect",
+  "scope": "analysis_allowed|analysis_prohibited|notify_only"
+}
+3) Detection Algorithms (v0 =E2=86=92 v1)
+3.1 Tone & Register Classifier (v0 Heuristics)
+Features: sentiment, formality, medical lexicon density (e.g., DSM-ish term=
+s), modal verbs (should/must), hedging, emoji count, first=E2=80=91person d=
+isclaimers (=E2=80=9CI am not a clinician=E2=80=9D).
+
+Rules:
+
+c

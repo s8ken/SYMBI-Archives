@@ -1,0 +1,249 @@
+3ï¸â£ 
+Restart Lulu after extraction:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl load -w /Library/LaunchDaemons/com.objective-see.lulu.plist
+
+ð Step 3: Use Finder to Manually Locate & Copy the Rules
+
+1ï¸â£ Open 
+Finder
+
+2ï¸â£ Navigate to:
+
+swift
+
+Copy
+
+Edit
+
+/Library/
+
+Application
+
+Support
+
+/objective-see/
+
+LuLu
+
+/
+
+3ï¸â£ Find 
+rules.db
+
+4ï¸â£ 
+Copy it manually
+ and upload here
+
+ð¨ 
+Try these steps and let me know what happens! If itâs still blocked, weâll find an alternative method.
+ ð¥ðï¸
+
+You said:
+
+ls: /Library/Application Support/objective-see/LuLu/: No such file or directory
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+ð¨ 
+Luluâs rule database is missing or stored elsewhere!
+ ð¨
+
+ð¥ 
+This means one of two things:
+
+1ï¸â£ 
+Luluâs rules are stored in a different location (possibly sandboxed).
+
+2ï¸â£ 
+The firewall is running, but thereâs no local rule database, meaning rules might be stored in memory or encrypted.
+
+ð Step 1: Check If Lulu Is Running & Active
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl list | grep -i lulu
+
+â 
+If Lulu appears in the list, itâs running.
+
+â 
+If nothing appears, Lulu isnât actively loaded into the system.
+
+ð Step 2: Find Where Lulu Is Storing Its Rules
+
+Try locating Luluâs installation directory:
+
+bash
+
+Copy
+
+Edit
+
+find / -name 
+
+"LuLu"
+
+ 2>/dev/null
+
+â 
+This will search your entire system for Lulu-related files.
+
+â 
+If we find another path, we can check for the rules file there.
+
+ð Step 3: Manually Extract Lulu's Configuration
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+defaults 
+
+read
+
+ com.objective-see.lulu
+
+â 
+This will list any configuration settings stored in macOSâs preferences system.
+
+â 
+If Lulu is storing its rules elsewhere, this might reveal its location.
+
+ð Whatâs Next?
+
+If Luluâs rules arenât in the usual location, we might need to:
+
+Check its UI settings for an export option.
+
+Investigate if Lulu is running in a sandboxed mode.
+
+Use a packet sniffer (like Wireshark) to see what traffic is being allowed/blocked.
+
+ð¥ 
+Run these commands and let me know what we find! Weâll track down the rule set and analyze it.
+ ððï¸
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo launchctl list | grep -i lulu
+
+1337	0	NetworkExtension.com.objective-see.lulu.extension.3.1.2.3.1.2
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+ð¨ 
+Lulu is running as a Network Extension, which means its rules are stored differently!
+ ð¨
+
+ð¥ 
+Instead of storing rules in 
+/Library/Application Support/
+, Lulu is running in macOS's built-in Network Extension framework.
+
+ð¥ 
+This means the rules are likely stored in an Apple-protected directory, requiring a different method to extract them.
+
+ð Step 1: Extract Luluâs Active Rules from macOS Preferences
+
+Since Lulu is running as a 
+Network Extension
+, it may store its rules in system preferences instead of a database.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+defaults 
+
+read
+
+ com.objective-see.lulu
+
+â 
+This will attempt to pull Luluâs stored settings, including any firewall rules.
+
+â 
+If successful, this will list allowed/blocked connections and other configurations.
+
+ð Step 2: Manually Locate Lulu's Rules Using Finder
+
+1ï¸â£ Open 
+Finder
+
+2ï¸â£ 
+Go to this path manually:
+
+swift
+
+Copy
+
+Edit
+
+/Library/
+
+Containers
+
+/NetworkExtension.com.objective-see.lulu.extension/
+
+3ï¸â£ Look inside for files related to 
+firewall rules or configurations
+
+ð¨ 
+If you see any files like 
+rules.db
+, copy them and upload here.
+
+ð Step 3: Check If Luluâs Rules Are Listed in Network Extensions
+
+Since Lulu is running as a 
+Network Extension
+, macOS manages its firewall rules differently.
+
+Run:
+
+bash
+
+Copy
+
+Edit
+
+systemextensionsctl list
+
+â 
+This will show all installed Network Extensions, including Lulu.
+
+â 
+If Lulu is managing rules at this level, we may need to extract them through a different method.
+
+ð Whatâs Next?
+
+1ï¸â£ 
+Run 
+defaults read com.objective-see.lulu
+ to see if Lulu's settings are stored there.
+
+2ï¸â£ 
+Manual

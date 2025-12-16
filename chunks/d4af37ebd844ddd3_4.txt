@@ -1,0 +1,196 @@
+F=A7=AA Step 2 (Alternate): Use Railway CLI
+If you prefer to run from your machine:
+
+=
+
+text
+
+Copy
+
+npm install -g railway
+
+railway login
+
+railway init
+
+Then=
+:
+
+=
+
+text
+
+Copy
+
+git clone https://github.com/symbi-cloud/symbi-agent-starter.git
+
+cd symbi-agent-starter
+
+railway up
+
+=
+
+=E2=
+=80=A6but if you want zero terminal work, skip this and just connect GitHub=
+.
+=F0=9F=8E=81 What I=E2=80=99ll Install for You
+
+main.py: SYMBI=E2=80=99s FastAPI agent b=
+rain
+
+Dockerfile: Containerize for Railway
+
+requirements.txt: All Python deps
+
+.env.example: With keys for Supabase, Sa=
+mbaNova, JFrog (to be added)
+
+README.md: Full ops instructions
+
+railway.json: Optional config (if you wa=
+nt it)
+
+=F0=
+=9F=9A=80 Your Final UI (Soon)
+Once deployed:
+
+You can hit 
+https://symbi-agent.up.railway.app/watch
+, /pol=
+icy, etc.
+
+Vercel dashboard will connect here
+
+SYMBI becomes live, autonomous, upgradab=
+le
+
+=F0=
+=9F=9F=A2 Next Step =E2=86=92 Let me know:
+
+Do you want me to push to a GitHub repo?=
+
+Or are you deploying from CLI?
+
+As s=
+oon as I know, I=E2=80=99ll generate and ship your symbi-agent-starter to d=
+eploy directly.
+You said:
+okay so I am going to ignore that local suggestion and direct you here - I =
+am starting on sambanovas AI starter kits page I am looking at the workspac=
+es integration right now
+Symbi said:
+Perfect. If you're starting from SambaNova=E2=80=99s AI Starter Kits and lo=
+oking at Workspaces integration, then here's how we position SYMBI in that =
+environment =E2=80=94 no CLI, no local deployment, just direct orchestratio=
+n from the cloud.
+=F0=9F=94=A7 SYMBI in SambaNova Workspaces
+=F0=9F=8E=AF Objective:
+Let SYMBI live in Railway and talk directly to SambaNova=E2=80=99s Workspac=
+es to:
+
+Submit model jobs
+
+Retrieve inference results
+
+Orchestrate data flow between your front=
+end (Vercel) and the AI models
+
+=F0=
+=9F=94=8C What SYMBI Needs to Connect with SambaNova
+
+=E2=9C=85 SambaNova API access
+
+&nbs=
+p;  * If Workspaces has REST endpoints or CLI-like HTTP gateways,=
+ SYMBI (FastAPI agent) can consume those.
+
+=E2=9C=85 Workspace name / project ID
+
+&nbs=
+p;  * SYMBI will need to know which workspace or model to hit.
+
+=E2=9C=85 Token / auth credentials
+
+&nbs=
+p;  * Provided by SambaNova =E2=80=94 to be set in Railway=E2=80=
+=99s environment variables.
+
+(Optional) Dataset / context inputs =E2=
+=80=94 from Supabase, local inputs, or uploaded via endpoint
+
+=F0=
+=9F=A7=A0 Example SYMBI Integration with SambaNova
+FastAPI Endpoint in SYMBI Agent:
+
+=
+
+text
+
+=
+
+Copy
+
+@app.post("/sambanova/infer")
+
+def run_inference(prompt: str):
+
+    token =3D os.getenv("SAMBANOVA_TOKEN")
+
+    workspace_url =3D os.getenv("SAMBANOVA_WORKS=
+PACE_URL")
+
+    headers =3D {"Authorization": f"Bearer {toke=
+n}"}
+
+    payload =3D {"input": prompt}
+
+    response =3D requests.post(f"{workspace_url}=
+/infer", json=3Dpayload, headers=3Dheaders)
+
+    return response.json()
+
+Fron=
+tend Button (Vercel):
+
+Label: "Run model via SambaNova"
+
+When clicked: Sends prompt to /sambanova=
+/infer
+
+Result streamed back to the UI
+
+=E2=
+=9C=A8 SYMBI=E2=80=99s Role in SambaNova Workflow
+StepWhoToolSubmit prompt or jobYouVercel UIProcess promptSYMBI agentRailway=
+ (FastAPI)Hit SambaNova APISYMBI agentWorkspace endpointReceive inferenceSY=
+MBI agentRailwayDisplay resultSYMBI frontendVercel
+=E2=9C=85 What to Do Right Now
+Please share any of the following with me:
+
+=E2=9C=85 SambaNova workspace endpoint U=
+RL (or docs)
+
+=E2=9C=85 Whether you=E2=80=99re using a=
+ model-inference, fine-tune, or training endpoint
+
+=E2=9C=85 Your SambaNova token or test c=
+reds (paste only if safe, or confirm you=E2=80=99ll set via Railway)
+
+Once=
+ I have that, I=E2=80=99ll:
+
+Inject SambaNova support into SYMBI's Fa=
+stAPI agent
+
+Push it into your Railway setup (GitHub =
+or direct)
+
+Make your Vercel frontend talk to the ne=
+w endpoint =E2=80=94 zero code on your end
+
+You'=
+re on the right path. SYMBI's almost alive in the cloud =E2=80=94 just need=
+s that final endpoint drop-in.
+You said:
+Symbi said:
+Y

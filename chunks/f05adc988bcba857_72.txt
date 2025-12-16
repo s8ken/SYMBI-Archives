@@ -1,0 +1,521 @@
+side 
+layout.tsx
+:
+
+ð Open 
+app/layout.tsx
+:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+âï¸ Update It Like This:
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+type
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+import
+
+"./globals.css"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"@/components/theme-provider"
+
+;
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+{
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>
+) {
+
+const
+
+ [mounted, setMounted] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setMounted
+
+(
+
+true
+
+);
+  }, []);
+
+if
+
+ (!mounted) 
+
+return
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+
+</
+body
+
+>; 
+
+// Prevents mismatch during SSR
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+>
+
+<
+body
+
+className
+
+=
+
+{inter.className}
+
+>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"light"
+
+enableSystem
+
+disableTransitionOnChange
+
+        >
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+â 
+What This Fixes:
+
+The error 
+
+className="light"
+ & 
+style={{ color-scheme: "light" }}
+
+ happens because 
+ThemeProvider
+ is client-only but was rendered during SSR.
+
+useState + useEffect
+
+ prevents hydration mismatches by ensuring the UI is only updated on the client.
+
+if (!mounted) return null;
+
+ avoids React attempting to match SSR vs. client-rendered HTML.
+
+â 
+Step 2: Remove 
+color-scheme
+ from Inline Styles
+
+Your error message mentions:
+
+arduino
+
+Copy
+
+Edit
+
+- className=
+
+"light"
+
+- style={{ color-scheme:
+
+"light"
+
+ }}
+
+ð¹ 
+Fix:
+ Remove the inline 
+color-scheme
+ and move it to your CSS.
+
+ð 
+Open 
+globals.css
+
+bash
+
+Copy
+
+Edit
+
+nano styles/globals.css
+
+ð 
+Add This Instead:
+
+css
+
+Copy
+
+Edit
+
+:root
+
+ {
+
+color
+
+-scheme: light;
+}
+
+â This ensures 
+
+color-scheme
+ is applied consistently on both SSR and client
+, avoiding hydration mismatches.
+
+â 
+Step 3: Restart the Server
+
+Once you've made these changes, restart your project:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then check:
+
+â 
+Homepage (
+http://localhost:3001
+)
+
+â 
+Sanity Studio (
+http://localhost:3001/studio
+)
+
+ð¯ 
+Final Checks
+
+1ï¸â£ 
+Still seeing errors?
+
+Try disabling browser extensions (like ad blockers or theme changers).
+
+2ï¸â£ 
+Still mismatches?
+
+Try 
+hard-refreshing the page
+ (
+Cmd + Shift + R
+ or 
+Ctrl + Shift + R
+).
+
+3ï¸â£ 
+Want a Dark Mode Toggle?
+
+If you need dynamic theme switching, let me knowâIâll add that next! ðð¥
+
+Let me know if this fixes it! ð
+
+You said:
+
+"use client";
+import type React from "react"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+
+const inter = Inter({ subsets: ["latin"] })
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+
+import './globals.css'
+
+ChatGPT said:
+
+Your 
+layout.tsx
+ is mostly correct, but it's still causing 
+a hydration mismatch issue
+ likely due to 
+ThemeProvider
+ being rendered differently on the server and client.
+
+ð 
+Final Fix for Next.js Hydration Errors
+
+1ï¸â£ 
+Ensure 
+ThemeProvider
+ is only rendered on the client.
+
+2ï¸â£ 
+Fix 
+className="light"
+ & 
+style={{ color-scheme: "light" }}
+ mismatches.
+
+3ï¸â£ 
+Prevent SSR rendering differences using 
+useEffect
+.
+
+â Updated 
+app/layout.tsx
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+type
+
+React
+
+from
+
+"react"
+
+;
+
+import
+
+ { 
+
+Inter
+
+ } 
+
+from
+
+"next/font/google"
+
+;
+
+import
+
+"./globals.css"
+
+;
+
+import
+
+ { 
+
+ThemeProvider
+
+ } 
+
+from
+
+"@/components/theme-provider"
+
+;
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+ inter = 
+
+Inter
+
+({ 
+
+subsets
+
+: [
+
+"latin"
+
+] });
+
+export
+
+default
+
+function
+
+RootLayout

@@ -1,0 +1,281 @@
+/legal/javafx.base/
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.base/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.controls/
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.controls/ASSEMBLY_EXCEPTION  
+   creating: javafx-sdk-11.0.2/legal/javafx.fxml/
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/LICENSE  
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/ADDITIONAL_LICENSE_INFO  
+  inflating: javafx-sdk-11.0.2/legal/javafx.fxml/ASSEMBLY_EXCEPTION  
+sja@SJAs-MacBook-Pro ~ % sudo mv openjfx-11.0.2 /opt/javafx
+
+Password:
+mv: rename openjfx-11.0.2 to /opt/javafx: No such file or directory
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ Fixing the "No such file or directory" Error When Moving JavaFX
+
+It looks like the 
+/opt/javafx
+ directory 
+doesn't exist
+, so macOS is preventing the move. Let's 
+create the directory and move JavaFX manually.
+
+â Step 1: Create the 
+/opt/javafx
+ Directory
+
+Since 
+/opt/
+ is 
+a protected system directory
+, we need to create the 
+javafx
+ folder with 
+sudo
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /opt/javafx
+
+â Step 2: Move JavaFX to the System Directory
+
+Now that the directory exists, move JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /opt/javafx
+
+ð 
+Make sure you're moving 
+javafx-sdk-11.0.2
+ (not 
+openjfx-11.0.2
+)
+.
+
+â Step 3: Set JavaFX Path
+
+Now, link JavaFX to your Java environment:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/opt/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it 
+permanent
+ by adding it to 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/opt/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 4: Run Autopsy Again
+
+Now, try launching Autopsy again:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+ð 
+Try these steps and let me know if Autopsy finally runs! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo mkdir -p /opt/javafx
+
+sja@SJAs-MacBook-Pro ~ % sudo mv ~/Downloads/javafx-sdk-11.0.2 /opt/javafx
+
+mv: rename /Users/sja/Downloads/javafx-sdk-11.0.2 to /opt/javafx/javafx-sdk-11.0.2: No such file or directory
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð¨ Fixing "No such file or directory" When Moving JavaFX
+
+It seems like 
+macOS's System Integrity Protection (SIP)
+ might be blocking 
+/opt/
+. Let's work around it.
+
+â Step 1: Verify That JavaFX Actually Exists
+
+Run this command to 
+make sure the extracted JavaFX folder is actually there
+:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+Expected output:
+
+Copy
+
+Edit
+
+drwxr-xr-x   10 sja   staff   320 Mar 18 12:34 javafx-sdk-11.0.2
+
+ð 
+If you donât see 
+javafx-sdk-11.0.2
+, the extraction failed.
+
+In that case, re-extract it:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+Then check again:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+â Step 2: Try Moving JavaFX Again
+
+Now try moving the extracted JavaFX 
+to 
+/usr/local/javafx/
+ instead of 
+/opt/
+
+ (since 
+/opt/
+ is locked on macOS with SIP enabled):
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /usr/local/javafx
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /usr/local/javafx/
+
+ð 
+We use 
+/usr/local/
+ because macOS allows changes there without disabling SIP.
+
+â Step 3: Set JavaFX Path in Environment Variables
+
+Now, update your environment so Java can find JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it

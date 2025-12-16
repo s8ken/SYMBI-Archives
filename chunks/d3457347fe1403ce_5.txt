@@ -1,0 +1,202 @@
+l conformance depends on system-of-systems scope.=
+=E2=80=9D
+
+Security posture vs. score uplift
+
+You raised Security to 
+8.5/10=
+
+ while listing 
+JWT i=
+ssues
+ and no 
+signatu=
+re verification/DID resolution
+. That=E2=80=99s inconsistent. Recom=
+mend 
+7/10 now
+; unloc=
+k to 8.5 once crypto verification + key management land.
+
+Testing 2/10 + =E2=80=98Pilot in 8=E2=80=9310 weeks=E2=80=99
+
+Pilots with cryptographic trust require a minimum battery: unit, property-b=
+ased, interop vectors, negative tests. Gate pilot on 60=E2=80=9370% coverag=
+e in trust modules (not whole repo) + reproducible test vectors.
+
+=E2=80=9C92% success probability=E2=80=9D
+
+Treat as an internal planning estimate. Externally, switch to risk register=
+ + milestones with clear exit criteria.
+
+Technical gaps to close (must-fix=
+ vs. should-fix)
+
+Must before pilot (P0)
+
+Signature verification
+ (Ed25519 + secp256k1 at minimum=
+) with canonicalization (JCS or URDNA2015) and deterministic test vectors.
+
+DID resolution
+ with method drivers: 
+did:web
+ (well-formed hosting rules), 
+did:key
+ (multicodec), 
+did:ethr
+ (web3 provider abstr=
+action), 
+did:ion
+ (sidetr=
+ee op ingestion). Include offline resolution fallback for 
+did:web
+.
+
+Revocation
+: status list 2021 or equivalent; pluggable =
+revocation registry.
+
+Key management
+: rotation, compromise procedures, and o=
+ptional HSM/KMS (AWS KMS, GCP KMS) adapters.
+
+JWT/Session hardening
+: rotating signing keys, audience=
+/issuer checks, short TTL + refresh flow, JTI replay prevention.
+
+Should (P1)
+
+Fairness & drift
+ in trust scoring: calibration scr=
+ipts, subgroup analysis, and guardrails for proxy variables.
+
+Privacy
+: data minimization in credentials; support for=
+ selective disclosure (BBS+ or SD-JWT roadmap).
+
+Observability
+: structured events for trust decisions w=
+ith redaction; trace IDs from decision =E2=86=92 credential.
+
+Test plan (minimum to green-light=
+ a pilot)
+
+Unit
+: 95%+ on 
+scoring.ts
+, 
+validato=
+r.ts
+, 
+did.ts
+.
+
+Property-based
+: weights sum constraints; monotonicity =
+under violations; temporal decay invariants.
+
+Crypto vectors
+: NIST/official vectors for Ed25519/secp=
+256k1; VC/JWT signed examples; invalid signature corpus.
+
+Interop
+: Verify VCs from 2 external libraries; resolve=
+ at least 50 real 
+did:web
+ domains (staging).
+
+Fuzz
+: malformed DIDs/VCs, oversized fields, unicode co=
+nfusables.
+
+Perf
+: scoring latency p95 < 15 ms per agent; resolu=
+tion cache hit rate target > 80%.
+
+Threat model (top items)
+
+Credential replay / nonces
+ =E2=86=92 enforce nonce/aud=
+ience; cache JTI.
+
+Method downgrade
+ (e.g., from 
+did:ion
+ to 
+did:web
+) =E2=86=92 explicit allowlists per tenant; policy deni=
+es weaker methods unless configured.
+
+Score gaming
+ =E2=86=92 rate-limit attestations, cross-=
+issuer correlation, anomaly detection on rapid score deltas.
+
+Privacy leakage
+ in metrics =E2=86=92 differential priv=
+acy or k-anonymity thresholds for dashboards.
+
+API & data contracts (quick s=
+pec deltas to add)
+
+POST /trust/verify
+ =E2=86=92 returns 
+{score, ci_low, ci_high, rationale[], evidence[]}
+
+GET /did/:method/:id
+ =E2=86=92 cache headers + ETag; 429 p=
+olicy on upstream.
+
+POST /vc/issue
+ | 
+POST /vc/verify
+ with W3C context URIs version-pinned.
+
+Audit log schema
+: 
+decision_id
+, 
+a=
+gent_id
+, 
+inputs_digest
+, 
+policy_version
+, 
+signature
+, 
+verdict
+.
+
+Pricing sanity check (good, with =
+tweaks)
+
+Keep 
+TaaS
+ metering but add 
+free verification allowance
+ per plan to reduce =
+buyer friction.
+
+Add 
+enterprise =E2=80=9Cregulated industries=E2=80=9D SKUs
+ with policy templates (banking, health, public sector).
+
+For marketplace fees, avoid double=
+-charging: verification subscription should include 
+N
+ attestations.
+
+Go-to-market (tighten)
+
+Design partners
+: 3=E2=80=935 targets where DID is alre=
+ady familiar (Web3 security firms, fintech risk, healthcare data exchanges)=
+.
+
+Regulatory co-signs
+: advisory from a conformity assess=
+ment body; publish a 
+Trust Co=
+ntrols Matrix
+ mapping to EU AI Act Articles 9/10/13

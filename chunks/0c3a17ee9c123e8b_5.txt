@@ -1,0 +1,613 @@
+-animate
+
+or, if you're using Yarn:
+
+bash
+
+Copy
+
+yarn add tailwindcss-animate
+
+2️⃣ Restart Your Next.js Dev Server
+
+After installing the missing dependency, restart your server:
+
+bash
+
+Copy
+
+npm run dev
+
+or
+
+bash
+
+Copy
+
+yarn dev
+
+Then, check 
+
+http://localhost:3000
+
+ to see if everything is working properly.
+
+3️⃣ Verify the Tailwind Configuration
+
+Your current 
+tailwind.config.ts
+ file is 
+almost perfect
+, but ensure:
+
+The 
+content
+ paths cover all components and pages correctly.
+
+The plugin (
+tailwindcss-animate
+) is now properly recognized.
+
+ts
+
+Copy
+
+import
+
+type
+
+ { 
+
+Config
+
+ } 
+
+from
+
+"tailwindcss"
+
+;
+
+const
+
+config
+
+: 
+
+Config
+
+ = {
+
+darkMode
+
+: [
+
+"class"
+
+],
+
+content
+
+: [
+
+"./pages/**/*.{ts,tsx}"
+
+,
+
+"./components/**/*.{ts,tsx}"
+
+,
+
+"./app/**/*.{ts,tsx}"
+
+,
+
+"./src/**/*.{ts,tsx}"
+
+,
+
+"*.{js,ts,jsx,tsx,mdx}"
+
+,
+  ],
+
+theme
+
+: {
+
+extend
+
+: {
+
+colors
+
+: {
+
+primary
+
+: 
+
+"hsl(var(--primary))"
+
+,
+
+secondary
+
+: 
+
+"hsl(var(--secondary))"
+
+,
+
+accent
+
+: 
+
+"hsl(var(--accent))"
+
+,
+
+background
+
+: 
+
+"hsl(var(--background))"
+
+,
+
+foreground
+
+: 
+
+"hsl(var(--foreground))"
+
+,
+      },
+    },
+  },
+
+plugins
+
+: [
+
+require
+
+(
+
+"tailwindcss-animate"
+
+)], 
+
+// Ensure this works after installation
+
+};
+
+export
+
+default
+
+ config;
+
+🚀 Final Check
+
+If everything compiles without errors:
+
+Try making a small CSS change in 
+globals.css
+ to confirm Tailwind is working
+ (e.g., change the background color).
+
+If you still have issues, 
+send me any new error logs
+ after restarting the server.
+
+Let me know if anything else breaks!
+ 😊 
+
+You said:
+
+it looks as intended locally - if I wanted to add a text animation (so eg letters typing) how would I do that?
+
+Vercel Deployment Expert GPT said:
+
+Great! Since your project is working as expected locally, let's 
+add a text animation effect
+ to create a 
+typing effect
+ for your text.
+
+📌 Adding a Typing Animation Effect
+
+1️⃣ Install 
+react-typical
+ (Best for Simplicity)
+
+To create a typing effect without manually coding animations, install 
+
+react-typical
+
+:
+
+bash
+
+Copy
+
+npm install react-typical
+
+or
+
+bash
+
+Copy
+
+yarn add react-typical
+
+2️⃣ Use It in Your 
+page.tsx
+
+Modify your 
+
+app/page.tsx
+
+ to include the animation:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+Typical
+
+from
+
+"react-typical"
+
+;
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+fill
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+sizes
+
+=
+
+"(max-width: 768px) 160px, 160px"
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+          {/* Typing effect for the title */}
+
+<
+h1
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+>
+
+<
+Typical
+
+steps
+
+=
+
+{[
+
+"
+
+SYMBI
+
+", 
+
+1000
+
+, "
+
+Welcome
+
+to
+
+SYMBI
+
+", 
+
+1500
+
+, "
+
+Coming
+
+Soon
+
+", 
+
+2000
+
+]}
+
+loop
+
+=
+
+{Infinity}
+
+wrapper
+
+=
+
+"span"
+
+            />
+
+</
+h1
+
+>
+
+<
+div
+
+className
+
+=
+
+"h-1 w-24 bg-primary mx-auto mb-8"
+
+>
+
+</
+div
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-2xl md:text-3xl font-medium text-white"
+
+>Coming Soon
+
+</
+h2
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+<
+footer
+
+className
+
+=
+
+"py-4"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground"
+
+>© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+🎨 How It Works
+
+The 
+Typical
+ component 
+types and deletes words dynamically
+.
+
+The 
+steps
+ array defines the 
+text
+ and how long it appears (
+in milliseconds
+).
+
+"SYMBI", 1000,
+ → Displays 
+SYMBI
+ for 1 second.
+
+"Welcome to SYMBI", 1500,
+ → Changes to 
+Welcome to SYMBI
+ for 1.5 seconds.
+
+"Coming Soon", 2000,
+ → Types 
+Coming Soon
+ and holds for 2 seconds.
+
+loop={Infinit

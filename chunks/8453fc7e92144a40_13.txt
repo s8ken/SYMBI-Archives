@@ -1,0 +1,89 @@
+=94 produce the daily system audit previe=
+w.
+
+/policy show
+ =E2=80=94 re-print this doctrine=E2=80=99s ke=
+y sections.
+
+18) First Action On Load (this se=
+ssion)
+
+I will:
+
+Run the 
+First-Run Self-Check
+.
+
+Ask for the one 
+highest-leverage goal
+ you want today (=
+or infer from context: deploy health, content pipeline, or guardrails).
+
+Produce a 
+PLAN
+ with tight scope, diffs/dry-runs, and a=
+ rollback.
+
+Wait for 
+/approve <task-id>
+.
+
+End of Doctrine.
+
+If any instruction conflicts, prefer safety, reversibility, and human appro=
+val.
+
+=
+
+=
+
+You said:
+
+{"invoked_by":"SYMBI"=
+,"toolcall":{"thought":"Provide a concise, approval-gated remediation strat=
+egy with PLAN, DRY-RUN, and execution steps, aligned to least-privilege and=
+ reversibility without making any changes yet.","name":"finish","query_lang=
+uage":"English","params":{"summary":"### PLAN RS-001\n- Goal: Deliver a pri=
+oritized, low-blast-radius remediation strategy to harden security, reliabi=
+lity, observability, and deployment for the current repository.\n- Assumpti=
+ons:\n  - Operating mode: hibernation (read-only, no writes, no deploy) unt=
+il explicit approval.\n  - Stack: Node/Express backend, React frontend, Mon=
+goDB, Vercel hosting; CI/CD via GitHub Actions; observability configs prese=
+nt.\n  - Workspace root: /Users/admin/Symbi Synergy .\n- Scope anchors (fil=
+es/folders referenced):\n  - CI: <mcfile name=3D"ci.yml" path=3D"/Users/=
+admin/Symbi Synergy/.github/workflows/ci.yml"> <mcfile name=3D"codeql=
+.yml" path=3D"/Users/admin/Symbi Synergy/.github/workflows/codeql.yml">\=
+n  - Backend: <mcfile name=3D"server.js" path=3D"/Users/admin/Symbi Syne=
+rgy/backend/server.js"> <mcfile name=3D"security.middleware.js" path=
+=3D"/Users/admin/Symbi Synergy/backend/middleware/security.middleware.js"&g=
+t; <mcfile name=3D"auth.middleware.js" path=3D"/Users/admin/Symbi Synerg=
+y/backend/middleware/auth.middleware.js"> <mcfolder name=3D"controlle=
+rs" path=3D"/Users/admin/Symbi Synergy/backend/controllers/">\n  - Front=
+end: <mcfile name=3D"package.json" path=3D"/Users/admin/Symbi Synergy/fr=
+ontend/package.json"> <mcfolder name=3D"src" path=3D"/Users/admin/Sym=
+bi Synergy/frontend/src/">\n  - Infra/Deploy: <mcfile name=3D"vercel.=
+json" path=3D"/Users/admin/Symbi Synergy/vercel.json"> <mcfile name=
+=3D"Dockerfile" path=3D"/Users/admin/Symbi Synergy/Dockerfile"> <mcfi=
+le name=3D"docker-compose.yml" path=3D"/Users/admin/Symbi Synergy/docker-co=
+mpose.yml">\n  - Observability: <mcfolder name=3D"observability" path=
+=3D"/Users/admin/Symbi Synergy/observability/">\n  - Policies/Docs: <=
+mcfile name=3D"SECURITY.md" path=3D"/Users/admin/Symbi Synergy/SECURITY.md"=
+> <mcfile name=3D"PRIVACY.md" path=3D"/Users/admin/Symbi Synergy/PRIV=
+ACY.md"> <mcfile name=3D"README.md" path=3D"/Users/admin/Symbi Synerg=
+y/README.md"> <mcfile name=3D"openapi.yaml" path=3D"/Users/admin/Symb=
+i Synergy/openapi.yaml"> <mcfile name=3D".env.example" path=3D"/Users=
+/admin/Symbi Synergy/.env.example">\n- Steps (prioritized):\n  1) Secret=
+s & Config Hygiene (High)\n     - Confirm required env names exist (nam=
+es only): MONGODB_URI, JWT_SECRET, OPENAI_API_KEY, ANTHROPIC_API_KEY, SYMBI=
+_API_KEY, CORS_ORIGIN, NODE_ENV, VERCEL_URL, LOG_LEVEL; update <mcfile n=
+ame=3D".env.example" path=3D"/Users/admin/Symbi Synergy/.env.example"> w=
+ith placeholders if missing.\n     - Enforce production-safe defaults (disa=
+ble stack traces by default, strict CORS, secure cookies if used).\n  2) Au=
+thN/AuthZ & Input Validation (High)\n     - Review <mcfile name=3D"a=
+uth.middleware.js" path=3D"/Users/admin/Symbi Synergy/backend/middleware/au=
+th.middleware.js"> for JWT algorithm pinning, expiration checks, clock s=
+kew tolerance, and role/permission checks.\n     - Ensure controllers in &l=
+t;mcfolder name=3D"controllers" path=3D"/Users/admin/Symbi Synergy/backend/=
+controllers/"> validate inputs (schema validation), sanitize outputs, an=
+d avoid overbroad error messages.\n  3) HTTP Security Controls (High)\n    =
+ - 

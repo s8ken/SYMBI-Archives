@@ -1,0 +1,421 @@
+font-bold tracking-tight"
+
+>
+  {page.
+
+title
+
+}
+</h1>
+
+If your Sanity 
+page
+ document has a 
+content
+ block, we can also render that with 
+@portabletext/react
+.
+
+✅ Optional Step 3: Render Portable Text Content
+
+Install the renderer:
+
+bash
+
+Copy
+
+npm install @portabletext/react
+
+Then:
+
+tsx
+
+Copy
+
+import
+
+ { 
+
+PortableText
+
+ } 
+
+from
+
+"@portabletext/react"
+
+...
+
+<
+
+PortableText
+
+ value={page.
+
+content
+
+} />
+
+Next Moves:
+
+✅ Confirm Sanity has 
+title
+ and 
+content
+ fields.
+
+🎨 Replace hardcoded blocks with 
+page.title
+, 
+page.content
+, etc.
+
+🧠 Optionally break sections into smaller components for easier editing.
+
+🌐 Deploy the new CMS-powered version on a separate Vercel branch (
+main-site
+).
+
+Want help rewriting 
+page.tsx
+ with these edits in place?
+
+You said:
+
+yeah maybe just give me the whole thing?
+
+Vercel Deployment Expert GPT said:
+
+Home Page With Cms
+
+· javascript
+
+Copy
+
+Edit
+
+Download
+
+import
+ { 
+getPage
+ } 
+from
+
+"@/lib/sanity"
+
+import
+ { 
+PortableText
+ } 
+from
+
+"@portabletext/react"
+
+import
+
+Image
+
+from
+
+"next/image"
+
+import
+ { 
+Button
+ } 
+from
+
+"@/components/ui/button"
+
+import
+ { 
+ArrowRight
+, 
+Sparkles
+, 
+BarChart2
+, 
+Zap
+ } 
+from
+
+"lucide-react"
+
+export
+
+default
+
+async
+
+function
+
+Home
+() {
+
+const
+
+page
+ = 
+await
+
+getPage
+()
+
+return
+ (
+
+    <
+div
+
+className
+=
+"flex flex-col min-h-screen"
+>
+
+      <
+header
+
+className
+=
+"sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+>
+
+        <
+div
+
+className
+=
+"container flex h-16 items-center"
+>
+
+          <
+div
+
+className
+=
+"flex items-center gap-2"
+>
+
+            <
+Image
+
+src
+=
+"/symbi-logo.jpg"
+
+alt
+=
+"Symbi Logo"
+
+width
+={
+40
+}
+
+height
+={
+40
+}
+
+className
+=
+"h-10 w-10 rounded-full object-cover"
+
+            />
+
+            <
+span
+
+className
+=
+"text-xl font-bold"
+>Symbi</
+span
+>
+
+          </
+div
+>
+
+          <
+nav
+
+className
+=
+"ml-auto hidden md:flex gap-6"
+>
+
+            <
+a
+
+href
+=
+"#what"
+
+className
+=
+"text-sm font-medium hover:text-primary"
+>What</
+a
+>
+
+            <
+a
+
+href
+=
+"#why"
+
+className
+=
+"text-sm font-medium hover:text-primary"
+>Why</
+a
+>
+
+            <
+a
+
+href
+=
+"#who"
+
+className
+=
+"text-sm font-medium hover:text-primary"
+>Who</
+a
+>
+
+          </
+nav
+>
+
+          <
+div
+
+className
+=
+"ml-auto md:ml-4"
+>
+
+            <
+Button
+
+className
+=
+"bg-primary hover:bg-primary/90 text-white"
+>Symbi Chat</
+Button
+>
+
+          </
+div
+>
+
+        </
+div
+>
+
+      </
+header
+>
+
+      <
+main
+
+className
+=
+"flex-1"
+>
+
+        {
+/* Hero Section */
+}
+
+Done! I've created a new 
+Home Page With CMS
+ version of your 
+app/page.tsx
+ with Sanity integration via 
+getPage()
+ and 
+PortableText
+. Let me know if you'd like to add image rendering, fallback content, or additional CMS sections!
+
+You said:
+
+okay and that had the page names like what why and who?
+
+Vercel Deployment Expert GPT said:
+
+Great question — yes, the updated version still includes the 
+"What"
+, 
+"Why"
+, and 
+"Who"
+ sections 
+visually and structurally
+, 
+but
+ the content inside each section can now be dynamically managed through Sanity CMS.
+
+To clarify:
+
+✅ What's Included:
+
+Headings like 
+"What We Offer"
+, 
+"Why Symbi"
+, and 
+"Who We Are"
+ are 
+still present
+.
+
+These can now be controlled via Sanity, depending on how you've structured your schema (like in 
+page.ts
+ or 
+siteSettings.ts
+).
+
+The rest of the content can be rendered via 
+PortableText
+ or custom serializers for rich editing.
+
+🛠️ What's Next?
+
+To make sure each section ("what", "why", "who") pulls 
+specific content
+ from Sanity, we can:
+
+Add fields for each in the schema (e.g., 
+sectionWhat
+, 
+sectionWhy
+, 
+sectionWho
+).
+
+Fetch them individually in 
+getPage()
+ or restructure your query.
+
+Render them where appropriate in your layout with conditionals or portable text blocks.
+
+Would you like me to help:
+
+✅ Add these fields to your Sanity schema?
+
+✅ Update the frontend to read each one specifically?
+
+✅ Show you how to edit them inside the Studio?
+
+Let me know which step you'd like next — or all three!
+
+You said:
+
+well

@@ -1,0 +1,101 @@
+║
+║                                                                               ║
+║ If your project does not yet depend on Playwright, first install the          ║
+║ applicable npm package (most commonly @playwright/test), and                  ║
+║ then run Playwright's install command to download the browsers:               ║
+║                                                                               ║
+║     npm install @playwright/test                                              ║
+║     npx playwright install                                                    ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+SYMBIs-MacBook-Pro:~ admin$ /Users/admin/Library/Caches/ms-playwright/chromium_headless_shell-1155/
+-bash: /Users/admin/Library/Caches/ms-playwright/chromium_headless_shell-1155/: No such file or directory
+SYMBIs-MacBook-Pro:~ admin$ 
+
+ChatGPT said:
+
+Thanks — that output confirms it: 
+Playwright isn't fully installed yet
+, and that's why ElizaOS is still throwing browser errors.
+
+Let’s fix it cleanly.
+
+✅ Final Fix — Run These in Order:
+
+Install Playwright
+
+bash
+
+Copy
+
+Edit
+
+npm install @playwright/test --save-dev
+
+Install Chromium
+
+bash
+
+Copy
+
+Edit
+
+npx playwright install chromium
+
+This will properly download the needed binary to the expected path.
+
+(Optional but Safe) 
+Restart ElizaOS
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ symbi
+elizaos dev
+
+🧼 OR Disable the Plugin
+
+If you 
+don’t need the browser plugin now
+, disable 
+@elizaos/plugin-browser
+ in the Plugins tab to silence the errors entirely.
+
+Once you’ve done either of these, we’ll retest the GitHub integration. You’re very close now!
+
+You said:
+
+Version: 1.3.0
+│
+◇  ✓ Project built successfully
+[2025-07-23 11:45:39] INFO: No character files specified, attempting to load project agents...
+[2025-07-23 11:45:39] INFO: Loaded project from /Users/admin/symbi/dist/index.js
+[2025-07-23 11:45:39] INFO: Found 1 agent(s) in project configuration
+[2025-07-23 11:45:39] INFO: Loaded character: Eliza
+[2025-07-23 11:45:39] INFO: Using local @elizaos/server installation
+[2025-07-23 11:45:39] INFO: Loaded @elizaos/server from local installation
+[2025-07-23 11:45:39] INFO: [INIT] Database Dir for SQL plugin: /Users/admin/symbi/.eliza/.elizadb
+[2025-07-23 11:45:39] INFO: [INIT] Running database migrations for messaging tables...
+[2025-07-23 11:45:39] INFO: DatabaseMigrationService initialized with database
+[2025-07-23 11:45:39] INFO: Registered schema for plugin: @elizaos/plugin-sql
+[2025-07-23 11:45:39] INFO: Discovered 1 plugin schemas out of 1 plugins
+[2025-07-23 11:45:39] INFO: Running migrations for 1 plugins...
+[2025-07-23 11:45:39] INFO: Starting migration for plugin: @elizaos/plugin-sql
+[2025-07-23 11:45:39] INFO: All plugin migrations completed.
+[2025-07-23 11:45:40] INFO: [INIT] Ensuring default server exists...
+[2025-07-23 11:45:40] INFO: [AgentServer] Checking for default server...
+[2025-07-23 11:45:40] INFO: [AgentServer] Default server already exists with ID: 00000000-0000-0000-0000-000000000000
+[2025-07-23 11:45:40] WARN: Server authentication is disabled. Set ELIZA_SERVER_AUTH_TOKEN environment variable to enable.
+[2025-07-23 11:45:40] INFO: Web UI enabled
+[2025-07-23 11:45:40] INFO: [STATIC] Found client files at: /Users/admin/symbi/node_modules/@elizaos/server/dist/client
+[2025-07-23 11:45:40] INFO: [STATIC] Serving static files from: /Users/admin/symbi/node_modules/@elizaos/server/dist/client
+[2025-07-23 11:45:40] INFO: [SocketIO] Router initialized with 0 agents
+[2025-07-23 11:45:40] INFO: [SocketIO] Setting up Socket.IO event listeners
+[2025-07-23 11:45:40] INFO: [SocketIO] Registered message types: 1: ROOM_JOINING, 2: SEND_MESSAGE, 3: MESSAGE, 4: ACK, 5: THINKING, 6: CONTROL, ROOM_JOINING: 1, SEND_MESSAGE: 2, MESSAGE: 3, ACK: 4, THINKING: 5, CONTROL: 6
+[2025-07-23 11:45:40] ERROR: Failed to bind server to 0.0.0.0:3000:
+    message: "(Error) Failed to start serv

@@ -1,0 +1,283 @@
+ know what happens next! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % brew link --force --overwrite openjdk@11
+
+Linking /opt/homebrew/Cellar/openjdk@11/11.0.26... 65 symlinks created.
+
+If you need to have this software first in your PATH instead consider running:
+  echo 'export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
+sja@SJAs-MacBook-Pro bin % java -version
+
+openjdk version "11.0.26" 2025-01-21
+OpenJDK Runtime Environment Homebrew (build 11.0.26+0)
+OpenJDK 64-Bit Server VM Homebrew (build 11.0.26+0, mixed mode)
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¥ 
+Java 11 is now set as default!
+ ð¥
+
+Now, let's test 
+Autopsy
+ again. Run:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+ð¡ If it 
+still fails
+ with 
+libtsk_jni
+ issues, try this fix:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ DYLD_LIBRARY_PATH=/opt/homebrew/lib:
+
+$DYLD_LIBRARY_PATH
+
+./autopsy
+
+Let me know what happens next! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
+./autopsy
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+Alright, looks like 
+Autopsy
+ isn't recognizing the Java runtime. Let's force it to use 
+Java 11
+ explicitly. Try the following:
+
+Step 1: Ensure Java 11 is set up correctly
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/opt/homebrew/opt/openjdk@11"
+
+echo
+
+'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Verify that Java 11 is now the active version:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+It should output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+ ...
+
+Step 2: Run Autopsy with explicit JDK path
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome /opt/homebrew/opt/openjdk@11
+
+Step 3: If Java still isnât found, manually symlink it
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+Then try launching **
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % export JAVA_HOME="/opt/homebrew/opt/openjdk@11"
+echo 'export JAVA_HOME="/opt/homebrew/opt/openjdk@11"' >> ~/.zshrc
+source ~/.zshrc
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldnât be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+sja@SJAs-MacBook-Pro bin % 
+
+2/2
+
+ChatGPT said:
+
+It looks like 
+Autopsy
+ is still unable to find the correct Java runtime. Let's go through a few additional steps to fix this.
+
+Step 1: Manually Set JAVA_HOME for This Session
+
+Try running:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+echo
+
+'export JAVA_HOME=$(/usr/libexec/java_home -v 11)'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+Then verify:
+
+sh
+
+Copy
+
+Edit
+
+java -version
+
+If it still shows 
+Java 23
+ instead of 
+Java 11
+, force the change.
+
+Step 2: Manually Link Java 11
+
+If 
+java -version
+ is still showing the wrong version, try this:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+ln
+
+ -sfn /opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+
+Then rerun:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"
+
+echo
+
+'export JAVA_HOME="/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+java -version
+
+It should now show 
+Java 11
+.
+
+Step 3: Run Autopsy with Explicit JDK Path
+
+Now, try launching Autopsy again by manually specifying the Java 11 installation:
+
+sh
+
+C

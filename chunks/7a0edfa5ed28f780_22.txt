@@ -1,0 +1,509 @@
+ typer
+
+import
+
+ subprocess
+
+from
+
+ rich 
+
+import
+
+print
+
+from
+
+ rich.console 
+
+import
+
+ Console
+
+from
+
+ rich.table 
+
+import
+
+ Table
+
+app = typer.Typer()
+console = Console()
+
+# ---------------------- ETHICS POLICY ----------------------
+
+ETHICS_PATH = os.path.expanduser(
+
+"~/.symbi/ethics.json"
+
+)
+DEFAULT_ETHICS = {
+
+"allow_network"
+
+: 
+
+False
+
+,
+
+"allow_container_scans"
+
+: 
+
+True
+
+,
+
+"allow_process_monitoring"
+
+: 
+
+True
+
+,
+
+"consent_required"
+
+: 
+
+True
+
+}
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=
+
+True
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'r'
+
+) 
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics = load_ethics()
+
+# ---------------------- WATCH SYSTEM ----------------------
+
+@app.command()
+
+def
+
+watch
+
+():
+
+"""Monitor system processes and Docker containers."""
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring is disabled by ethics policy.[/red]"
+
+)
+
+raise
+
+ typer.Exit()
+
+    console.
+
+print
+
+(
+
+"[bold green]Monitoring processes and containers...[/bold green]\n"
+
+)
+
+print
+
+(
+
+"[bold]Running processes:[/bold]"
+
+)
+
+for
+
+ proc 
+
+in
+
+ psutil.process_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"[dim]
+{proc.info[
+'pid'
+
+]}[/dim] 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ (psutil.NoSuchProcess, psutil.AccessDenied):
+
+continue
+
+if
+
+ ethics.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bold]"
+
+)
+
+try
+
+:
+            result = subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=
+
+True
+
+, text=
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found. Skipping container check.[/yellow]"
+
+)
+
+# ---------------------- REPL MODE ----------------------
+
+@app.command()
+
+def
+
+talk
+
+():
+
+"""REPL interface with SYMBI agent."""
+
+    console.
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL started. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input = 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ user_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+        console.
+
+print
+
+(
+
+f"[blue]You said:[/blue] 
+{user_input}
+
+")
+        console.
+
+print
+
+(
+
+"[green]SYMBI (mock):[/green] I'm here. Functionality coming soon."
+
+)
+
+# ---------------------- POLICY VIEW ----------------------
+
+@app.command()
+
+def
+
+policy
+
+():
+
+"""View current SYMBI ethics policy."""
+
+    console.
+
+print
+
+(
+
+"[bold yellow]Current Ethics Policy:[/bold yellow]"
+
+)
+    console.print_json(json.dumps(ethics, indent=
+
+2
+
+))
+
+# ---------------------- POLICY EDIT ----------------------
+
+@app.command()
+
+def
+
+update_policy
+
+():
+
+"""Edit ethics policy file in default editor."""
+
+    console.
+
+print
+
+(
+
+"[bold cyan]Opening ethics.json for editing...[/bold cyan]"
+
+)
+    os.system(
+
+f"open 
+{ETHICS_PATH}
+
+" 
+
+if
+
+ os.name == 
+
+"posix"
+
+else
+
+f"notepad 
+{ETHICS_PATH}
+
+")
+
+# ---------------------- ENTRY POINT ----------------------
+
+if
+
+ __name__ == 
+
+"__main__"
+
+:
+    app()
+
+💾 To Save:
+
+Press 
+Ctrl + O
+ then 
+Enter
+
+Press 
+Ctrl + X
+ to exit
+
+Then run it:
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py talk
+
+or
+
+bash
+
+Copy
+
+Edit
+
+python ~/symbi_agent.py watch
+
+This is your sovereign node — fully in your control, guided by your ethics. Let me know if you want to add cloud bridging, LLM response, or system notifications next. 🛡️👁️🔥
+
+You said:
+
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python ~/symbi_agent.py talk
+  File "/Users/admin/symbi_agent.py", line 32
+    import os, json, psutil, typer, subprocess
+IndentationError: expected an indented block after 'with' statement on line 30
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Ah — thanks for flagging that. Looks like a copy/paste indentation glitch right after this line in the 
+load_ethics()
+ function:
+
+python
+
+Copy
+
+Edit
+
+with
+
+open
+
+(ETHICS_PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+
+That line 
+must be followed by 

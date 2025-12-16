@@ -1,0 +1,526 @@
+ions
+ editable?
+
+Say the word â Iâll drop in the next-level CMS magic ð¡ð¥
+
+You said:
+
+ [ Cannot open file for writing: No such file or directory 
+
+ChatGPT said:
+
+Ah, got it â you're seeing:
+
+yaml
+
+Copy
+
+Edit
+
+Cannot open file for writing:
+
+No
+
+such
+
+file
+
+or
+
+directory
+
+That usually means the folder 
+schemas/
+ doesnât exist yet.
+
+â Fix: Create the 
+schemas/
+ Folder First
+
+Run this from your project root:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ schemas
+nano schemas/siteSettings.ts
+
+Then paste the code for your CMS-editable logo schema:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineType, defineField } 
+
+from
+
+'sanity'
+
+export
+
+default
+
+defineType
+
+({
+
+name
+
+: 
+
+'siteSettings'
+
+,
+
+title
+
+: 
+
+'Site Settings'
+
+,
+
+type
+
+: 
+
+'document'
+
+,
+
+fields
+
+: [
+
+defineField
+
+({
+
+name
+
+: 
+
+'logo'
+
+,
+
+title
+
+: 
+
+'Logo Image'
+
+,
+
+type
+
+: 
+
+'image'
+
+,
+    }),
+
+defineField
+
+({
+
+name
+
+: 
+
+'tagline'
+
+,
+
+title
+
+: 
+
+'Tagline'
+
+,
+
+type
+
+: 
+
+'string'
+
+,
+    }),
+  ],
+})
+
+Let me know once thatâs in â then weâll wire it into 
+sanity.config.ts
+ â and use it in your layout ð¥
+
+You said:
+
+done
+
+ChatGPT said:
+
+ð Perfect â now your 
+
+siteSettings
+ schema is live and ready
+ inside Sanity Studio!
+
+Letâs finish wiring it up:
+
+â Step 2: Register 
+siteSettings
+ in 
+sanity.config.ts
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano sanity.config.ts
+
+At the top, add:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+Then in your 
+schema.types
+, change:
+
+ts
+
+Copy
+
+Edit
+
+types
+
+: [page],
+
+to:
+
+ts
+
+Copy
+
+Edit
+
+types
+
+: [page, siteSettings],
+
+â This will make 
+Site Settings appear as a content type
+ in your Studio.
+
+â Step 3: Restart and Open Studio
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Then go to:
+
+ð 
+
+http://localhost:3000/studio
+
+Youâll now see 
+"Site Settings"
+ in the left sidebar. Click â 
+New
+, upload your logo, and hit 
+Publish
+ â
+
+Ready for the final step?
+
+Iâll now help you 
+update your layout.tsx to use the CMS logo
+ dynamically â say the word ðð¥
+
+You said:
+
+ChatGPT said:
+
+You're on the right track! Now, in 
+sanity.config.ts
+, you need to 
+register the 
+siteSettings
+ schema
+ within the 
+schema.types
+ array.
+
+â 
+Modify 
+sanity.config.ts
+ like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+  },
+})
+
+â 
+Next Steps:
+
+1ï¸â£ Save the file in 
+nano
+: Press 
+CTRL + X
+, then 
+Y
+, then 
+Enter
+.
+
+2ï¸â£ Restart Sanity Studio:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+3ï¸â£ Open 
+http://localhost:3000/studio
+ â You should now see 
+"Site Settings"
+ in the sidebar.
+
+ð¡ 
+Final Step (Fetching Logo in Layout)
+
+Once this is working, Iâll guide you to 
+update 
+layout.tsx
+
+ so your logo is dynamic from Sanity! Ready? ð
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % mkdir schemas
+nano schemas/siteSettings.ts
+
+sja@SJAs-MacBook-Pro symbi-main-site % nano sanity.config.ts
+
+sja@SJAs-MacBook-Pro symbi-main-site % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+sh: next: command not found
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+You're getting the error 
+
+sh: next: command not found
+
+, which means 
+Next.js isn't installed in your project
+ or your 
+dependencies are missing
+.
+
+â 
+Fix Steps:
+
+1ï¸â£ 
+Make sure you're inside your project folder
+:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Documents/symbi-main-site
+
+2ï¸â£ 
+Reinstall dependencies
+:
+
+bash
+
+Copy
+
+Edit
+
+npm install
+
+3ï¸â£ 
+Then run the project
+:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+â 
+Why did this happen?
+
+You cloned/moved files but 
+didnât install dependencies
+.
+
+Running 
+npm install
+ ensures 
+node_modules/
+ and 

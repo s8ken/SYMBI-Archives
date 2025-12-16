@@ -1,0 +1,670 @@
+on
+
+({ 
+=
+
+success
+
+:
+
+false
+
+, 
+
+error
+
+:
+
+'Not found'
+
+ });
+
+await
+
+ bond.=
+
+revoke
+
+(req.
+
+body
+
+?.=
+
+reason
+
+ || 
+
+'revoked'
+
+, req.
+
+user
+
+?.
+=
+
+_id
+
+ || req.
+
+user
+
+?.
+
+id
+
+);
+  res.
+
+json
+
+({ 
+
+success
+
+:=
+
+true
+
+, 
+=
+
+data
+
+:bond });
+};
+
+backend/routes/trust-bonds.rout=
+es.js
+
+js
+
+Copy code
+
+const
+
+ e=
+xpress =3D 
+
+require
+
+=
+
+(
+
+'express'
+
+);
+
+const
+
+ router =
+=3D express.
+
+Router
+
+();
+
+const
+
+ { prote=
+ct } =3D 
+
+require
+
+(
+
+'../middleware/auth.middlewar=
+e'
+
+);
+
+const
+
+ ctrl =
+=3D 
+
+require
+
+(=
+
+'../controllers/trustBonds.control=
+ler'
+
+);
+
+router.
+
+use
+
+(protect);
+router.
+
+post
+
+=
+
+(
+
+'/'
+
+, ct=
+rl.
+
+createBond
+
+);
+router.
+
+get
+
+(
+
+'/:id'
+
+, =
+ctrl.
+
+getBond
+
+=
+);
+router.
+
+put
+
+(
+
+'/:id'
+
+, =
+ctrl.
+
+updateBond
+
+);
+router.
+
+post
+
+=
+
+(
+
+'/:id/suspend'
+
+, ctrl.
+
+suspendBond
+=
+
+);
+router.
+
+post
+
+=
+
+(
+
+'/:id/revoke'
+
+=
+
+, ctrl.
+
+revokeBond
+
+);
+
+module
+
+.
+
+exports
+
+=
+ =3D router;
+
+backend/instrumentation/trust-m=
+etrics.js
+
+js
+
+Copy code
+
+const
+
+ c=
+lient =3D 
+
+require
+
+(
+
+'prom-client'
+
+);
+
+const
+
+ trustEv=
+alCounter =3D 
+
+new
+
+ client.
+
+Counter
+
+({ 
+
+name
+
+: 
+
+'trust_evaluations_total'
+
+, 
+
+help
+
+: 
+
+'Oracle evaluations'
+=
+
+, 
+
+labelNames
+
+: [
+
+'recommendation'
+
+] });
+
+const
+
+ trustVi=
+olationCounter =3D 
+
+new
+
+ client.
+
+Counter
+
+({ 
+
+name
+
+: 
+
+'trust_policy_violations_=
+total'
+
+, 
+
+help
+
+: 
+
+'Policy violatio=
+ns'
+
+, 
+
+labelNames
+
+: [
+
+'article'
+
+,
+
+'severity'
+
+] });
+
+function
+
+recordTrustEvaluation
+
+(
+
+e
+
+=
+) {
+
+try
+
+ {
+    trustEvalCounter.
+
+inc
+
+({ 
+
+recommendation=
+
+: e.
+
+recommen=
+dation
+
+ || 
+
+'unk=
+nown'
+
+ }, 
+
+1
+
+);
+    (e.
+
+violations
+
+||[]).
+
+forEach
+=
+
+(
+
+v
+
+ =3D> trustViolationCounter.
+
+inc
+
+({ 
+
+article
+
+: v.
+
+articleId
+
+, 
+
+severity
+
+: v.
+
+severity
+
+||
+
+'unknown'
+
+ }, 
+
+1
+
+));
+  } 
+
+catch
+
+ {}
+}
+
+module
+
+.
+
+exports
+
+=
+ =3D { recordTrustEvaluation, 
+
+regist=
+er
+
+: client.
+
+r=
+egister
+
+ };
+
+backend/WIRE_CHAT_ROUTE.md
+
+markdown
+
+Copy code
+
+# Wire the Trus=
+t Oracle into your =E2=80=9Csend=E2=80=9D route
+
+1) Import in your chat route file:
+
+`const { createTrustMiddleware } =
+=3D require('../core/trustOracle');`
+
+2) Add middleware before the controller:
+
+`router.post('/send', createTrust=
+Middleware(), controller.sendMessage);`
+
+3) Expose metrics in your Express app:
+
+```js
+const bondRoutes =3D require('./routes/trust-bonds.routes');
+const { register } =3D require('./instrumentation/trust-metrics');
+app.use('/api/trust/bonds', bondRoutes);
+app.get('/metrics', async (_req, res) =3D> {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
+bash
+
+Copy code
+
+---
+
+## frontend/src/components/TrustD=
+ashboard.tsx
+
+```tsx
+import React, { useEffect, useState } from 
+
+'react'
+
+;
+
+type
+
+ Props =
+=3D { token: string; bondId: string };
+
+export
+
+ defau=
+lt 
+
+function
+
+ T=
+rustDashboard({ token, bondId }: Props) {
+  const [resp, setResp] =3D useState<any>(null);
+  useEffect(() =3D> {
+    fetch(`/api/trust/bonds/
+
+${bo=
+ndId}
+
+`, { headers: { Authorization: `Bearer 
+
+${token}
+
+` }})
+      .then(r =3D> r.json()).
+
+t=
+hen
+
+(setResp).catch(console.error);
+  }, [bondId, token]);
+  const b =3D resp?.data;
+
+if
+
+ (!b) 
+
+return
+
+ <div&=
+gt;Loading trust=E2=80=A6</div>;
+
+return
+
+ (
+    <div>
+      <h3>Trust Score: {b.trustScore} ({b.trustBand})</h3>
+      <div>Purpose: {b.scope?.purpose}</div>
+      <div>Permissions: {(b.scope?.permissions||[]).
+
+join
+
+(
+
+', '
+
+)}</div>
+      <div>Expires: {b.scope?.expiresAt ? new Date(b.scope.expiresAt)=
+.toLocaleString() : 
+
+'n/a'
+
+}</div>
+    </div>
+  );
+}
+
+frontend/src/components/TrustSc=
+oringDemo.tsx
+
+tsx
+
+Copy code
+
+import
+
+React
+
+, { useState } 
+
+from
+
+'react'
+
+;
+
+type
+
+Props
+
+ =3D { 
+
+token
+
+: 
+
+=
+
+string
+
+; 
+
+bondId
+
+: 
+
+string
+
+ };
+
+export
+
+default
+
+function
+
+TrustScoringDemo
+
+(
+
+{ token, bondId }: Props
+
+) {
+
+const
+
+ [out,=
+ setOut] =3D useState<
+
+any
+
+>(
+
+null
+
+);
+
+async
+
+function
+
+send
+
+(
+
+text: 
+string
+
+, scopes: 
+
+string
+
+[]) {
+
+const
+
+ r =
+=3D 
+
+await
+
+fetch
+
+(
+
+'/api/chat/send'
+
+=
+, {
+
+method
+
+: 
+
+'POST'
+
+,
+
+headers
+
+: {=
+
+'Content-Type'
+
+:
+
+'appl

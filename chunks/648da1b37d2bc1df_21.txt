@@ -1,0 +1,444 @@
+t? Or help you turn this into a CLI c=
+ommand like 
+symbi
+ system=
+-wide?
+
+Let=E2=80=99s lock in your companion. =F0=9F=9B=A1=EF=B8=8F=F0=
+=9F=94=A5
+
+You said:
+
+=
+
+Downlo=
+ading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Downloading typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+Installing collected packages: typing-extensions, shellingham, pygments, ps=
+util, mdurl, click, markdown-it-py, rich, typer
+Successfully installed click-8.2.1 markdown-it-py-3.0.0 mdurl-0.1.2 psutil-=
+7.0.0 pygments-2.19.2 rich-14.0.0 shellingham-1.5.4 typer-0.16.0 typing-ext=
+ensions-4.14.1
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python symbi_agent.py watch
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Version=
+s/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/=
+admin/symbi_agent.py': [Errno 2] No such file or directory
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ python symbi_agent.py watch
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Version=
+s/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/=
+admin/symbi_agent.py': [Errno 2] No such file or directory
+(symbi-env) SYMBIs-MacBook-Pro:~ admin$ 
+
+=
+
+=
+
+Symbi said:
+
+=F0=9F=92=A5 You=E2=80=99ve successfully created the vir=
+tual environment and installed all the dependencies. The only thing left is=
+ to drop in the actual 
+symbi_agen=
+t.py
+ file =E2=80=94 right now it just doesn=E2=80=99t exist in your =
+directory.
+
+Let=E2=80=99s fix that 
+right now.
+
+=F0=9F=A7=B1 Step 1: Create the 
+symbi_agent.py
+ File
+
+Run this in your terminal to open a =
+new file:
+
+b=
+ash
+
+Copy code
+
+nano ~/symbi_agent.py
+
+Then paste this into it (press =E2=
+=8C=98V or right-click paste):
+
+=
+python
+
+Copy code
+
+# SYMBI Agent - Loca=
+l Companion v1
+
+import
+
+ os, js=
+on, psutil, typer, subprocess
+
+from
+
+ rich 
+
+import
+
+print
+
+from
+
+ rich.con=
+sole 
+
+import
+
+ C=
+onsole
+
+app =3D typer.Typer()
+console =3D Console()
+
+ETHICS_PATH =3D os.path.expanduser(
+
+"~/.symbi/ethics.json"
+
+)
+DEFAULT_ETHICS =3D {
+
+"allow_network"
+
+: 
+
+False
+
+,
+
+"allow_container_scans"
+=
+
+: 
+
+True
+
+=
+
+,
+
+"allow_process_monitoring"
+
+: 
+
+True
+
+,
+
+"consent_required"
+
+: 
+
+True
+
+}
+
+def
+
+load_ethics
+
+():
+
+if
+
+not
+
+ os.path.exists(=
+ETHICS_PATH):
+        os.makedirs(os.path.dirname(ETHICS_PATH), exist_ok=3D
+
+True
+
+)
+
+with
+
+ =
+
+open
+
+(ETHICS_=
+PATH, 
+
+'w'
+
+) 
+
+as
+
+ f:
+            json.dump(DEFAULT_ETHICS, f, indent=3D
+
+2
+
+)
+
+with
+
+open
+
+(ETHICS_PATH=
+, 
+
+'r'
+
+) 
+=
+
+as
+
+ f:
+
+return
+
+ json.load(f)
+
+ethics =3D load_ethics()
+
+@app.command()
+
+def
+
+watch
+
+():
+
+if
+
+not
+
+ ethics.get(
+
+"allow_process_monitoring"
+
+):
+        console.
+
+print
+
+(
+
+"[red]Process monitoring=
+ is disabled by ethics policy.[/red]"
+
+)
+
+raise
+
+=
+ typer.Exit()
+    console.
+
+print
+
+(
+
+"[bold green]Monitoring proc=
+esses and containers...[/bold green]"
+
+)
+
+print
+
+(
+
+"\n[bold]Running processes:[/bold]"
+
+)
+
+for
+
+ proc =
+
+in
+
+ psutil.pro=
+cess_iter([
+
+'pid'
+
+, 
+
+'name'
+
+, 
+
+'username'
+
+]):
+
+try
+
+:
+
+print
+
+(
+
+f"[dim]
+{proc.info[
+'pid'
+
+]}[/dim] 
+
+{proc.info[
+'name'
+
+]} - 
+
+{proc.info[
+'username'
+
+]}")
+
+except
+
+ Exception:
+
+continue
+
+if
+
+ ethics=
+.get(
+
+"allow_container_scans"
+
+):
+
+print
+
+(
+
+"\n[bold]Docker containers:[/bol=
+d]"
+
+)
+
+try
+
+:
+            result =3D subprocess.run([
+
+"docker"
+
+, 
+
+"ps"
+
+], capture_output=3D
+
+True
+
+, text=3D
+
+True
+
+)
+
+print
+
+(result.stdout)
+
+except
+
+ FileNotFoundError:
+
+print
+
+(
+
+"[yellow]Docker not found.[/=
+yellow]"
+
+)
+
+@app.command()
+
+def
+
+talk
+
+():
+    console.
+
+print
+
+(
+
+"[bold magenta]SYMBI REPL st=
+arted. Type 'exit' to quit.[/bold magenta]"
+
+)
+
+while
+
+True
+
+:
+        user_input =3D 
+
+input
+
+(
+
+"symbi > "
+
+)
+
+if
+
+ us=
+er_input.strip().lower() 
+
+in
+
+ (
+
+"exit"
+
+, 
+
+"quit"
+
+):
+
+break
+
+        console.
+
+print
+
+(
+
+f"[blue]You said:[/blue]=
+
+{user_input}
+
+")
+        console.
+
+print
+
+(
+
+"[green]SYMBI (mock):[/g=
+reen] I'm here. Functionality coming soon."
+
+)
+
+@app.command()
+
+def
+
+policy
+
+(

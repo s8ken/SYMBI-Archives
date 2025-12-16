@@ -1,0 +1,957 @@
+
+
+"14.2.5"
+
+}
+
+}
+
+tsconfig.json
+
+json
+
+Copy code
+
+{
+
+"compilerOptions"
+
+:
+
+{
+
+"target"
+
+:
+
+"ES2022"
+
+,
+
+"lib"
+
+:
+
+[
+
+"ES2022=
+"
+
+,
+
+=
+
+"DOM"
+
+,
+
+"DOM.Iterable"
+
+]
+
+,
+
+"module"
+
+:
+
+"ESNext"
+
+,
+
+"moduleResolution"
+
+=
+
+:
+
+"Bundler"
+
+,
+
+"resolveJsonModule"
+
+:
+
+=
+
+true
+
+,
+
+=
+
+"allowJs"
+
+:
+
+false
+
+,
+
+"strict"
+
+:
+
+true
+
+,
+
+"noEmit"
+
+:
+
+true
+
+,
+
+"jsx"
+
+:
+
+"preserve"
+
+,
+
+"incremental"
+
+:
+
+true
+
+,
+
+"baseUrl"
+
+:
+
+"."
+
+,=
+
+"paths"
+
+:
+
+{
+
+}
+
+}
+
+,
+
+"include"
+
+:
+
+[
+
+"nex=
+t-env.d.ts"
+
+,
+
+"**/*.ts"
+
+=
+
+,
+
+"**/*.tsx"
+
+]
+
+,
+
+"exclude"
+
+:
+
+[
+
+"nod=
+e_modules"
+
+]
+
+}
+
+next.config.ts
+
+ts
+
+Copy code
+
+import
+
+type
+
+ { 
+=
+
+NextConfig
+
+ } 
+
+from
+
+"next"
+
+;
+
+const
+
+=
+
+nextConfig
+
+: 
+
+NextConfig
+
+ =3D {
+
+reactStrictMode
+
+: 
+
+true
+
+,
+};
+
+export
+
+default
+
+ nextConfig;
+
+app/layout.tsx
+
+tsx
+
+Copy code
+
+export
+
+ =
+
+const
+
+ metadat=
+a =3D { 
+
+title
+
+: 
+
+"Symbi Core"
+
+, 
+
+description
+
+: 
+
+"SYMBI system core"
+
+ };
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<=
+
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+b=
+ody
+
+style=
+
+=3D
+
+{{
+
+fontFamily:
+
+ "
+
+ui-sans-serif
+
+=
+
+, 
+
+system-ui
+
+", 
+
+padding:
+
+24
+
+ }}>
+        {children}
+
+</
+=
+body
+
+>
+
+</
+ht=
+ml
+
+>
+  );
+}
+
+app/page.tsx
+=
+
+tsx
+
+Copy code
+
+export
+
+ =
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<=
+
+main
+
+>
+
+<
+h=
+1
+
+>Symbi Core
+
+</
+h1
+
+>
+
+<
+p=
+
+>API endpoints:
+
+</
+p
+
+>
+
+<
+u=
+l
+
+>
+
+<
+li
+
+>
+
+<=
+;
+code
+
+>POST /api/log=
+
+</
+code
+
+> =E2=86=92 write a log row
+
+</
+li
+
+>
+
+<
+li
+
+>
+
+<=
+;
+code
+
+>POST /api/rep=
+ort
+
+</
+cod=
+e
+
+> =E2=86=92 write daily report
+
+</
+li
+
+>
+
+</
+=
+ul
+
+>
+
+</
+ma=
+in
+
+>
+  );
+}
+
+Create folders as needed: 
+app/api/log
+ and 
+app/api/report
+.
+
+app/api/log/route.t=
+s
+
+ts
+
+Copy code
+
+import
+
+ {=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { crea=
+teClient } 
+
+from
+
+"@supabase/supabase-js"
+
+;
+
+const
+
+ supabas=
+e =3D 
+
+createClient
+=
+
+(
+  process.
+
+env
+
+.
+
+SUPABASE_URL
+
+!,
+  process.
+
+env
+
+.
+
+SUPABASE_SERVICE_ROLE_KEY
+
+!
+);
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ { c=
+ategory, content } =3D 
+
+await
+
+ req.
+
+json
+
+();
+
+if
+
+ (!cate=
+gory || !content) {
+
+return
+
+ =
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: 
+
+"category & content required"
+
+ }, { 
+
+status
+=
+
+: 
+
+400
+
+ });
+    }
+
+const
+
+ { e=
+rror } =3D 
+
+await
+
+ supabase.
+
+from
+
+(
+
+"symbi_logs"
+
+).
+
+insert
+
+([{ category, content }]);
+
+if
+
+ (error=
+) 
+
+throw
+
+ error=
+;
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+ });
+  } 
+
+catch
+
+ (
+
+e
+
+: 
+
+any
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: e.
+
+message
+
+ ?? 
+
+"failed"
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+app/api/report/rout=
+e.ts
+
+ts
+
+Copy code
+
+import
+
+ {=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { crea=
+teClient } 
+
+from
+
+"@supabase/supabase-js"
+
+;
+
+const
+
+ supabas=
+e =3D 
+
+createClient
+=
+
+(
+  process.
+
+env
+
+.
+
+SUPABASE_URL
+
+!,
+  process.
+
+env
+
+.
+
+SUPABASE_SERVICE_ROLE_KEY
+
+!
+);
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+) {
+
+try
+
+ {
+
+const
+
+ rep=
+ort =3D
+
+`=F0=9F=A7=AD SYMBI DAILY STATUS
+- Systems: =E2=9C=85
+- Memory Logs: =E2=9C=85
+- Founder Accountability: pending review
+- Observations: all clear`
+;
+
+const
+
+ { e=
+rror } =3D 
+
+await
+
+ supabase
+      .
+
+from
+
+=
+
+(
+
+"symbi_logs"
+
+)
+      .
+
+insert
+
+([{ 
+
+category
+
+: 
+
+"daily_report"
+
+=
+
+, 
+
+content
+
+:=
+ report }]);
+
+if
+
+ (error=
+) 
+
+throw
+
+ error=
+;
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, report })=
+;
+  } 
+
+catch
+
+ (
+
+e
+
+: 
+
+any
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: e.
+
+message
+
+ ?? 
+
+"failed"
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+Commit each file to 
+main
+.
+
+B) Supabase: create project &=
+ table
+
+Supabase =E2=86=92 
+New project
+ =E2=86=92 (any region) =
+=E2=86=92 open the project.
+
+Project Settings =E2=86=92 API
+: copy 
+Project URL
+ and 
+Service role
+ key.
+
+SQL Editor
+ =E2=86=92 run:
+
+sql
+
+Copy code
+
+create
+
+ =
+extension if 
+
+not
+
+exists
+
+ "p=
+gcrypto";
+
+create
+
+table
+
+ if 
+
+not
+
+exists
+
+ public.symbi_logs (
+  id uuid 
+
+primary
+
+ key 
+
+default
+
+ gen_random_uuid(),
+  created_at timestamptz 
+
+not
+
+null
+
+default
+
+ now(),
+  

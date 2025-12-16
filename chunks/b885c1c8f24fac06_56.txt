@@ -1,0 +1,374 @@
+
+
+!
+
+3ï¸â£ 
+Press 
+Enter
+
+ (this force quits without saving)
+
+ð¹ If the Terminal is Stuck Completely
+
+ð Just 
+close the terminal window
+ and open a new one.
+
+Or force quit with:
+
+bash
+
+Copy
+
+Edit
+
+CTRL + C
+
+â 
+Now you can start fresh!
+ If you need to reopen 
+layout.tsx
+, just run:
+
+bash
+
+Copy
+
+Edit
+
+nano app/layout.tsx
+
+ð¥ 
+Let me know if you're unstuck!
+ ðð
+
+You said:
+
+alright am I meant to wait for this sja@SJAs-MacBook-Pro symbi-ai-website % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1377ms
+
+ChatGPT said:
+
+ð¥ 
+No need to wait! Your Next.js server is already running!
+ ðð
+
+The message:
+
+Copy
+
+Edit
+
+â Ready in 1377ms
+
+â 
+Means your local server is up and running.
+
+ð¹ What to Do Next
+
+1ï¸â£ 
+Open Safari (or Chrome) and go to:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+â 
+Check if the page loads correctly.
+
+2ï¸â£ 
+Check the browser console for errors:
+
+Safari:
+
+CMD + Option + C
+ â Go to the 
+Console
+ tab
+
+Chrome:
+
+Right-click > Inspect > Console
+
+3ï¸â£ 
+Look for any React hydration errors.
+
+If there are no errors, then 
+we fixed it! ð
+
+If thereâs still an issue, send me the console error so we can squash it.
+
+ð¥ 
+Let me know what happens! If itâs all good, we push to GitHub & deploy to Vercel!
+ ðð
+
+You said:
+
+okay so that's no good 
+
+ChatGPT said:
+
+ð¥ 
+Alright, let's break it down and fix whatâs wrong!
+ ðð
+
+From the screenshot, I see 
+two main issues
+:
+
+1ï¸â£ 
+The logo is missing
+ (broken image).
+
+2ï¸â£ 
+The page is displaying "Coming Soon" correctly, but something looks off.
+
+ð¹ Step 1: Fix the Broken Logo
+
+The most likely reason the 
+logo isnât showing
+ is either:
+
+â 
+The image file is missing from 
+/public/
+
+â 
+The file path is incorrect in your code
+
+ð¹ Check if the Logo Exists in 
+/public/
+
+Run this command in your terminal:
+
+bash
+
+Copy
+
+Edit
+
+ls
+
+ public/
+
+â 
+Do you see 
+symbi-logo.jpg
+ or 
+symbi-logo.png
+ there?
+
+If 
+the logo isnât there
+, move it to 
+public/
+:
+
+bash
+
+Copy
+
+Edit
+
+mv
+
+ path-to-your-logo-file public/symbi-logo.jpg
+
+ð¹ Update Your Code to Use the Correct Logo Path
+
+Now, open your code where the logo is referenced.
+
+If itâs inside 
+
+app/page.tsx
+
+ or another file, open it:
+
+bash
+
+Copy
+
+Edit
+
+nano app/page.tsx
+
+Make sure your 
+<img>
+ tag looks like this:
+
+tsx
+
+Copy
+
+Edit
+
+<img src=
+
+"/symbi-logo.jpg"
+
+ alt=
+
+"SYMBI Logo"
+
+ width={
+
+200
+
+} height={
+
+100
+
+} />
+
+OR, if using Next.js' 
+next/image
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+width
+
+=
+
+{200}
+
+height
+
+=
+
+{100}
+
+priority
+
+ />
+
+â 
+Why?
+ Next.js requires images to be stored inside the 
+public/
+ folder, and the path should start with 
+/
+.
+
+ð¹ Step 2: Check for Console Errors
+
+Since we fixed the 
+hydration error
+, letâs check if any new errors popped up.
+
+1ï¸â£ 
+Open Safari Developer Console (
+CMD + Option + C
+)
+
+2ï¸â£ Look for errors related to:
+
+Images (
+404 Not Found
+)
+
+Components failing to render
+
+Copy-paste or screenshot any errors here.
+
+ð¹ Step 3: Restart & Test
+
+Once the logo is fixed:
+
+1ï¸â£ 
+Restart Next.js
+
+bash
+
+Copy
+
+Edit
+
+CTRL + C  
+
+# (If running)
+
+npm run dev
+
+2ï¸â£ 
+Refresh 
+http://localhost:3000
+
+3ï¸â£ 
+Check if the logo appears & console errors are gone.
+
+ð¹ Step 4: Push Fixes to GitHub & Redeploy
+
+If everything looks good:
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Fixed missing logo issue"
+
+git push origin main
+
+Then go to 
+Vercel & Click "Redeploy".
+
+ð¥ 
+Try this and let me know if the logo appears!
+ ðð
+
+You said:
+
+its also the black its gone to like a system default dark theme grey rather than the original black we had in the design - I am going to tell v.0 dev chat th

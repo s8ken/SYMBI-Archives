@@ -1,0 +1,726 @@
+row
+
+=
+
+new
+
+Error
+
+(
+
+`Ledger error: 
+${ledgerRe=
+s.status}
+
+`)
+
+if
+
+ (!pi=
+votsRes.
+
+ok
+
+) =
+
+throw
+
+=
+
+new
+
+Error
+
+(
+
+`Timeline error: 
+${pivots=
+Res.status}
+
+`)
+
+const
+
+ l=
+edgerJson =3D 
+
+await
+
+=
+
+ ledgerRes.
+
+json
+
+()
+
+const
+
+ p=
+ivotsJson =3D 
+
+await
+
+=
+
+ pivotsRes.
+
+json
+
+()
+
+setEvents
+
+(ledgerJson?.
+
+items
+
+ || ledgerJson || [])
+
+setPivots
+
+(pivotsJson?.
+
+items
+
+ || pivotsJson || [])
+    } 
+
+catch
+
+ (=
+
+e
+
+: 
+
+=
+
+any
+
+) {
+
+setError
+
+(e.
+
+message
+
+ || 
+
+"Failed to fetch"
+
+)
+    } 
+
+finally
+
+=
+ {
+
+setLoading
+
+(
+
+false
+
+)
+    }
+  }
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+// Optional: auto-load last s=
+ession from storage
+
+const
+
+ las=
+t =3D 
+
+localStorage
+
+.
+
+getItem
+
+(
+
+"symbi_last_se=
+ssion"
+
+)
+
+if
+
+ (last)=
+
+setSessionId
+
+(last)
+  }, [])
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (sessi=
+onId) 
+
+localStorage
+
+.
+
+setItem
+
+(
+
+"symbi_last_se=
+ssion"
+
+, sessionId)
+  }, [sessionId])
+
+const
+
+ event=
+sById =3D 
+
+useMemo
+
+(
+
+() =3D>
+
+ {
+
+const
+
+ m =
+=3D 
+
+new
+
+Map
+
+<
+
+string
+
+, 
+
+LedgerEvent
+
+>()
+
+for
+
+ (
+
+const
+
+ ev 
+
+of
+
+ events) m.
+
+set
+
+(ev.
+
+event_id
+
+, ev)
+
+return
+
+ m
+  }, [events])
+
+return
+
+ (
+
+<=
+
+main
+
+className
+
+=3D
+
+"min-h-screen bg-[#0f0f0f] text-[#e0e0e0] font-m=
+ono px-4 py-16 md:py-24"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"max-w-6=
+xl mx-auto space-y-10"
+
+>
+
+<
+header
+
+c=
+lassName
+
+=3D
+
+"te=
+xt-center space-y-4"
+
+>
+
+<
+h1
+
+cla=
+ssName
+
+=3D
+
+"text=
+-4xl md:text-6xl font-bold tracking-tight"
+
+>Review Co=
+nsole
+
+</
+h=
+1
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"text-=
+lg opacity-80"
+
+>Ledger timeline + detected pivots for=
+ a session.
+
+</
+p
+
+>
+
+</
+header
+
+>
+
+        {/* Controls */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"f=
+lex flex-col md:flex-row gap-3 items-stretch md:items-end"
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"fle=
+x-1"
+
+>
+
+<
+label
+
+className
+
+=3D
+
+=
+"block text-sm opacity-80 mb-1"
+
+>Session ID
+
+</
+label
+
+>
+
+<
+input
+
+className
+
+=3D
+
+"w-full bg-transparent b=
+order border-[#333] rounded-md px-3 py-2"
+
+value
+
+=3D
+
+{sessionId}
+
+onChange
+
+=
+
+=3D
+
+{(e)
+
+ =
+=3D> setSessionId(e.target.value)}
+              placeholder=3D"uuid..."
+            />
+
+</
+div
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{fetchAll}
+
+disabled
+
+=3D
+
+{!sessionId
+
+ || 
+
+loading
+
+}
+
+className
+
+=3D
+
+"px-5 py-2 border border-[=
+#444] rounded-md hover:bg-[#222] transition disabled:opacity-50"
+
+          >
+            {loading ? "Loading..." : "Load"}
+
+</
+button
+
+>
+
+</
+section
+
+>
+
+        {error && 
+
+<
+p
+
+className
+
+=3D
+
+"text-rose-400 text-sm"
+
+>{error}
+
+</
+p
+
+>}
+
+        {/* Timeline */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"g=
+rid md:grid-cols-2 gap-6"
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"rou=
+nded-lg border border-[#333] p-4"
+
+>
+
+<
+h2
+
+c=
+lassName
+
+=3D
+
+"te=
+xt-xl font-semibold mb-2"
+
+>Ledger Timeline
+
+</
+h2
+
+>
+
+<
+ul
+
+c=
+lassName
+
+=3D
+
+"sp=
+ace-y-3 max-h-[70vh] overflow-auto pr-2"
+
+>
+              {events.length =3D=3D=3D 0 && 
+
+<
+li
+
+ =
+
+className
+
+=3D
+
+"opacity-60"
+
+>No=
+ events.
+
+</
+li
+
+>}
+              {events.map((ev) =3D> {
+                const stance =3D ev.analysis?.stance ?? "=E2=80=94"
+                const reg =3D ev.analysis?.clinical_register
+                const cp =3D ev.analysis?.change_point_score
+                return (
+
+<
+li
+
+key
+
+=3D
+
+{ev=
+.event_id}
+
+class=
+Name
+
+=3D
+
+"border=
+ border-[#222] rounded-md p-3"
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"flex items-center justify-between gap-3"
+
+>
+
+<
+span
+
+className
+
+=3D
+
+"text-xs opacity-60"
+
+>{new Date(ev.timestamp=
+).toLocaleString()}
+
+</
+span
+
+>
+
+<
+span
+
+className
+
+=3D
+
+"text-xs opacity-70"
+
+>
+                        stance: 
+
+<
+b
+
+>{stance}
+
+</
+b
+
+>
+                        {reg !=3D=3D undefined && 
+
+<>
+
+ =E2=80=A2 clinical:{Math.=
+round(reg * 100) / 100}
+
+</>
+
+}
+                        {cp !=3D=3D undefined && 
+
+<>
+
+ =E2=80=A2 =CE=94:{Math.rou=
+nd(cp * 100) / 100}
+
+</>
+
+}
+
+</
+span
+
+>
+
+</
+div
+
+>
+
+<
+div
+
+className
+
+=3D
+
+"mt-2 grid gap-2"
+
+>
+
+<
+p
+
+className
+
+=3D
+
+"text-emerald-300 text-sm"
+
+>User
+
+</
+p
+
+>
+
+<
+pre
+
+className
+
+=3D
+
+"whitespace-pre-wrap bg-[#0b0b0b] p-2 rounded"
+
+&=
+gt;{ev.prompt}
+
+</
+pre
+
+>
+
+<
+p
+
+className
+
+=3D
+
+"text-sky-300 text-sm"
+
+>Model
+
+</
+p
+
+>
+

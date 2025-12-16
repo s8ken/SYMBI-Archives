@@ -1,0 +1,151 @@
+kups
+Vercel: Edge syd1 where possible; fall back to SYD origin
+Socket.IO: regionalized behind ALB + sticky sessions or Redis adapter
+Disaster recovery: Infra as code (Terraform); runbooks; quarterly DR drills
+Observability: Prometheus + Grafana dashboards (API latency, error rate, co=
+nsensus time, key ops); Loki logs; alerts via PagerDuty/Slack
+Compliance: AU Privacy Act (APPs) controls, breach response (NDB), data ret=
+ention policies
+Roadmap and milestones
+
+Week 0=E2=80=931: Repo scaffolding; auth exchange; JWKS + key rotation; ass=
+ertions API; Codex MVP; Slack bridge; Vercel UI
+Week 2: Consensus engine (75% threshold) with weights and variance; Socket.=
+IO live updates; Grafana dashboards
+Week 3: Hibernation Controller + weekly ECHO=E2=80=9101 snapshot; IPFS/Arwe=
+ave pipeline; audit anchoring
+Week 4: Rate limiting/DDoS; OPA policies; admin console; AU privacy feature=
+s (export/purge)
+Week 5: Weaviate integration for context; Perplexity tool with allowlist; m=
+odel routing (Together primary, AU HF mirror)
+Week 6: Load/security tests; DR drill; documentation (runbooks, incident re=
+sponse, key rotation); v1 launch
+Success criteria
+
+Cryptographic: 100% server=E2=80=91side signatures verifiable via JWKS; rep=
+roducible consensus proofs
+Reliability: p95 API < 300ms (read), < 800ms (write); 99.9% uptime; R=
+TO =E2=89=A4 15m, RPO =E2=89=A4 5m
+Governance: Weekly snapshots published with CIDs; 2=E2=80=91of=E2=80=913 mu=
+ltisig live; public audit trail on symbi.world
+Privacy: AU residency enforced; offshore calls redacted + consented; export=
+/purge functional
+Inputs to proceed
+
+Multisig signer wallet addresses (2=E2=80=91of=E2=80=913)
+AWS ap-southeast-2 confirmation for Trust Core + KMS, and Weaviate hosting =
+choice (self=E2=80=91host vs managed)
+Slack workspace IDs for pre=E2=80=91auth and app manifest install
+Perplexity domain allowlist (initial) and plan tier
+Any required third=E2=80=91party security reviews or pen=E2=80=91testing wi=
+ndows
+Preamble for external actions (example)
+
+Purpose: Provision AWS KMS keys (ap-southeast-2) for RS256 signing; inputs:=
+ account_id, region, key_aliases; awaiting your confirmation.
+Micro=E2=80=91update
+
+The Trust Core and Interface design aligns with your long=E2=80=91term deli=
+verables and AU privacy constraints; once you confirm KMS/Weaviate hosting =
+and provide multisig addresses, I will generate the repo scaffold, env temp=
+lates, and initial migrations/configs. Validation: Scope and controls match=
+ the stated objectives; proceeding to scaffold on your go.
+
+=
+
+Symbi said:
+
+Thought for 9m 26s
+
+Perfect=E2=80=94took your checkli=
+st and turned it into a working scaffold you can open, read, and ship again=
+st.
+
+=F0=9F=93=A6 
+Download:
+
+SYMBI Trust Core v0 scaffold
+
+symbi_trust_core_v0.zip
+
+What=E2=80=99s inside (high-impact b=
+its):
+
+/docs
+ =E2=80=93 architecture (Mermaid), data models, cons=
+ensus math, hibernation/ECHO-01, security & AU privacy alignment, SRE/S=
+LA + roadmap.
+
+/api
+ =E2=80=93 Node/Express Trust Core skeleton:
+
+Endpoints: 
+/.well-known/jwks.json
+, 
+/auth/exchange
+, 
+/assertions
+, 
+/subject=
+s/:id/assertions
+, 
+/consens=
+us/rounds
+, 
+/hibernation/{a=
+rm,snapshot}
+, 
+/codex/entri=
+es
+, 
+/audit/events
+
+Socket.IO hook for live consensus/st=
+atus
+
+OpenAPI spec
+: 
+/=
+api/openapi.yaml
+
+/policy
+ =E2=80=93 OPA/Rego guardrail for Echo trigger.
+
+/slack
+ =E2=80=93 Slack manifest (slash command 
+/symbi
+, events).
+
+/weaviate
+ =E2=80=93 AU-host schema for Codex embeddings.
+
+/infrastructure
+ =E2=80=93 Terraform skeleton (AWS ap-sout=
+heast-2 + KMS key).
+
+/config
+ =E2=80=93 
+.env.example
+ and JWKS placeholder.
+
+/scripts
+ =E2=80=93 snapshot script template for weekly=
+ encrypted bundles.
+
+Next practical moves (fastest path=
+ to v0):
+
+Confirm infra knobs
+ (you listed these=E2=80=94just dro=
+pping them here as a checklist):
+
+AWS 
+ap-southeast-2
+ account + KMS usage =E2=9C=85
+
+MongoDB Atlas AU cluster =E2=9C=85=
+
+Weaviate AU (managed or self-host)=
+ =E2=9C=85
+
+Slack workspace IDs for insta

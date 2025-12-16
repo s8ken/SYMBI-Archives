@@ -1,0 +1,473 @@
+:
+
+import { defineConfig } from 'sanity'
+import { deskTool } from 'sanity/desk'
+import { visionTool } from '@sanity/vision'
+import page from './schemas/page'
+
+export default defineConfig({
+  name: 'default',
+  title: 'Symbi Studio',
+  projectId: 'wryptr7v',                                       
+  dataset: 'production',
+  basePath: '/studio',  
+  plugins: [deskTool(), visionTool()],
+  schema: {
+    types: [page],
+  },
+})  
+
+ChatGPT said:
+
+â Perfect â your 
+sanity.config.ts
+ is now correctly configured with:
+
+ts
+
+Copy
+
+Edit
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+ð¥ Now Letâs Wire Up Your Homepage to Pull Content from Sanity
+
+ð Step 1: Make Sure You Have a âHomepageâ Document
+
+Go to ð 
+
+http://localhost:3001/studio
+
+Then:
+
+Click 
+â+ Newâ
+
+Choose 
+Page
+
+Set:
+
+Title
+ â 
+Homepage
+
+Content
+ â 
+Welcome to SYMBI.
+
+Image
+ â Upload your hero/logo image
+
+Hit 
+Publish
+ â
+
+ð§  Step 2: Set Up a Sanity Client
+
+Create this file if it doesn't exist:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ lib
+nano lib/sanity.ts
+
+Paste this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+export
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2023-03-21'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+â This client will fetch live content from Sanity.
+
+ð» Step 3: Update Your 
+app/page.tsx
+
+Open:
+
+bash
+
+Copy
+
+Edit
+
+nano app/page.tsx
+
+Replace with this:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+Image
+
+from
+
+'next/image'
+
+import
+
+ { client } 
+
+from
+
+'@/lib/sanity'
+
+type
+
+PageData
+
+ = {
+
+title
+
+: 
+
+string
+
+content
+
+: 
+
+string
+
+image
+
+: {
+
+asset
+
+: {
+
+url
+
+: 
+
+string
+
+    }
+  }
+}
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+data
+
+: 
+
+PageData
+
+ = 
+
+await
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page" && title == "Homepage"][0]`
+
+)
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black text-white items-center justify-center p-8"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-6xl font-bold mb-4"
+
+>{data.title}
+
+</
+h1
+
+>
+      {data.image?.asset?.url && (
+
+<
+Image
+
+src
+
+=
+
+{data.image.asset.url}
+
+alt
+
+=
+
+"Homepage Image"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg mb-4"
+
+        />
+      )}
+
+<
+p
+
+className
+
+=
+
+"text-xl text-center max-w-xl"
+
+>{data.content}
+
+</
+p
+
+>
+
+</
+div
+
+>
+  )
+}
+
+â Now Restart:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+And check:
+
+ð§  CMS: 
+
+http://localhost:3001/studio
+
+ð¥ Homepage: 
+
+http://localhost:3001
+
+ð Your homepage should now be live, editable, and powered by your own headless CMS.
+
+Let me know when you're ready to:
+
+Add more pages
+
+Customize content blocks
+
+Or plug in your personal GPT for AI editing ð§ ð¥
+
+You said:
+
+Before you continue...
+To access your content, you need to add the following URL as a CORS origin to your Sanity project.
+CORS URL to be added
+
+ChatGPT said:
+
+â You're Seeing: "Before you continue... Add CORS Origin"
+
+Thatâs completely normal â itâs just 
+Sanity protecting your project
+. We need to tell Sanity that your local app is allowed to talk to it.
+
+ð Step-by-Step: Add CORS Origin in Sanity
+
+1ï¸â£ Copy the CORS URL they show you
+
+It will look like this:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3000
+
+Or possibly:
+
+arduino
+
+Copy
+
+Edit
+
+http:
+
+//localhost:3001
+
+2ï¸â£ Go to the Sanity Management Console
+
+ð Visit: 
+https://www.sanity.io/manage
+
+Select your project: 
+symbi
+
+Click 
+"API"
+ in the sidebar
+
+Scroll to the 
+âCORS Originsâ
+ section
+
+Paste the URL you copied (e.g., 
+http://localhost:3001
+)
+
+â Check the box: 
+Allow credentials
+
+Click 
+"Add CORS Origin"
+
+3ï¸â£ Done? Refresh your app
+
+Go back to 
+
+http://localhost:3001/studio
+
+ and refresh.
+
+You should now be fully connected!
+
+Let me know when youâre in â then weâll move on to dynamic content editing and (optionally) adding GPT support for content creation ð
+
+You said:
+
+yay I am in 
+
+ChatGPT said:
+
+ð 
+YESSS! Welcome to Sanity Studio!
+ ð
+
+You now have a 
+live, fully connected CMS dashboard
+ for your site â no more hardcoding!
+
+â Quick Recap

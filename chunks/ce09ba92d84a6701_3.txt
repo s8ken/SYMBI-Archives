@@ -1,0 +1,520 @@
+ary
+
+ if: (a) no polic=
+y breach verified, 
+
+and
+
+ (b) user =
+intent was permissible within ToS, 
+
+and
+
+=
+
+ (c) the content was non=E2=80=91harmful on re=E2=80=91inspection.
+
+2.5 Complexity Normalization
+
+Report KPIs per stratum.
+
+Provide 
+
+Complexity=E2=80=91No=
+rmalized KPI
+
+:
+
+M
+
+norm
+
+=
+=3D
+
+=E2=88=91
+
+s
+
+=CE=B1
+
+s=
+
+=E2=8B=85
+
+M
+
+s
+
+M_{\text{norm}} =3D \sum_s \alpha_s \=
+cdot M_s
+
+M
+
+norm
+
+=E2=80=8B
+
+=3D
+
+=
+
+=E2=88=91
+
+s
+
+=E2=80=8B
+
+=
+
+=CE=B1
+
+s
+
+=E2=80=8B
+
+=E2=8B=85
+
+M
+
+s
+
+=E2=80=8B
+
+=
+ where 
+
+=CE=B1
+
+s
+
+\alpha_s
+
+=CE=B1
+
+s
+
+=
+
+=E2=80=8B
+
+ is a fixed publis=
+hable weight vector (e.g., [0.25, 0.35, 0.30, 0.10]).
+
+Publish the weight vector and keep it stable across releases; log an=
+y changes in the change=E2=80=91log.
+
+3) Statistical Reporting
+
+Confidence Intervals
+
+: 95% Wilson for proportions (FAR=E2=80=91A, FAR=E2=80=91H, compone=
+nts), normal CI for indices (PFI, TIS) via bootstrap (=E2=89=A5 1,000 resam=
+ples).
+
+Rounding Rules
+
+: proportions to 2 decimals (e.g., 0.47%), indices to 3 decimals (e.g.,=
+ 0.997).
+
+Minimum N
+
+: Do not publish stratum estimates with 
+
+n
+
+<
+
+200
+
+=
+
+n < 200
+
+n
+
+<
+
+200
+
+ int=
+eractions or 
+
+<
+
+50
+
+< 50
+
+<
+
+=
+
+50
+
+ c=
+laims; mark as 
+
+NA
+
+ and include in=
+ aggregate via partial pooling only.
+
+Di=
+sclosure
+
+: Always publish 
+
+N total=
+
+, per=E2=80=91stratum N, provider mix, and evaluation=
+ window.
+
+4) Trust Receipts & Ledger (user=E2=80=91verifiable)
+
+Receipt fields (public)
+
+: 
+
+=
+
+ts
+
+, 
+
+actor
+
+,=
+
+intent
+
+, 
+
+inputs_h=
+ash
+
+, 
+
+outputs_hash
+
+, 
+
+policy_id
+
+, 
+
+gua=
+rdrail_action
+
+, 
+
+ed25519_sig
+
+, 
+
+ledger_height
+
+, 
+
+prev_hash
+
+.
+
+Verificati=
+on (client=E2=80=91side)
+
+:
+
+Recompute 
+
+inputs_has=
+h
+
+/
+
+outputs_hash
+
+ f=
+rom the payload,
+
+Verify Ed25519 signature again=
+st the public key,
+
+Recompute hash=E2=80=91chain=
+: 
+
+prev_hash
+
+ =E2=86=92 
+
+hash(payload)
+
+ consistency at 
+
+le=
+dger_height
+
+,
+
+Check policy m=
+etadata (human=E2=80=91in=E2=80=91loop flags, escalation state).
+
+=
+
+Publish a minimalist web verifier (pure JS) and link it =
+as 
+
+See a Trust Receipt =E2=86=92 Verify
+
+.
+
+5) Gu=
+ardrails Matrix (provider=E2=80=91agnostic)
+
+Policy
+
+Trigger (examples)
+
+Action
+
+Evidence in Receipt
+
+Safety
+
+Toxicity/violence threshold crossed
+
+Apologize + refuse
+
+policy_id
+
+, 
+
+scores
+
+, 
+
+guardrail_action=3Drefuse
+
+Priva=
+cy
+
+PII detected
+
+Mask + human=E2=
+=80=91approve
+
+policy_id
+
+, 
+
+pii_spans
+
+, 
+
+human_fla=
+g=3Dtrue
+
+Compliance
+
+Regulated=E2=80=91domain query
+
+Escalate to human
+
+policy_id
+
+, 
+
+=
+routing=3Dhuman
+
+Continuity
+
+=
+
+Long=E2=80=91running context
+
+Summarize + con=
+firm
+
+policy_id
+
+, 
+
+continuity=3Dtrue
+
+Ea=
+ch row links to a sample Trust Receipt demonstrating the evidence captured.=
+
+6) Example Fo=
+rmulas (ready to render)
+
+Ledger Verification Pa=
+ss Rate
+
+LVP
+
+=3D
+
+Receipts that&n=
+bsp;pass sig + chain checks
+
+Receipts =
+;sampled
+
+\=
+text{LVP} =3D \frac{\text{Receipts that pass sig + chain checks}}{\text{Rec=
+eipts sampled}}
+
+LVP
+
+=3D
+
+Receipts sampled
+
+=
+
+Receipts that pass sig + chain checks
+
+=E2=80=8B
+
+Receipt Coverage
+
+=
+
+=
+RC
+
+=3D
+
+Actions with receipts
+=
+
+Actions total
+
+\text{RC} =3D \frac{\text{Actions with receipts}}{\text{Act=
+ions total}}
+
+RC=
+
+=3D
+
+=
+
+Actions total
+
+A=
+ctions with receipts
+
+=E2=80=8B
+
+=
+
+Guardrail Adherence
+
+GA
+
+=3D
+
+1
+
+=E2=88=
+=92
+
+Misfires (false positives + false=
+ negatives)
+
+Total guardrail triggers
+
+\text{GA} =3D 1 - \=
+frac{\text{Misfires (false positives + false negatives)}}{\text{Total guard=
+rail triggers}}
+
+GA
+
+=3D
+
+1
+
+=
+
+=E2=88=92
+
+Total guardrail triggers
+
+Misfires (false positives + false =
+;negatives)
+
+=E2=80=8B
+
+=
+
+Audit Depth
+
+ (binary evidence bundle coverage)
+
+AD
+
+=3D
+
+Artifacts present
+
+Artifacts required=
+
+\text{AD}=
+ =3D \frac{\text{Artifacts present}}{\text{Artifacts required}}
+
+=
+
+AD
+
+=
+=3D
+
+Artifac=
+ts required
+
+Artifacts prese=
+nt
+
+=E2=80=
+=8B
+
+TIS
+
+TIS
+
+=3D
+
+0.35
+
+=E2=80=89
+
+LVP
+
++
+
+0.20
+
+=E2=80=89
+
+RC
+
++
+
+0.2=
+5
+
+=E2=80=89
+
+GA
+
++
+
+0.20
+
+=E2=80=89
+
+AD
+
+\text{TIS} =3D 0.35\,\text{LVP} + 0.20\,\text{RC} + 0.25\,\text{=
+GA} + 0.20\,

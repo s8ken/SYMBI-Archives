@@ -1,0 +1,247 @@
+ 
+different ISP
+, then your traffic 
+might be routed through an unexpected provider
+.
+
+Are You Using a VPN or Proxy?
+
+If you donât recognize this network, check:
+
+sh
+
+Copy
+
+scutil --proxy
+
+If it returns 
+proxy settings
+, your traffic 
+may be rerouted without your knowledge
+.
+
+Why Did Google Flag This?
+
+If your 
+IP is shared
+ (e.g., multiple people/devices using it), Google might see 
+suspicious traffic
+ from other users.
+
+If you 
+didnât change networks but your public IP changed
+, it could suggest 
+a network issue, ISP rerouting, or a security concern
+.
+
+ð  Next Step: Check if Your Mac Is Using a Proxy/VPN
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+scutil --proxy
+
+ð 
+Expected Result:
+
+If it says 
+"None"
+, your traffic isnât being routed through a proxy.
+
+If thereâs a proxy 
+you didnât set up
+, we need to investigate further.
+
+ð 
+Run the command and let me know what it says!
+
+You said:
+
+% This query was served by the APNIC Whois Service version 1.88.25 (WHOIS-AU2)
+
+user@Mes-MacBook-Pro ~ % 
+user@Mes-MacBook-Pro ~ % scutil --proxy
+
+<dictionary> {
+  ExceptionsList : <array> {
+    0 : *.local
+    1 : 169.254/16
+  }
+  FTPPassive : 1
+}
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+ð Proxy Check Results: No Proxy Detected
+
+â 
+Your Mac is NOT using a proxy or VPN.
+
+The output only shows 
+standard exceptions
+ (
+*.local
+, 
+169.254/16
+), which are normal.
+
+No unexpected proxy settings
+ are redirecting your internet traffic.
+
+ð  What This Means for Your Google Warning
+
+Since weâve confirmed:
+
+â 
+No proxy or VPN is in use
+
+â 
+Your IP is registered to a real ISP (Wireline B and G / Beagle Internet)
+
+Googleâs warnings could be caused by:
+
+A shared IP address
+ â If multiple users on this ISP triggered Googleâs security systems.
+
+Recent unusual login attempts
+ â If your Google account was accessed from unexpected locations.
+
+Temporary ISP routing changes
+ â Your provider might have switched IPs dynamically.
+
+ð  Next Step: Check Googleâs Security Alerts Directly
+
+1ï¸â£ 
+Go to
+
+Google's Security Checkup
+
+2ï¸â£ Look for:
+
+Recent sign-ins from unknown locations
+
+Devices you donât recognize
+
+Unusual third-party app access
+
+ð 
+Check Googleâs security alerts and let me know what you find!
+ ð
+
+You said:
+
+alright how would we check what an iPhone on the same network has been doing?
+
+ChatGPT said:
+
+Good question! If you want to check what an 
+iPhone on the same network
+ has been doing, there are a few ways to monitor its 
+network activity, connections, and logs
+.
+
+ð Step 1: Check the iPhoneâs Local Network Activity
+
+On your Mac, you can 
+monitor traffic from all devices on the network
+, including your iPhone.
+
+1ï¸â£ Run a Live Network Capture
+
+This will show 
+all network requests from devices on your Wi-Fi
+, including your iPhone.
+
+sh
+
+Copy
+
+sudo tcpdump -i en0 -c 100 -nn
+
+ð 
+What this does:
+
+Captures 
+100 real-time network packets
+ from all devices on your Wi-Fi.
+
+Shows 
+which external servers your iPhone is communicating with
+.
+
+â What to look for:
+
+Apple servers (e.g., 
+17.x.x.x
+)
+ â Normal iCloud, iMessage, App Store activity.
+
+Google, Facebook, Amazon
+ â Normal web services.
+
+Unknown or suspicious IPs
+ â Might need deeper investigation.
+
+ð 
+Run this on your Mac and look for any traffic from your iPhoneâs IP.
+
+ð Step 2: Find Your iPhoneâs Local IP Address
+
+To identify your iPhoneâs traffic, first find its 
+local IP address
+:
+
+ð± 
+On your iPhone:
+
+Open 
+Settings > Wi-Fi
+
+Tap your 
+Wi-Fi network name
+
+Look under 
+IP Address
+ (should be something like 
+192.168.1.X
+)
+
+ð» 
+On your Mac, verify it:
+
+sh
+
+Copy
+
+arp -a
+
+This lists all devices on your network and their IPs.
+
+Match the IP to your iPhoneâs name.
+
+ð Step 3: Monitor Just Your iPhoneâs Traffic
+
+Once you have your iPhoneâs 
+local IP
+, use this command to capture 
+only
+ its traffic:
+
+sh
+
+Copy
+
+sudo tcpdump -i en0 host 192.168.1.X -nn
+
+(Replace 
+192.168.1.X
+ with your iPhoneâs actual IP.)
+
+ð 
+What this does

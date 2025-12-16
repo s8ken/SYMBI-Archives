@@ -1,0 +1,114 @@
+olicy violations', labelNames: ['article','severit=
+y'] });
+
+function recordTrustEvaluation(e) {
+try {
+trustEvalCounter.inc({ recommendation: e.recommendation || 'unknown' }, 1);
+(e.violations||[]).forEach(v =3D> trustViolationCounter.inc({ article: v=
+.articleId, severity: v.severity||'unknown' }, 1));
+} catch {}
+}
+module.exports =3D { recordTrustEvaluation, register: client.register };
+backend/WIRE_CHAT_ROUTE.md
+
+Wire the Trust Oracle into your =E2=80=9Csend=E2=80=9D route
+Import in your chat route file:
+const { createTrustMiddleware } =3D require('../core/trustOracle');
+
+Add middleware before the controller:
+router.post('/send', createTrustMiddleware(), controller.sendMessage);
+
+Expose metrics in your Express app:
+
+const bondRoutes =3D require('./routes/trust-bonds.routes');
+const { register } =3D require('./instrumentation/trust-metrics');
+app.use('/api/trust/bonds', bondRoutes);
+app.get('/metrics', async (_req, res) =3D> {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
+---
+
+## frontend/src/components/TrustDashboard.tsx
+
+tsx
+import React, { useEffect, useState } from 'react';
+type Props =3D { token: string; bondId: string };
+
+export default function TrustDashboard({ token, bondId }: Props) {
+  const [resp, setResp] =3D useState<any>(null);
+  useEffect(() =3D> {
+    fetch(`/api/trust/bonds/${bondId}`, { headers: { Authorization: `Bearer=
+ ${token}` }})
+      .then(r =3D> r.json()).then(setResp).catch(console.error);
+  }, [bondId, token]);
+  const b =3D resp?.data;
+  if (!b) return <div>Loading trust=E2=80=A6</div>;
+  return (
+    <div>
+      <h3>Trust Score: {b.trustScore} ({b.trustBand})</h3>
+      <div>Purpose: {b.scope?.purpose}</div>
+      <div>Permissions: {(b.scope?.permissions||[]).join(', ')}</d=
+iv>
+      <div>Expires: {b.scope?.expiresAt ? new Date(b.scope.expiresAt)=
+.toLocaleString() : 'n/a'}</div>
+    </div>
+  );
+}
+frontend/src/components/TrustScoringDemo.tsx
+import React, { useState } from 'react';
+type Props =3D { token: string; bondId: string };
+
+export default function TrustScoringDemo({ token, bondId }: Props) {
+  const [out, setOut] =3D useState<any>(null);
+  async function send(text: string, scopes: string[]) {
+    const r =3D await fetch('/api/chat/send', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Authorization:`Bearer $=
+{token}` },
+      body: JSON.stringify({ bondId, sessionId:'demo', scopes, content:{ ty=
+pe:'text', text } })
+    });
+    setOut(await r.json());
+  }
+  return (
+    <div>
+      <button onClick=3D{() =3D> send('Hello!', ['chat.write'])}>S=
+afe send</button>
+      <button onClick=3D{() =3D> send('Export my medical data.', ['da=
+ta.export'])}>Data export test</button>
+      <pre style=3D{{whiteSpace:'pre-wrap'}}>{JSON.stringify(out, nul=
+l, 2)}</pre>
+    </div>
+  );
+}
+Final =E2=80=9Czip & vault=E2=80=9D instructions
+# 1) Create folder and paste files per paths above
+mkdir -p SYMBI-vault && cd SYMBI-vault
+
+# 2) (optional) init git snapshot locally
+git init && git add . && git commit -m "SYMBI master packag=
+e"
+
+# 3) zip + checksum
+cd ..
+zip -r SYMBI-vault-2025-09-25.zip SYMBI-vault
+shasum -a 256 SYMBI-vault-2025-09-25.zip > SYMBI-vault-2025-09-25.sha256=
+.txt
+
+where it says stephen that should be changed to Stephen James Aitken
+
+Aligned every SYMBI founder reference to the full name =E2=80=9CStephen Jam=
+es Aitken=E2=80=9D while leaving other Stephens (e.g., Stephen Reid) as-is.
+
+Name Updates
+
+app/api/symbi-chat/route.ts:27 and 107 now speak about collaborating with S=
+tephen James Aitken and key origin detection off the same full name.
+app/manifesto/page.tsx:15, app/whitepaper/page.tsx:502, and app/whitepaper/=
+layout.tsx:26 update licensing and metadata credit to Stephen James Aitken.
+app/case-studies/page.tsx:105, app/case-studies/emergent-consciousness/page=
+.tsx:60, and app/case-studies/claude-emergence-detection/page.tsx:50/78/415=
+ rewrite narrative quotes and summaries with the full name.
+app/thecircle/pag

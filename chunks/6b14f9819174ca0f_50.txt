@@ -1,0 +1,554 @@
+ 
+className="dark"
+ is Defined
+
+Since the hydration error 
+points to 
+<html class="dark">
+
+, this means it’s set somewhere in 
+your layout or theme-related file
+.
+
+1️⃣ Use Grep (Terminal) to Search
+
+In your 
+project folder
+, run this in Terminal:
+
+bash
+
+Copy
+
+grep -r 
+
+'className="dark"'
+
+ .
+
+✅ 
+This will list all files where 
+"dark"
+ is used.
+
+If 
+grep
+ doesn’t work on macOS, try:
+
+bash
+
+Copy
+
+grep -r 
+
+'color-scheme:"dark"'
+
+ .
+
+2️⃣ Use VS Code (or any text editor)
+
+If you’re using 
+VS Code
+, you can:
+
+1️⃣ Press 
+CMD + Shift + F
+
+2️⃣ Search for 
+
+className="dark"
+
+3️⃣ Look for results inside 
+layout.tsx
+, 
+theme-provider.tsx
+, or 
+globals.css
+.
+
+🔹 Step 2: Common Files Where Dark Mode Might Be Applied
+
+Check these files manually:
+
+✅ 
+
+app/layout.tsx
+
+ → If dark mode is applied globally
+
+✅ 
+
+components/theme-provider.tsx
+
+ → If dark mode logic is inside a Theme Provider
+
+✅ 
+
+styles/globals.css
+
+ → If dark mode is set through Tailwind or CSS
+
+🔹 Step 3: Once You Find the File, Apply the Fix
+
+Once you’ve found where 
+
+className="dark"
+
+ is set, replace it with the 
+hydration-safe version
+:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+>{children}
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+🔥 
+Try searching and let me know where you find it!
+ Once we know the file, we apply the fix, test locally, and redeploy. 😈🚀
+
+You said:
+
+You have mail.
+sja@SJAs-MacBook-Pro ~ % cd /Users/sja/Library/CloudStorage/ProtonDrive-aitken.stephen@pm.me-folder/symbi-ai-website
+
+sja@SJAs-MacBook-Pro symbi-ai-website % grep -r 'className="dark"' .
+
+sja@SJAs-MacBook-Pro symbi-ai-website % grep -r 'color-scheme:"dark"' .
+
+sja@SJAs-MacBook-Pro symbi-ai-website % x
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Interesting—your search didn’t return any results.
+ That means the 
+"dark"
+ class 
+might be applied dynamically in JavaScript
+ rather than being hardcoded.
+
+🔹 Step 1: Manually Check the Common Files
+
+Since 
+grep
+ didn’t find it, 
+let’s manually open these files
+ and search inside them:
+
+1️⃣ Open 
+app/layout.tsx
+
+Run this command to open it in Terminal using 
+Nano
+:
+
+bash
+
+Copy
+
+nano app/layout.tsx
+
+Or, if you use 
+VS Code
+, run:
+
+bash
+
+Copy
+
+code app/layout.tsx
+
+🔍 
+Look for 
+<html className="dark">
+ or anything modifying 
+className
+ dynamically.
+
+If found, replace it with:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+Layout
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [isClient, setIsClient] = 
+
+useState
+
+(
+
+false
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setIsClient
+
+(
+
+true
+
+);
+  }, []);
+
+return
+
+ (
+
+<
+html
+
+lang
+
+=
+
+"en"
+
+className
+
+=
+
+{isClient
+
+ ? "
+
+dark
+
+" 
+
+:
+
+ ""} 
+
+style
+
+=
+
+{isClient
+
+ ? { 
+
+colorScheme:
+
+ "
+
+dark
+
+" } 
+
+:
+
+ {}}>
+
+<
+body
+
+>{children}
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+2️⃣ Check 
+components/theme-provider.tsx
+
+If the issue 
+isn’t in 
+layout.tsx
+
+, then it might be inside the 
+theme provider
+.
+
+Run:
+
+bash
+
+Copy
+
+nano components/theme-provider.tsx
+
+🔍 Look for 
+anything modifying 
+className
+ or 
+document.body.classList
+ dynamically.
+
+If found, wrap it in a 
+
+useEffect
+
+ like this:
+
+tsx
+
+Copy
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+function
+
+ThemeProvider
+
+(
+
+{ children }: { children: React.ReactNode }
+
+) {
+
+const
+
+ [theme, setTheme] = 
+
+useState
+
+(
+
+"dark"
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+setTheme
+
+(
+
+document
+
+.
+
+documentElement
+
+.
+
+classList
+
+.
+
+contains
+
+(
+
+"dark"
+
+) ? 
+
+"dark"
+
+ : 
+
+"light"
+
+);
+  }, []);
+
+return
+
+<
+div
+
+className
+
+=
+
+{theme}
+
+>{children}
+
+</
+div
+
+>;
+}
+
+🔹 Step 2: Restart and Test
+
+After making changes:
+
+1️⃣ 
+Save & Exit Nano
+ (
+CTRL + X
+, then 
+Y
+, then 
+Enter
+)

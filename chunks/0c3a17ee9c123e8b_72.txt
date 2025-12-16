@@ -1,0 +1,516 @@
+.className}
+
+>
+
+<
+ThemeProvider
+
+attribute
+
+=
+
+"class"
+
+defaultTheme
+
+=
+
+"light"
+
+enableSystem
+
+disableTransitionOnChange
+
+>
+          {children}
+
+</
+ThemeProvider
+
+>
+
+</
+body
+
+>
+
+</
+html
+
+>
+  );
+}
+
+✅ 
+Why This Works
+
+Fixes SSR vs. Client mismatch
+ → Ensures 
+ThemeProvider
+
+only renders on the client
+.
+
+Prevents errors from 
+className="light"
+
+ → React won't try to match SSR-generated HTML with dynamically updated client-side HTML.
+
+Fixes flickering issues
+ → 
+if (!mounted) return null;
+ ensures no theme-related UI changes happen until the component has mounted.
+
+✅ 
+Final Step: Restart Your Server
+
+bash
+
+Copy
+
+npm run dev
+
+Then check:
+
+🖥️ 
+Homepage (
+http://localhost:3001
+)
+
+🧠 
+Sanity Studio (
+http://localhost:3001/studio
+)
+
+🚀 
+Try this and let me know if the hydration error disappears!
+ 🚀
+
+You said:
+
+error is gone but I got a 404 on http://localhost:3001/studio
+
+Vercel Deployment Expert GPT said:
+
+✅ 
+Great! The Hydration Error is Fixed
+ 🎉
+
+Now, let's fix the 
+404 on 
+/studio
+
+ so your 
+Sanity Studio
+ loads correctly.
+
+🛠 Step 1: Ensure You Have a Studio Route
+
+The 
+404
+ means 
+Next.js isn't recognizing 
+/studio
+
+ as a valid route. You need to 
+add a Sanity Studio route
+.
+
+📌 Create 
+app/studio/[[...index]]/page.tsx
+
+Run this in your terminal:
+
+bash
+
+Copy
+
+mkdir
+
+ -p app/studio/[[...index]]
+nano app/studio/[[...index]]/page.tsx
+
+Then 
+paste this inside
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+✅ 
+Why?
+ This tells Next.js that 
+/studio
+ should load Sanity Studio.
+
+🛠 Step 2: Check 
+sanity.config.ts
+
+Make sure your 
+Sanity config file
+ is correct. Open it:
+
+bash
+
+Copy
+
+nano sanity.config.ts
+
+Ensure it looks like this:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ { deskTool } 
+
+from
+
+"sanity/desk"
+
+;
+
+import
+
+ { visionTool } 
+
+from
+
+"@sanity/vision"
+
+;
+
+import
+
+ siteSettings 
+
+from
+
+"./schemas/siteSettings"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+"default"
+
+,
+
+title
+
+: 
+
+"Symbi Studio"
+
+,
+
+projectId
+
+: 
+
+"wryptr7v"
+
+,  
+
+// ✅ Replace with your real project ID
+
+dataset
+
+: 
+
+"production"
+
+,
+
+basePath
+
+: 
+
+"/studio"
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+  },
+});
+
+✅ 
+Why?
+
+basePath: "/studio"
+
+ ensures that Sanity Studio is available at 
+/studio
+.
+
+Schema is correctly registered
+ so Studio can load it.
+
+🛠 Step 3: Restart Your Server
+
+After making these changes, restart your Next.js app:
+
+bash
+
+Copy
+
+npm run dev
+
+Then visit:
+
+👉 
+
+http://localhost:3001/studio
+
+🚀 
+Expected Outcome
+
+Sanity Studio should now load inside your Next.js app.
+
+No 404 errors on 
+/studio
+ anymore.
+
+Let me know if 
+/studio
+ loads properly now! 🚀🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % mkdir -p app/studio/[[...index]]
+nano app/studio/[[...index]]/page.tsx
+
+zsh: no matches found: app/studio/[[...index]]
+zsh: no matches found: app/studio/[[...index]]/page.tsx
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+Vercel Deployment Expert GPT said:
+
+🚀 
+Fix: 
+zsh: no matches found
+ for 
+[[...index]]
+
+Your terminal 
+zsh
+ is interpreting 
+[[...index]]
+ as special characters.
+
+To 
+fix this
+, wrap it in 
+quotes
+:
+
+✅ 
+Create the Sanity Studio Route Properly
+
+Run these commands:
+
+bash
+
+Copy
+
+mkdir
+
+ -p 
+
+"app/studio/[[...index]]"
+
+nano 
+
+"app/studio/[[...index]]/page.tsx"
+
+Then 
+paste this code
+ inside 
+page.tsx
+:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+"next-sanity/studio"
+
+;
+
+import
+
+ config 
+
+from
+
+"../../../sanity.config"
+
+;
+
+export
+
+default
+
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />;
+}
+
+✅ 
+This ensures 
+/studio
+ properly loads Sanity Studio inside Next.js.
+
+✅ 
+Restart the Server
+
+bash
+
+Copy
+
+npm run dev
+
+Then visit:
+
+👉 
+
+http://localhost:3001/studio
+
+Now it should 
+no longer give a 404 er

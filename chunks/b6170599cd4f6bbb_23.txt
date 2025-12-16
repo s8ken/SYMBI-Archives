@@ -1,0 +1,275 @@
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+Let me know if 
+113.212.173.22
+ is still there!
+ ð
+
+You said:
+
+An asterisk (*) denotes that a network service is disabled.
+USB 10/100/1000 LAN
+Wi-Fi
+ProtonVPN
+sja@SJAs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Step 1: Reset DNS for Ethernet (USB 10/100/1000 LAN)
+
+Since your Ethernet connection is labeled 
+
+USB 10/100/1000 LAN
+
+, letâs force-reset its DNS settings.
+
+Step 2: Remove the Rogue DNS & Set a Trusted One
+
+Run these commands 
+exactly
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ empty
+sudo networksetup -setdnsservers 
+
+"USB 10/100/1000 LAN"
+
+ 8.8.8.8 8.8.4.4
+
+Then, 
+flush the DNS cache
+ to apply the changes:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+Step 3: Check If the Rogue DNS is Gone
+
+Now, check your DNS settings again:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+If 
+113.212.173.22
+ is gone
+, the issue is fixed. â
+
+ð 
+If itâs still there
+, your 
+VPN or router might be enforcing it.
+
+Step 4: (If Still Present) Check If VPN is Forcing DNS
+
+You have 
+ProtonVPN
+ active, which might be enforcing its own DNS settings.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+ð 
+If 
+113.212.173.22
+ appears here
+, ProtonVPN (or your router) is 
+overriding your DNS settings.
+
+ð 
+Try disconnecting ProtonVPN
+ and check 
+
+scutil --dns
+
+ again.
+
+ð Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+If 
+
+113.212.173.22
+ disappears
+, the issue is resolved.
+
+If it 
+remains
+, we'll need to investigate ProtonVPN or your router! ð
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo networksetup -setdnsservers "USB 10/100/1000 LAN" empty
+sudo networksetup -setdnsservers "USB 10/100/1000 LAN" 8.8.8.8 8.8.4.4
+
+sja@SJAs-MacBook-Pro ~ % sudo killall -HUP mDNSResponder
+
+sja@SJAs-MacBook-Pro ~ % scutil --dns
+
+DNS configuration
+
+resolver #1
+  nameserver[0] : 8.8.8.8
+  nameserver[1] : 8.8.4.4
+  flags    : Request A records
+  reach    : 0x00000002 (Reachable)
+
+resolver #2
+  domain   : local
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300000
+
+resolver #3
+  domain   : 254.169.in-addr.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300200
+
+resolver #4
+  domain   : 8.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300400
+
+resolver #5
+  domain   : 9.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300600
+
+resolver #6
+  domain   : a.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300800
+
+resolver #7
+  domain   : b.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 301000
+
+DNS configuration (for scoped queries)
+
+resolver #1
+  nameserver[0] : 8.8.8.8
+  nameserver[1] : 8.8.4.4
+  if_index : 22 (en4)
+  flags    : Scoped, Request A records
+  reach    : 0x00000002 (Re
+
+ChatGPT said:
+
+â SUCCESS: Rogue DNS Removed! ð
+
+Your 
+DNS is now clean
+â
+113.212.173.22
+ is 
+gone
+, and your Mac is now using 
+Googleâs DNS (8.8.8.8, 8.8.4.4)
+. ð
+
+ð What This Means:
+
+Your Mac was previously using an unknown DNS (
+113.212.173.22
+).
+
+This could have been set by:
+
+â Your router (forcing DNS settings).
+
+â A VPN or app (ProtonVPN might have overridden it).
+
+â A misconfigured network setting.
+
+Now that it's fixed, your internet traffic is no longer potentially hijacked!
+ ð
+
+ð  Next Steps: Make Sure It Doesn't Return
+
+1ï¸â£ 
+Restart your Mac
+ to confirm the settings 
+stick
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+After rebooting, run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+ð 
+If 
+113.212.173.22
+ is gone, everything is fine!
+ â
+
+ð Next Investigation: Deleted Files Still in Use
+
+Since weâve resolved the DNS

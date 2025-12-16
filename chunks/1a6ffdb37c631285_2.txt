@@ -1,0 +1,191 @@
+g as an 
+AirPlay receiver
+ (which could allow another device to stream to it):
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay receiver-active
+
+If the output is 
+1
+
+, your Mac is set up as an AirPlay receiver.
+
+If 
+0
+
+, it’s disabled.
+
+If 
+1
+ appears and you didn’t enable it, disable it with:
+
+sh
+
+Copy
+
+sudo defaults write /Library/Preferences/com.apple.airplay receiver-active -bool 
+
+false
+
+3. Check for Mirroring or Remote Access Processes
+
+Run this to look for any screen-sharing or remote control processes:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'screensharing|airplay|vnc'
+
+If 
+anything appears other than 
+grep
+ itself
+, let me know so we can investigate further.
+
+Try these steps and let me know what you find! If you see anything unusual in the logs or processes, we can dig deeper.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % log show --predicate 'subsystem == "com.apple.AirPlay"' --last 1h
+
+Filtering the log data using "subsystem == "com.apple.AirPlay""
+Skipping info and debug messages, pass --info and/or --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+--------------------------------------------------------------------------------------------------------------------
+Log      - Default:          0, Info:                0, Debug:             0, Error:          0, Fault:          0
+Activity - Create:           0, Transition:          0, Actions:           0
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Since the log search for 
+com.apple.AirPlay
+ returned no results, it means there have been 
+no recorded AirPlay events in the past hour
+. That’s a good sign—there’s no recent AirPlay activity.
+
+However, if you suspect past unauthorized use, you might want to expand the search:
+
+Try searching for the last 
+24 hours
+ instead:
+
+sh
+
+Copy
+
+log
+
+ show --predicate 
+
+'subsystem == "com.apple.AirPlay"'
+
+ --last 24h
+
+If that also returns nothing, AirPlay hasn’t been actively used recently.
+
+Next Steps: Check If Your Mac Is an AirPlay Receiver
+
+To see if your Mac is set up to 
+receive AirPlay streams
+, run:
+
+sh
+
+Copy
+
+defaults 
+
+read
+
+ /Library/Preferences/com.apple.airplay receiver-active
+
+If the output is 
+1
+
+, AirPlay receiving is 
+enabled
+, meaning another device could stream to your Mac.
+
+If the output is 
+0
+
+, AirPlay receiving is 
+disabled
+ (which is the safer setting).
+
+If it's 
+1
+ and you didn’t enable it, you can turn it off with:
+
+sh
+
+Copy
+
+sudo defaults write /Library/Preferences/com.apple.airplay receiver-active -bool 
+
+false
+
+This command requires your 
+admin password
+, but it won’t display the password when you type.
+
+Final Check: Look for Suspicious Mirroring or Remote Access Processes
+
+Since you’re concerned about possible mirroring, let’s check if any 
+remote access or screen-sharing
+ processes are running:
+
+sh
+
+Copy
+
+ps aux | grep -E 
+
+'screensharing|airplay|vnc'
+
+Let me know what appears in the output! If we see anything unusual, we’ll investigate further.
+
+You said:
+
+user@Mes-MacBook-Pro ~ % ps aux | grep -E 'screensharing|airplay|vnc'
+
+user               976   1.1  0.0 410724112   1504 s000  S+    3:48pm   0:00.00 grep -E screensharing|airplay|vnc
+_fpsd              676   0.0  0.1 426947424  13488   ??  Ss    3:28pm   0:00.18 /System/Library/PrivateFrameworks/CoreFP.framework/Versions/A/fairplayd
+user@Mes-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Your output shows that 
+no active screen-sharing, AirPlay, or VNC (remote access) processes
+ are running. The only thing listed is the 
+grep
+ command itself (which is normal) and a process related to 
+FairPlay DRM (
+fairplayd
+)
+, which is Apple's digital rights management system for protecting content.
+
+What This Means:
+
+No active remote access, screen-sharing, or AirPlay streaming is detected at the moment.
+
+Your Mac is not currently being mirrored or accessed via VNC.
+
+FairPlay (
+fairplayd
+) is unrelated to mirroring—it's part of Apple's DRM for media playback.
+
+Final Step: Check if AirPlay Receiving is Enabled
+
+Since you’

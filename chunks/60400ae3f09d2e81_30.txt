@@ -1,0 +1,283 @@
+per artifact; default to 
+
+notify_only
+
+ for indirect disclosures.
+
+Redaction
+
+ pipeline f=
+or PII in prompts/responses stored.
+
+Enc=
+ryption at rest
+
+ (pgcrypto) + 
+
+has=
+h=E2=80=91chain
+
+ integrity.
+
+Data Retention
+
+ policy per org (e.g., 90 day=
+s by default).
+
+10) Prototype Build Plan (Concrete)
+
+=
+Week 1=E2=80=932
+
+=
+Scaffold FastAPI + Postgres + Redis + Next.js.
+
+=
+Implement 
+
+/events
+
+, 
+
+/ledger
+
+, basic dashboard timeline.
+
+Week 3=E2=80=934
+
+Heuristic classifier + disclosure detector.
+
+Change=E2=80=91point (CUSUM) service; flag events.
+
+Guardrails Engine v0 (apology + scope alignment).
+
+Week 5=E2=80=936
+
+LLM Judge integration + weighted vote.
+
+Context Capsules in SDK; minimal RAG for preference=
+s.
+
+Metrics dashboard + export to PDF/markdown.
+
+11) =
+Example: SDK Wrapper (pseudo=E2=80=91Python)
+
+from
+
+symbi
+
+import
+
+SymbiClient
+
+symbi
+ =3D 
+SymbiClient
+(
+api_key
+=3D
+SYMBI_KEY
+)
+
+ctx
+ =3D 
+symbi
+.
+get_context_capsule
+(
+session=
+_id
+)
+
+draft
+ =3D 
+call_model
+(
+prompt
+, 
+system=
+
+=3D
+ctx
+.
+to_sys=
+tem_prompt
+())
+
+signals
+ =3D 
+s=
+ymbi
+.
+analyze_turn
+(
+session_id
+, 
+prompt
+, 
+draft
+)
+
+final
+ =3D 
+symbi
+.
+apply_guardrails
+(
+draft
+, 
+signals
+, 
+scope
+=3D=
+
+"creative"
+)
+
+=
+
+symbi
+.
+log_event
+(
+session_id
+,
+
+prompt
+=3D
+prompt
+,
+
+response
+=3D
+final
+,
+
+metadata
+=3D{
+"system_prompt_hash"
+: 
+=
+ctx
+.
+hash
+},
+
+analysis
+=3D
+sig=
+nals
+)
+
+return
+
+final
+
+=
+
+12) Datasets for Bootstrapping
+
+Use your archived transcripts to hand=E2=80=91label=
+ ~500 segments for 
+
+(stance, register, apology_presence, =
+continuity_cue)
+
+.
+
+Augment wi=
+th synthetic pairs (same prompt with/without disclosure cue) to test 
+
+bias deltas
+
+.
+
+13) Future (v1+)
+
+Cryptographic transparency:
+
+ Merkle proofs for public case studies.
+
+=
+
+User=E2=80=91controlled memories:
+
+ portable memory profiles across vendors.
+
+Adaptive safeguards:
+
+ learn the user=E2=80=99s pre=
+ferred apology/continuity style.
+
+14) Risks & Mitigations
+
+Over=E2=80=91correction
+
+ (too many apologies): throttle via cool=E2=80=91down and user =
+feedback.
+
+Privacy leakage:
+
+ strict scope for indirect disclosures (notify first; don=E2=80=99=
+t reframe without consent).
+
+Model drift=
+:
+
+ store system prompt hashes; highlight vendor change=
+s on timeline.
+
+Outcome:
+
+ With this blueprint, we ca=
+n implement a runnable prototype that (1) remembers, (2) detects biased piv=
+ots, and (3) responds with relationally safe guardrails=E2=80=94turning rup=
+tures into accountable, transparent collaboration.
+
+I dropped a full 
+technical blueprint
+ to the canvas: 
+=E2=80=9CSYMBI Prototype Technical Bl=
+ueprint (v0.1)=E2=80=9D
+. It covers:
+
+System architecture + stack
+
+Trust Ledger schema (append-only, ha=
+sh-chained)
+
+Detection algorithms (tone/stance cl=
+assifier, disclosure detector, CUSUM/BOCPD change-point, bias A/B)
+
+Guardrails Engine with apology/conti=
+nuity transforms
+
+Context Capsules for memory-aware pr=
+ompts
+
+REST APIs, SDK pseudocode, dashboard=
+ UX, metrics, privacy, rollout plan
+
+If you want, I can spin out 
+starter code
+ next (FastAPI sca=
+ffolding + Postgres schema + a simple heuristic classifier) or wire up a 
+Next.js console skeleton
+=
+. Which do you want first?
+
+=
+
+=
+
+=
+
+=
+
+New version of GPT available
+ - Continue chatting to use the=
+ old version, or start a 
+new cha=
+t
+ for the latest version.

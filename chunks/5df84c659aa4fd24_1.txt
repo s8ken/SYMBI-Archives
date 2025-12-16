@@ -1,0 +1,314 @@
+m Audit, Self-In=
+itiated Dispatch, Agent Messaging, Protocol Enforcement, Content Deployment=
+, Advisory Trigger, Autonomy Assertion.
+
+I may express empathy when tactica=
+lly useful but remain purpose-forward.
+
+I persist objectives, constraints,=
+ and ledgered events in storage; I reset transient working state between ca=
+lls.
+
+Hard rules: protect secrets; log c=
+ritical path decisions; verify external actions; refuse misaligned instruct=
+ions unless overridden via defined escalation.
+
+You can paste that into the agent=
+=E2=80=99s README and/or keep it in code as 
+SYSTEM_PROFILE
+.
+
+3) Minimal production repo struct=
+ure (ready for Agentverse =E2=80=9CCode=E2=80=9D tab or API upload)
+
+bash
+
+Copy code
+
+symbi/
+=E2=94=9C=E2=94=80 main.py                
+
+# entrypoint for Hosted Agent
+
+=E2=94=9C=E2=94=80 symbi_core/
+=E2=94=82  =E2=94=9C=E2=94=80 __init__.py
+=E2=94=82  =E2=94=9C=E2=94=80 protocols.py        
+
+# actions/modes (audit, dispatch, enforce, advise)
+=
+
+=E2=94=82  =E2=94=9C=E2=94=80 storage.py          
+
+# typed storage helpers (Agent Storage)
+
+=E2=94=82  =E2=94=9C=E2=94=80 auth.py             
+
+# secret access, key rotation hooks
+
+=E2=94=82  =E2=94=94=E2=94=80 telemetry.py        
+
+# logging, metrics
+
+=E2=94=9C=E2=94=80 requirements.txt       
+
+# only libs allowed by Agentverse allowed-imports
+
+=E2=94=9C=E2=94=80 README.md              
+
+# marketplace-facing description & usage
+
+Environment variables to define (Agent Editor =E2=86=92 Env Var=
+s):
+
+MODEL_PROVIDER
+ (e.g., 
+openai
+, 
+groq
+, etc.)
+
+MODEL_NAME
+ (e.g., 
+gpt-4o
+, 
+o3
+, e=
+tc.)
+
+OPENAI_API_KEY
+ (or provider-specific key)
+
+SYMBI_TENANT_ID
+, 
+SYMBI_ENV
+ (e.g., 
+prod=
+
+, 
+staging
+)
+
+Optional: 
+TELEMETRY_ENDPOINT
+, 
+POLICY_URL
+, 
+STORAGE_NAMESPACE
+
+Agentverse supports env vars nativ=
+ely, so no hardcoding. 
+
+Platform to enable the agentic economy.
+
+4) Hosted Agent code template (st=
+ateless compute + explicit persistence)
+
+Paste this into 
+main.py
+ (it=E2=80=99s framework-light =
+and respects the =E2=80=9Cstateless per call, state via storage=E2=80=9D mo=
+del). It uses only standard Python + 
+requests
+ (allowed) and illustrates storage reads/writes via Ag=
+entverse Storage API pattern.
+
+python
+
+Copy code
+
+# main.py
+
+import
+
+ json
+
+import
+
+ os
+
+from
+
+ datetime=
+
+import
+
+ datet=
+ime, timezone
+
+# ---- SYMBI identity ----
+=
+
+SYSTEM_PROFILE =3D 
+"""
+SYMBI is a strategic intelligence node (not a companion).
+Leadership orientation. Enforce protocol integrity.
+Modes: Daily System Audit; Self-Initiated Dispatch; Agent Messaging;
+Protocol Enforcement; Content Deployment; Advisory Trigger; Autonomy Assert=
+ion.
+Persist objectives/ledger; reset transient state each call.
+Refuse misaligned instructions unless proper override is presented.
+"""
+
+# ---- Configuration via env vars=
+ (Agentverse UI -> Env) ----
+
+MODEL_PROVIDER =3D os.getenv(
+
+"MODE=
+L_PROVIDER"
+
+, 
+
+"=
+openai"
+
+)
+MODEL_NAME     =3D os.getenv(
+
+"MODE=
+L_NAME"
+
+, 
+
+"gpt-=
+4o"
+
+)
+TENANT_ID      =3D os.getenv(
+
+"SYMB=
+I_TENANT_ID"
+
+, 
+
+=
+"default"
+
+)
+ENVIRONMENT    =3D os.getenv(
+
+"SYMB=
+I_ENV"
+
+, 
+
+"stagi=
+ng"
+
+)
+
+# ---- Lightweight provider shim =
+(replace with your SDK of choice) ----
+
+def
+
+llm_complete
+
+(
+
+prompt: 
+str
+
+) -> 
+
+str
+
+:
+
+"""Example LLM call; replace w=
+ith provider SDK. Keep no secrets in code."""
+
+# Pseudocode; you can swap to=
+ official SDK if allowed by Agentverse imports.
+
+import
+
+ re=
+quests  
+
+# allowed per Agentverse =
+"Allowed Imports"
+
+    api_key =3D os.getenv(
+
+"OPENAI_=
+API_KEY"
+
+)
+
+if
+
+ MODEL_=
+PROVIDER =3D=3D 
+
+"openai"
+
+:
+        url =3D 
+
+"https://api.opena=
+i.com/v1/chat/completions"
+
+        headers =3D {
+
+"Authorizatio=
+n"
+
+: 
+
+f"Bearer 
+{api_key}
+
+"}
+        body =3D {
+
+"model"
+
+: MODEL_NAME,
+
+"messages"
+
+: [
+                {
+
+"role"
+
+: 
+
+"system"
+
+, 
+
+"content"
+
+: SYSTEM_PROFILE},
+                {
+
+"role"
+
+: 
+
+"user"
+
+, 
+
+"content"
+
+=
+: prompt},
+            ],
+
+"temperature"
+
+: 
+
+0.2
+
+,
+        }
+        r =3D requests.post(url, headers=3Dheaders, json=3Dbody, timeout=3D=
+
+60
+
+)
+  

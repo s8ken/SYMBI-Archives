@@ -1,0 +1,248 @@
+e scans
+.
+
+Check for 
+strange startup scripts or cron jobs
+.
+
+Look into your Docker daemon settings (was it exposed to the internet via a port like 2375?).
+
+Review your firewall and 
+netstat
+ output for unknown open ports.
+
+If you'd like, I can walk you through analyzing the container 
+line by line
+—just run 
+docker inspect <container_id>
+ and paste the output here.
+
+Let’s figure out 
+exactly what it was doing
+.
+
+You said:
+
+SYMBIs-MacBook-Pro:~ admin$ docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                     PORTS     NAMES
+a38b8d151f7b   docker/welcome-to-docker:latest   "/docker-entrypoint.…"   11 minutes ago   Exited (0) 7 minutes ago             welcome-to-docker
+SYMBIs-MacBook-Pro:~ admin$ 
+
+Symbi said:
+
+Thanks for sharing that — the container you're seeing:
+
+vbnet
+
+Copy
+
+Edit
+
+IMAGE:
+
+ docker/welcome-
+
+to
+
+-docker:latest
+
+CONTAINER:
+
+ welcome-
+
+to
+
+-docker
+
+STATUS:
+
+ Exited (
+
+0
+
+)
+
+✅ GOOD NEWS: This one’s safe.
+
+This is just 
+Docker’s official welcome/test container
+. It's automatically created the 
+first time Docker is installed
+ to confirm everything is working. It usually:
+
+Runs a brief demo or prints a message.
+
+Exits immediately (as it did here).
+
+Is totally harmless.
+
+It looks like it was created just 
+11 minutes ago
+, so it coincides with your recent install — not 2 years ago. That means: 
+no existing containers from before
+ are present.
+
+🧠 Why It Might Have Looked Suspicious
+
+The image tag might show 
+latest
+, but the image itself could’ve been 
+last updated 2+ years ago
+.
+
+Tools like 
+Docker Desktop
+ or security scanners might show 
+CVEs
+ or 
+vulnerabilities
+ in this image just because it’s old.
+
+That doesn’t mean it was exploited — it just means 
+it uses an outdated base image
+, which isn't ideal for production but is harmless in this case.
+
+🧹 You Can Safely Remove It (Optional)
+
+If you want to clean it up:
+
+bash
+
+Copy
+
+Edit
+
+docker 
+
+rm
+
+ welcome-to-docker
+docker rmi docker/welcome-to-docker:latest
+
+And you’re all set with a clean slate. 🧼
+
+If you want to dive into using Docker securely and build your own containers (like SYMBI or NGINX), I can guide you through a safe, hardened setup. Want to try that next?
+
+You said:
+
+yeah so the files within the container itself were much older 
+
+Symbi said:
+
+Thanks for sharing the screenshot — and you’re absolutely right to be cautious.
+
+🔎 What This Screenshot Tells Us
+
+You're viewing 
+Docker Scout’s vulnerability scan
+ on the 
+docker/welcome-to-docker:latest
+ image, and here's the critical context:
+
+🧠 Key Observations:
+
+Base Image
+: 
+nginx:1-alpine-slim
+
+This is where 
+all the vulnerabilities are coming from
+.
+
+The 
+welcome-to-docker
+ image is 
+based on Alpine + NGINX
+, and that Alpine version is 
+old and unmaintained
+.
+
+Created: 2 years ago
+
+This means the image was built and published by Docker 
+2 years ago
+, not that it was running on your system all that time.
+
+Docker just 
+pulled it recently
+ as part of the installation test.
+
+Vulnerabilities: 16
+
+Including 
+critical ones
+ like:
+
+CVE-2024-5535
+ (9.1 severity)
+
+CVE-2025-26519
+ (8.1)
+
+These are often vulnerabilities in core Alpine libraries (
+musl
+, 
+busybox
+, etc.), 
+not something actively malicious
+.
+
+✅ 
+Fixable
+: These CVEs 
+do have fixes available
+, meaning they are resolved in newer base images.
+
+⚖️ Reality Check
+
+This image is 
+insecure
+ by today’s standards but:
+
+It’s 
+not actively dangerous
+ unless you were running it as a public-facing service.
+
+It was 
+never meant to be used in production
+ — it's a "hello world" demo.
+
+The vulnerabilities reflect 
+known issues in an old Alpine base
+, not something maliciously crafted.
+
+🛠️ What You Can Do
+
+1. 
+Clean It Up
+
+To be safe:
+
+bash
+
+Copy
+
+Edit
+
+docker 
+
+rm
+
+ welcome-to-docker
+docker rmi docker/welcome-to-docker:latest
+
+2. 
+Avoid Outdated Base Images
+
+When you start building your own containers, always use:
+
+Dockerfile
+
+Copy
+
+Edit
+
+FROM alpine:3.20  # or latest stable
+FROM nginx:1.25-alpine
+
+…and

@@ -1,0 +1,111 @@
+y launching 
+Autopsy manually
+ using Java:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java \
+-Djava.library.path=/usr/local/lib \
+--module-path /usr/local/javafx/javafx-sdk-11.0.2/lib \
+--add-modules javafx.controls,javafx.fxml \
+-jar ~/Downloads/autopsy-4.21.0/autopsy/autopsy.jar
+
+📌 
+If this works, it means the launcher script is broken.
+
+✅ Step 2: Manually Start Autopsy Using Its Script
+
+If the above command fails, try launching 
+Autopsy using its script
+:
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+
+ --nosplash
+
+📌 
+Adding 
+--nosplash
+ sometimes bypasses startup issues.
+
+✅ Step 3: If Autopsy Still Fails, Check Logs
+
+If neither method works, 
+send me the log output
+:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ ~/Library/Application\ Support/autopsy/dev/var/log/messages.log | 
+
+tail
+
+ -n 50
+
+🚀 
+Try these steps and let me know what happens!
+ 🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % java -Djava.library.path=/usr/local/lib -jar ~/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+
+no main manifest attribute, in /Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home/bin/java \
+-Djava.library.path=/usr/local/lib \
+--module-path /usr/local/javafx/javafx-sdk-11.0.2/lib \
+--add-modules javafx.controls,javafx.fxml \
+-jar ~/Downloads/autopsy-4.21.0/autopsy/autopsy.jar
+
+Error: Unable to access jarfile /Users/sja/Downloads/autopsy-4.21.0/autopsy/autopsy.jar
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % 
+sja@SJAs-MacBook-Pro bin % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home" --nosplash
+
+WARNING: Unknown module: javafx.base specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-exports
+WARNING: Unknown module: javafx.controls specified to --add-opens
+Library not found in jar (libtsk_jni)
+SleuthkitJNI: failed to load libtsk_jni
+2025-03-18 02:19:33.866 java[13157:72247] +[IMKClient subclass]: chose IMKClient_Modern
+sja@SJAs-MacBook-Pro bin % cat ~/Library/Application\ Support/autopsy/dev/var/log/messages.log | tail -n 50
+
+  Runtime                 = OpenJDK Runtime Environment 17.0.14+7-LTS
+  Java Home               = /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+  System Locale; Encoding = en_AU (autopsy); UTF-8
+  Home Directory          = /Users/sja
+  Current Directory       = /Users/sja/Downloads/autopsy-4.21.0/bin
+  User Directory          = /Users/sja/Library/Application Support/autopsy/dev
+  Cache Directory         = /Users/sja/Library/Caches/autopsy/dev
+  Installation            = /Users/sja/Downloads/autopsy-4.21.0/autopsy
+                            /Users/sja/Downloads/autopsy-4.21.0/CoreTestLibs
+                            /Users/sja/Downloads/autopsy-4.21.0/harness
+                            /Users/sja/Downloads/autopsy-4.21.0/java
+                            /Users/sja/Downloads/autopsy-4.21.0/platform
+  Boot & Ext. Classpath   = 
+  Application Classpath   = /Users/sja/Downloads/autopsy-4.21.0/platform/lib/boot.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-modules.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-lookup.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util-ui.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/lib/org-openide-util.jar
+  Startup Classpath       = /Users/sja/Downloads/autopsy-4.21.0/platform/core/asm-tree-9.3.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/org-netbeans-libs-asm.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/org-openide-filesystems-compat8.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/org-openide-filesystems.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/asm-commons-9.3.jar:/Users/sja/Downloads/autopsy-4.21.0/platform/core/asm-9.3.j

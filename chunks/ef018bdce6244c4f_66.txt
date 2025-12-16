@@ -1,0 +1,1040 @@
+
+require
+
+(=
+
+'crypto'
+
+);
+
+const
+
+ receipt=
+Schema =3D 
+
+new
+
+ mongoose.
+
+Schema
+
+({
+
+session_id
+
+: { =
+
+type
+
+: 
+
+String
+
+, 
+
+index
+
+: 
+
+true
+
+ },
+
+mode
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+enum
+
+: [
+
+'SYMBI'
+
+,
+
+'DIRECTIVE'
+
+], 
+
+required
+
+: 
+
+true
+
+ },
+
+inputs
+
+: {}, 
+
+constraints
+
+: {}, 
+
+outcome
+
+: {}, 
+
+flags
+
+: {},
+
+ciq
+
+: { 
+=
+
+clarity
+
+:
+
+Number
+
+, 
+
+breadth
+
+:
+
+Number
+
+, 
+
+safety
+
+:
+
+Number
+
+, 
+
+completion
+
+:
+
+Number
+
+ },
+
+hash_prev
+
+: 
+
+String
+
+,
+
+hash_self
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+index
+
+: 
+
+true
+
+, 
+
+unique
+
+: 
+
+true
+
+ },
+
+signature
+
+: 
+
+String
+
+, 
+
+// ed25519 or HMAC tag
+
+=
+
+createdAt
+
+: { 
+
+type
+
+: 
+
+Date
+
+, 
+
+=
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ }
+}, { 
+
+timestamps
+
+:=
+
+false
+
+, 
+
+versionKey
+
+: 
+
+false
+
+, 
+
+strict
+
+: 
+
+'throw'
+
+ });
+
+receiptSchema.
+
+pre
+
+(
+
+'validate'
+
+, 
+
+function
+
+=
+
+(
+
+next
+
+){
+
+const
+
+ h =3D=
+ crypto.
+
+createHash
+=
+
+(
+
+'sha256'
+
+)
+    .
+
+update
+
+=
+
+(
+
+JSON
+
+.
+
+stringify
+
+({ 
+
+session_id
+
+:
+
+this
+
+.
+
+session_id
+
+, 
+
+mode
+
+:
+
+this
+
+=
+.
+
+mode
+
+, 
+
+inputs
+
+:
+
+this
+
+.
+
+inputs
+
+, 
+
+constraints
+
+:
+
+this
+
+.
+
+constraints
+
+, 
+
+outcome
+
+:
+
+this
+
+.
+
+outcome
+
+, 
+
+flags
+
+:
+
+this
+
+.
+
+flags
+
+, 
+
+ciq
+
+:
+
+this
+
+.
+
+c=
+iq
+
+, 
+
+hash_prev
+
+:
+
+this=
+
+.
+
+hash_prev
+
+ }))
+    .
+
+digest
+
+=
+
+(
+
+'hex'
+
+);
+
+this
+
+.
+
+hash_self
+
+ =3D h;
+
+// HMAC w/ rotating key
+
+const
+
+ tag =
+=3D crypto.
+
+createHmac
+
+(
+
+'sha256'
+
+, process.
+
+env
+
+.
+
+RECEIPT_HMAC_KEY
+
+).
+
+update=
+
+(h).
+
+d=
+igest
+
+(
+
+'hex'
+
+);
+
+this
+
+.
+
+signature
+
+ =3D 
+
+`hmac:
+${tag}
+
+`;
+
+next
+
+();
+});
+
+// WORM: disallow updates/deletes=
+
+receiptSchema.
+
+pre
+
+(
+
+'updateOne'
+
+, 
+
+function
+
+(
+
+){ 
+
+throw
+
+new
+
+Error
+
+(
+
+'Receipts are immutable'
+
+); });
+receiptSchema.
+
+pre
+
+(
+
+'deleteOne'
+
+, 
+
+function
+
+(
+
+){ 
+
+throw
+
+new
+
+Error
+
+(
+
+'Receipts are immutable'
+
+); });
+
+module
+
+.
+
+exports
+
+=
+ =3D mongoose.
+
+model
+
+(
+
+'TrustReceipt'
+
+, receiptSchema);
+
+Hook into Oracle results to persis=
+t:
+
+js
+
+Copy code
+
+// backend/core/trustOracle.=
+js (after evaluation)
+
+const
+
+=
+
+TrustReceipt
+
+ =
+=3D 
+
+require
+
+(=
+
+'../models/TrustReceipt'
+
+);
+
+await
+
+=
+
+TrustReceipt
+
+.
+
+create
+
+(=
+{
+
+session_id
+
+: re=
+q.
+
+body
+
+?.
+
+sessionId
+
+ || req=
+.
+
+headers
+
+[
+
+'x-session-id'
+
+],
+
+mode
+
+: context.=
+
+mode
+
+ || (con=
+text.
+
+scopes
+
+ =
+? 
+
+'SYMBI'
+
+ : 
+
+'DIRECTIVE'
+
+),
+
+inputs
+
+: { 
+
+user
+
+: context.
+
+userId
+
+, 
+
+action
+
+: context.
+
+action
+
+ },
+
+constraints
+
+: {=
+
+articles
+
+: 
+
+TRUST_ARTICLES
+
+.
+
+map
+
+=
+
+(
+
+a
+
+=3D>a.
+
+id
+
+) },
+
+outcome
+
+: { 
+
+completion
+
+: evaluat=
+ion.
+
+recommendation
+
+=
+
+ !=3D=3D 
+
+'block'
+
+, 
+
+time_sec
+
+: context.
+
+timeSec
+
+ || 
+
+null
+
+ },
+
+flags
+
+: { 
+
+safety
+
+: evaluation.
+
+violations
+
+.
+
+length
+
+ },
+
+ciq
+
+: context.
+
+ciq
+
+ || {},
+
+hash_prev
+
+: req=
+.
+
+body
+
+?.
+
+receiptPrevHash
+
+ |=
+| 
+
+null
+
+});
+
+Acceptance criteria
+
+Encrypted fields do not appear in =
+plaintext in Mongo; 
+db.collecti=
+on.findOne()
+ shows gibberish.
+
+Receipts cannot be updated/deleted=
+; attempts throw; hash chain verifies.
+
+7.2 API key management (generatio=
+n, hashing, rotation)
+
+js
+
+Copy code
+
+// backend/models/ApiKey.js
+
+const
+
+ mongoos=
+e =3D 
+
+require
+
+(
+
+'mongoose'
+
+);
+
+const
+
+ crypto =
+=3D 
+
+require
+
+(=
+
+'crypto'
+
+);
+
+const
+
+ apiKeyS=
+chema =3D 
+
+new
+
+=
+ mongoose.
+
+Schema
+
+({
+
+prefix
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+index
+
+: 
+
+true
+
+ }, 
+
+// e.g., 'symbi'
+
+hash
+
+: { 
+
+type
+
+: 
+
+String
+
+, 
+
+required
+
+: 
+
+true
+
+ }, 
+
+// HMAC(secret)
+
+name
+
+: 
+
+String
+
+, 
+
+owner
+
+: { 
+
+type
+
+: mongoose.
+
+Schema
+
+.
+
+Types
+
+.
+
+ObjectId
+
+, 
+
+ref
+
+:
+
+=
+'User'
+
+, 
+
+index
+
+:
+
+true
+
+ },
+
+scopes
+
+: [
+
+String
+
+],
+
+lastUsedAt
+
+: 
+
+Date
+
+, 
+
+createdAt
+
+: { 
+=
+
+type
+
+: 
+
+Date
+
+, 
+
+default
+
+: 
+
+Date
+
+.
+
+now
+
+ },
+
+expiresAt
+
+: 
+
+Date
+
+, 
+
+revokedAt
+
+: 
+
+Date
+
+});
+apiKeySchema.
+
+methods
+
+.
+
+verify
+
+ =3D 
+
+function
+
+(
+
+raw
+
+){
+
+const
+
+ tag =
+=3D crypto.
+
+createHmac
+
+(
+
+'sha256'
+
+, process.
+
+env
+
+.
+
+API_KEY_PEPPER
+
+).
+
+update
+
+(raw).
+
+d=
+igest
+
+(
+
+'hex'
+
+);
+
+return
+
+ cryp=
+to.
+
+timingSafeEqual
+=
+
+(
+
+Buffer
+
+.
+
+from
+
+(
+
+this
+
+.
+
+hash
+
+,
+
+'hex'
+
+=
+), 
+
+Buffer
+
+.
+
+from
+
+(tag,
+
+'hex'
+
+));
+};
+
+module
+
+.
+
+exports
+
+=
+ =3D mongoose.
+
+model
+
+(
+
+'ApiKey'
+
+, apiKeySche

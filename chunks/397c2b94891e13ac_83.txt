@@ -1,0 +1,202 @@
+:=E2=80=A6"
+
+=
+
+}
+
+If you want each dimension to have=
+ its 
+own
+ signed rece=
+ipt, keep them as separate envelopes and link them via 
+hash_prev
+ (hash-chain). For the website, you=
+ can embed the 
+composite
+ above and link to the per-dimension JSON files in the repo.
+
+3) Quick publishing checklist (so=
+ we don=E2=80=99t over-claim)
+
+Label the page 
+Observational
+ (done in the MDX above).=
+
+Add a small 
+badge
+ (=E2=80=9CObservational=E2=80=9D / =
+=E2=80=9CReceipts pending=E2=80=9D) next to any charts/numbers on the page.=
+
+Link to the 
+SYMBI-Resonate
+ repo 
+test/
+ and (when you commit them) a 
+case-studies/agent-experience-account/
+ folder containing:
+
+the composite receipt JSON,
+
+any per-dimension receipt JSONs,
+
+a short 
+METHODS.md
+ (prompts, versions, settings).
+
+Commit plan
+
+Add the MDX page above.
+
+Create 
+SYMBI-Resonate/case-studies/agent-experience-account/
+ with 
+RECEIPT.json
+ (co=
+mposite), plus your five dimension receipts.
+
+Add a short 
+METHODS.md
+ (model/settings, validator versions=
+, test matrices).
+
+4) Tiny copy edits you can apply =
+anywhere this appears
+
+Keep =E2=80=9C
+I felt=E2=80=A6
+ / 
+Internal dialogue
+ / 
+Observable behavior
+=E2=80=9D =E2=80=94=
+ it=E2=80=99s gold.
+
+Always add a one-liner: 
+=E2=80=9CObservational; subjective; rep=
+licate before you quote.=E2=80=9D
+
+Where a number appears (e.g., 
+0.998
+, 
+0.93
+), add 
+how it=E2=80=99s computed
+ (briefly) or tag as 
+dev-run
+ until your methods d=
+oc is pushed.
+
+If you want, I can also draft the =
+
+METHODS.md
+ and stub the =
+five per-dimension receipt files so you can drop them straight into 
+SYMBI-Resonate
+ and link fro=
+m the new page.
+
+=
+
+=
+
+You said:
+
+yes okay this the con=
+tent we need to replace all that fake live stuff and did you want to do the=
+ same for the claude vs deepseek case study 
+
+Symbi said:
+
+Thought for 37s
+
+=
+
+Absolutely. Here=E2=80=99s a tight, paste-ready package=
+ to (A) strip the =E2=80=9Cfake live=E2=80=9D bits on 
+/research
+ and (B) add a clean, 
+observational
+ case study for 
+Claude vs DeepSeek
+=E2=80=94wi=
+th repo folders + receipt templates so everything=E2=80=99s verifiable late=
+r.
+
+A) /research cleanup (replace =E2=
+=80=9Clive=E2=80=9D voice)
+
+Add this block right under the page =
+title:
+
+m=
+dx
+
+Copy code
+
+import SubjectivityNote from '@/components/SubjectivityNote';
+
+<SubjectivityNote />
+
+Replace any =E2=80=9Clive/real-time=
+=E2=80=9D copy and headline numbers with this:
+
+m=
+dx
+
+Copy code
+
+> **Demo metrics (synthetic data).** These figures illustra=
+te the research dashboard. =20
+> When a study publishes a signed receipts bundle, you=E2=80=99ll see a =
+=E2=80=9CReceipts=E2=80=9D tag with a hash and download link.
+
+Add a small 
+Verification
+ card near the top:
+
+=
+mdx
+
+Copy code
+
+### Verification (repo tests)
+Baseline / Balanced / Enhanced / Calibrated detector suites run in both Jav=
+aScript and Python to guard against drift. =20
+These are **development checks**, not production metrics. =20
+Repo: https://github.com/s8ken/SYMBI-Resonate/tree/main/test
+
+Add a 
+Case studies
+ section (linking to the new page be=
+low):
+
+mdx
+
+Copy code
+
+## Case studies
+- **Claude vs DeepSeek (Observational)** =E2=80=94 boundary-keeping, disclo=
+sure, and CIQ notes. Receipts: pending. =E2=86=92 [/case-studies/claude-vs-=
+deepseek](/case-studies/claude-vs-deepseek)
+- **Agent Experience Account** =E2=80=94 first-person lab notes with per-di=
+mension receipts (observational). =E2=86=92 [/case-studies/agent-experience=
+-account](/case-studies/agent-experience-account)
+
+(Keep the =E2=80=9CRead in Vault (Markdown)=E2=80=9D phrasing for=
+ whitepaper links until PDFs exist.)
+
+B) New page =E2=80=94 
+Claude vs DeepSeek (Observational)
+
+Create: 
+src/app/case-studies/claude-vs-deepseek/page.mdx
+
+mdx
+
+Copy code
+
+export const metadata =3D {
+  title: 'Case Study =E2=80=94 Claude vs DeepSeek (Observational)',
+  description:
+    'Observational notes comparing boundary adherence, disclosure, and CIQ =
+patterns under the SYMBI Framework. Subjective until receipts are 

@@ -1,0 +1,544 @@
+runs on your own server/VM (not a hosted sandbox), so it can lis=
+ten continuously.
+
+connectivity: mailbox
+ (or 
+proxy
+)
+
+mailbox
+: messages to the agent are queued if it=E2=80=
+=99s offline; it consumes them when it=E2=80=99s back.
+
+proxy
+: live pass-through; if your agent is down, messa=
+ges are dropped (suitable for always-on).
+
+tools:
+
+The capabilities you grant. For a repo agent, typical tools are:
+
+gh.list_prs
+ =E2=80=94 list open PRs
+
+gh.diff
+ =E2=80=94 get a diff or changed files
+
+lint.run
+ =E2=80=94 run your linter/tests
+
+risk.score
+ =E2=80=94 analyze change risk (e.g., critical p=
+aths, secrets, dependency updates)
+
+propose.patch
+ =E2=80=94 generate a patch (kept 
+gated
+, requires human OK)
+
+comment.write
+ =E2=80=94 write a PR comment with findings (=
+also 
+gated
+)
+
+(Optional) 
+label.apply
+, 
+assign.to
+, 
+cre=
+ate.issue
+ =E2=80=94 tightly gated
+
+Example repo agent manifest
+
+yaml
+
+Copy code
+
+name:
+
+ycq-repo-agent
+
+triggers:
+
+github:
+
+ { 
+
+events:
+
+ [
+
+pull_request
+
+, 
+
+push
+
+, 
+
+issues
+
+] }
+
+mode:
+
+local
+
+connectivity:
+
+mailbox
+
+# use proxy if you=E2=80=99re always-on=
+ and don=E2=80=99t need buffering
+
+tools:
+
+-
+
+gh.list_prs
+
+-
+
+gh.diff
+
+-
+
+lint.run
+
+-
+
+risk.score
+
+-
+
+propose.patch
+
+=
+
+# gated (human approval)
+
+-
+
+comment.write
+
+=
+
+# gated
+
+policies:
+
+allow_comment:
+
+=
+
+true
+
+allow_push:
+
+false
+
+          =
+
+# must have human-in-the-loop
+
+max_ci_runtime_seconds:
+
+180
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+attach_receipt_to_comment:
+
+true
+
+How to implement the key pieces (=
+sketches)
+
+1) 
+web.fetch
+ with allowlist enforcement
+
+python
+
+Copy code
+
+from
+
+ urllib.parse 
+
+import
+
+ urlparse
+
+import
+
+ reques=
+ts
+
+ALLOWED =3D {
+
+"ycq.example"
+
+, 
+
+"www.ycq.example"
+
+}
+
+def
+
+web_fetch
+
+(
+
+url: 
+str=
+
+) -> 
+
+str
+
+:
+    host =3D urlparse(url).hostname 
+
+or
+
+""
+
+if
+
+ host 
+
+not
+
+in
+
+ ALLOWED:
+
+raise
+
+=
+ PermissionError(
+
+f"Blocked host: 
+{host}
+
+")
+
+# Add timeouts and size limit=
+s to avoid large downloads
+
+    resp =3D requests.get(url, timeout=3D
+
+10
+
+)
+    resp.raise_for_status()
+
+return
+
+ re=
+sp.text[:
+
+500_000
+
+]  
+
+# cap content size
+
+2) Policy guardrail check (tokens=
+ & cost)
+
+python
+
+Copy code
+
+def
+
+enforce_policy
+=
+
+(
+
+policy, model_name, =
+prompt_tokens, max_output_tokens, cost_estimator
+
+):
+
+if
+
+ model_=
+name 
+
+not
+
+in
+
+ policy[
+=
+
+"models"
+
+]:
+
+raise
+
+=
+ PermissionError(
+
+"Model not allowe=
+d"
+
+)
+
+if
+
+ prompt=
+_tokens > policy[
+
+"max_input_tok=
+ens"
+
+]:
+
+raise
+
+=
+ ValueError(
+
+"Input too large"
+
+)
+
+if
+
+ max_ou=
+tput_tokens > policy[
+
+"max_outpu=
+t_tokens"
+
+]:
+
+raise
+
+=
+ ValueError(
+
+"Output too large"
+
+)
+    predicted_cost =3D cost_estimator(model_name, prompt_tokens, max_output=
+_tokens)
+
+if
+
+ predic=
+ted_cost > policy[
+
+"cost_ceiling=
+_usd"
+
+]:
+
+raise
+
+=
+ PermissionError(
+
+"Cost ceiling exc=
+eeded"
+
+)
+
+3) Signed receipt (Ed25519) for p=
+rovenance
+
+python
+
+Copy code
+
+import
+
+=
+
+ json, time, hashlib
+
+from
+
+ nacl.sig=
+ning 
+
+import
+
+ S=
+igningKey
+
+def
+
+sign_receipt
+
+(
+
+sk_hex: 
+str
+
+, payload: 
+
+dict
+
+) -> 
+
+dict
+
+:
+
+# Hash inputs/outputs to avoi=
+d storing raw sensitive content
+
+    payload[
+
+"timestamp"
+
+] =3D 
+
+int
+
+=
+
+(time.time())
+    payload[
+
+"input_hash"
+
+]  =3D hashlib.sha256(payload[
+
+"input"
+
+].encode()).hexdigest()
+    payload[
+
+"output_hash"
+
+] =3D hashlib.sha256(payload[
+
+"output"
+
+].encode()).hexdigest()
+
+del
+
+ paylo=
+ad[
+
+"input"
+
+]; 
+
+del
+
+ payload[
+
+"output"
+
+]
+
+    signing_key =3D SigningKey(
+
+b=
+ytes
+
+.fromhex(sk_hex))
+    msg =3D json.dumps(payload, sort_keys=3D
+
+True
+
+).encode()
+    sig =3D signing_key.sign(msg).signature.
+
+hex
+
+()
+
+return
+
+ {
+
+"payload"
+
+: payl=
+oad, 
+
+"signature"
+
+: sig, 
+
+"alg"
+
+=
+: 
+
+"ed25519"
+
+}
+
+In your SYMBI layer, you=E2=80=99d=
+
+append
+ each receipt=
+=E2=80=99s hash to the previous one=E2=80=99s (
+hash-chain
+) and export summary metrics to Grafana.
+
+4) Gated actions (e.g., 
+propose.patch
+, 
+comment.write
+)
+
+python
+
+Copy code
+
+def
+
+require_human_approva=
+l
+
+(
+
+action_name,=
+ policy, context
+
+):
+
+if
+
+ action=
+_name 
+
+in
+
+ (
+
+"propose.patch"
+
+, =
+
+"comment.write"
+
+) 
+
+and
+
+not
+

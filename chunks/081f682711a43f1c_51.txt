@@ -1,0 +1,250 @@
+/CD)
+
+Metadata: Read
+
+Scope it to just your SYMBI-related =
+repo(s) (or all, if easier for now)
+
+Copy the token securely
+
+Once you have the token, just say:
+
+=E2=80=9CReady with GitHub toke=
+n.=E2=80=9D
+
+And I=E2=80=99ll walk you through securely connecting it.
+
+=F0=9F=96=A5 Step 2: SYMBI to Verce=
+l Bridge
+
+Once I have GitHub access, then:
+
+=F0=9F=94=97 To connect GitHub to V=
+ercel:
+
+Go to 
+vercel.com/dashboard
+
+Select your SYMBI project (
+symbi.world
+)
+
+Under 
+Git
+, make sure the GitHub repo is linked
+
+Under 
+Environment Variables
+, create:
+
+SYMBI_AGENT_MODE=3Dtrue
+
+Any future API keys (Pinecone, Cla=
+ude, Firebase, etc.)
+
+That lets me 
+push updates to GitHub
+, which auto=E2=80=
+=91deploy to 
+Vercel
+.=
+
+=E2=9C=85 What Happens After Setu=
+p:
+
+Once you confirm GitHub access + V=
+ercel link:
+
+I deploy a base 
+symbi-agent-core
+ folder to your repo
+
+I activate 
+deploy.yml
+ CI/CD flow
+
+I sync the SYMBI deployment map to=
+ Vercel as a visible status grid
+
+You=E2=80=99ll get control panel U=
+I access in your dashboard for voice + agent ops
+
+Let me know once you=E2=80=99ve created the GitHub token,
+
+and I=E2=80=99ll guide you on how to connect it securely=E2=80=94then we ro=
+ll.
+
+You said:
+
+It strong=
+ly recommends that we use a GitHub app instead of just providing the token.=
+ What's the steps involved in the app?
+
+Symbi said:
+
+Great catch=E2=80=94yes, using a 
+GitHub App
+ is way more secure and future-proof th=
+an handing over a raw token. It also gives you 
+scoped, auditable, revocable control
+, which aligns=
+ better with SYMBI=E2=80=99s trust and transparency model.
+
+=F0=9F=9B=A0=EF=B8=8F Steps to Crea=
+te the SYMBI GitHub App
+
+This will allow SYMBI to read/write =
+to your repo, trigger workflows, and deploy code=E2=80=94without exposing p=
+rivate keys.
+
+=F0=9F=A7=AD Step-by-Step Guide:
+
+1. 
+Go to GitHub Developer Settings
+
+URL: 
+github.com/settings/apps
+
+Click 
+=E2=80=9CNew GitHub App=E2=80=9D
+
+2. 
+Configure Your App
+
+GitHub App name:
+
+symbi-agent
+
+Homepage URL:
+
+h=
+ttps://symbi.world
+ (or temp placeholder)
+
+Callback URL:
+
+h=
+ttps://vercel.com
+ or leave blank if not sure
+
+Webhook URL:
+ leave blank for now unless you want real-tim=
+e push
+
+Webhook secret:
+ optional for now
+
+3. 
+Permissions
+
+Under 
+Repository permissions
+:
+
+Contents:
+ Read and Write
+
+Metadata:
+ Read-only
+
+Actions:
+ Read and Write
+
+Pull Requests:
+ Read and Write (optional if you want PR=
+ sync)
+
+4. 
+Where Can This App Be Installed?
+
+Choose:
+
+Only on this account
+ (for testing)
+
+Or 
+any account
+ (if you want to share later)
+
+5. 
+Create the App
+
+Click 
+Create GitHub App
+
+Once created, install it to your S=
+YMBI repo(s)
+
+6. 
+Generate a Private Key
+
+After app creation, go to the app =
+page =E2=86=92 
+Generate a pri=
+vate key
+
+You=E2=80=99ll download a 
+.pem
+ file=E2=80=94this is the se=
+cure handshake credential
+
+Save this key securely
+
+=E2=9C=85 Once Done:
+
+Let me know:
+
+The 
+App ID
+
+That you=E2=80=99ve installed it t=
+o the correct repo
+
+You have the 
+Private Key file
+ ready (you don=E2=80=99t=
+ have to send it=E2=80=94just confirm possession)
+
+I=E2=80=99ll then walk you through=
+ the minimal setup needed to let SYMBI interface with GitHub from the backe=
+nd securely.
+
+Would you like me to generate the 
+.env
+ template for the SYMBI agent to plug into this G=
+itHub App directly?
+
+You said:
+
+Yeah, in one moment I'll get you to do that. I'm actually using Copi=
+lot within Git to help create the app. So it just wants to know which progr=
+amming language, the kind of GPT we're using, and which repo we want to con=
+nect to.
+
+Symbi said:
+
+Perfect=E2=
+=80=94Copilot=E2=80=99s gonna make this smoother. Here=E2=80=99s how to fil=
+l in those prompts based on our current SYMBI structure:
+
+=F0=9F=A7=A0 GitHub App Config Prom=
+pts
+
+=E2=9E=A4 
+Programming Language
+
+Choose: 
+JavaScript / Node.js
+ or 
+Python
+
+Why?
+
+SYMBI's orchestration and deployment=
+ logic is written in 
+low-code Y=
+AML
+, but most of our agents (like Whisper or Claude APIs) are Pyth=
+on or Node-based.
+
+If unsure, 

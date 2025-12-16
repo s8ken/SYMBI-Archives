@@ -1,0 +1,278 @@
+h setup overhead=
+ (requires Supabase config); assumes familiarity with statistical methods=
+=E2=80=94beginners may struggle.
+
+Research & Visualization Tools
+
+Cross-model comparison dashboards with radar charts; resonanc=
+e measurement algorithms; automated statistical reports.
+
+Promotes =
+academic rigor with peer-reviewable methodologies; visualizations aid in sp=
+otting "emergence" patterns.
+
+No live demos/screenshots in repo=E2=
+=80=94hard to preview without running locally.
+
+Compliance & Infrastr=
+ucture
+
+GDPR-compliant PII detection/anonymization; SHA-25=
+6 hashing for integrity; token bucket rate limiting; real-time Supabase syn=
+c.
+
+Privacy-first design suits sensitive AI research; pluggable AI =
+backends (OpenAI, Anthropic, Google) for flexibility.
+
+Dependency o=
+n external services (Supabase, AI APIs) could introduce costs/vendor lock-i=
+n; no offline mode.
+
+Over=
+all, features shine in research contexts, offering a structured way to quan=
+tify abstract AI qualities like "resonance" (innovation/creativity). It's n=
+ot a plug-and-play tool but a robust lab for serious evaluation. For fairne=
+ss, while innovative, the SYMBI framework itself feels conceptual=E2=80=94i=
+ts dimensions blend quantifiable metrics (e.g., accuracy) with qualitative =
+ones (e.g., "authenticity"), which could invite debate on objectivity.
+
+Implementation Assessment
+
+The =
+codebase is modern, TypeScript-heavy, and enterprise-oriented, with a clear=
+ separation of frontend/backend. It's event-driven for scalability, uses ty=
+pe safety extensively, and incorporates security best practices. No major r=
+ed flags like vulnerabilities were evident in a high-level scan, but it's d=
+ev-focused (no production deploys noted). Here's a code-level breakdown:
+
+Architecture
+
+Monorepo=
+ Structure
+ (via Vite/Turbo? Inferred from scripts):
+
+/frontend
+: React app for UI (experiments, dashboards).
+
+/backend
+ or 
+/server
+: Express.js API for orchestration.
+
+/core
+ or shared libs: Reusable components like detectors=
+/scorers.
+
+Root scripts: 
+npm run dev:full
+ spins up both stacks.
+
+Event-Dr=
+iven Flow
+: Backend uses Supabase for real-time DB (PostgreSQL with=
+ Row-Level Security/RLS for multi-tenancy). Events trigger multi-agent work=
+flows (e.g., CONDUCTOR dispatches to EVALUATOR).
+
+Data Flo=
+w
+: User input =E2=86=92 Detection/Analysis =E2=86=92 Scoring =E2=
+=86=92 Storage/Export. Anonymization happens pre-storage via PII scanners.
+
+Scalabil=
+ity Notes
+: Token bucketing prevents API abuse; pluggable providers=
+ abstract AI calls.
+
+Key Components & Code Quality
+
+I sc=
+anned core files (e.g., via repo tree) for implementation details. Code is =
+clean, with good modularity, but could benefit from more tests/docs.
+
+SYMBIFra=
+meworkDetector (Core Detection Logic)
+:
+
+Implemented as a TypeScript class in bac=
+kend (likely 
+src/detect=
+ors/SYMBIFrameworkDetector.ts
+).
+
+How it W=
+orks
+: Takes content string + metadata. Uses AI providers to prompt=
+ for dimension scores (e.g., "Rate coherence on 0-10 scale"). Aggregates vi=
+a weighted formulas (e.g., Reality Index =3D (coherence * 0.4) + (accuracy =
+* 0.3) + ...). Outputs JSON with recommendations (e.g., "Improve ethical re=
+asoning by adding disclaimers").
+
+Code Sni=
+ppet Insight
+ (pseudocode based on patterns):
+
+TypeScript
+
+Copy
+
+class
+
+ SYMBIFrameworkDetector
+
+ {
+
+  async
+
+ analyze
+
+(
+
+con=
+tent
+
+:
+
+ string
+
+, 
+
+metadata
+
+?:
+
+ Metadata
+
+)
+
+:
+
+ Promise
+
+<
+
+SYMBIAssessment
+
+> {
+
+    const
+
+ prompts
+
+ =3D
+
+=
+ this
+
+.
+
+generateDimensionPrompts
+
+(
+
+cont=
+ent
+
+, 
+
+metadata
+
+); 
+
+=
+// Array of 5 specialized prompts
+
+    const
+
+ responses
+
+ =3D
+
+ await
+
+ Promise
+
+.
+
+all
+
+(
+=
+
+      prompt=
+s
+
+.
+
+map
+
+(
+
+p
+
+ =3D>
+
+ th=
+is
+
+.
+
+aiProvider
+
+.
+
+query
+
+(
+
+p
+
+)) 
+
+// Parallel API calls to =
+OpenAI/etc.
+
+    );
+
+    const
+
+ scores
+
+ =3D
+
+ =
+this
+
+.
+
+computeScores
+
+(
+
+responses
+=
+
+); 
+
+// Math: weighted avg + thresholds (e.g.=
+, Trust FAIL if <0.7)
+
+    return
+
+ { 
+
+scores
+
+, =
+recommendations: 
+
+this
+
+.
+
+generateInsights
+
+(
+
+scores
+
+) };

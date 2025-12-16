@@ -1,0 +1,665 @@
+ity.config.ts
+
+ and 
+add the new schema
+:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+import
+
+ page 
+
+from
+
+"./schemas/page"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+schema
+
+: {
+
+types
+
+: [page],
+  },
+});
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+Now, you can 
+add/edit pages
+ in 
+Sanity Studio (CMS Dashboard).
+
+🔹 Step 3: Integrate Your Own GPT Model for AI Content
+
+1️⃣ Install OpenAI SDK
+
+bash
+
+Copy
+
+npm install openai
+
+2️⃣ Create an API Route to Generate Content
+
+In your 
+Next.js project
+, create:
+
+bash
+
+Copy
+
+nano app/api/generate-content/route.ts
+
+Paste this:
+
+ts
+
+Copy
+
+import
+
+ { 
+
+NextResponse
+
+ } 
+
+from
+
+"next/server"
+
+;
+
+import
+
+OpenAI
+
+from
+
+"openai"
+
+;
+
+const
+
+ openai = 
+
+new
+
+OpenAI
+
+({
+
+apiKey
+
+: process.
+
+env
+
+.
+
+OPENAI_API_KEY
+
+,
+});
+
+export
+
+async
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ { prompt } = 
+
+await
+
+ req.
+
+json
+
+();
+
+const
+
+ response = 
+
+await
+
+ openai.
+
+completions
+
+.
+
+create
+
+({
+
+model
+
+: 
+
+"your-gpt-model-id"
+
+,
+      prompt,
+
+max_tokens
+
+: 
+
+200
+
+,
+    });
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+content
+
+: response.
+
+choices
+
+[
+
+0
+
+].
+
+text
+
+ });
+  } 
+
+catch
+
+ (error) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: 
+
+"Failed to generate content."
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+3️⃣ Secure Your API Key
+
+Add 
+your GPT API key
+ to 
+.env.local
+:
+
+env
+
+Copy
+
+OPENAI_API_KEY=your-api-key
+
+Restart the server:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Now, your site 
+can generate AI-assisted content
+ via 
+POST /api/generate-content
+.
+
+🔹 Step 4: Add an AI Button to Sanity CMS
+
+1️⃣ Open 
+schemas/page.ts
+ Again
+
+Add an AI 
+button
+ inside the 
+fields
+:
+
+ts
+
+Copy
+
+defineField
+
+({
+
+name
+
+: 
+
+"aiGenerate"
+
+,
+
+title
+
+: 
+
+"AI Generate"
+
+,
+
+type
+
+: 
+
+"string"
+
+,
+
+components
+
+: {
+
+input
+
+: 
+
+(
+{ value, onChange }
+
+) => (
+
+<
+button
+
+type
+
+=
+
+"button"
+
+onClick
+
+=
+
+{async
+
+ () => {
+          const res = await fetch("/api/generate-content", {
+            method: "POST",
+            body: JSON.stringify({ prompt: "Write content for " + value }),
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          onChange(data.content);
+        }}
+      >
+        Generate with AI
+
+</
+button
+
+>
+    ),
+  },
+}),
+
+2️⃣ Restart Sanity Studio
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Now, when 
+editing pages
+, you’ll see a 
+"Generate with AI"
+ button inside the CMS.
+
+🔹 Step 5: Display Sanity Content on Your Next.js Website
+
+1️⃣ Install the Sanity Client
+
+In your 
+Next.js project
+, run:
+
+bash
+
+Copy
+
+npm install @sanity/client
+
+2️⃣ Fetch Sanity Data in 
+page.tsx
+
+Modify your homepage:
+
+tsx
+
+Copy
+
+import
+
+ { createClient } 
+
+from
+
+"@sanity/client"
+
+;
+
+import
+
+ { useEffect, useState } 
+
+from
+
+"react"
+
+;
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+apiVersion
+
+: 
+
+"2023-03-21"
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+});
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [pageData, setPageData] = 
+
+useState
+
+(
+
+null
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+async
+
+function
+
+fetchData
+
+(
+
+) {
+
+const
+
+ data = 
+
+await
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page"][0]`
+
+);
+
+setPageData
+
+(data);
+    }
+
+fetchData
+
+();
+  }, []);
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"container"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-5xl font-bold"
+
+>{pageData?.title}
+
+</
+h1
+
+>
+
+<
+p
+
+>{pageData?.content}
+
+</
+p
+
+>
+
+</
+div
+
+>
+  );
+}
+
+3️⃣ Test It
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Now, 
+page content from Sanity CMS
+ appears dynamically on your Next.js site!
+
+🔹 Step 6: Deploy to Vercel
+
+Once everything is working:
+
+bash
+
+Copy
+
+git add .
+git commit -m 
+
+"Integrated Sanity CMS and AI-powered content generation"
+
+git push origin main
+
+Then 
+deploy to Vercel
+:
+
+bash
+
+Copy
+
+vercel --prod
+
+✅ 
+Your site is now live with an AI-powered dashboard!
+
+🎯 Final Features You Now Have
+
+✅ 
+GUI-based editing via Sanity CMS
+
+✅ 
+AI-powered content generation
+ with your own GPT
+
+✅ 
+Dynamic pages—no need to redeploy for updates
+
+✅ 
+Auto-deployed on Vercel
+
+🚀 Next Step

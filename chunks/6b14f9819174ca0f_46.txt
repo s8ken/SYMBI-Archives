@@ -1,0 +1,233 @@
+main
+
+✅ 
+This updates GitHub so Vercel can pull the fixed dependencies.
+
+🔹 Step 3: Redeploy on Vercel
+
+1️⃣ 
+Go to Vercel Dashboard → Your Project
+
+2️⃣ Click 
+"Redeploy"
+
+🔥 
+This time, the build should succeed!
+ 😈
+
+Final Steps:
+
+Once the deployment is successful, we’ll connect 
+symbi.world
+ to Vercel!
+
+🚀 
+Let me know once you’ve pushed the fix and redeployed!
+ 😈🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-ai-website % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.101:3000
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1285ms
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+BOOM! Your Next.js app is running locally!
+
+You said:
+
+it seems to be thinking or processing - I cent type any new commans
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+That means your Next.js app is actively running on 
+localhost:3000
+!
+ 🚀😈
+
+Since it’s running in the foreground, your terminal is 
+locked into the process
+, so you can’t type new commands while it’s running.
+
+🔹 What to Do Next?
+
+1️⃣ 
+Test Your App in a Browser
+
+Open 
+Google Chrome (or any browser)
+
+Go to 
+
+http://localhost:3000
+
+✅ 
+If the page loads, everything is working fine!
+
+2️⃣ 
+If You Need to Type New Commands:
+
+Press 
+CTRL + C
+
+ in the terminal
+
+This 
+stops the Next.js server
+, and you can type new commands again.
+
+3️⃣ 
+Now Push the Fix to GitHub
+
+If everything works locally, let’s push the updates:
+
+bash
+
+Copy
+
+git add package-lock.json package.json
+git commit -m 
+
+"Fixed dependency conflicts"
+
+git push origin main
+
+4️⃣ 
+Redeploy on Vercel
+
+Go back to 
+Vercel Dashboard → Your Project
+
+Click 
+"Redeploy"
+
+Vercel will now 
+pull your latest changes and deploy them.
+
+🔥 
+Try testing the app & let me know what happens!
+ If all works fine, we move to 
+connecting symbi.world.
+ 😈🚀
+
+You said:
+
+loads okay except the logo didn't show and there's an error notification and when I click on that: Console Error
+
+Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used
+
+- A server/client branch 
+if (typeof window !== 'undefined')
+.
+- Variable input such as 
+Date.now()
+ or 
+Math.random()
+ which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+- className="dark"
+- style={{color-scheme:"dark"}}
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🔥 
+Good catch!
+ This is a 
+Next.js hydration error
+, meaning the 
+server-side rendered (SSR) HTML doesn’t match what the client expects
+. 
+Let’s fix this issue step by step.
+ 🚀😈
+
+🔹 Step 1: Identify the Cause
+
+This can happen if 
+a component relies on client-only values
+ like:
+
+✅ 
+Date.now()
+, 
+Math.random()
+
+✅ Checking 
+window
+ without 
+useEffect
+
+✅ External APIs changing data 
+without pre-fetching
+
+Common Causes in Your Case:
+
+1️⃣ 
+Dark Mode (
+className="dark"
+)
+ → If theme switching logic runs 
+differently
+ on the server vs client.
+
+2️⃣ 
+A Component Using 
+window
+ Directly
+ → Example:
+
+tsx
+
+Copy
+
+if
+
+ (
+
+typeof
+
+window
+
+ !== 
+
+'undefined'
+
+) {
+
+// client-only code
+
+}
+
+This needs to be inside 
+useEffect
+.
+
+🔹 Step 2: Fix the Hydration Issue
+
+✅ Fix #1: Make Sure 

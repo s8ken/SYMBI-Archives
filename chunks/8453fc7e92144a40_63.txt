@@ -1,0 +1,446 @@
+3D mongoose;
+
++const { v4: uuidv4 } =3D requir=
+e('uuid');
+
+ const ConversationSchema =3D new Schema({
+   // ...your existing fields...
+
++  session_id: { type: String, i=
+ndex: true }
+
+ }, { timestamps: true });
+
++ConversationSchema.pre('save', =
+function(next){
+
++  if (!this.session_id) {
+
++    // Default to deterministic=
+ string of _id for back-compat with existing ledgers
+
++    this.session_id =3D String(=
+this._id || uuidv4());
+
++  }
+
++  next();
+
++});
+
+ module.exports =3D model('Conversation', ConversationSchema);
+
+2) Backend: controllers always re=
+turn 
+session_id
+
+backend/controllers=
+/conversation.controller.js
+
+ (patch excerpts)
+
+diff
+
+Copy code
+
+ // create
+
+-const doc =3D await Conversatio=
+n.create(payload);
+
+-return res.status(201).json(doc=
+);
+
++const doc =3D await Conversatio=
+n.create(payload);
+
++return res.status(201).json({ .=
+..doc.toObject(), session_id: doc.session_id });
+
+ // get by id
+
+-const doc =3D await Conversatio=
+n.findById(req.params.id);
+
+-return res.json(doc);
+
++const doc =3D await Conversatio=
+n.findById(req.params.id);
+
++return res.json({ ...doc.toObje=
+ct(), session_id: doc.session_id || String(doc._id) });
+
+ // add message (ensure response includes session_id)
+
+-const convo =3D await Conversat=
+ion.findById(req.params.id);
+
+-// ...save message...
+
+-return res.json({ message: save=
+d });
+
++const convo =3D await Conversat=
+ion.findById(req.params.id);
+
++// ...save message...
+
++return res.json({ message: save=
+d, session_id: convo.session_id || String(convo._id) });
+
+If your message post also 
+ingests a ledger event
+, pass=
+
+convo.session_id
+ into t=
+hat ingestion call.
+
+3) One-time backfill (if you want=
+ it stored in DB)
+
+From a Node shell/script or Mongo =
+shell, set 
+session_id =3D _id
+ where missing:
+
+js
+
+Copy code
+
+// Node script (run once)
+
+const
+
+=
+
+Conversation
+
+ =
+=3D 
+
+require
+
+(=
+
+'./backend/models/conversation.mod=
+el'
+
+);
+
+await
+
+=
+
+Conversation
+
+.
+
+updateMany
+
+(
+  { 
+
+session_id
+
+: =
+{ 
+
+$exists
+
+: 
+
+false
+
+ } },
+  [{ 
+
+$set
+
+: { 
+
+session_id
+
+: { 
+
+$toString
+
+: 
+
+'$_id'
+
+ } } }]
+);
+
+4) Frontend: use real 
+session_id
+ everywhere
+
+You already pass 
+conversation.session_id || conversationId
+ to 
+TrustChips
+. With th=
+e patches above, it will always be defined. If you post messages from the c=
+hat page, carry 
+session_id
+ through your local state after the first fetch or message post:
+
+diff
+
+Copy code
+
+// frontend/src/pages/ConversationDetail.js (snippet)
+
+- setConversation(data);
+
++ setConversation(data); // data=
+ now includes session_id
+
+// when sending a message:
+
+- const res =3D await fetch(...)=
+; const out =3D await res.json();
+
+- // existing state update
+
++ const res =3D await fetch(...)=
+; const out =3D await res.json();
+
++ if (out.session_id) setConvers=
+ation(c =3D> ({ ...c, session_id: out.session_id }));
+
+Rollback: remove the new field + l=
+ines; behavior falls back to 
+_i=
+d
+.
+
+PR-AUX =E2=80=94 Assistants UX (U=
+se-Most-Recent + Edit Assistant + Model picker)
+
+1) New dialog to edit assistants
+
+frontend/src/compon=
+ents/assistants/AssistantEditDialog.js
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+AssistantEditDialog
+
+(=
+
+{ open, onClose, assistant }
+
+) {
+
+const
+
+ [name=
+, setName] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+name=
+
+ || 
+
+""
+
+);
+
+const
+
+ [inst=
+ructions, setInstructions] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+instructions
+
+ || 
+
+""
+
+);
+
+const
+
+ [mode=
+l, setModel] =3D 
+
+React
+
+.
+
+useState
+
+(assistant?.
+
+mo=
+del
+
+ || 
+
+"gpt-4o=
+"
+
+);
+
+const
+
+ [tool=
+sText, setToolsText] =3D 
+
+Rea=
+ct
+
+.
+
+us=
+eState
+
+(
+
+J=
+SON
+
+.
+
+s=
+tringify
+
+(assistant?.
+
+tools
+
+ || [], 
+
+null
+
+, 
+
+=
+2
+
+));
+
+const
+
+ [mode=
+ls, setModels] =3D 
+
+React
+
+.
+
+useState=
+
+([]);
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+setName
+
+=
+
+(assistant?.
+
+name
+
+ || 
+
+""
+
+);
+
+setInstructions
+
+(assistant?.
+
+instru=
+ctions
+
+ || 
+
+""
+
+);
+
+setModel
+
+(assistant?.
+
+model
+
+ || 
+
+"gpt-4o"
+
+);
+
+setToolsText
+
+(
+

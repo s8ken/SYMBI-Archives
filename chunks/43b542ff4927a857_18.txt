@@ -1,0 +1,310 @@
+agents?
+
+Mailbox
+ if uptime isn=E2=80=99t guaranteed (buffering)=
+. 
+Proxy
+ if 24=C3=977=
+ and you want marketplace visibility. 
+
+Platform to enable the =
+agentic economy.
+
++2
+
+Platform to enable the agentic economy.
+
++2
+
+Crawling
+: keep crawler off-platform (your infra) and o=
+nly do retrieval inside Hosted Agent, to avoid hitting 
+allowed-imports
+ limitations for heavy =
+crawl libs. (Agentverse does support 
+multi-file
+ agent code and broad Python now, but external=
+ crawling is usually cleaner.) 
+
+Platform to enable the agentic economy.
+
+AVCTL
+: do you want a CLI-driven workflow (login, deplo=
+y, manage)? Agentverse ships 
+=
+AVCTL
+ for authorization & hosting management. 
+
+P=
+latform to enable the agentic economy.
+
+What I can do next (fastest path)=
+
+Draft 
+agent.py
+
+ for the first Hosted Site Agent (ycq):
+
+Storage helpers, RAG retrieval stu=
+b, citation formatting, trust-receipt signer.
+
+Repo agent skeleton
+ (Local + Mailbox): event handler f=
+or PRs/commits + trust receipts.
+
+Policy JSON
+ & 
+receipt schema
+ (portable across all six agents).
+
+Want me to start with 
+ycq Hosted Agent
+ in Agentverse (=
+and then we clone it for the other two), or should I scaffold the 
+repo agent (Mailbox)
+ first?
+
+=
+
+Sources
+
+You said:
+
+whats web.fetch: { allowlist: ["ycq.example", "www.ycq.example"=
+] } policies: models: ["gpt-4o-mini","claude-3.7-sonnet"] max_input_tokens:=
+ 8000 max_output_tokens: 1500 cost_ceiling_usd: 1.00 trust: sign_receipts: =
+true fields: [model, tool_ids, sdk_version, policy_id, input_hash, output_h=
+ash, timestamp] storage: history_ttl_minutes: 120 Repo agent (ycq) name: yc=
+q-repo-agent triggers: github: { events: [pull_request, push, issues] } mod=
+e: local connectivity: mailbox # or proxy if always-on tools:
+
+=
+
+ChatGPT sai=
+d:
+
+Great question =E2=80=94 =
+that block was a 
+manifest-style s=
+pec
+ I proposed to describe each agent=E2=80=99s capabilities, guar=
+drails, and trust settings. Here=E2=80=99s what each part means and how it =
+maps to a real implementation.
+
+Site agent (ycq) =E2=80=94 fields e=
+xplained
+
+web.fetch: { allowlist: [...] }
+
+A tool that lets the agent fetch web pages, but 
+only
+ from domains you approve.
+
+Example: only allow 
+ycq.example
+ and 
+www.ycq.example
+.
+
+Purpose: stop prompt-injection / dat=
+a exfiltration by blocking off-domain requests.
+
+policies:
+
+Runtime guardrails for cost, safety, and resource use.
+
+models
+: which models the agent may call (e.g., 
+"gpt-4o-mini"
+, 
+"claude-3.7-sonnet"
+).
+
+max_input_tokens
+ / 
+m=
+ax_output_tokens
+: per-call token limits to control spend and latency=
+.
+
+cost_ceiling_usd
+: hard cap per request; the agent must refuse =
+if predicted cost exceeds this.
+
+trust:
+
+Controls for 
+provable provenanc=
+e
+=E2=80=94your SYMBI receipt system.
+
+sign_receipts: true
+: every tool call and final answer emits=
+ a 
+signed receipt
+.
+
+fields
+: which facts are captured and signed:
+
+model, tool_ids, sdk_version, p=
+olicy_id, input_hash, output_hash, timestamp
+.
+
+storage:
+
+Lightweight agent memory settings.
+
+history_ttl_minutes
+: how long to retain short-term convers=
+ation context in the agent=E2=80=99s store.
+
+Example (commented) manifest
+
+yaml
+
+Copy code
+
+name:
+
+ycq-agent
+
+purpose:
+
+=
+
+"Answer questions from ycq with citations=
+"
+
+tools:
+
+# Only fetch from your approved=
+ domains
+
+-
+
+web.fetch:
+
+ { 
+
+=
+
+allowlist:
+
+ [
+
+"ycq.example"
+
+, 
+
+"www.ycq.example"
+
+] }
+
+# Retrieve from your vector ind=
+ex
+
+-
+
+rag.retrieve:
+
+ { 
+
+index:
+
+"ycq"
+
+, 
+
+top_k:
+
+6
+
+ }
+
+policies:
+
+models:
+
+ [
+
+"gpt-4o-mini"
+
+,
+
+"claude-3.7-sonnet"
+
+=
+]
+
+max_input_tokens:
+
+8000
+
+max_output_tokens:
+
+1500
+
+cost_ceiling_usd:
+
+1.00
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+fields:
+
+ [
+
+model
+
+, 
+
+tool_ids
+
+, 
+
+sdk_version
+
+, 
+
+policy_id
+
+, 
+
+input_hash
+
+, 
+
+output_hash
+
+, 
+
+timestamp
+
+]
+
+storage:
+
+history_ttl_minutes:
+
+=
+
+120
+
+Repo agent (ycq) =E2=80=94 fields=
+ explained
+
+triggers: github: { events: [pull_request, push, issues] }
+=
+
+Which GitHub events the agent reacts to (via webhook/queue).
+
+mode: local
+
+This agent 

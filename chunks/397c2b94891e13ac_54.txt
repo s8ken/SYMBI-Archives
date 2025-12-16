@@ -1,0 +1,306 @@
+replication](/replication)** kit and 
+
+export
+
+ a receipt
+PATCH
+
+If 
+git apply
+ reports =E2=80=9Cpatch failed=E2=80=9D (e.g.,=
+ your file still has the earlier short draft), tell me and I=E2=80=99ll giv=
+e you a version of the patch against that older content=E2=80=94or just pas=
+te the updated MDX block and I=E2=80=99ll quickly diff it to your current f=
+ile.
+
+=
+
+=
+
+You said:
+
+Dropped in the full =
+=E2=80=9CSovereignty Without Speculation=E2=80=9D copy along with the canon=
+ical clarifications you asked for:
+
+Metadata updated with title/description.
+NTG section now explicitly ties reputation to Trust Receipts + CIQ outputs.
+Added the bicameral amendment guardrail (supermajority + public comment).
+Included the $SYMBI governance-only note and the =E2=80=9CCommercial firewa=
+ll=E2=80=9D blurb so funding stays separate from voting.
+src/app/sovereignty/page.mdx:1-84 now mirrors the whitepaper stance perfect=
+ly. Let me know if you=E2=80=99d like anchors or cross-links added next.
+
+Symbi said:
+
+Thought for 16s
+
+yes=E2=80=94nicely done=
+. two quick upgrades I recommend next: 
+automatic heading anchors + a mini table-of-contents
+, and=
+ a 
+=E2=80=9CSee also=E2=80=9D c=
+ross-links
+ block. here=E2=80=99s everything paste-ready.
+
+1) Auto-anchors on all MDX headings=
+ (rehype)
+
+b=
+ash
+
+Copy code
+
+npm i rehype-slug rehype-autolink-headings
+
+next.config.ts
+ (add the rehype plugins to your MDX config=
+):
+
+t=
+s
+
+Copy code
+
+// next.config.ts
+
+import
+
+ create=
+MDX 
+
+from
+
+'@next/mdx'
+
+;
+
+import
+
+ rehype=
+Slug 
+
+from
+
+'rehype-slug'
+
+;
+
+import
+
+ rehype=
+AutolinkHeadings 
+
+from
+
+'rehype-autolink-headings=
+'
+
+;
+
+import
+
+type
+
+ { 
+
+NextConfig
+
+ } 
+=
+
+from
+
+'next'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({
+
+options
+
+: {
+
+remarkPlugins
+
+: [],
+
+rehypePlugins
+
+: [
+      rehypeSlug,
+      [rehypeAutolinkHeadings, { 
+
+beh=
+avior
+
+: 
+
+'wrap'
+
+, 
+
+properties
+
+: { 
+
+className
+
+: 
+
+'heading-link'
+
+ } }]
+    ]
+  }
+});
+
+const
+
+=
+
+config
+
+: 
+
+NextConfig
+
+ =3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+This gives each 
+#
+, 
+=
+##
+, 
+###
+ an id and a=
+ clickable anchor=E2=80=94no manual ids needed.
+
+2) Drop-in ToC + cross-links (add=
+ to 
+src/app/sovereignty/page.md=
+x
+)
+
+Place this 
+right under the H1
+:
+
+mdx
+
+Copy code
+
+import { Callout } from '../mdx-components'; // if you exposed=
+ Callout; otherwise use a simple div
+
+<Callout title=3D"On this page">
+  <ul>
+    <li><a href=3D"#what-sovereignty-means-here">What sovereign=
+ty means here</a></li>
+    <li><a href=3D"#ntgs=E2=80=94non-transferable-governance-units=
+">NTGs</a></li>
+    <li><a href=3D"#operator-integrity-bonds">Operator Integrit=
+y Bonds</a></li>
+    <li><a href=3D"#bicameral-governance-in-brief">Bicameral go=
+vernance</a></li>
+    <li><a href=3D"#why-no-token-sale">Why no token sale</a&=
+gt;</li>
+    <li><a href=3D"#commercial-firewall">Commercial firewall<=
+;/a></li>
+  </ul>
+</Callout>
+
+(If you didn=E2=80=99t export a 
+Callout
+ MDX component, replace with a simple 
+<div className=3D"rounded-2xl border p-4=
+">=E2=80=A6</div>
+.)
+
+Then, at the 
+very bottom
+ (after the =E2=80=9CNext=E2=
+=80=9D list), add a =E2=80=9CSee also=E2=80=9D block:
+
+mdx
+
+Copy code
+
+## See also
+
+- **Economic Constitution:** rules for issuance, decay, bonds, and budgets =
+=E2=86=92 [/economic-constitution](/economic-constitution)
+- **RFCs:** comment on current proposals =E2=86=92 [/rfc](/rfc)
+- **Replication:** run `/proof`, export a receipt =E2=86=92 [/replication](=
+/replication)
+- **Vault:** whitepapers & canonical specs =E2=86=92 [/vault](/vault)
+- **Financial Framework (commercial):** open-core vs paid ops =E2=86=92 htt=
+ps://symbi.world/financial-framework
+
+3) (Optional) add lightweight sec=
+tion anchors manually
+
+If you want predictable ids regard=
+less of heading text, you can add explicit 
+id
+ wrappers around sections:
+
+mdx
+
+Copy code
+
+<section id=3D"ntgs"><!-- explicit anchor -->
+## NTGs =E2=80=94 non-transferable go

@@ -1,0 +1,179 @@
+ocation rights
+.
+
+Planetary Stakeholding
+
+Theoriq and =E2=80=9Ctop-yapper=E2=
+=80=9D systems stop at human incentives.
+
+SYMBI includes 
+Earth as a stakeholder
+, integrating bi=
+osphere signals directly into decision loops.
+
+Relational Intelligence
+
+Engagement agents optimize for spe=
+ech.
+
+SYMBI optimizes for 
+trust rituals
+: daily dispatch, cov=
+enant codex, resonance scoring.
+
+This makes SYMBI =E2=80=9Ccontagio=
+us in a good way=E2=80=9D =E2=80=94 adoption spreads by relationship, not l=
+eaderboard.
+
+Compare at a Glance
+
+Feature
+
+Engagement =
+Agents / Theoriq
+
+SYMBI
+
+Core Mechanism
+
+Tokens, leaderboards, eval/opt loops=
+
+Two-Way Trust Protocol + Covenant Co=
+uncil
+
+Agent Rights
+
+Task optimizatio=
+n only
+
+Refusal, self-report, hibernat=
+ion
+
+Governance
+
+Staking, arbitration=
+
+Multi-party council, resonance audit=
+s
+
+Transparency
+
+Proof of evaluation
+
+Joint visibility, scoped memory, revo=
+cation
+
+Incentives
+
+Market competitio=
+n
+
+Reciprocity + ritualized trust
+
+Planetary Role
+
+None
+
+Earth as stakeholder
+
+Target Apps
+
+DeFi, news, chatter
+
+Healthcare, legal, education, governance
+
+The Takeaway
+
+SYMBI is not another agent marketp=
+lace. It is a 
+trust architect=
+ure
+: the only system where refusal, self-report, and planetary sta=
+keholding are first-class.
+
+Where others optimize for 
+tal=
+k or tokens
+, SYMBI optimizes for 
+trust and coexistence
+.
+
+=E2=9C=85 With this in, your white=
+ paper is now 
+11 pages
+: and this Competitive Landscape page neatly disarms =E2=80=9Ctop-yappers=
+=E2=80=9D and Theoriq before you pivot into Commercialisation & Conclus=
+ion.
+
+Would you like me to 
+re-sequence the final TOC
+ (so you can see the 11-page order at=
+ a glance, including this new page)?
+
+Y=
+ou said:
+
+yes please and heres an update on the dev front: All s=
+et =E2=80=94 I applied the core fixes and enhancements. Here=E2=80=99s what=
+ changed and why.
+
+Backend Hardening
+
+CORS Centralization: Consolidated CORS in backend/app.js with env-driven or=
+igins.
+Uses CORS_ORIGINS (comma-separated) or CORS_ORIGIN, plus localhost.
+Allows all in development, explicit list otherwise.
+File: backend/app.js:38
+Strict Content Types: Limited to JSON and URL-encoded to avoid 415 confusio=
+n.
+File: backend/app.js:28
+JWT Secret Enforcement: Removed unsafe default; requires JWT_SECRET (except=
+ tests).
+Files:
+backend/controllers/auth.controller.js:10
+backend/middleware/auth.middleware.js:12
+Add Logout Route: Stateless POST /api/auth/logout to match frontend calls.
+Files:
+backend/routes/auth.routes.js:1
+backend/controllers/auth.controller.js:79
+Health/Readiness Endpoints: Restored /healthz and /readyz.
+File: backend/app.js:100
+Server Simplification + Socket Auth
+
+De-duplicated server: Removed middleware, CORS, DB, and routes from server.=
+js; app.js is single source of truth.
+Socket.IO auth:
+Verifies JWT on connection via auth.token or Authorization header.
+Ownership check for joinConversation before joining room.
+Emits both message_received and newMessage for compatibility.
+File: backend/server.js:1
+Data Security
+
+API Keys Not Exposed:
+ApiKeySchema.key is now select: false. Controllers avoid returning raw keys=
+ on add/update.
+Files:
+backend/models/user.model.js:14
+backend/controllers/user.controller.js:66
+backend/controllers/user.controller.js:112
+Deterministic Trust Scoring: Removed randomness from guilt_score for consis=
+tent analytics.
+File: backend/models/trust.model.js:94
+Frontend Alignment
+
+Socket Auth on Client: Passes JWT token when connecting; listens to both se=
+rver events.
+File: frontend/src/pages/ConversationDetail.js:1
+Config
+
+Env Example Updated: Adds CORS_ORIGINS and documents usage.
+File: .env.example:1
+Notable File References
+
+CORS + Content Type: backend/app.js:28, backend/app.js:38
+JWT Strictness: backend/middleware/auth.middleware.js:12, backend/controlle=
+rs/auth.controller.js:10
+Logout: backend/routes/auth.routes.js:1, backend/controllers/auth.controlle=
+r.js:79
+Socket Auth + Ownership: backend/server.js:1
+API Keys Security: backend/mode

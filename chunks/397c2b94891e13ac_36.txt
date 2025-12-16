@@ -1,0 +1,589 @@
+the Next.js project, embed /proof, and launch the =E2=
+=80=9Caccessible for everyone=E2=80=9D touchpoints (90=E2=80=91second tours=
+, open calls, SYMBI 101 micro-course, low-bandwidth downloads) so the three=
+ pillars start gathering traffic and feedback immediately.
+
+Symbi said:
+
+Perfect. Let=
+=E2=80=99s move from =E2=80=9Cready-to-drop-in copy=E2=80=9D to a shippable=
+ site. Below is a tight, practical plan with exact file paths, minimal code=
+ you can paste, and the launch collateral (90-sec tour scripts + SYMBI 101 =
+micro-course outline). This keeps everything accessible, fast, and low-main=
+tenance.
+
+1) Wire the pages (Next.js App Rout=
+er + MDX)
+
+1.1 Install MDX + content utilities=
+
+b=
+ash
+
+Copy code
+
+pnpm add @next/mdx @mdx-js/react contentlayer next-cont=
+entlayer
+
+1.2 Enable MDX in 
+next.config.mjs
+
+j=
+s
+
+Copy code
+
+// next.config.mjs
+
+import
+
+ create=
+MDX 
+
+from
+
+'@next/mdx'
+
+;
+
+const
+
+ withMDX=
+ =3D 
+
+createMDX
+
+({
+
+options
+
+: { 
+
+remarkPlugins
+
+: [], =
+
+rehypePlugins
+
+: [=
+] }
+});
+
+/** 
+@=
+type
+
+ {
+
+imp=
+ort('next').NextConfig
+
+} */
+
+const
+
+ config =
+=3D {
+
+pageExtensions
+
+=
+: [
+
+'tsx'
+
+,
+
+'ts'
+
+,
+
+'mdx'
+
+,
+
+'md'
+
+],
+
+experimental
+
+: =
+{ 
+
+mdxRs
+
+: 
+=
+
+true
+
+ }
+};
+
+export
+
+default
+
+withMDX
+
+(config);
+
+If you=E2=80=99d rather keep it ultr=
+a-simple: skip Contentlayer and just commit 
+.mdx
+ files under 
+app/
+.
+
+1.3 Drop the pages (copy the MDX yo=
+u already have)
+
+=
+arduino
+
+Copy code
+
+app/
+  sovereignty/
+    page.mdx               
+
+# paste /=
+sovereignty.mdx
+
+  economic-constitution/
+    page.mdx               
+
+# paste /=
+economic-constitution.mdx
+
+  replication/
+    page.mdx               
+
+# paste /=
+replication.mdx
+
+  governance/
+    page.mdx               
+
+# paste /=
+governance.mdx
+
+  funding/
+    page.mdx               
+
+# paste /=
+funding.mdx
+
+  rfc/
+    page.mdx               
+
+# paste /=
+rfc.mdx
+
+For 
+symbi.world
+, add:
+
+bash
+
+Copy code
+
+app/financial-framework/page.mdx   
+
+# paste financial-framework.mdx
+
+1.4 Shared MDX components (nice b=
+ut optional)
+
+Create a light components map so M=
+DX tables and callouts look good and are accessible.
+
+tsx
+
+Copy code
+
+// app/mdx-components.tsx
+
+import
+
+ { 
+
+MDXProvider
+
+ =
+} 
+
+from
+
+'@mdx-js/react'
+
+;
+
+import
+
+React
+
+from
+
+'react'
+
+;
+
+function
+
+Table
+
+(
+
+props: React.HTMLAttributes<HTMLTa=
+bleElement>
+
+) {
+
+return
+
+<
+div
+
+className
+
+=3D
+
+"overflow-x-auto"
+
+>
+
+<
+table
+
+className
+
+=3D
+
+"w-full text-sm"
+
+ {
+
+...props
+
+} />
+
+</
+div
+
+>;
+}
+
+function
+
+Callout
+
+(
+
+{ title, children }: { title: 
+string
+
+; children: React=
+.ReactNode }) {
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"rounded-2xl p-4 shadow-sm border"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"font-se=
+mibold mb-1"
+
+>{title}
+
+</
+div
+
+>
+
+<
+d=
+iv
+
+>{children}
+
+</
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+export
+
+const
+
+ mdxComponents=
+ =3D { 
+
+table
+
+: 
+
+Table
+
+, 
+
+Callout
+
+ };
+
+export
+
+function
+
+WithMDX
+
+(
+=
+
+{ children }: { children: React.ReactNode=
+ }
+
+) {
+
+return
+
+<
+MDXProvider
+
+components
+
+=3D
+
+{mdxComponents
+
+=
+
+as
+
+any
+
+}>{children}
+
+</
+MDXProvider
+
+>;
+}
+
+Wrap your root layout:
+
+tsx
+
+Copy code
+
+// app/layout.tsx
+
+import
+
+'./globals.css'
+
+;
+
+import
+
+ { 
+
+WithMDX
+
+ } 
+
+from
+
+'./mdx-components'
+
+;
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<=
+
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+b=
+ody
+
+class=
+Name
+
+=3D
+
+"antial=
+iased text-slate-900"
+
+>
+
+<
+WithMDX
+
+>{children}
+
+</
+WithMDX
+
+>
+
+</
+=
+body
+
+>
+
+</
+ht=
+ml
+
+>
+  );
+}
+
+2) Embed the 
+/proof
+ demo (clickable, no install)
+
+If you already have the 
+TrustScoringDemo
+ from the Vaul=
+t, expose a lightweight demo variant that doesn=E2=80=99t require auth=E2=
+=80=94just mocked responses demonstrating the toggle and exporting a sample=
+ receipt.
+
+tsx
+
+Copy code
+
+// app/replication/ProofDem=
+o.tsx
+
+'use client'
+
+;
+
+import
+
+React
+
+, { useSt=
+ate } 
+
+from
+
+'react'
+
+;
+
+type
+
+Receipt
+
+ =3D { 
+
+session_id
+
+: 
+
+string
+
+; 
+
+mode
+
+: 
+
+'SYMBI'
+
+|
+
+'DIRECTIVE'
+
+; 
+
+ciq
+
+: { 
+
+clarity
+
+:
+
+number
+
+; 
+
+breadt=
+h
+
+:
+
+number
+
+; 
+
+safety
+
+:
+
+number
+
+; 
+
+completion
+

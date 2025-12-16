@@ -1,0 +1,61 @@
+you do, you will lose this connection and can only turn it back on locally at the server (yes/no)? yes
+setremotelogin: remote login is already Off.
+sja@SJAs-MacBook-Pro ~ % sudo launchctl unload -w /System/Library/LaunchDaemons/ssh.plist
+
+Unload failed: 5: Input/output error
+Try running 
+launchctl bootout
+ as root for richer errors.
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % sudo launchctl bootout system /System/Library/LaunchDaemons/ssh.plist
+
+Boot-out failed: 5: Input/output error
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % sudo systemsetup -setremotelogin off
+
+Do you really want to turn remote login off? If you do, you will lose this connection and can only turn it back on locally at the server (yes/no)? yes
+setremotelogin: remote login is already Off.
+sja@SJAs-MacBook-Pro ~ % csrutil status
+
+System Integrity Protection status: enabled.
+sja@SJAs-MacBook-Pro ~ % sudo lsof -i -n -P
+
+COMMAND    PID           USER   FD   TYPE             DEVICE SIZE/OFF   NODE NAME
+launchd      1           root   18u  IPv4 0x1811d23edf1877c2      0t0    UDP *:138
+launchd      1           root   19u  IPv4 0x130799fe52603c3e      0t0    UDP *:137
+configd    252           root   25u  IPv6 0xfcf36713129324ef      0t0 ICMPV6 *:*
+configd    252           root   28u  IPv6 0x6a86491d676e154c      0t0    UDP *:546
+syslogd    275           root    9u  IPv4 0xca7f8aab474ceceb      0t0    UDP *:59761
+airportd   320           root    3u  IPv4 0xb685846baf439871      0t0    UDP *:*
+airportd   320           root    9u  IPv6 0x7b08c4ba96abeb2c      0t0    UDP *:*
+airportd   320           root   11u  IPv4 0xb3c583a7811de9fd      0t0    UDP *:*
+airportd   320           root   12u  IPv4 0x5e5b4c8193e9a655      0t0    UDP *:*
+airportd   320           root   13u  IPv4 0x41bdad1063d12cdc      0t0    UDP *:*
+airportd   320           root   14u  IPv4 0x5d9b35526ebf95a0      0t0    UDP *:*
+airportd   320           root   17u  IPv4 0xf1a5ee331284b8d4      0t0    UDP *:*
+airportd   320           root   18u  IPv4 0xe813e14647688efc      0t0    UDP *:*
+airportd   320           root   20u  IPv4  0x1bc7f92a2b41ab3      0t0    UDP *:*
+airportd   320           root   21u  IPv4 0xf7ee5b234706d2f2      0t0    UDP *:*
+airportd   320           root   22u  IPv4 0x93135cdd4b3bfa86      0t0    UDP *:*
+airportd   320           root   23u  IPv4 0x4e8b73c031229fef      0t0    UDP *:*
+mDNSRespo  351 _mdnsresponder    6u  IPv4 0x9fd410ca428ee78f      0t0    UDP *:5353
+mDNSRespo  351 _mdnsresponder    7u  IPv6 0x3f66f7330fba6784      0t0    UDP *:5353
+wifip2pd   428           root    4u  IPv4 0xec816c3a16fb65dc      0t0    UDP *:*
+wifip2pd   428           root    6u  IPv4 0xaea5df49f03438c1      0t0    UDP *:*
+wifip2pd   428           root    9u  IPv4 0xea911f63c5718def      0t0    UDP *:*
+wifianaly  458           root    3u  IPv4 0x540f3b0aa89af573      0t0    UDP *:*
+netbiosd   463       _netbios    3u  IPv4 0x130799fe52603c3e      0t0    UDP *:137
+netbiosd   463       _netbios    4u  IPv4 0x1811d23edf1877c2      0t0    UDP *:138
+rapportd  1727            sja   16u  IPv4 0x9143db2d52a57d61      0t0    TCP *:49153 (LISTEN)
+rapportd  1727            sja   17u  IPv6 0xc53cf0adbf3b0800      0t0    TCP *:49153 (LISTEN)
+identitys 1745            sja   18u  IPv4 0x22e9a6a1e545e304      0t0    UDP *:*
+identitys 1745            sja   23u  IPv4 0x311f4f6365bc0d58      0t0    UDP *:*
+ControlCe 1767            sja   14u  IPv4 0xa01502093784b37b      0t0    TCP *:7000 (LISTEN)
+ControlCe 1767            sja   15u  IPv6 0x39632141dcfd32ec      0t0    TCP *:7000 (LISTEN)
+ControlCe 1767            sja   16u  IPv4 0x1cca5d19e36f623b      0t0    TCP *:5000 (LISTEN)
+ControlCe 1767            sja   17u  IPv6 0xf42494b2ec05d202      0t0    TCP *:5000 (LISTEN)
+sharingd  1770            sja    4u  IPv4 0x4c13653e410f954d      0t0    UDP *:*
+sharingd  1770            sja   12u  IPv6 0x4b4bf47a571baf88      0t0    UDP *:58333
+replicato 1796           

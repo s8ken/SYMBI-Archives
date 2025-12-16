@@ -1,0 +1,621 @@
+ Component
+
+Now, letâs add a 
+UI component
+ where users can input a prompt and see AI-generated results.
+
+ð 
+Create a new file:
+
+components/ReplicateAI.tsx
+
+tsx
+
+Copy
+
+Edit
+
+"use client"
+
+;
+
+import
+
+ { useState } 
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+ReplicateAI
+
+(
+
+) {
+
+const
+
+ [prompt, setPrompt] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [image, setImage] = 
+
+useState
+
+(
+
+""
+
+);
+
+const
+
+ [loading, setLoading] = 
+
+useState
+
+(
+
+false
+
+);
+
+const
+
+generateImage
+
+ = 
+
+async
+
+ (
+
+) => {
+
+setLoading
+
+(
+
+true
+
+);
+
+setImage
+
+(
+
+""
+
+);
+
+const
+
+ res = 
+
+await
+
+fetch
+
+(
+
+"/api/replicate"
+
+, {
+
+method
+
+: 
+
+"POST"
+
+,
+
+body
+
+: 
+
+JSON
+
+.
+
+stringify
+
+({ prompt }),
+
+headers
+
+: { 
+
+"Content-Type"
+
+: 
+
+"application/json"
+
+ },
+    });
+
+const
+
+ data = 
+
+await
+
+ res.
+
+json
+
+();
+
+setImage
+
+(data.
+
+image
+
+);
+
+setLoading
+
+(
+
+false
+
+);
+  };
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center justify-center p-4"
+
+>
+
+<
+input
+
+type
+
+=
+
+"text"
+
+placeholder
+
+=
+
+"Enter a prompt..."
+
+value
+
+=
+
+{prompt}
+
+onChange
+
+=
+
+{(e)
+
+ => setPrompt(e.target.value)}
+        className="p-2 border rounded text-black w-80"
+      />
+
+<
+button
+
+onClick
+
+=
+
+{generateImage}
+
+className
+
+=
+
+"mt-2 p-2 bg-blue-600 text-white rounded"
+
+disabled
+
+=
+
+{loading}
+
+      >
+        {loading ? "Generating..." : "Generate AI Image"}
+
+</
+button
+
+>
+
+      {image && (
+
+<
+img
+
+src
+
+=
+
+{image}
+
+alt
+
+=
+
+"Generated AI"
+
+className
+
+=
+
+"mt-4 rounded shadow-lg w-80"
+
+ />
+      )}
+
+</
+div
+
+>
+  );
+}
+
+â 
+What this does:
+
+User 
+inputs a text prompt
+
+Calls the 
+/api/replicate
+ API route
+
+Displays the AI-generated image
+
+4ï¸â£ Add AI to the Homepage
+
+Now, letâs 
+integrate AI into your homepage
+.
+
+ð 
+Edit 
+app/page.tsx
+
+Add this 
+below your "Coming Soon" section
+:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ReplicateAI
+
+from
+
+"@/components/ReplicateAI"
+
+;
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+
+<
+h1
+
+className
+
+=
+
+"text-5xl md:text-7xl font-bold tracking-tight mb-6 text-white"
+
+>
+            SYMBI AI
+
+</
+h1
+
+>
+
+<
+h2
+
+className
+
+=
+
+"text-2xl md:text-3xl font-medium text-white"
+
+>
+            AI-Powered Image Generation
+
+</
+h2
+
+>
+
+          {/* Replicate AI Component */}
+
+<
+ReplicateAI
+
+ />
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+<
+footer
+
+className
+
+=
+
+"py-4"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container"
+
+>
+
+<
+div
+
+className
+
+=
+
+"flex justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground"
+
+>Â© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+ð¥ 
+Now your homepage has an AI-powered image generator!
+
+5ï¸â£ Set Up the REPLICATE API Token
+
+Before deploying, 
+add your API key
+ so Replicate works.
+
+ð Get Your API Token
+
+Go to 
+
+Replicate
+
+Sign in
+ and get your API key
+
+Copy the token
+
+ð§ Add It to Vercel
+
+Go to Vercel â Your Project â Settings â Environment Variables
+
+Add a new variable:
+
+vbnet
+
+Copy
+
+Edit
+
+Name:
+
+ REPLICATE_API_TOKEN
+
+Value:
+
+ your-api-
+
+key
+
+-here
+
+Click 
+"Save"
+ and 
+Redeploy
+.
+
+6ï¸â£ Push the Changes to GitHub & Deploy to Vercel
+
+bash
+
+Copy
+
+Edit
+
+git add .
+git commit -m 
+
+"Added Replicate AI image generation"
+
+git push origin main
+
+Then go to 
+Vercel â Deploy
+ to update your live site.
+
+ð Your Site Now Has AI-Powered Image Generation!
+
+ð¥ 
+Try it out on 
+symbiweb.vercel.app
+!
+
+Let me know if anything breaks, and Iâll help fix it. ðð
+
+You said:
+
+when you say create a new file?
+
+ChatGPT said:
+
+ð How to Create a New File in Your Next.js Project
+
+Since you're working in a 
+Next.js project
+ inside your 
+symbi
+ folder, youâll need to create some new files.
+
+ð Method 1: Using Terminal (Recommended)
+
+You can 
+create new files directly from the terminal
+ inside your 
+symbi
+ project.
+
+1ï¸â£ Create the API Route for Replicate
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p app/api/replicate
+
+touch
+
+ app/api/replicate/route.ts
+
+Thi

@@ -1,0 +1,581 @@
+c=
+ript
+
+>
+
+</>
+
+)}
+
+{
+
+/* Plausible (optional) */
+
+}
+{process.
+
+env
+
+=
+.
+
+NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+
+ && (
+
+<
+Script
+
+defer
+
+data-domain
+
+=
+=3D
+
+{process.env.NEXT_PUBLIC_PLAUSI=
+BLE_DOMAIN}
+
+src
+
+=3D
+
+"https://plausible.io/js/script.js"
+
+  />
+)}
+
+Env vars to set (in 
+.env.local
+):
+
+ini
+
+Copy code
+
+=
+
+NEXT_PUBLIC_GA_ID
+
+=3DG-X=
+XXXXXXXXX
+
+NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+
+=3Dgammatria.com
+
+2) Auto page-views on route chang=
+es
+
+Create 
+src/app/analytics-client.tsx
+:
+
+tsx
+
+Copy code
+
+'use client'
+
+;
+
+import
+
+ { useE=
+ffect } 
+
+from
+
+ =
+
+'react'
+
+;
+
+import
+
+ { useP=
+athname } 
+
+from
+
+'next/navigation'
+
+;
+
+import
+
+ { trac=
+k } 
+
+from
+
+'@/lib/analytics'
+
+;
+
+export
+
+default
+
+function
+
+AnalyticsClient
+
+(
+
+) {
+
+const
+
+ pathn=
+ame =3D 
+
+usePathname
+
+();
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+track
+
+(
+
+'page_view'
+
+, { 
+
+path
+
+: path=
+name, 
+
+title
+
+: 
+
+document
+
+?.
+
+title
+
+ }=
+);
+  }, [pathname]);
+
+return
+
+null
+
+;
+}
+
+Import it in 
+src/app/layout.tsx
+ and render just inside 
+<body>
+:
+
+tsx
+
+Copy code
+
+import
+
+ =
+
+AnalyticsClient
+
+from
+
+ =
+
+'./analytics-client'
+
+=
+
+;
+
+// ...
+
+<
+body
+
+>
+
+<
+Analy=
+ticsClient
+
+ />
+  {children}
+
+</
+body
+
+>
+
+3) (Optional) Minimal consent ban=
+ner (compliance-friendly)
+
+tsx
+
+Copy code
+
+// src/components/Consent.t=
+sx
+
+'use client'
+
+;
+
+import
+
+ { useE=
+ffect, useState } 
+
+from
+
+'react'
+
+;
+
+export
+
+default
+
+function
+
+Consent
+
+(
+
+) {
+
+const
+
+ [show=
+, setShow] =3D 
+
+useState
+
+(
+
+() =3D>
+
+ !
+
+loc=
+alStorage
+
+.
+
+getItem
+
+(
+
+'=
+symbi-consent'
+
+));
+
+useEffect
+
+=
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (!(
+
+'gtag'
+
+in
+
+window
+
+)) 
+
+=
+
+return
+
+;
+
+// default denied until user =
+accepts
+
+// @ts-expect-error
+
+window
+
+.
+
+gtag
+
+?.(
+
+'consent'
+
+,=
+
+'default'
+
+, { =
+
+ad_user_data
+
+:
+
+'denied'
+
+, 
+=
+
+ad_personalization
+
+:
+
+'denied'
+
+, 
+
+ad_storage
+
+:
+
+=
+
+'denied'
+
+, 
+
+analytics_storage
+
+:
+
+'denied'
+
+ });
+  }, []);
+
+if
+
+ (!show) =
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"fixed inset-x-0 bottom-0 z-50 bg-white/90 backdr=
+op-blur border-t p-3 text-sm"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"mx-auto=
+ max-w-4xl flex items-center gap-3"
+
+>
+
+<
+span
+
+>We use privacy-respecting analytics to =
+improve the site.
+
+</
+span
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{()
+
+ =3D>=
+; {
+            localStorage.setItem('symbi-consent', 'granted');
+            // @ts-expect-error
+            window.gtag?.('consent', 'update', { analytics_storage:'granted=
+' });
+            setShow(false);
+          }}
+          className=3D"ml-auto rounded border px-3 py-1"
+        >
+          Accept
+
+</
+button
+
+>
+
+<
+button
+
+o=
+nClick
+
+=3D
+
+{()
+
+ =3D> setShow(false)} className=3D"rounded border px-3=
+ py-1">Dismiss
+
+</
+button
+
+>
+
+</
+=
+div
+
+>
+
+</
+di=
+v
+
+>
+  );
+}
+
+Render 
+<Consent />
+ in 
+layout.tsx
+ (after 
+<AnalyticsClient />
+).
+
+4) Quick QA checklist
+
+npm run dev -- --port 3001
+ =E2=86=92 visit 
+/sovereignty
+, 
+/economic-constitution
+, 
+/rfc
+, 
+/replication
+.
+
+Open DevTools =E2=86=92 Console: c=
+onfirm 
+[analytics] page_view
+ logs (dev only).
+
+If using GA, Network tab =E2=86=92=
+ filter 
+collect
+ calls af=
+ter navigation.
+
+Toggle modes + download in 
+/replication
+: confirm 
+mode_toggled
+ and 
+download_receipt
+ events in console.
+
+5) Nice polish (optional, quick)
+
+Add 
+scripts.dev:3001
+:
+
+bash
+
+Copy code
+
+npm pkg 
+
+set=
+
+ scripts.dev:3001=3D
+
+"next dev -p 3001"
+
+Add 
+robots.txt
+ + 
+sitemap.xml
+ (boosts SEO for the three pillars) when you=E2=80=99r=
+e ready.
+
+If you focus any of those files in=
+ VS Code, I=E2=80=99ll adjust them inline to your exact setup.
+
+=
+
+=
+
+You said:
+
+okay i pointed to the soverignty page 
+
+Symbi said:
+
+Thought for 12s
+
+nice=E2=80=94i=E2=80=99=
+m on the sovereignty page you opened. here=E2=80=99s a drop-in replacement =
+that expands it to the full, accessible version (NTGs, Integrity Bonds, bic=
+ameral flow, and =E2=80=9Cwhy no token sale=E2=80=9D). paste this over the =
+current file at:
+
+src/app/sovereignty/page.mdx
+
+=
+mdx
+
+Copy code
+
+export const metadata =3D {
+  title: 'Sovereignty Without Speculation =E2=80=94 SYMBI Framework',
+  description: 'Earned authority, accountab

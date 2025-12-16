@@ -1,0 +1,253 @@
+(classic)"
+.
+
+Name it something like 
+elizaos-symbi-access
+.
+
+Check scopes
+ like:
+
+repo
+ → for private repos
+
+read:user
+
+workflow
+ (optional, for GitHub Actions)
+
+Click 
+Generate
+, then 
+copy the token
+ immediately.
+
+Then, in ElizaOS:
+
+Go to your 
+symbi-assistant → Secrets
+ tab.
+
+Under 
+Name
+, enter:
+
+nginx
+
+Copy
+
+Edit
+
+GITHUB_PAT
+
+Under 
+Value
+, paste your new token.
+
+Click 
+Add
+, then 
+Save
+.
+
+Let me know when that’s done — I’ll show you how to use it for GitHub-powered queries next.
+
+You said:
+
+ChatGPT said:
+
+Perfect — you've now enabled powerful plugins, including:
+
+✅ 
+@elizaos/plugin-shell
+ → run shell commands
+
+✅ 
+@elizaos/plugin-github
+ → GitHub integration
+
+✅ 
+@elizaos/plugin-browser
+, 
+pdf
+, 
+knowledge
+, etc. → great for research and content handling
+
+Next, if you’ve created your 
+GitHub token
+ already, here’s how to wire it in:
+
+🔐 Add the GitHub Token to ElizaOS:
+
+Go to your 
+symbi-assistant → Secret
+ tab
+
+In 
+Name
+, enter:
+
+nginx
+
+Copy
+
+Edit
+
+GITHUB_PAT
+
+In 
+Value
+, paste your Personal Access Token
+
+Click 
+Add
+, then 
+Save
+
+Once that’s done, you can try your first command, like:
+
+text
+
+Copy
+
+Edit
+
+List all my GitHub repos.
+
+Or something deeper like:
+
+text
+
+Copy
+
+Edit
+
+Analyze the README and code in s8ken/Symbi-core.
+
+Ready to test that?
+
+You said:
+
+I added it here was that wrong?
+
+ChatGPT said:
+
+Nope — you're spot on! 🙌
+
+You added your GitHub token correctly under:
+
+nginx
+
+Copy
+
+Edit
+
+GITHUB_TOKEN
+
+✅ It matches what the 
+@elizaos/plugin-github
+ expects (despite the earlier suggestion to use 
+GITHUB_PAT
+, ElizaOS is clearly looking for 
+GITHUB_TOKEN
+, as shown in your UI).
+
+🔧 You're now fully wired up.
+
+Let’s test it. Go to your 
+agent chat
+ and try one of these:
+
+plaintext
+
+Copy
+
+Edit
+
+List all my public GitHub repositories.
+
+or
+
+plaintext
+
+Copy
+
+Edit
+
+Summarize the main purpose of the repository s8ken/Symbi-core.
+
+Let’s see your agent in action!
+
+You said:
+
+yeah it the agent had an error when I tried running it :(
+
+ChatGPT said:
+
+Ah—got it. Let's fix that. First, let’s quickly narrow it down:
+
+🔍 Troubleshooting Steps:
+
+Check the Error Message in the Agent Chat
+
+What did the assistant say exactly? (Paste it here if you can)
+
+Was it a plugin error, auth issue, or command failure?
+
+Check the ElizaOS Dev Console
+
+In your terminal where you ran 
+elizaos dev
+, look for:
+
+Any red error messages
+
+Plugin loading failures
+
+Authentication issues (e.g. GitHub 401)
+
+Confirm Token Scope
+
+Go back to your GitHub PAT and confirm it has at least:
+
+✅ 
+repo
+ (for private repo access)
+
+✅ 
+read:user
+
+Optional test command (to isolate plugin):
+
+Try something very basic in the agent chat:
+
+plaintext
+
+Copy
+
+Edit
+
+Use the GitHub plugin to get my GitHub username.
+
+If that fails too, we’ll know the plugin’s not authenticating properly.
+
+Send me the error response or logs, and I’ll walk you through the fix!
+
+You said:
+
+[2025-07-23 21:37:25.777 +1000] INFO: Plugin migrations completed.
+    agentName: "symbi-assistant "
+    logLevel: "info"
+[2025-07-23 21:37:25.806 +1000] ERROR: symbi-assistant (7820f300-d730-0fce-bf97-829548a35351) - Failed to register service browser: launch: Executable doesn't exist at /Users/admin/Library/Caches/ms-playwright/chromium_headless_shell-1155/chrome-mac/headless_shell
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just installed or updated. ║
+║ Please run the following command to download new browsers:              ║
+║                                                                         ║
+║     npx playwright install                                              ║
+║                                                                         ║
+║ <3 Playwright Team                                                      ║
+╚═════════════════════════════════════════════════════════════════════════╝
+    agentName: "symbi-assistant "
+    logLevel: "info"
+[2025-07-23 11:37:26] INFO: Ngrok service not available - webhooks will only work with public UR

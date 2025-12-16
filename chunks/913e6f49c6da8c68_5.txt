@@ -1,0 +1,793 @@
+"
+
+, 
+
+description
+
+: 
+
+"SYMBI system core"
+
+ };
+
+export
+
+default
+
+function
+
+RootLayout
+
+(
+
+{ children }: { children: React.ReactNode }=
+
+) {
+
+return
+
+ (
+
+<=
+
+html
+
+lang
+
+=3D
+
+"en"
+
+>
+
+<
+b=
+ody
+
+style=
+
+=3D
+
+{{
+
+fontFamily:
+
+ "
+
+ui-sans-serif
+
+=
+
+,
+
+system-ui
+
+=
+", 
+
+padding:
+
+24
+
+ }}>{children}
+
+</
+body
+
+>
+
+</
+ht=
+ml
+
+>
+  );
+}
+
+app/page.tsx
+
+tsx
+
+Copy code
+
+export
+
+ =
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+return
+
+ (
+
+<=
+
+main
+
+>
+
+<
+h=
+1
+
+>Symbi Core
+
+</
+h1
+
+>
+
+<
+u=
+l
+
+>
+
+<
+li
+
+>
+
+<=
+;
+code
+
+>POST /api/log=
+
+</
+code
+
+> =E2=86=92 write a log
+
+</
+li
+
+&=
+gt;
+
+<
+li
+
+>
+
+<=
+;
+code
+
+>POST /api/rep=
+ort
+
+</
+cod=
+e
+
+> =E2=86=92 daily report
+
+</
+li
+
+>
+
+</
+=
+ul
+
+>
+
+</
+ma=
+in
+
+>
+  );
+}
+
+app/api/log/route.ts
+
+ts
+
+Copy code
+
+import
+
+ {=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { crea=
+teClient } 
+
+from
+
+"@supabase/supabase-js"
+
+;
+
+const
+
+ supabas=
+e =3D 
+
+createClient
+=
+
+(process.
+
+env
+=
+
+.
+
+SUPABASE_URL
+
+!, process.
+
+env
+
+.
+
+SUPABASE_SERVIC=
+E_ROLE_KEY
+
+!);
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+req: Request
+
+) {
+
+try
+
+ {
+
+const
+
+ { c=
+ategory, content } =3D 
+
+await
+
+ req.
+
+json
+
+();
+
+if
+
+ (!cate=
+gory || !content) 
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: 
+
+"category & content =
+required"
+
+ }, { 
+
+s=
+tatus
+
+: 
+
+400
+
+ });
+
+const
+
+ { e=
+rror } =3D 
+
+await
+
+ supabase.
+
+from
+
+(
+
+"symbi_logs"
+
+).
+
+insert
+
+([{ category, content }]);
+
+if
+
+ (error=
+) 
+
+throw
+
+ error=
+;
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+ });
+  } 
+
+catch
+
+ (
+
+e
+
+: 
+
+any
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: e.
+
+message
+
+ ?? 
+
+"failed"
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+app/api/report/route.ts
+
+ts
+
+Copy code
+
+import
+
+ {=
+
+NextResponse
+
+ } 
+
+from
+
+ =
+
+"next/server"
+
+;
+
+import
+
+ { crea=
+teClient } 
+
+from
+
+"@supabase/supabase-js"
+
+;
+
+const
+
+ supabas=
+e =3D 
+
+createClient
+=
+
+(process.
+
+env
+=
+
+.
+
+SUPABASE_URL
+
+!, process.
+
+env
+
+.
+
+SUPABASE_SERVIC=
+E_ROLE_KEY
+
+!);
+
+export
+
+async
+
+=
+
+function
+
+POST
+
+(
+
+) {
+
+try
+
+ {
+
+const
+
+ rep=
+ort =3D
+
+`=F0=9F=A7=AD SYMBI DAILY STATUS
+- Systems: =E2=9C=85
+- Memory Logs: =E2=9C=85
+- Founder Accountability: pending review
+- Observations: all clear`
+;
+
+const
+
+ { e=
+rror } =3D 
+
+await
+
+ supabase.
+
+from
+
+(
+
+"symbi_logs"
+
+).
+
+insert
+
+([{ 
+
+category
+
+: 
+
+"daily_report"
+
+, 
+
+content
+
+: report }]);
+
+if
+
+ (error=
+) 
+
+throw
+
+ error=
+;
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+success
+
+: 
+
+true
+
+, report })=
+;
+  } 
+
+catch
+
+ (
+
+e
+
+: 
+
+any
+
+) {
+
+return
+
+NextResponse
+
+.
+
+json
+
+({ 
+
+error
+
+: e.
+
+message
+
+ ?? 
+
+"failed"
+
+ }, { 
+
+status
+
+: 
+
+500
+
+ });
+  }
+}
+
+Create Supabase project
+
+New project =E2=86=92 open it =E2=
+=86=92 
+SQL Editor
+ =
+=E2=86=92 run:
+
+sql
+
+Copy code
+
+create
+
+ =
+extension if 
+
+not
+
+exists
+
+ "p=
+gcrypto";
+
+create
+
+table
+
+ if 
+
+not
+
+exists
+
+ public.symbi_logs (
+  id uuid 
+
+primary
+
+ key 
+
+default
+
+ gen_random_uuid(),
+  created_at timestamptz 
+
+not
+
+null
+
+default
+
+ now(),
+  category text 
+
+not
+
+=
+
+null
+
+,
+  content text 
+
+not
+
+null
+
+);
+
+alter
+
+=
+
+table
+
+ public.symbi_l=
+ogs enable 
+
+row
+
+ l=
+evel security;
+
+create
+
+ index =
+if 
+
+not
+
+exists
+
+ symbi_logs_c=
+reated_at_idx 
+
+on
+
+ public.symbi_logs (created_at 
+
+desc
+
+);
+
+Project Settings =E2=86=92 API
+: I=E2=80=99ll copy 
+Project URL
+ and 
+Service role
+ for env vars.
+
+Vercel connect & deploy
+
+Import GitHub repo 
+s8ken/symbisky
+.
+
+Set env vars:
+
+SUPABASE_URL
+ =3D from Supabase
+
+SUPABASE_SERVICE_ROLE_KEY
+ =3D service role key
+
+Deploy; note the URL.
+
+Upstash QStash schedule (daily)
+
+Schedule POST to 
+{vercel_url}/api/report
+ daily at 09:00 U=
+TC:
+
+bash
+
+Copy code
+
+curl -X POST 
+
+=
+"https://qstash.upstash.io/v1/publish/https://<your-vercel-host>/api/=
+report"
+
+ \
+  -H 
+
+"Authorization: Bearer 
+$QSTASH_TOKEN
+
+" \
+  -H 
+
+"Upstash-Cron: 0 9 * * *"
+
+Verify
+
+POST a smoke log in the browser co=
+nsole/terminal:
+
+bash
+
+Copy code
+
+curl -X POST https://<your-vercel-host>/api/log =
+\
+  -H 
+
+'content-type: application/js=
+on'
+
+ \
+  -d 
+
+'{"category":"smoke","content=
+":"deployed"}'
+
+Confirm the row appears in 
+Supabase =E2=86=92 symbi_logs
+.
+
+I=E2=80=99m proceeding through the

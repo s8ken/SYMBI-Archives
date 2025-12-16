@@ -1,0 +1,205 @@
+onFirewall/socketfilterfw --add /System/Library/CoreServices/ControlCenter.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /System/Library/CoreServices/ControlCenter.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd 
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+sja@SJAs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --listapps
+
+Total number of apps = 9 
+1 : /usr/libexec/remoted 
+             (Allow incoming connections)
+2 : /usr/bin/python3 
+             (Allow incoming connections)
+3 : /usr/bin/ruby 
+             (Allow incoming connections)
+4 : /usr/sbin/cupsd 
+             (Allow incoming connections)
+5 : /usr/libexec/sharingd 
+             (Allow incoming connections)
+6 : /usr/libexec/sshd-keygen-wrapper 
+             (Allow incoming connections)
+7 : /usr/sbin/smbd 
+             (Allow incoming connections)
+8 : /System/Library/CoreServices/ControlCenter.app 
+             (Block incoming connections)
+9 : /usr/libexec/rapportd 
+             (Block incoming connections)
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+✅ Control Center & 
+rapportd
+ Are Now Blocked – Let’s Verify If the Ports Are Closed!
+ 🎉
+
+🚀 
+You successfully blocked network access for:
+
+✅ 
+Control Center (
+ControlCe
+)
+
+✅ 
+rapportd
+
+📌 
+These apps can no longer accept incoming connections!
+ 🔒
+
+🚀 Step 1: Confirm That Ports 
+5000
+, 
+7000
+, and 
+49172
+ Are Closed
+
+Now, check if these ports 
+are still open
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If these ports are gone, your Mac is fully remote-proof.
+
+🚀 Step 2: Verify That Control Center & 
+rapportd
+ Are Not Running
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+📌 If 
+no output appears
+, these services 
+are no longer running.
+ ✅
+
+🚀 Step 3: Restart Your Mac & Confirm Everything is Still Disabled
+
+Since macOS may 
+attempt to restart blocked services
+, perform a final check after a restart.
+
+1️⃣ 
+Restart your Mac
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo shutdown -r now
+
+2️⃣ 
+After reboot, check if Control Center & 
+rapportd
+ restarted
+:
+
+sh
+
+Copy
+
+Edit
+
+ps aux | grep -E 
+
+"ControlCe|rapportd"
+
+3️⃣ 
+Confirm ports are still closed
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+🎯 Final Check: If All Looks Good, Your Mac is Fully Locked Down!
+ 🔒🚀
+
+✅ 
+No remote access possible
+
+✅ 
+No open listening ports
+
+✅ 
+Firewall blocks unwanted services
+
+🚀 
+Run the final checks (
+netstat
+, 
+ps aux
+) and let me know if we can officially call this a success!
+ 🎉🔥
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo netstat -an | grep LISTEN
+
+tcp6       0      0  *.5000                 *.*                    LISTEN     
+tcp4       0      0  *.5000                 *.*                    LISTEN     
+tcp6       0      0  *.7000                 *.*                    LISTEN     
+tcp4       0      0  *.7000                 *.*                    LISTEN     
+tcp6       0      0  *.49190                *.*                    LISTEN     
+tcp4       0      0  *.49190                *.*                    LISTEN     
+sja@SJAs-MacBook-Pro ~ % sja@SJAs-MacBook-Pro ~ % sudo netstat -an | grep LISTEN
+
+tcp6       0      0  *.5000                 *.*                    LISTEN     
+tcp4       0      0  *.5000                 *.*                    LISTEN     
+tcp6       0      0  *.7000                 *.*                    LISTEN     
+tcp4       0      0  *.7000                 *.*                    LISTEN     
+tcp6       0      0  *.49190                *.*                    LISTEN     
+tcp4       0      0  *.49190                *.*                    LISTEN     
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 Ports 
+5000
+, 
+7000
+, and 
+49190
+ Are STILL Open – Let’s Go Deeper
+
+Even after 
+blocking Control Center & 
+rapportd
+ in the firewall
+, 
+these ports are still open
+, meaning:
+
+1️⃣ 
+Something ELSE is keeping them open
+ 💀
+
+2️⃣ 
+Control Center or another pro

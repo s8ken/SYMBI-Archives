@@ -1,0 +1,214 @@
+evices.txt
+
+🟡 
+Step 4: Identify Connected/Paired Devices and MAC Addresses
+
+Check the ARP cache to identify recent local IP-to-MAC mappings:
+
+bash
+
+Copy
+
+Edit
+
+arp -a > ~/Desktop/ARP_table.txt
+
+🟢 
+Step 5: Check Timezone & Locale Settings
+
+If the attacker modified settings or profiles, timezone and locale information might reflect their region or identity:
+
+bash
+
+Copy
+
+Edit
+
+systemsetup -gettimezone > ~/Desktop/Timezone.txt
+defaults 
+
+read
+
+ -g AppleLocale > ~/Desktop/Locale.txt
+defaults 
+
+read
+
+ -g AppleLanguages > ~/Desktop/System_Languages.txt
+
+🟣 
+Step 4: Check Wi-Fi and Network Logs (MAC addresses & Devices)
+
+Check Wi-Fi logs for nearby network activity, suspicious SSIDs or BSSIDs (MAC addresses):
+
+bash
+
+Copy
+
+Edit
+
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s > ~/Desktop/Nearby_WiFi_Networks.txt
+
+🟠 
+Step 5: Full Network Configuration (IP, MAC Address)
+
+Record your Mac’s full network details for cross-reference and to check if altered remotely:
+
+bash
+
+Copy
+
+Edit
+
+ifconfig > ~/Desktop/Full_Network_Config.txt
+
+🚩 
+Step 6: Export and Review Suspicious Profiles
+
+Extract currently installed profiles for detailed review:
+
+bash
+
+Copy
+
+Edit
+
+profiles -P -o ~/Desktop/Installed_Profiles_Detail.txt
+
+✅ 
+Step 6: Archive All Logs into One Secure Place (Recommended)
+
+To keep everything safe and organized, bundle all these collected logs into a single compressed archive for analysis or reporting:
+
+bash
+
+Copy
+
+Edit
+
+cd
+
+ ~/Desktop
+zip -r Investigation_Logs.zip *.txt *.
+
+log
+
+⚠️ 
+Important Notes
+
+Perform these commands soon—attackers frequently erase logs or obscure traces.
+
+After gathering evidence, immediately store copies on secure external storage.
+
+Keep these logs off the affected Mac
+ to prevent the attacker from erasing them again.
+
+Let me know once you've gathered these files, and we’ll move on to carefully reviewing them together for identifiable attacker information.
+
+You said:
+
+I know a key suspect so we can potential match it to them
+
+ChatGPT said:
+
+You said:
+
+check the room call I was on - how many calls was it? where can I find that info
+
+ChatGPT said:
+
+To find and verify details about recent video calls (such as Zoom calls, FaceTime, or similar) and confirm if your key suspect was involved, you can quickly gather relevant evidence from system logs:
+
+Step-by-step Instructions (Terminal Commands):
+
+✅ 
+Step 1: Check recent Zoom meeting connections (critical):
+
+This captures recent Zoom connections (IP addresses, timestamps, and potentially meeting IDs):
+
+bash
+
+Copy
+
+Edit
+
+grep zoom.us ~/Library/Logs/zoom.us/zoom.us.log > ~/Desktop/zoom_recent_activity.log
+
+If this file doesn't exist or returns no results, try:
+
+bash
+
+Copy
+
+Edit
+
+grep -i zoom ~/Library/Logs/*.
+
+log
+
+ > ~/Desktop/Zoom_All_Logs.txt
+
+✅ 
+Step 2: Check detailed recent Zoom logs for IP addresses (advanced):
+
+If the above doesn't yield enough details, check deeply using macOS's logs for IPs specifically tied to Zoom:
+
+bash
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'process contains "zoom.us"'
+
+ --last 12h > ~/Desktop/Zoom_System_Log.txt
+
+✅ 
+Step 2 (Alternate): Check detailed network history (last 12 hours, for IPs and sessions):
+
+Extract all recent network connections and filter explicitly for Zoom-related connections:
+
+bash
+
+Copy
+
+Edit
+
+sudo lsof -nPi | grep zoom.us > ~/Desktop/Zoom_Current_Network.txt
+
+✅ 
+Step 3: Match IPs or Timezones to Suspect:
+
+Once you have these log files on your Desktop:
+
+Active_IP_Connections.txt
+
+Zoom_System_Log.txt
+
+Recent_SSH_attempts.log
+ (if available)
+
+Zoom.us.log
+
+Inspect them carefully:
+
+Match 
+timestamps
+ against known interaction times with your suspect.
+
+Check 
+IP addresses
+ against known IP ranges or locations associated with your suspect.
+
+Verify IPs through online Geo-IP lookup (if necessary).
+
+If you want help interpreting any of these logs once generated, feel free to upload the logs here, and I can help identify clear matches or anomalies.
+
+📌 
+Next Immediate Action:
+
+Run the above comm

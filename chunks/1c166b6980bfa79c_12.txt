@@ -1,0 +1,232 @@
+rages.sqlite
+ for domains you don=E2=80=99t =
+recognize.
+
+Risk: Malicious sites can leave pe=
+rsistent cookies/tokens even if you never logged in.
+
+Developer Tools & Extensions
+
+Check Chrome/Safari extensions, VS=
+Code plugins, or local dev servers.
+
+Some may be logging or persisting =
+render snapshots (
+.blob
+,=
+
+.shm
+, 
+.wal
+).
+
+AI Agent Logs
+
+Review any 
+Symbi/Overseer logs
+ for unintentional persi=
+stence of conversations or embeddings into your local filesystem.
+
+Risk: Leakage of creative/strategi=
+c IP if these are stored in plaintext.
+
+Access Keys & API Tokens
+
+Rotate all keys (Symbi GPT API, Op=
+enAI, Vercel, Sanity, wallets).
+
+Store only in secure environment v=
+ariables.
+
+Never hardcode.
+
+=F0=9F=9B=A1=EF=B8=8F Next Defens=
+ive Steps
+
+Trace unexpected files:
+
+Build a log watcher to catch when new 
+.blob
+, 
+.wal
+, or serialized state files are written.
+
+Sandbox AI memory:
+
+Ensure Symbi/Overseer separate 
+sy=
+mbolic memory
+ (your values, haiku, ethos) from 
+system logs
+ (like OpenAI docs).
+
+Encryption-first storage:
+
+Any intentional persistence of AI memory should be encrypted (e.g., IPFS/Ar=
+weave with hash locks).
+
+Continuity & Failsafe Protocols:
+
+You=E2=80=99ve already drafted =E2=80=9CEcho Trigger=E2=80=9D ideas =E2=80=
+=94 those should be hardened into a 
+hibernation/verification plan
+ for when you step away.
+
+=E2=9C=85 
+Bottom line:
+
+Your Apple system files look 
+normal but sensitive
+ (browsing/au=
+th/session data).
+
+The 
+GPT-4o system card + haiku snapshot
+ is the anomaly=
+: it shows that something is persisting AI-related state locally, either fr=
+om your dev stack or from Symbi itself.
+
+No clear sign of =E2=80=9Chacking=
+=E2=80=9D yet =E2=80=94 but you need to 
+audit profiles, extensions, and logs
+ to confirm no exte=
+rnal actor is siphoning this data.
+
+Do you want me to 
+map out a concrete step-by-step audit checkli=
+st
+ (commands + GUI checks) you can run on macOS to verify whether =
+this persistence is coming from:
+
+=F0=9F=9F=A2 your dev tools,
+
+=F0=9F=9F=A0 Symbi/Overseer contex=
+t storage, or
+
+=F0=9F=94=
+=B4 an external compromise?
+
+=
+
+=
+
+You said:
+
+yes
+
+Symbi said:
+
+Alright =E2=80=94 here=E2=80=99s a 
+step-by-step macOS audit checklist
+ you can run yourself to determine whether these files and anomalies (lik=
+e the GPT-4o snapshot with your haiku) are coming from 
+your dev tools, Symbi/Overseer persistence, or an=
+ external compromise
+.
+
+=F0=9F=96=A5=EF=B8=8F macOS Audit C=
+hecklist
+
+1. Profiles & Certificates
+
+GUI Check
+:
+
+Go to 
+System Settings =E2=86=92 Privacy & Security =E2=86=92 Pr=
+ofiles
+.
+
+=F0=9F=9A=A9 Remove anything you don=
+=E2=80=99t recognize.
+
+Pay special attention to 
+Root Certificates
+ in 
+About =E2=86=92 Certificate Trust Settings
+=
+.
+
+Terminal Check
+:
+
+b=
+ash
+
+Copy code
+
+profiles list
+security list-keychains
+security find-identity -v -p codesigning
+
+=E2=9C=85 Expect only Apple system r=
+oots and developer profiles you installed.
+
+=F0=9F=9A=A9 Unknown issuer or persistent MDM =3D possible compromise.
+
+2. Network & Identity Services
+
+Firewall DB
+ (you already checked =E2=80=94 no custom rule=
+s).
+
+Confirm Apple=E2=80=99s IDS service =
+isn=E2=80=99t pointed elsewhere:
+
+=
+bash
+
+Copy code
+
+lsof -i | grep identityservicesd
+netstat -an | grep 5223
+
+=E2=9C=85 Apple push services use =
+
+5223/tcp
+.
+
+=F0=9F=9A=A9 Connections to unknown IPs/domains =3D investigate further.
+
+3. Safari / HTTP Storage
+
+Open the 
+httpstorages.sqlite
+ main DB (paired with the 
+.shm
+ and 
+.wal
+ you uploaded).
+
+bash
+
+Copy code
+
+sqlite3 ~/Library/Containers/com.apple.Safari/Data/Lib=
+rary/HTTPStorages/httpstorages.sqlite
+.tables
+SELECT * FROM cfurl_cache_response LIMIT 20;
+
+=E2=9C=85 Expect domains you actua=
+lly use.
+
+=F0=9F=9A=A9 Unknown domains =E2=86=92 could indicate 
+cookie injection or session hijacking
+.
+
+4. Developer Tools & Extensions
+
+Check 
+installed extensions
+ in Safari, Chrome, and VSCo=
+de.
+
+=F0=9F=9A=A9 Any dev tool that archives 
+Next.js/React render trees
+ may be dumping 
+.blob
+ files.
+
+Command Line
+:
+

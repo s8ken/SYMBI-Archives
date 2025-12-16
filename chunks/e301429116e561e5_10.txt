@@ -1,0 +1,320 @@
+ and emerald are in the phrase 
+
+ChatGPT said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Search for "ruby" and "emerald" in the provided wordlists
+
+search_terms = {
+
+"ruby"
+
+, 
+
+"emerald"
+
+}
+
+# Load all words from datasets
+
+all_wordlists = {
+
+"english_wikipedia"
+
+: load_wordlist(
+
+"/mnt/data/english_wikipedia.txt"
+
+),
+
+"female_names"
+
+: load_wordlist(
+
+"/mnt/data/female_names.txt"
+
+),
+
+"male_names"
+
+: load_wordlist(
+
+"/mnt/data/male_names.txt"
+
+),
+
+"surnames"
+
+: load_wordlist(
+
+"/mnt/data/surnames.txt"
+
+),
+
+"us_tv_and_film"
+
+: load_wordlist(
+
+"/mnt/data/us_tv_and_film.txt"
+
+),
+
+"passwords"
+
+: load_wordlist(
+
+"/mnt/data/passwords.txt"
+
+),
+}
+
+# Find which files contain the search terms
+
+word_matches = {word: [] 
+
+for
+
+ word 
+
+in
+
+ search_terms}
+
+for
+
+ wordlist_name, words 
+
+in
+
+ all_wordlists.items():
+
+for
+
+ word 
+
+in
+
+ search_terms:
+
+if
+
+ word 
+
+in
+
+ words:
+            word_matches[word].append(wordlist_name)
+
+word_matches
+
+Result
+
+{'ruby': ['female_names'], 'emerald': []}
+
+Search Results for "Ruby" and "Emerald"
+
+✅ 
+"Ruby"
+ is found in 
+
+female_names.txt
+
+.
+
+❌ 
+"Emerald"
+ is 
+not found
+ in any of the provided wordlists.
+
+If "emerald" is in your passphrase, it may be in a 
+missing dataset
+ (such as the absent 
+image.squash
+).
+
+Would you like me to:
+
+Search for related words
+ (like other gemstones: sapphire, diamond, jade)?
+
+Generate 24-word phrases including "ruby"
+?
+
+Look for structured phrases
+ in the provided files?
+
+Let me know how you'd like to proceed! 🔍 
+
+Sources
+
+You said:
+
+2
+
+ChatGPT said:
+
+Analyzed
+
+python
+
+Always show details
+
+Copy
+
+# Generate 24-word passphrases including "ruby"
+
+# Select words from different categories to make a balanced passphrase
+
+random.seed(
+
+42
+
+)  
+
+# Ensure reproducibility
+
+# Function to generate a 24-word phrase including a specific word
+
+def
+
+generate_passphrase
+
+(
+
+included_word, wordlists, num_phrases=
+5
+
+):
+    generated_phrases = []
+
+for
+
+ _ 
+
+in
+
+range
+
+(num_phrases):
+        phrase = [included_word]  
+
+# Ensure the required word is included
+
+        phrase += random.sample(wordlists[
+
+"english_wikipedia"
+
+], 
+
+8
+
+)  
+
+# General words
+
+        phrase += random.sample(wordlists[
+
+"female_names"
+
+], 
+
+4
+
+)  
+
+# Female names
+
+        phrase += random.sample(wordlists[
+
+"male_names"
+
+], 
+
+4
+
+)  
+
+# Male names
+
+        phrase += random.sample(wordlists[
+
+"surnames"
+
+], 
+
+4
+
+)  
+
+# Surnames
+
+        phrase += random.sample(wordlists[
+
+"us_tv_and_film"
+
+], 
+
+3
+
+)  
+
+# TV & movie words
+
+        random.shuffle(phrase)  
+
+# Shuffle to make it natural
+
+        generated_phrases.append(
+
+" "
+
+.join(phrase))
+
+return
+
+ generated_phrases
+
+# Generate passphrases with "ruby"
+
+passphrases = generate_passphrase(
+
+"ruby"
+
+, all_wordlists, num_phrases=
+
+3
+
+)
+
+passphrases
+
+Result
+
+['elinor first dawn shawn merrill appreciate press lilly olympics total myers four yet green earnestine september mauricio play ellsworth dead million underwood ruby lopez',
+ 'rogelio russell waylon ruby date adrianne harding rate marjorie sharp started polly quincy medal sudden records mccullough reach nettie more route territory influence mcmahon',
+ 'sybil ruby tournament kinney skye jed completed emile million lou village going produced jensen loren asked emmitt hyde clarissa bailey track review smaller allison']
+
+Generated 24-Word Passphrases Including "Ruby"
+
+Here are three possible passphrases:
+
+1️⃣ 
+"elinor first dawn shawn merrill appreciate press lilly olympics total myers four yet green earnestine september mauricio play ellsworth dead million underwood ruby lopez"
+
+2️⃣ 
+"rogelio russell waylon ruby date adrianne harding rate marjorie sharp started polly quincy medal sudden records mccullough reach nettie more route territory influence mcmahon"
+
+3️⃣ 
+"sybil ruby tournament kinney skye jed completed emile million lou village going produced jensen loren asked emmitt hyde clarissa bailey track review smaller allison"
+
+Each phrase is randomized while keeping 
+"ruby"
+ inside. Would you like me to refine them further or

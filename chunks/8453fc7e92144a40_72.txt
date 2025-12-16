@@ -1,0 +1,672 @@
+eAuth);
+r.
+
+get
+
+=
+(
+
+'/:sessionId'
+
+=
+, c.
+
+get
+
+);
+r.
+
+put
+
+=
+(
+
+'/:sessionId'
+
+=
+, c.
+
+put
+
+);
+
+module
+
+.
+
+exports
+
+=
+ =3D r;
+
+backend/app.js (patch)
+
+diff
+
+Copy code
+
+ app.use('/api/bridge', require('./routes/bridge.route=
+s'));
+
++app.use('/api/context/capsule',=
+ require('./routes/capsule.routes'));
+
+backend/controllers/assistant.con=
+troller.js (inject capsule) =E2=80=94 minimal surgical patch
+
+Insert this 
+before
+ you build the final 
+instructions
+ you send to the model.
+
+diff
+
+Copy code
+
++// ---- Context Capsule=
+ injection (server-side memory) ----
+
++const HEX24 =3D /^[a-f0-9]{24}$=
+/i;
+
++function normalizeSessionId(s){=
+ return !s ? s : (s.startsWith('conv:') ? s : (HEX24.test(s) ? `conv:${s}` =
+: s)); }
+
++let capsuleText =3D "";
+
++try {
+
++  const sid0 =3D req.body?.sess=
+ion_id || req.query?.session_id;
+
++  const sid =3D normalizeSessio=
+nId(sid0);
+
++  if (sid) {
+
++    const ContextCapsule =3D re=
+quire('../models/contextCapsule.model');
+
++    const doc =3D await Context=
+Capsule.findOne({ session_id: sid }).lean();
+
++    if (doc?.capsule) {
+
++      capsuleText =3D
+
++        `[CONTEXT CAPSULE]\n` +=
+
++        `Goals: ${doc.capsule.g=
+oals?.join('; ') || '=E2=80=94'}\n` +
+
++        `Tone: ${doc.capsule.to=
+ne_prefs?.join('; ') || '=E2=80=94'}\n` +
+
++        `Constraints: ${doc.cap=
+sule.constraints?.join('; ') || '=E2=80=94'}\n` +
+
++        `Tags: ${doc.capsule.ta=
+gs?.join(', ') || '=E2=80=94'}\n` +
+
++        (doc.capsule.notes ? `N=
+otes: ${doc.capsule.notes}\n` : '');
+
++    }
+
++  }
+
++} catch {}
+
++
+
+ // existing:
+
+-const instructions =3D baseInst=
+ructions;
+
++const instructions =3D (capsule=
+Text ? `${capsuleText}\n` : "") + baseInstructions;
+
+If your variable isn=E2=80=99t nam=
+ed 
+baseInstructions
+, pre=
+pend 
+capsuleText
+ to what=
+ever you send as system/instructions.
+
+4) Capsule editor UI (web)
+
+frontend/src/components/context/C=
+apsulePanel.js (new)
+
+js
+
+Copy code
+
+import
+
+ *=
+
+as
+
+React
+
+from
+
+"react"
+
+;
+
+export
+
+default
+
+function
+
+CapsulePanel
+
+(
+=
+
+{ sessionId }
+
+) {
+
+const
+
+ base =
+=3D process.
+
+env
+
+.
+
+NEXT_PUBLIC_API_BASE
+
+ || 
+
+""
+
+;
+
+const
+
+ [caps=
+ule, setCapsule] =3D 
+
+React
+
+.
+
+useSta=
+te
+
+({ 
+
+goals
+
+: [], 
+
+tone_prefs
+
+: [], 
+
+constraints
+
+: [], 
+
+tags
+
+: [], 
+
+notes
+
+: 
+
+""
+
+ });
+
+const
+
+ [dirt=
+y, setDirty] =3D 
+
+React
+
+.
+
+useState
+
+(
+
+false
+
+);
+
+React
+
+.=
+
+useEffect
+
+(
+
+() =3D>
+
+ {
+
+if
+
+ (!sess=
+ionId) 
+
+return
+
+=
+;
+    (
+
+async
+
+ ()=
+ =3D> {
+
+const
+
+ r=
+ =3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}=
+
+/api/context/capsule/
+
+${
+encodeURIComponent
+
+(sessionId)}`);
+
+const
+
+ d=
+ =3D 
+
+await
+
+ r.=
+
+json
+
+(=
+);
+
+setCapsule
+
+(d?.
+
+capsule
+
+ || { 
+
+goals
+
+: [], 
+
+tone_prefs
+
+: [], 
+
+constraints
+
+=
+
+: [], 
+
+tags
+
+=
+: [], 
+
+notes
+
+: 
+
+""
+
+ });
+
+setDirty
+
+(
+
+false
+
+);
+    })();
+  }, [base, sessionId]);
+
+const
+
+save
+
+ =3D 
+
+async
+
+ (
+=
+
+) =3D> {
+
+const
+
+ r =
+=3D 
+
+await
+
+fetch
+
+(
+
+`
+${base}
+
+/api/context/capsule/
+
+${
+encodeURIComponent
+
+(sessionId)}`, {
+
+method
+
+: 
+
+"PUT"
+
+,
+
+headers
+
+: {=
+
+"Content-Type"
+
+:
+
+"application/json"
+
+=
+
+ },
+
+body
+
+: 
+
+JSON
+
+.
+=
+
+stringify
+
+({ =
+capsule })
+    });
+
+if
+
+ (!r.
+
+ok
+
+) 
+
+return
+
+alert
+
+(
+
+`save 
+${r.status}
+
+`);
+
+setDirty
+
+(
+
+false
+
+=
+);
+  };
+
+const
+
+bind
+
+ =3D (=
+
+key
+
+) =3D> (=
+{
+
+value
+
+: 
+
+Array
+
+.
+=
+
+isArray
+
+(caps=
+ule[key]) ? capsule[key].
+
+=
+join
+
+(
+
+", "
+
+) : (capsule[key] || 
+
+""
+
+),
+
+onChange
+
+: 
+
+(
+e
+
+) =3D> {
+
+const
+
+ v=
+ =3D e.
+
+target
+
+.
+
+value
+
+;
+
+const
+
+ v=
+al =3D [
+
+"goals"
+
+,
+
+"tone_prefs"
+
+=
+,
+
+"constraints"
+
+=
+,
+
+"tags"
+
+].
+
+includes
+
+(k=
+ey)
+        ? v.
+
+split
+
+(
+
+','
+
+).
+
+map
+
+(
+
+s=
+
+=3D>s.
+
+trim
+
+()).
+
+filter
+
+(
+
+Boolean
+
+)
+        : v;
+
+setCapsule
+
+(
+
+c
+
+ =3D> ({ ...c, [key]: val })); 
+
+setDirty
+
+(
+
+true
+
+);
+    }
+  });
+
+if
+
+ (!sessio=
+nId) 
+
+return
+
+null
+
+;
+
+return
+
+ (
+
+<=
+
+div
+
+className
+
+=3D
+
+"border rounded p-3 space-y-2"
+
+>
+
+<
+d=
+iv
+
+classN=
+ame
+
+=3D
+
+"text-sm=
+ font-medium"
+
+>Context Capsule
+
+</
+div
+
+>
+
+<
+l=
+abel
+
+clas=
+sName
+
+=3D
+
+"text-=
+xs opacity-70"
+
+>Goals (comma-separated)
+
+</
+label
+
+>
+
+<
+i=
+nput
+
+clas=
+sName
+
+=3D
+
+"borde=
+r p-2 w-full"
+
+ 

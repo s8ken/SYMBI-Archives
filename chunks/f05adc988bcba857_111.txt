@@ -1,0 +1,466 @@
+function
+
+StudioPage
+
+(
+
+) {
+
+return
+
+<
+NextStudio
+
+config
+
+=
+
+{config}
+
+ />
+}
+
+â 2. 
+Double Check Your 
+sanity.config.ts
+
+Make sure it's at the root of your project (next to 
+package.json
+) and looks like this:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { defineConfig } 
+
+from
+
+'sanity'
+
+import
+
+ { deskTool } 
+
+from
+
+'sanity/desk'
+
+import
+
+ { visionTool } 
+
+from
+
+'@sanity/vision'
+
+import
+
+ siteSettings 
+
+from
+
+'./schemas/siteSettings'
+
+import
+
+ page 
+
+from
+
+'./schemas/page'
+
+export
+
+default
+
+defineConfig
+
+({
+
+name
+
+: 
+
+'default'
+
+,
+
+title
+
+: 
+
+'Symbi Studio'
+
+,
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+basePath
+
+: 
+
+'/studio'
+
+,
+
+plugins
+
+: [
+
+deskTool
+
+(), 
+
+visionTool
+
+()],
+
+schema
+
+: {
+
+types
+
+: [siteSettings, page],
+  },
+})
+
+â 3. 
+Restart Dev Server
+
+If you made any of those changes, restart Next.js:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Once thatâs confirmed, navigate to:
+
+bash
+
+Copy
+
+Edit
+
+http://localhost:3001/studio
+
+It should now load your embedded Sanity Studio.
+
+Let me know what happens next, and Iâll walk with you through the rest.
+
+You said:
+
+acutally it came back up 
+
+ChatGPT said:
+
+Perfect! ð That means everything is connected correctly now â Next.js, Sanity Studio, schema, and embedded route at 
+/studio
+.
+
+â Next Steps (Optional but Recommended)
+
+If you're ready to integrate CMS content into the main site:
+
+Verify GROQ Queries
+ â You already tested fetching data from Sanity.
+
+Use your 
+lib/sanity.ts
+
+ to create functions like 
+getPage()
+:
+
+ts
+
+Copy
+
+Edit
+
+import
+
+ { createClient } 
+
+from
+
+'next-sanity'
+
+const
+
+ client = 
+
+createClient
+
+({
+
+projectId
+
+: 
+
+'wryptr7v'
+
+,
+
+dataset
+
+: 
+
+'production'
+
+,
+
+apiVersion
+
+: 
+
+'2025-02-19'
+
+,
+
+useCdn
+
+: 
+
+false
+
+,
+})
+
+export
+
+async
+
+function
+
+getPage
+
+(
+
+) {
+
+return
+
+ client.
+
+fetch
+
+(
+
+`*[_type == "page"][0]`
+
+)
+}
+
+Update 
+app/page.tsx
+
+ to consume that data:
+
+tsx
+
+Copy
+
+Edit
+
+import
+
+ { getPage } 
+
+from
+
+'@/lib/sanity'
+
+export
+
+default
+
+async
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ page = 
+
+await
+
+getPage
+
+()
+
+return
+
+ (
+
+<
+main
+
+>
+
+<
+h1
+
+>{page?.title}
+
+</
+h1
+
+>
+      {/* Render other content as needed */}
+
+</
+main
+
+>
+  )
+}
+
+If you want to wire in dynamic CMS content into the homepage layout (e.g. 
+what
+, 
+why
+, 
+who
+ sections), I can help you update the schema + frontend too. Just say the word ð¬
+
+Do you want to try that next?
+
+You said:
+
+Error: Request error while attempting to reach is https://wryptr7v.api.sanity.io/v2025-02-19/data/actions/production?tag=sanity.studio.document.commit
+
+ChatGPT said:
+
+Thanks for flagging â that error usually means 
+Sanity Studio is unable to commit/publish content
+, and itâs most often caused by:
+
+ð« 
+Missing or invalid API token
+
+Your Sanity Studio client needs an 
+API token with write permissions
+ to commit data. Since you mentioned earlier that there was 
+nothing in your tokens list
+, thatâs likely the issue.
+
+â Hereâs how to fix it:
+
+1. 
+Create a new API token
+ in 
+Sanity Manage
+
+Go to your project: 
+wryptr7v
+
+Click 
+Settings â API â Tokens
+
+Create a 
+new token
+ with 
+Editor
+ or 
+Write
+ permissions
+
+Copy it immediately
+ (it wonât be shown again)
+
+2. 
+Update your 
+.env.local
+ file
+
+In your 
+symbi-main-site/.env.local
+ file, add:
+
+bash
+
+Copy
+
+Edit
+
+SANITY_API_TOKEN=your_newly_copied_token
+
+â Make sure you 
+donât wrap it in quotes
+ and 
+no trailing spaces
+.
+
+3. 
+Restart the dev server
+ (important):
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Optional Debug
+
+You can test if the token is working via a simple fetch using the 
+@sanity/client
+ instance and setting 
+token: process.env.SANITY_API_TOKEN
+.
+
+Let me know when youâve added the token and restarted. Iâll help you verify itâs working.
+
+You said:
+
+no we just made it like 5 minutes ago
+
+ChatGPT said:
+
+Ah â perfect. If the token 
+was just created
+, but you're still seeing the 
+Request error while attempting to reach
+ message, here are the next steps to check:
+
+â 
+Checklist to Resolve the Error
+
+1. 
+.env.local contains the token?
+
+Open 
+.env.local
+ at the ro

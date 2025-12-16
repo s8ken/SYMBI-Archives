@@ -1,0 +1,300 @@
+s
+
+Want AI-generated images?
+ → Add 
+DALL·E
+ or 
+Replicate API
+
+Want real-time page updates?
+ → Enable 
+Sanity Webhooks
+
+Need a custom UI for your CMS?
+ → We can build a separate admin panel.
+
+Would you like me to walk you through any specific part? 🚀🔥
+
+You said:
+
+? Would you like to add configuration files for a Sanity project in this Next.js folder? Yes
+⚠ ╭────────────────────────────────────────────────────────────╮
+⚠ │                                                            │
+⚠ │ It looks like you are using Next.js 15 and React 19        │
+⚠ │ Please read our compatibility guide.                       │
+⚠ │ https://www.sanity.io/help/react-19                        │
+⚠ │                                                            │
+⚠ ╰────────────────────────────────────────────────────────────╯
+? Do you want to use TypeScript? (Y/n) 
+
+Vercel Deployment Expert GPT said:
+
+🚀 Sanity Setup in Next.js 15 + React 19
+
+You're getting a 
+compatibility warning
+ because 
+Sanity isn’t fully compatible with React 19
+ yet. But don’t worry—we can fix this! 🔧
+
+🔹 Step 1: Continue Installation
+
+1️⃣ 
+Choose Yes (
+Y
+) for TypeScript
+
+2️⃣ Let the setup complete.
+
+🔹 Step 2: Apply Fix for React 19 Compatibility
+
+After installation:
+
+Open 
+
+sanity.config.ts
+
+ and modify the 
+useCdn
+ setting:
+
+ts
+
+Copy
+
+import
+
+ { defineConfig } 
+
+from
+
+"sanity"
+
+;
+
+export
+
+default
+
+defineConfig
+
+({
+
+projectId
+
+: 
+
+"your-project-id"
+
+,
+
+dataset
+
+: 
+
+"production"
+
+,
+
+useCdn
+
+: 
+
+false
+
+, 
+
+// Ensure fresh content in dev mode
+
+reactStrictMode
+
+: 
+
+false
+
+, 
+
+// Fix for React 19 compatibility
+
+});
+
+Also, in 
+
+package.json
+
+, add this under 
+dependencies
+:
+
+json
+
+Copy
+
+"sanity"
+
+:
+
+"^3.0.0"
+
+,
+
+"next-sanity"
+
+:
+
+"^4.0.0"
+
+,
+
+Run:
+
+bash
+
+Copy
+
+npm install
+
+🔹 Step 3: Restart the Dev Server
+
+bash
+
+Copy
+
+npm run dev
+
+✅ Now, 
+Sanity Studio should load correctly
+ at 
+http://localhost:3333
+!
+
+🎯 Next Steps
+
+If 
+Sanity Studio works
+, proceed with 
+AI integration
+.
+
+If 
+any errors appear
+, send them here and I’ll debug! 🚀🔥
+
+You said:
+
+sanity studio? y
+
+Vercel Deployment Expert GPT said:
+
+🚀 What is Sanity Studio and Why Do You Need It?
+
+Sanity Studio is a 
+dashboard (CMS)
+ that lets you 
+edit and manage your website content easily
+, without touching code. Since you want a 
+GUI-based editor for your Next.js website
+, 
+Sanity Studio is what provides that
+.
+
+🔹 Why Use Sanity Studio?
+
+✅ 
+Easy Page Editing:
+ No coding required—just update text, images, or layouts in a user-friendly UI.
+
+✅ 
+Real-Time Updates:
+ Any edits made in the Studio 
+immediately update your website
+ (no need to redeploy).
+
+✅ 
+AI-Powered Content:
+ We can integrate your GPT model 
+directly into the Studio
+ to generate content.
+
+✅ 
+Cloud-Based:
+ Changes sync instantly across all users & devices.
+
+🔹 How Does It Work?
+
+1️⃣ 
+Sanity Studio (CMS) → Stores Page Content
+
+Example: "Homepage Title = SYMBI", "Text = Coming Soon"
+
+2️⃣ 
+Next.js Fetches This Content
+
+The website dynamically loads the latest data.
+
+3️⃣ 
+AI Assistant Generates Content (Optional)
+
+If enabled, AI can suggest 
+headlines, blog posts, or text
+ inside the Studio.
+
+🔹 Step 1: Open Sanity Studio
+
+After running:
+
+bash
+
+Copy
+
+npm run dev
+
+Visit:
+
+📌 
+
+http://localhost:3333
+
+(You’ll see the Sanity Studio dashboard where you can edit your content.)
+
+🔹 Step 2: What Can You Edit in the Studio?
+
+Homepage Title
+
+Animated Words List
+
+Text, Images, Videos
+
+Future Pages (Blog, About, etc.)
+
+🎯 Next Steps
+
+Open Sanity Studio (
+http://localhost:3333
+).
+
+Let me know if you see the dashboard!
+
+We’ll now connect it to your Next.js site for real-time updates.
+ 🚀🔥
+
+You said:
+
+Clean project with no predefined schema types 
+
+Vercel Deployment Expert GPT said:
+
+🚀 Sanity Studio is Set Up, But No Schemas Exist
+
+You’re seeing 
+"Clean project with no predefined schema types"
+ because your Sanity Studio 
+doesn’t have any content types (schemas) yet
+. 
+Let’s fix that by defining a schema for your pages.
+ 🔧
+
+🔹 Step 1: Create the Page Schema
+
+Since you want a simple 
+GUI-based editor

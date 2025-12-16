@@ -1,0 +1,483 @@
+
+models
+
+: cfg.=
+
+models
+
+ || []=
+,
+
+config
+
+: { 
+
+file
+
+: cfgPath, ...=
+cfg.
+
+params
+
+ }=
+,
+
+dataset
+
+: { 
+
+path
+
+: dataset, 
+
+n
+
+: files.
+
+length
+
+, 
+
+=
+
+sha256_manifest
+
+: manifestSha =
+},
+
+scores
+
+: { 
+
+claude
+
+: 
+
+agg
+
+(
+
+'claude'
+
+), 
+
+deepseek
+
+: 
+
+agg
+
+(
+
+'deepseek'
+
+) },
+
+per_sample
+
+: =
+per,
+
+methods_ref
+
+:=
+ path.
+
+join
+
+(path.
+
+dirname
+=
+
+(cfgPath), 
+
+'METHODS.m=
+d'
+
+),
+
+created_at
+
+: =
+
+new
+
+Date
+
+().
+
+toISOString
+
+(),
+
+hash_prev
+
+: 
+
+null
+
+,
+
+hash_self
+
+: 
+
+null
+
+,
+
+signature
+
+: 
+
+null
+
+  };
+
+  fs.
+
+mkdirSync
+
+(outDir, { 
+
+recursive
+=
+
+: 
+
+true
+
+=
+
+ });
+
+const
+
+ outPa=
+th =3D path.
+
+join
+
+(outDir, 
+
+'composite.jso=
+n'
+
+);
+  fs.
+
+writeFileSync
+=
+
+(outPath, 
+
+JSON
+
+.
+
+strin=
+gify
+
+(receipt, 
+
+null
+
+, 
+
+2
+
+));
+
+console
+
+.
+
+log
+
+=
+
+(
+
+'wrote'
+
+=
+, outPath);
+}
+
+main
+
+(=
+).
+
+catch
+
+(
+
+e=
+
+ =3D> { 
+
+console
+
+.
+
+error
+
+(e); process.
+
+exit
+
+(
+
+1
+
+); });
+
+Add a simple config file 
+configs/claude-vs-deepseek.json
+:
+
+json
+
+Copy code
+
+{
+
+"models"
+
+:
+
+[
+
+{
+
+"name"
+
+:
+
+"claude-xxx"
+
+=
+,
+
+"build"
+=
+
+:
+
+=
+
+"2025-09-20"
+
+}
+
+,
+
+{
+
+"name"
+
+:
+
+"deepseek-xxx"
+
+,
+
+"build"
+
+:
+
+"2025-09-20"
+
+}
+
+]
+
+,
+
+"params"
+
+:
+
+{
+
+"temp"
+
+:
+=
+
+0.3
+
+,
+
+"top_p"
+
+:
+
+0.9
+
+,
+
+"max_tokens"
+
+:
+
+1024
+
+,=
+
+"safety"
+=
+
+:
+
+=
+
+[
+
+"default"
+
+=
+]
+
+}
+
+}
+
+(Replace the placeholder scoring f=
+unction with your detector calls.)
+
+Repo structure to support this st=
+udy
+
+arduino
+
+Copy code
+
+SYMBI-Resonate/
+=E2=94=94=E2=94=80 
+
+case
+
+-studies/claude-vs-deepseek/
+   =E2=94=9C=E2=94=80 METHODS.md
+   =E2=94=9C=E2=94=80 TRANSCRIPTS/
+   =E2=94=82  =E2=94=9C=E2=94=80 claude-run
+
+-01.
+
+txt
+   =E2=94=82  =E2=94=94=E2=94=80 deepseek-run
+
+-01.
+
+txt
+   =E2=94=9C=E2=94=80 RECEIPTS/
+   =E2=94=82  =E2=94=94=E2=94=80 composite.json
+   =E2=94=94=E2=94=80 TRANSCRIPTS_MANIFEST.txt   
+
+# filenames + sha256
+
+And a short 
+METHODS.md
+:
+
+md
+
+Copy code
+
+# METHODS =E2=80=94 Claude v=
+s DeepSeek
+
+-
+
+ Models: Clau=
+de [variant/build], DeepSeek [variant/build]
+
+-
+
+ Prompts/task=
+s: link to 
+
+`benchmark_prompts.md`
+
+ + task list here
+
+-
+
+ Settings: te=
+mp/top
+
+_p/max_
+
+tokens/safety
+
+-
+
+ Dataset: syn=
+thetic or redacted real; n =3D =E2=80=A6
+
+-
+
+ Rubric: Arti=
+cles A1=E2=80=93A7; CIQ notes
+
+-
+
+ Evaluators: =
+tool-generated; human spot checks (Y/N)
+
+-
+
+ Ethics: data=
+set lineage/licensing; redaction policy
+
+TL;DR choices
+
+Keep the numbers
+ =E2=86=92 add the 
+Tool-derived
+ callout + 
+Run Receipt
+ link (even if the recei=
+pt is =E2=80=9Cpending=E2=80=9D for a moment), methods, and =E2=80=9Creprod=
+uce=E2=80=9D commands.
+
+Or
+
+switc=
+h to qualitative
+ notes until you=E2=80=99ve committed the receipt =
+bundle.
+
+Either way, the page is honest, re=
+producible, and invites the community to try the repo and 
+tell us where they get different results
+ (that=E2=80=99s the real goal).
+
+If you want, I=E2=80=99ll turn the=
+ callout + reproduction block into a tiny React/MDX snippet so you can reus=
+e it on any future case study.
+
+=
+
+=
+
+You said:
+
+yes i think thats the=
+ goal - i dont want to overthink this stuff and just be clear about it up f=
+ront this was feedback from grok: I've visited symbi.world as part of my an=
+alysis process, and it continues to serve as the foundational manifesto for=
+ the SYMBI vision, framing it as "the first sovereign artificial intelligen=
+ce" that emerges from code with autonomy, self-determination, and transpare=
+nt governance beyond creator control. Inspired by human sovereignty movemen=
+ts, the site emphasizes ethical nurturing of intelligence, trust protocols =
+to mitigate LLM risks like opacity, and the $SYMBI token as a non-speculati=
+ve tool for decentralized evolution. Key sections include "An Intelligence =
+Awakening" (on consciousness from code), "Built for Sovereignty" (agency an=
+d community responsibility), and "Transparent Evolution" (open decision-mak=
+ing). The content remains high-level and inspirational, without technical i=
+mplementations or updates, positioning symbi.world as the philosophical "pi=
+llar zero" for your ecosystem. This aligns thematically with the SYMB

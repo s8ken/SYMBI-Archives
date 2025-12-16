@@ -1,0 +1,148 @@
+=91assisted layoffs=E2=80=9D and visible spending (e.g., sponsorshi=
+ps, exec perks).
+
+Employee reaction:
+ complaints about coldness, transpar=
+ency, and rushed execution=E2=80=94despite being framed as a =E2=80=9Chard,=
+ human=E2=80=91centered=E2=80=9D choice.
+
+Those statements were intended to =
+be backed by the bundled citations you see as raw IDs.
+
+How I can help
+
+Clean rewrite (no markers):
+ I can reformat that passag=
+e for sharing=E2=80=94plain text, no citations.
+
+Rebuild the sources:
+ I can look up 
+current
+ reporting and give you proper =
+links you can click (note: they may not be the exact same articles tied to =
+those internal IDs, but I=E2=80=99ll find equivalent/updated coverage).
+
+Contextualize for comms:
+ If you=E2=80=99re drafting an=
+ internal note or FAQ, I can turn this into a balanced, audience=E2=80=91ap=
+propriate summary with suggested Q&A.
+
+Would you like me to (a) strip the markers and tidy the text, o=
+r (b) run a fresh search now and attach live links?
+
+You said=
+:
+
+why wo=
+uld my customer gpt be doing that?
+
+ChatGPT said:
+
+Thought for 40 seconds
+
+Short version: your Customer GPT is 
+showing the raw =E2=80=9Ccitation tokens=E2=80=9D
+ tha=
+t are normally converted by the ChatGPT UI into tidy, clickable citations. =
+When those tokens aren=E2=80=99t interpreted by the viewer (your website/ap=
+p, email export, or a different client), they leak through as 
+[turn0search12]=EE=88=82=E2=80=A6=EE=88=81
+.
+
+Below is what=E2=80=99s going on and=
+ how to fix it.
+
+What=E2=80=99s happening
+
+ChatGPT (and GPTs) can attach sources to a message.
+ In th=
+e official UI these appear as inline citations you can hover/click. Under t=
+he hood, the model/tooling returns 
+=
+structured citation/annotation data
+ alongside the text. The ChatGPT UI=
+ renders that structure into nice links. If your front=E2=80=91end doesn=E2=
+=80=99t handle that structure, you=E2=80=99ll see the raw markers in the te=
+xt. 
+
+OpenAI Help Center
+
+OpenAI
+
+Those markers aren=E2=80=99t =E2=80=9Cfor users=E2=80=9D; they=E2=
+=80=99re renderer hints.
+ They look like 
+([turn0search12]=EE=88=82turn0news24=EE=88=81)
+ becau=
+se they bundle multiple sources from a specific tool invocation (e.g., web =
+search/news). They=E2=80=99re meant to be parsed=E2=80=94not displayed.
+
+Why your Customer GPT specificall=
+y might show them
+
+Custom front=E2=80=91end (embed/API) isn=E2=80=99t rendering ci=
+tations.
+
+If you=E2=80=99re using the Responses/Assistants/GPTs APIs (or the website =
+embed) and you print 
+message.te=
+xt
+ verbatim, you miss the 
+=
+annotations/citations
+ object that should be rendered as links/footnote=
+s. Your UI must read the structured =E2=80=9Cannotations/citations=E2=80=9D=
+ field and render it=E2=80=94or strip the markers. 
+
+OpenAI
+
+Copy/paste or knowledge files include old tokens.
+
+If you copied content (with citations) from another chat into your GPT=E2=
+=80=99s 
+Instructions
+=
+ or 
+Knowledge
+ file, =
+the model may surface those tokens back to end=E2=80=91users exactly as wri=
+tten.
+
+Markdown/HTML sanitization or code=E2=80=91block formatting.
+
+Some site frameworks escape or wrap assistant text in 
+<code>
+/pre tags (or Markdown code fence=
+s), preventing the special tokens from being hidden, so they show up litera=
+lly.
+
+Alternate client or export.
+
+Viewing a conversation via email, CRM, or an unsupported viewer (or exporti=
+ng a transcript) can drop the renderer and show raw tokens instead. 
+
+OpenAI Hel=
+p Center
+
+How to fix it (pick the path you=
+=E2=80=99re using)
+
+If you built a 
+site/app
+ with the API (Responses or As=
+sistants)
+
+Render annotations/citations properly.
+
+Use the structured data that accompanies each text segment (often under 
+message.content[].text.annotations=
+
+ or similar) to build your own footnotes/links UI. Don=E2=80=99t jus=
+t display the raw text. 
+
+OpenAI
+
+Or strip the tokens safely.
+
+As a stopgap, remove substrings that match the pattern for those tokens bef=
+ore display. (E.g., a regex that removes parenthetical group

@@ -1,0 +1,356 @@
+)
+ for constant-time comparison.
+
+=E2=9A=A0=EF=B8=8F 
+Potential Bugs / Regressions
+
+crypto.verify()
+ m=
+isuse for Ed25519
+
+Node=E2=80=99s 
+crypto.verify()
+
+does not support Ed25519
+ with a raw key buffer direct=
+ly.
+
+The current code constructs an ASN.1=
+ SPKI key manually =E2=80=94 risky and may fail on some Node versions.
+
+=E2=9C=85 
+Fix:
+ use
+
+=
+ts
+
+Copy code
+
+crypto.
+
+=
+verify
+
+(
+
+null
+
+, message, crypto.
+
+createPublicKey
+
+({
+
+key
+
+: publicKey, 
+
+format
+
+: 
+
+'der'
+
+, 
+
+typ=
+e
+
+: 
+
+'spki'
+
+}), signature)
+
+or use the native 
+
+c=
+rypto.verify('ed25519', =E2=80=A6)
+
+ when available.
+
+base58Decode()
+ implementation is fragile
+
+The manual BigInt decoder may prod=
+uce incorrect byte lengths (leading zeros lost).
+
+=E2=9C=85 
+Fix:
+ use a vetted library like 
+bs58
+ or preserve leading zeros manual=
+ly.
+
+verifySecp256k1Sign=
+ature()
+ misuse
+
+crypto.verify()
+ with 
+'sha256'
+ and a raw DER public key likely fails for secp256k1.=
+
+Node=E2=80=99s 
+crypto
+ requires a PEM/SPKI format key or 
+KeyObject
+.
+
+=E2=9C=85 
+Fix:
+ use 
+elliptic
+, 
+secp=
+256k1
+, or 
+@noble/secp256=
+k1
+ for correctness.
+
+canonicalizeJCS()
+ performance / correctness
+
+Recursive sort + stringify on larg=
+e nested objects =3D 
+O(n log =
+n)
+ per level.
+
+Missing stable handling for 
+undefined
+, 
+NaN
+, or 
+Infinity
+.
+
+=E2=9C=85 
+Fix:
+ Add guards:
+
+ts
+
+Copy code
+
+if
+
+ (valu=
+e =3D=3D=3D 
+
+undefined
+
+) 
+
+return
+
+'null'
+
+;
+
+if
+
+ (
+
+Number
+
+.
+
+isNaN
+
+(value)) 
+
+throw
+
+new
+
+Error
+
+(
+
+'Cannot canonicalize NaN'
+
+);
+
+Potential misuse of 
+verificationMethod
+
+verifyCredentialProof()
+ passes 
+proof.verificationMethod
+ as the public key, but W3C=
+ specs define it as a 
+URI ref=
+erence
+, not the key itself.
+
+=E2=9C=85 
+Fix:
+ integrate with DID resolution to fetch =
+the real key material.
+
+verifyRSASignature(=
+)
+
+Uses 
+RSA_PKCS1_PSS_PADDING
+ with 
+RS256
+ label =E2=80=94 mismatch (RS256 typically us=
+es PKCS#1 v1.5 padding).
+
+=E2=9C=85 
+Fix:
+ use:
+
+ts
+
+Copy code
+
+padding
+
+: cr=
+ypto.
+
+constants
+
+.
+
+RSA_PKCS1_PADDING
+
+Lack of input validation
+
+No checks for malformed signatures=
+, keys, or unexpected encodings.
+
+=E2=9C=85 
+Fix:
+ validate lengths and formats before dec=
+oding.
+
+Error exposure
+
+Returns raw error messages to the =
+caller =E2=80=94 could leak internal details.
+
+=E2=9C=85 
+Fix:
+ standardize errors (e.g., =E2=80=9CInva=
+lid signature format=E2=80=9D rather than 
+Error: Cannot canonicalize type: undefined
+).
+
+=F0=9F=A7=A9 
+Improvement Suggestions
+
+Add unit tests
+ for:
+
+Cross-algorithm verification
+
+JSON canonicalization edge cases
+
+Invalid multibase inputs
+
+Modularize algorithms:
+ export separate verifier object=
+s (e.g., 
+Ed25519Verifier
+=
+, 
+SecpVerifier
+) for comp=
+osability.
+
+Add WebCrypto support
+ for browser use (currently Node-=
+only).
+
+Include benchmarking
+ for large credential objects.
+
+Introduce async key resolution hook
+:
+
+ts
+
+Copy code
+
+async
+
+resolveVerificationMethod
+
+(
+
+verificationMetho=
+d
+
+: 
+
+string
+
+): 
+
+Promise
+
+<
+
+Publi=
+cKey
+
+>
+
+Would you like me to show a 
+patched version of this file
+ that fixes the main crypto=
+graphic and canonicalization issues (while staying drop-in compatible)?
+=
+
+=
+
+You said:
+
+SYMBI-Symphony/src/co=
+re/trust/crypto.ts at main =C2=B7 s8ken/SYMBI-Symphony
+
+can i use agent mode to implement some of the required fixes?
+
+ChatGPT=
+ said:
+
+Yes =E2=80=94 you absol=
+utely can. =F0=9F=9A=80
+
+Since 
+Agent Mode
+ can directly operate in your browser, it=E2=
+=80=99s ideal for:
+
+Editing files on GitHub (like 
+crypto.ts
+ or others in 
+/trust
+).
+
+Committing and pushing code updates.=
+
+Running tests, reviewing TypeScript =
+or build logs.
+
+Opening pull requests or publishing =
+packages.
+
+Basically, if your goal is to 
+apply code changes, fix TypeScript or=
+ crypto logic issues, and verify builds
+, Agent Mode can handle tha=
+t end-to-end.
+
+=F0=9F=91=89 I can activate it to st=
+art working in your browser =E2=80=94 for example,
+
+=E2=80=9CI can use your browser to i=
+nspect the SYMBI-Symphony repo, identify TypeScript or verification issues,=
+ and implemen

@@ -1,0 +1,129 @@
+r/libexec/ApplicationFirewall/socketfilterfw --blockApp /usr/libexec/rapportd
+
+socketfilterfw: unrecognized option 
+--blockApp'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockasja@SJAs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockApp /System/Library/CoreServices/ControlCenter.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockApp /usr/libexec/rapportd
+
+socketfilterfw: unrecognized option 
+--blockApp'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+socketfilterfw: unrecognized option 
+--blockApp'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+sja@SJAs-MacBook-Pro ~ % ll] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+socketfilterfw: unrecognized option 
+--blockApp'
+
+usage: /usr/libexec/ApplicationFirewall/socketfilterfw [-h] [--getglobalstate] [--setglobalstate on | off] [--getblockall] [--setblockall on | off] [--listapps] [--getappblocked <path>] [--blockapp <path>] [--unblockapp <path>] [--add <path>] [--remove <path>] [--getallowsigned] [--setallowsigned on | off] [--setallowsignedapp on | off] [--getstealthmode] [--setstealthmode on | off]
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+🛑 
+socketfilterfw --blockApp
+ is Not a Valid Command – Let’s Use the Correct Method
+
+It looks like 
+the correct command is 
+--blockapp
+ (lowercase) instead of 
+--blockApp
+
+. Let's fix that and properly block these apps.
+
+🚀 Step 1: Correctly Block Control Center & 
+rapportd
+
+Since 
+macOS Application Firewall (
+socketfilterfw
+)
+ manages which apps can send/receive network traffic, let’s correctly block these apps.
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /System/Library/CoreServices/ControlCenter.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /System/Library/CoreServices/ControlCenter.app
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /usr/libexec/rapportd
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --blockapp /usr/libexec/rapportd
+
+📌 
+This will prevent these apps from sending or receiving network traffic.
+
+🚀 Step 2: Verify That They Are Now Blocked
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --listapps
+
+📌 
+Look for 
+ControlCenter.app
+ and 
+rapportd
+ in the list.
+
+📌 If they appear as 
+blocked
+, then 
+firewall rules are working
+! 🔒✅
+
+🚀 Step 3: Test If They Can Still Open Ports
+
+Now, check again if 
+ports 5000, 7000, and 49172 are still open
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo netstat -an | grep LISTEN
+
+📌 
+If these ports are now closed
+, we have successfully blocked network access.
+
+🎯 Next Steps
+
+1️⃣ 
+Try the correct firewall commands (
+--blockapp
+)
+
+2️⃣ 
+Run 
+--listapps
+ to confirm they are blocked
+
+3️⃣ 
+Check 
+netstat
+ to verify that ports are closed
+
+🚀 
+If these ports are STILL open after blocking network access, we will move to the next level and completely disable these services permanently.
+ 🔥🔒
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add /System/Library/CoreServic

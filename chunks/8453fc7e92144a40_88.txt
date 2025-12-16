@@ -1,0 +1,672 @@
+:
+
+Thought for 35s
+
+Confirmed: the UI =E2=80=9CBondi=
+ng Ritual=E2=80=9D is wired, the model has states/methods, but the 
+backend routes aren=E2=80=99t implemente=
+d
+, so bonding never persists. Here=E2=80=99s a 
+ship-ready patch
+ to make bonding real, a=
+uditible, and reversible.
+
+What this adds (concise)
+
+Routes
+
+PUT /api/agents/:id/bond/initiate=
+
+PUT /api/agents/:id/bond/complete=
+
+ (body: 
+{ decision: "bonde=
+d"|"rejected", notes?, traitsSnapshot? }
+)
+
+Controller logic
+
+Validates state transitions (
+none=
+ =E2=86=92 initiated =E2=86=92 bonded|rejected
+), enforces 
+owner-or-admin
+, appends 
+ledger events
+ (
+agent:<id>
+ session) for tamper-evid=
+ent audit.
+
+(Optional) Model fields
+ if missing: 
+bondingStatus
+, 
+bonding.*
+.
+
+OpenAPI snippet
+, 
+curl tests
+, and a 
+=
+minimal unit test
+.
+
+1) Routes (add)
+
+backend/routes/agent.routes.js
+
+=
+diff
+
+Copy code
+
+ const r =3D require('express').Router();
+ const ctrl =3D require('../controllers/agent.controller');
+
+-const { requireAuth } =3D requi=
+re('../middleware/auth.middleware');
+
++const { requireAuth, requireRol=
+e } =3D require('../middleware/auth.middleware');
+
+ r.use(requireAuth);
+
+ // ... existing agent CRUD ...
+
++// Bonding
+
++// Initiate bonding (owner or a=
+dmin)
+
++r.put('/:id/bond/initiate', ctr=
+l.initiateBonding);
+
++// Complete bonding (owner or a=
+dmin)
+
++r.put('/:id/bond/complete', ctr=
+l.completeBonding);
+
+ module.exports =3D r;
+
+If you prefer hard RBAC, wrap with=
+
+requireRole('admin')
+ or=
+ a custom guard. Below we do 
+=
+owner-or-admin
+ inside controllers.
+
+2) Controllers (add)
+
+backend/controllers/agent.controller.js
+
+(drop these exports at the bottom=
+ or near other handlers)
+
+js
+
+Copy code
+
+const
+
+Agent
+
+ =3D =
+
+require
+
+(
+
+'../models/agent.model'
+
+);
+
+const
+
+=
+
+Ajv
+
+ =3D 
+=
+
+require
+
+(
+
+'ajv'
+
+);
+
+const
+
+ ajv =3D=
+
+new
+
+Ajv
+
+({ 
+
+allErrors
+
+: 
+
+true
+
+, 
+
+removeAdditional
+
+: 
+
+true
+
+ });
+
+const
+
+ { appen=
+dEvent } =3D 
+
+require
+
+(
+
+'../services/ledger.servi=
+ce'
+
+);
+
+function
+
+isOwnerOrAdmin
+
+(
+
+req, agentDoc
+
+) {
+
+const
+
+ userI=
+d =3D 
+
+String
+
+(req.
+
+user
+
+?.
+
+_id
+
+ || 
+
+''
+
+);
+
+const
+
+ owner=
+ =3D agentDoc.
+
+owner
+
+ || agentDoc.
+
+user
+
+ || agentDoc.
+
+created=
+By
+
+;
+
+const
+
+ isOwn=
+er =3D owner && 
+
+Stri=
+ng
+
+(owner) =3D=3D=3D userId;
+
+const
+
+ isAdm=
+in =3D 
+
+Array
+
+.
+
+isArray
+
+(req.
+
+user
+
+?.
+
+roles
+
+)=
+ && req.
+
+user
+
+.
+
+roles
+
+.
+
+includes
+
+=
+
+(
+
+'admin'
+
+=
+);
+
+return
+
+ isOw=
+ner || isAdmin;
+}
+
+exports
+
+.
+
+initiateBonding
+
+ =
+=3D 
+
+async
+
+ (re=
+q, res, next) =3D> {
+
+try
+
+ {
+
+const
+
+ age=
+nt =3D 
+
+await
+
+ =
+
+Agent
+
+.
+
+findById
+
+(req.
+
+params
+
+=
+.
+
+id
+
+);
+
+if
+
+ (!agen=
+t) 
+
+return
+
+ res=
+.
+
+status
+
+(
+
+404
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+=
+
+'agent_not_found'
+
+ });
+
+if
+
+ (!
+
+isOwnerOrAdmin
+
+(req, agent)) 
+
+return
+
+ res.
+
+status
+
+(
+
+403
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+'forbidden'
+
+=
+ });
+
+// Validate transition
+=
+
+const
+
+ sta=
+tus =3D agent.
+
+bondingStatus
+
+ || 
+
+'none'
+
+;
+
+if
+
+ (statu=
+s !=3D=3D 
+
+'none'
+
+) 
+
+return
+
+ re=
+s.
+
+status
+
+(
+
+409
+
+).
+
+json
+
+({ 
+
+error
+
+: 
+
+'invalid_state'
+
+, 
+
+from
+
+: status, 
+
+want
+
+: 
+
+'none->initiated'
+
+ });
+
+// Use model method if presen=
+t, else do it here
+
+if
+
+ (
+
+typeof
+
+ agent.
+
+initiateBonding
+
+ =
+=3D=3D=3D 
+
+'function'
+
+=
+
+) {
+
+await
+
+ a=
+gent.
+
+initiateBonding
+
+(req.
+
+user
+
+?.
+
+_id
+
+);
+    } 
+
+else
+
+ {
+      agent.
+
+bondingStatus
+=
+
+ =3D 
+
+'initiated'
+
+;
+      agent.
+
+bonding
+
+ =3D {
+        ...(agent.
+
+bonding
+=
+
+ || {}),
+
+initiatedAt
+
+: 
+
+new
+
+Date
+
+(),
+
+initiatedBy
+
+: req.
+
+user
+
+?.
+
+_id
+
+      };
+
+await
+
+ a=
+gent.
+
+save
+
+();
+    }
+
+// Ledger (tamper-evident)
+
+try
+
+ {
+
+await
+
+appendEvent
+
+({
+
+session_id
+
+: 
+
+`agent:
+${agent._id}
+
+`,
+
+timestamp
+
+: 
+
+new
+
+Date
+
+().
+=
+
+toISOString
+
+(=
+),
+
+prompt
+
+: =
+
+`[BOND] initiate`
+
+,
+
+response
+
+=
+: 
+
+`agent 
+${
+String
+
+(=
+agent._id)} bonding initiated by 
+
+${=
+
+String
+
+(req.user?._=
+id || 
+
+'system'
+
+=
+)}`,
+
+metadata
+
+=
+: { 
+
+bonding
+
+: { 
+
+action
+
+: 
+
+'initiate'
+
+ } },
+
+analysis
+
+=
+: { 
+
+actions
+
+: [
+
+'bonding_initiated'
+
+] }
+      });
+    } 
+
+catch
+
+ (=
+e) { 
+
+/* non-fatal */
+
+ }
+
+return
+
+ re=
+s

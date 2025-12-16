@@ -1,0 +1,184 @@
+ to:
+
+a=
+rduino
+
+Copy code
+
+http:
+
+//localhost:3000
+
+Then select your agent (e.g. 
+Eliza
+ or 
+symbi-assistant
+ if renamed), and test with somethi=
+ng like:
+
+p=
+laintext
+
+Copy code
+
+List all my GitHub repositories.
+
+or
+
+p=
+laintext
+
+Copy code
+
+Analyze the repo s8ken/Symbi-core.
+
+We=E2=80=99ll confirm GitHub access, then move to shell + filesys=
+tem powers. Let=E2=80=99s go!
+
+=
+
+You said:
+
+=
+
+=
+
+[2025-=
+07-23 21:52:10.511 +1000] ERROR: symbi-assistant (7820f300-d730-0fce-bf97-8=
+29548a35351) - Failed to register service browser: launch: Executable doesn=
+'t exist at /Users/admin/Library/Caches/ms-playwright/chromium_headless_she=
+ll-1155/chrome-mac/headless_shell
+=E2=95=94=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=97
+=E2=95=91 Looks like Playwright Test or Playwright was just installed or up=
+dated. =E2=95=91
+=E2=95=91 Please run the following command to download new browsers:       =
+       =E2=95=91
+=E2=95=91                                                                  =
+       =E2=95=91
+=E2=95=91     npx playwright install                                       =
+       =E2=95=91
+=E2=95=91                                                                  =
+       =E2=95=91
+=E2=95=91 <3 Playwright Team                                            =
+          =E2=95=91
+=E2=95=9A=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=
+=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=
+=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=
+=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=90=E2=95=9D
+    agentName: "symbi-assistant "
+    logLevel: "info"
+[2025-07-23 11:52:11] INFO: Ngrok service not available - webhooks will onl=
+y work with public URLs
+
+ChatGPT said:
+
+Ahh! Sneaky=E2=80=
+=94but now we know 
+exactly
+ what=E2=80=99s happening.
+
+Your agent 
+
+Eliza
+
+ starts cleanly, but 
+
+symbi-assistant
+
+ (your cus=
+tom one) is still referencing the 
+old Playwright browser path
+:
+
+Copy code
+
+=
+
+chromium_headless_shell-1155
+
+=F0=9F=94=A7 Why this is happening
+
+ElizaOS is hardcoded (for now) to lo=
+ok for a specific versioned headless shell =E2=80=94 but your system has in=
+stalled:
+
+Copy code
+
+=
+
+chromium-1181
+
+So the mismatch continues unless we:=
+
+Trick it
+ into seeing what it wants
+
+Disable the plugin
+ (if not needed yet)
+
+=E2=9C=85 Option 1: Create a symbol=
+ic link (fixes it manually)
+
+b=
+ash
+
+Copy code
+
+cd
+
+ /U=
+sers/admin/Library/Caches/ms-playwright
+
+ln
+
+ -s chromi=
+um-1181 chromium_headless_shell-1155
+
+This creates a fake alias so ElizaOS=
+ thinks the exact version it wants exists =E2=80=94 and uses the working br=
+owser you installed.
+
+=F0=9F=A7=BC Option 2: Disable the =
+browser plugin
+
+If you're not using 
+@elizaos/plugin-browser
+ yet:
+
+Go to 
+localhost:3000
+
+Open your agent: 
+symbi-assistant
+
+Go to 
+Plugins
+
+Toggle off 
+plugin-browser
+
+Click 
+Save
+
+Then restart:
+
+bash
+
+Copy code
+
+elizaos dev
+
+Either fix will stop that error for good. Let me know w

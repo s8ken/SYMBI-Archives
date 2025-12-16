@@ -1,0 +1,108 @@
+se the format string "timestamp > $((date +%s) - 600) AND eventMessage contains "camera""): timestamp > $((date +%s) - 600) AND eventMessage contains "camera"
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'timestamp > $((date +%s) - 600) AND eventMessage contains "camera"' --info
+
+log: Bad predicate (Unable to parse the format string "timestamp > $((date +%s) - 600) AND eventMessage contains "camera""): timestamp > $((date +%s) - 600) AND eventMessage contains "camera"
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'eventMessage contains "camera" AND timestamp > "2025-03-08 05:00:00"' --info
+
+log: warning: ./system_logs.logarchive present but reading from system log store.
+Filtering the log data using "composedMessage CONTAINS "camera" AND date > "2025-03-08 05:00:00""
+Skipping debug messages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+log: runtime predicate failure - invalid predicate:
+composedMessage CONTAINS "camera" AND date > "2025-03-08 05:00:00"
+(likely a type mismatch)
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+It seems the error is related to the format of the 
+timestamp
+ predicate in your command. Unfortunately, 
+log show
+ requires a specific format for the timestamp that needs to be adjusted. Let's correct the command to use the proper format.
+
+Try the following command, which will use a proper predicate for filtering logs with the "camera" message:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera" AND timestamp >= "2025-03-08 05:00:00" '
+
+ --info
+
+Alternatively, to capture logs for the last 10 minutes, you can directly calculate the timestamp using the following approach:
+
+Open a terminal and run:
+
+bash
+
+Copy
+
+date
+
+ -u -v -10M 
+
+"+%Y-%m-%d %H:%M:%S"
+
+This will give you the timestamp 10 minutes ago in the correct format.
+
+Then you can use that output in the 
+log show
+ command like so:
+
+bash
+
+Copy
+
+log
+
+ show --predicate 
+
+'eventMessage contains "camera" AND timestamp >= "YOUR_TIMESTAMP_HERE"'
+
+ --info
+
+Replace 
+"YOUR_TIMESTAMP_HERE"
+ with the timestamp value from the 
+date
+ command.
+
+Let me know if this works or if you need further assistance!
+
+You said:
+
+Last login: Sat Mar  8 06:02:24 on ttys000
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'timestamp > $((date +%s) - 600) AND eventMessage contains "camera"' --info
+
+log: Bad predicate (Unable to parse the format string "timestamp > $((date +%s) - 600) AND eventMessage contains "camera""): timestamp > $((date +%s) - 600) AND eventMessage contains "camera"
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'timestamp > $((date +%s) - 600) AND eventMessage contains "camera"' --info
+
+log: Bad predicate (Unable to parse the format string "timestamp > $((date +%s) - 600) AND eventMessage contains "camera""): timestamp > $((date +%s) - 600) AND eventMessage contains "camera"
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'eventMessage contains "camera" AND timestamp > "2025-03-08 05:00:00"' --info
+
+log: warning: ./system_logs.logarchive present but reading from system log store.
+Filtering the log data using "composedMessage CONTAINS "camera" AND date > "2025-03-08 05:00:00""
+Skipping debug messages, pass --debug to include.
+Timestamp                       Thread     Type        Activity             PID    TTL  
+log: runtime predicate failure - invalid predicate:
+composedMessage CONTAINS "camera" AND date > "2025-03-08 05:00:00"
+(likely a type mismatch)
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % 
+lcl@LCLs-MacBook-Pro ~ % log show --predicate 'eventMessage contains "camera" AND timestamp >= "2025-03-08 05:00:00" ' --info
+
+log: warning: ./system_logs.logarchive present but reading from system log store.
+Filtering the log data using "composedMessage CONTAINS "camera" AND date >= "2025-03-08 05:00:00""
+Skipping debug messages, pass --debug to 

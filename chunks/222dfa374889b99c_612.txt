@@ -1,0 +1,78 @@
+:image/svg+xml,%3csvg xmlns=3D'http://www.w3.org/2000=
+/svg' fill=3D'none' viewBox=3D'0 0 16 16'%3e%3cpath stroke=3D'white' stroke=
+-linecap=3D'round' stroke-linejoin=3D'round' stroke-width=3D'2' d=3D'M4 8h8=
+'/%3e%3c/svg%3e"); background-position: 50% center; background-repeat: no-r=
+epeat; background-size: 100% 100%; border-color: rgba(0, 0, 0, 0); }
+  @media (forced-colors: active) {
+  [type=3D"checkbox"]:indeterminate { appearance: auto; }
+}
+  [type=3D"checkbox"]:indeterminate:hover, [type=3D"checkbox"]:indeterminat=
+e:focus { background-color: currentcolor; border-color: rgba(0, 0, 0, 0); }
+  [type=3D"file"] { background: unset; border-color: inherit; font-size: un=
+set; line-height: inherit; border-width: 0px; border-radius: 0px; padding: =
+0px; }
+  [type=3D"file"]:focus { outline: -webkit-focus-ring-color auto 1px; }
+  .text-mkt-h1, .text-mkt-h2, .text-mkt-h3, .text-mkt-h4, .text-mkt-h5, .te=
+xt-mkt-h6 { --tw-font-weight: 500; }
+}
+
+@layer components {
+  table.mkt-bordered { border-style: var(--tw-border-style); border-width: =
+1px; border-color: var(--border-medium); }
+  table.mkt-bordered :where(tr) { border-style: var(--tw-border-style); bor=
+der-width: 1px; border-color: var(--border-medium); }
+  table.mkt-bordered :where(td, th) { border-style: var(--tw-border-style);=
+ border-width: 1px; border-color: var(--border-medium); padding: calc(var(-=
+-spacing)*2) !important; }
+  @property --mkt-scrollable-mask-left { syntax: "
+"; inherits: false=
+; initial-value: black; }
+  @property --mkt-scrollable-mask-right { syntax: "
+"; inherits: fals=
+e; initial-value: black; }
+  .mkt-style-scrollbars { scrollbar-gutter: stable; }
+  .mkt-style-scrollbars::-webkit-scrollbar { appearance: none; background-c=
+olor: rgba(0, 0, 0, 0); width: 16px; }
+  .mkt-style-scrollbars::-webkit-scrollbar-corner { background-color: rgba(=
+0, 0, 0, 0); }
+  .mkt-style-scrollbars::-webkit-scrollbar-thumb { background-clip: padding=
+-box; background-color: var(--scrollbar-color); border: 6px solid rgba(0, 0=
+, 0, 0); border-radius: 9999px; }
+  .mkt-style-scrollbars::-webkit-scrollbar-thumb:hover { background-color: =
+var(--scrollbar-color-hover); }
+  .mkt-fade-scrollview-vertically { mask-image: linear-gradient(90deg, rgba=
+(0, 0, 0, 0) 0%, rgb(255, 255, 255) 97%, rgb(255, 255, 255) 100%), linear-g=
+radient(rgb(0, 0, 0) 75%, rgba(0, 0, 0, 0.01) 100%); }
+  .mkt-scrollable { overscroll-behavior-x: contain; --tw-duration: .3s; mas=
+k-image: linear-gradient(to right,var(--mkt-scrollable-mask-left)0%,black 2=
+rem,black calc(100% - 2rem),var(--mkt-scrollable-mask-right)100%); transiti=
+on-property: --mkt-scrollable-mask-left, --mkt-scrollable-mask-right; trans=
+ition-duration: 0.3s; transition-timing-function: cubic-bezier(0.4, 0, 0.2,=
+ 1); overflow: auto clip; }
+  .mkt-scrollable::-webkit-scrollbar { display: none; }
+  @property --top-fade { syntax: "
+"; inherits: false; initial-value=
+: 0; }
+  @property --bottom-fade { syntax: "
+"; inherits: false; initial-va=
+lue: 0; }
+  @keyframes edge-fade {=20
+  0% { --top-fade: 0; }
+  3%, 100% { --top-fade: var(--edge-fade-distance,.5lh); }
+  0%, 97% { --bottom-fade: var(--edge-fade-distance,.5lh); }
+  100% { --bottom-fade: 0; }
+}
+  @supports (scroll-timeline:--scroll-fade) {
+  .vertical-scroll-fade-mask { mask: linear-gradient(to bottom in oklch,#80=
+808000,#cecece var(--top-fade)calc(100% - var(--bottom-fade)),#80808000); s=
+croll-timeline: --scroll-fade y; animation-name: edge-fade; animation-timin=
+g-function: linear; animation-fill-mode: both; animation-timeline: --scroll=
+-fade; }
+  @supports (color:lab(0% 0 0)) {
+  .vertical-scroll-fade-mask { mask: linear-gradient(to bottom in oklch,lab=
+(53.6% 0 0/0),lab(82.6% .0000298023 -.0000119209) var(--top-fade)calc(100% =
+- var(--bottom-fade)),lab(53.6% 0 0/0)); }
+}
+  .horizontal-scroll-fade-mask { mask: linear-gradient(to right in oklch,#8=
+0808000,#cecece var(--top-fade)calc(100% - var(--bottom-fade)),#80808000); =
+scroll-timeline: --scroll-fade x; animation-name: edg

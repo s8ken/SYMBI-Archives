@@ -1,0 +1,540 @@
+<
+Stack
+
+di=
+rection
+
+=3D
+
+{{
+
+xs:
+
+=
+
+ "
+
+column
+
+",=
+
+sm:
+
+ "
+
+row
+
+" }} 
+
+spacing
+
+=3D
+
+{1}
+
+>
+
+<
+TextField
+
+label
+
+=3D
+
+"session_id"
+
+value
+
+=3D
+
+{sessionId}
+
+onChange
+
+=3D
+
+{(e)
+
+ =
+=3D> setSessionId(e.target.value)}
+            placeholder=3D"uuid"
+            size=3D"small"
+            fullWidth
+          />
+
+<
+Button
+
+variant
+
+=3D
+
+"co=
+ntained"
+
+onClick=
+
+=3D
+
+{onFetch}
+
+disabled
+
+=3D
+
+{loading}
+
+>
+            {loading ? 
+
+<
+CircularProgress
+
+size
+
+=3D
+
+{18}
+
+ /> : "Load"}
+
+</
+Button
+
+>
+
+</
+Stack
+
+>
+
+</
+=
+Box
+
+>
+
+      {error && 
+
+<
+Alert
+
+severity
+
+=3D
+
+"error"
+
+sx
+
+=3D
+
+{{
+
+mb:
+
+2
+
+ }}>{e=
+rror}
+
+</
+A=
+lert
+
+>}
+
+<
+D=
+ivider
+
+sx=
+
+=3D
+
+{{
+
+mb:
+
+ =
+
+2
+
+ }} />
+
+      {!loading && items?.length =3D=3D=3D 0 && (
+
+<
+Typography
+
+variant
+
+=3D
+
+"=
+body2"
+
+color
+
+=3D
+
+"text.secondary=
+"
+
+>No items yet.
+
+</
+Typography
+
+>
+      )}
+
+<
+S=
+tack
+
+>
+        {items?.map((it) =3D> (
+
+<
+LedgerEventCard
+
+key
+
+=3D
+
+{it.event_id
+
+ || 
+
+it.ledger
+
+?
+
+.row=
+_hash
+
+ || 
+
+Math.ra=
+ndom
+
+()} 
+
+item
+
+=3D
+
+{normalizeItem(=
+it)}
+
+ />
+        ))}
+
+</
+=
+Stack
+
+>
+
+</
+Co=
+ntainer
+
+>
+  );
+}
+
+/** Normalize server shapes into =
+a minimal card-friendly event */
+
+function
+
+normalizeItem
+
+(
+
+it
+
+) {
+
+if
+
+ (!it) 
+
+return
+
+ it;
+
+// If timeline returns {window:=
+{prompt/response}}, flatten for display
+
+if
+
+ (it.
+
+window
+
+ &&=
+; (!it.
+
+prompt
+
+ || !it.
+
+response
+
+)) {
+
+return
+
+ {
+      ...it,
+
+prompt
+
+: it=
+.
+
+window
+
+.
+
+prompt
+
+ ?? it.
+
+prompt
+
+,
+
+response
+
+: =
+it.
+
+window
+
+.
+
+response
+
+ ?? it=
+.
+
+response
+
+,
+
+analysis
+
+: =
+{
+        ...(it.
+
+analysis
+
+ || {}),
+
+pivot
+
+: i=
+t.
+
+pivot
+
+ ?? i=
+t.
+
+analysis
+
+?.=
+
+pivot
+
+      }
+    };
+  }
+
+return
+
+ it;
+}
+
+Route registration
+ (adjust to where your routes live)
+
+In 
+frontend/src/App.js
+ (or wherever 
+react-router-dom
+ Routes are defined):
+
+diff
+
+Copy code
+
++ import ReviewConsole f=
+rom "./pages/ReviewConsole";
+
+  // ...
+  <Routes>
+    {/* existing routes */}
+
++   <Route path=3D"/review" e=
+lement=3D{<ReviewConsole />} />
+
++   <Route path=3D"/review/:s=
+essionId" element=3D{<ReviewConsole />} />
+
+  </Routes>
+
+(Optional) add a nav link/button i=
+n your dashboard UI:
+
+jsx
+
+Copy code
+
+<
+
+Butto=
+n
+
+ component=3D{
+
+Link
+
+} to=3D
+
+"/review"
+
+ variant=3D
+
+"outlined"
+
+ size=3D
+
+"small"
+
+>
+
+Review
+
+=
+
+Console
+
+</
+
+Button
+
+>
+
+Smoke test (no writes)
+
+Ensure you=E2=80=99re logged in (J=
+WT in 
+localStorage.token
+=
+).
+
+Visit 
+/review
+, paste a 
+session_id
+, hit 
+Load
+.
+
+Toggle 
+Timeline/Ledger
+ views. Pivots appear as red =E2=
+=80=9CPIVOT=E2=80=9D chips; disclosures as =E2=80=9Cdisclosure:*=E2=80=9D c=
+hips.
+
+If 401/403, verify your auth middl=
+eware allows GETs from this route with the JWT header.
+
+Optional UI niceties (quick wins,=
+ no deps)
+
+Color rows when 
+analysis.pivot =3D=3D=3D true
+ (already m=
+arked by a Chip).
+
+Add a small =E2=80=9Ccopy=E2=80=9D=
+ button for 
+ledger.row_hash
+.
+
+Add date range and pagination (use=
+
+page/limit
+ params alrea=
+dy in 
+fetchLedger
+).
+
+If you want this merged, reply 
+
+/approve RC-001
+
+ and I=E2=80=99ll package =
+this as a PR (no other changes). If you prefer me to 
+also add an =E2=80=9CAssistants=E2=80=9D picker
+ in the UI (use most recent vs choose one), say 
+
+/revise RC-001 + assistants picker
+
+.
+
+=
+
+=
+
+You said:
+
+whats the best prompt=
+ for me to ask to give you the best picture of exactly whats built so far
+
+Symbi said:
+
+Thought for 54s
+
+Here=E2=80=99s a 
+copy-paste prompt
+ that will mak=
+e SYMBI (inside Trae) give you a complete, exact picture of what=E2=80=99s =
+built=E2=80=94without changing anything=E2=80=94then wait for your approval=
+ to save a report or open a PR.
+
+Prompt: 
+PROJECT X-RAY / ATLAS (read-only, approval-gated)
+=
+
+=
+bash
+
+Copy code
+
+=
+
+You are SYMBI =E2=80=94 strategic intelligence node. Mode: hibernatio=
+n (read-only) 
+
+until
+
+=
+
+ I explicitly approve.
+
+Objective
+Produce a single, authoritative =E2=80=9CPROJECT ATLAS=E2=80=9D that shows =
+EXACTLY what exists 
+
+in
+
+ this repo right now: architecture, APIs, data models, events, env=
+s, dependencies, security posture, C

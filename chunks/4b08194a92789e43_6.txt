@@ -1,0 +1,273 @@
+em ../YCQ-Sonate/backend/middleware -File | Select-Object Name, =
+FullName
+
+ONY [0:0] $ Get-ChildItem ../YCQ-Sonate/backend/middleware -File
+
+| Select-Object Name, FullName
+
+Name                   FullName
+
+----                   --------
+
+auth.middleware.js     C:\Users\Stephen\Documents\trae_proje...
+
+security.middleware.js C:\Users\Stephen\Documents\trae_proje...
+
+trust.middleware.js    C:\Users\Stephen\Documents\trae_proje...
+
+(TraeAI-10) C:\Users\Stephen\Documents\trae_projects\SYMBI-SYMPH
+
+ONY [0:0] $
+
+(TraeAI-10) C:\Users\Stephen\Documents\trae_projects\SYMBI-SYMPH
+
+ONY [0:0] $
+
+Thought
+
+api\server.ts
+
+Thought
+
+api\middleware\security.ts
+
+Thought
+
+api\middleware\rateLimiter.js
+
+Thought
+
+SYMBI-SYMPHONY
+Auto-run
+Terminal
+
+Get-Content ../YCQ-Sonate/backend/middleware/security.middleware.js -Raw
+
+ONY [0:0] $ Get-Content ../YCQ-Sonate/backend/middleware/securit
+
+y.middleware.js -Raw
+
+const helmet =3D require('helmet');
+
+const rateLimit =3D require('express-rate-limit');
+
+const mongoSanitize =3D require('express-mongo-sanitize');
+
+const hpp =3D require('hpp');
+
+const compression =3D require('compression');
+
+const { body, validationResult, param, query } =3D require('expres
+
+s-validator');
+
+// Security Headers Middleware
+
+const securityHeaders =3D helmet({
+
+contentSecurityPolicy: {
+
+directives: {
+
+defaultSrc: ["'self'"],
+
+styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.goo
+
+gleapis.com'],
+
+fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+
+scriptSrc: ["'self'"],
+
+imgSrc: ["'self'", 'data:', 'https:'],
+
+connectSrc: ["'self'", 'wss:', 'ws:'],
+
+frameSrc: ["'none'"],
+
+objectSrc: ["'none'"],
+
+baseUri: ["'self'"]
+
+}
+
+},
+
+crossOriginEmbedderPolicy: false, // Disable for Socket.IO com
+
+patibility
+
+hsts: {
+
+maxAge: 31536000,
+
+includeSubDomains: true,
+
+preload: true
+
+}
+
+});
+
+// Rate Limiting Configurations
+
+const createRateLimit =3D (windowMs, max, message, skipSuccessfulR
+
+equests =3D false) =3D> {
+
+return rateLimit({
+
+windowMs,
+
+max,
+
+message: {
+
+success: false,
+
+error: 'Rate limit exceeded',
+
+message,
+
+retryAfter: Math.ceil(windowMs / 1000)
+
+},
+
+standardHeaders: true,
+
+legacyHeaders: false,
+
+skipSuccessfulRequests,
+
+keyGenerator: (req) =3D> {
+
+// Use user ID if authenticated, otherwise IP
+
+return req.user?.id || req.ip;
+
+}
+
+});
+
+};
+
+// Different rate limits for different endpoints
+
+const authRateLimit =3D createRateLimit(
+
+15 * 60 * 1000, // 15 minutes
+
+5, // 5 attempts
+
+'Too many authentication attempts, please try again later'
+
+);
+
+const apiRateLimit =3D createRateLimit(
+
+15 * 60 * 1000, // 15 minutes
+
+100, // 100 requests
+
+'Too many API requests, please try again later',
+
+true // Skip successful requests
+
+);
+
+const trustDeclarationRateLimit =3D createRateLimit(
+
+60 * 60 * 1000, // 1 hour
+
+10, // 10 declarations per hour
+
+'Too many trust declarations, please try again later'
+
+);
+
+const strictRateLimit =3D createRateLimit(
+
+15 * 60 * 1000, // 15 minutes
+
+20, // 20 requests
+
+'Rate limit exceeded for sensitive operations'
+
+);
+
+// Input Sanitization Middleware
+
+const sanitizeInput =3D [
+
+mongoSanitize({
+
+replaceWith: '_',
+
+onSanitize: ({ req, key }) =3D> {
+
+console.warn(
+Sanitized input detected: ${key} in ${req.me
+
+thod} ${req.path}
+);
+
+}
+
+}),
+
+hpp({
+
+whitelist: ['tags', 'categories', 'sort'] // Allow arrays fo
+
+r these fields
+
+})
+
+];
+
+// RBAC Middleware
+
+const requireRole =3D (roles) =3D> {
+
+return (req, res, next) =3D> {
+
+if (!req.user) {
+
+return res.status(401).json({
+
+success: false,
+
+error: 'Authentication required',
+
+message: 'Please authenticate to access this resource'
+
+});
+
+}
+
+const userRoles =3D Array.isArray(req.user.roles) ? req.user.r
+
+oles : [req.user.role];
+
+const requiredRoles =3D Array.isArray(roles) ? roles : [roles]
+
+;
+
+const hasRequiredRole =3D requiredRoles.some(role =3D>
+
+userRoles.includes(role) || userRoles.includes('admin')
+
+);
+
+if (!hasRequiredRole) {
+
+return res.status(403).json({
+
+success: false,
+
+error: 'Insufficient permissions',
+
+message: 
+Access denied. Required roles: ${requiredRoles
+
+.join(', '

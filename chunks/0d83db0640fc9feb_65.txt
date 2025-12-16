@@ -1,0 +1,117 @@
+access.
+
+Change all passwords immediately, including Apple ID, Zoom, and Telegram.
+
+Consider doing a full macOS reinstall to remove any deep-rooted malware.
+
+Next Steps
+
+If you want me to 
+analyze your system logs
+ to pinpoint the exact issue, I can guide you through 
+collecting and reviewing logs step by step
+.
+
+If you want a 
+real-time monitoring tool
+ to detect further camera/microphone usage, I can help set that up too.
+
+Let me know how you want to proceed! ð¨
+
+You said:
+
+Last login: Sat Mar  8 05:29:07 on ttys000
+You have mail.
+lcl@LCLs-MacBook-Pro ~ % ls /Applications | grep -i telegram
+
+lcl@LCLs-MacBook-Pro ~ % defaults read ~/Library/Preferences/com.apple.Safari.plist
+defaults read ~/Library/Application\ Support/Google/Chrome/Local\ State
+
+2025-03-08 05:40:54.787 defaults[8038:669507] 
+Domain /Users/lcl/Library/Preferences/com.apple.Safari.plist does not exist
+2025-03-08 05:40:54.796 defaults[8039:669510] 
+Domain /Users/lcl/Library/Application Support/Google/Chrome/Local State does not exist
+lcl@LCLs-MacBook-Pro ~ % rm -rf ~/Library/Caches/Google/
+rm -rf ~/Library/Application\ Support/Google/
+
+lcl@LCLs-MacBook-Pro ~ % netstat -an | grep ESTABLISHED
+
+tcp4       0      0  100.112.1.76.49817     104.17.108.108.443     ESTABLISHED
+tcp4       0      0  100.112.1.76.49807     34.149.211.227.443     ESTABLISHED
+tcp4       0      0  192.168.1.7.49192      104.17.108.108.443     ESTABLISHED
+tcp4       0      0  192.168.1.7.49170      104.17.108.108.443     ESTABLISHED
+tcp4       0      0  100.112.1.76.60141     17.248.219.67.443      ESTABLISHED
+tcp4       0      0  100.112.1.76.60138     104.18.41.158.443      ESTABLISHED
+tcp4       0      0  100.112.1.76.60137     3.233.158.24.443       ESTABLISHED
+tcp4       0      0  100.112.1.76.60023     104.18.32.47.443       ESTABLISHED
+tcp4       0      0  100.112.1.76.59793     17.57.145.37.5223      ESTABLISHED
+tcp4       0      0  100.112.1.76.59773     104.18.32.47.443       ESTABLISHED
+tcp4       0      0  100.112.1.76.59616     104.18.32.47.443       ESTABLISHED
+lcl@LCLs-MacBook-Pro ~ % 
+
+ChatGPT said:
+
+Based on the output from your commands, here are some insights and next steps:
+
+Telegram Check:
+
+You confirmed that there is 
+no Telegram app
+ installed on your Mac (
+ls /Applications | grep -i telegram
+ returned nothing). This is good news in terms of ruling out any obvious Telegram apps being involved.
+
+Safari and Chrome Preferences:
+
+You tried to check 
+Safari
+ and 
+Chrome
+ preferences, but the directories for their settings do not exist. This could indicate that you do not have those browsers installed or configured in a standard way. You can manually inspect the app configurations later if necessary.
+
+Cache Cleanup:
+
+You successfully 
+removed Google Chrome's cached data
+ (
+rm -rf ~/Library/Caches/Google/
+ and 
+rm -rf ~/Library/Application\ Support/Google/
+). This would have cleaned up any residual data associated with Chrome, including any configurations or cookies that might be used for spying.
+
+Network Connections:
+
+The 
+netstat
+ command shows several 
+ESTABLISHED TCP connections
+ to various remote IPs, many of which are communicating over 
+HTTPS (443)
+. These are likely legitimate services like web servers, but they could also indicate connections to services used for surveillance or remote control.
+
+Hereâs a breakdown of the 
+remote connections
+:
+
+104.17.108.108, 34.149.211.227, 104.18.41.158
+: These IPs belong to 
+cloud services
+ (likely from Cloudflare or similar providers). These are typical for web traffic, but they could also represent connections to services used to track or monitor activity.
+
+17.57.145.37, 3.233.158.24, 104.18.32.47
+: These are other 
+cloud-based IP addresses
+, possibly related to various web services or remote access.
+
+Next steps:
+
+Identify suspicious IPs
+:
+
+You can use an online IP lookup tool (like 
+ipinfo.io
+ or 
+whois.domaintools.com
+) to get details about these IP addresses and determine if any belong to suspicious or unknown services.
+
+C

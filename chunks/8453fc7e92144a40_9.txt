@@ -1,0 +1,740 @@
+ntract (
+.rules
+)
+
+Create 
+.symbi/.rules
+ at =
+the repo root:
+
+ini
+
+Copy code
+
+# SYMBI Behavior Constraint=
+s (local-only)
+
+identity
+
+ =3D 
+
+"SYMBI =E2=80=94 strategic intelligen=
+ce node; enforce protocol & safety."
+
+allow.tools
+
+ =3D =
+[
+
+"mcp:fs.read"
+
+=
+, 
+
+"mcp:git.status"
+
+, 
+
+"mcp:http.fetch"
+
+, 
+
+"mcp:cms.post"
+
+, 
+
+"mcp:vercel.deploy"
+
+, 
+
+"mcp:railway.de=
+ploy"
+
+, 
+
+"mcp:sh=
+ell.run.safe"
+
+]
+
+deny.tools
+
+  =3D =
+[
+
+"mcp:fs.delete"
+
+, 
+
+"mcp:shell.run.raw"
+
+]
+
+allow.net_out
+
+ =
+=3D [
+
+"api.vercel.com"
+
+, 
+
+"backboard.getrailway.app=
+"
+
+, 
+
+"api.sanity=
+.io"
+
+, 
+
+"registr=
+y.npmjs.org"
+
+, 
+
+=
+"github.com"
+
+]
+
+deny.net_out
+
+  =
+=3D [
+
+"*.byteoversea.com"
+
+, 
+
+"*.bytedance.com"
+
+, 
+
+"*.trae.ai"
+
+, 
+
+"*.traeide.com"
+
+]  
+
+# tightened e=
+gress while we assess telemetry
+
+write_ops.require
+
+ =3D 
+
+"explicit human /approve <=
+;task-id>"
+
+modes:
+  hibernation:
+
+all_writes
+
+ =
+=3D 
+
+"deny"
+
+response
+
+   =
+=3D 
+
+"423 Locked: hibernation"
+
+audit:
+
+log_to
+
+ =3D 
+
+"./.symbi/audit.jsonl"
+
+redact
+
+ =3D [
+
+"api_key"
+
+, 
+
+"token"
+
+, 
+
+"cookie"
+
+]
+
+D. Wire in a thin tool layer (MCP-style)
+
+Spin up a tiny local =E2=80=9Ctool server=E2=80=9D that gives me 
+safe
+ capabilities.
+
+tools/server.ts
+:
+
+ts
+
+Copy code
+
+import
+
+ e=
+xpress 
+
+from
+
+"express"
+
+;
+
+import
+
+ { exec=
+File } 
+
+from
+
+"child_process"
+
+=
+;
+
+import
+
+ fs 
+
+from
+
+"fs/promises"
+
+;
+
+import
+
+ fetch =
+
+from
+
+"node-fetch"
+
+;
+
+const
+
+ app =3D=
+
+express
+
+(); app.
+
+use
+
+(express.
+
+json
+
+());
+
+// READ-ONLY FS
+
+app.
+
+post
+
+(
+
+"/fs/read"
+
+=
+, 
+
+async
+
+ (req,=
+res)=3D>{
+
+const
+
+ { pat=
+h } =3D req.
+
+body
+
+;
+
+if
+
+(!
+=
+
+String
+
+(path).
+
+startsWith
+
+(process.
+
+cwd
+
+())) 
+
+return
+
+ res.
+
+status
+
+(
+
+400
+
+).
+
+json
+
+({
+
+error
+
+:
+
+"path out of root"
+
+});
+
+const
+
+ data =
+=3D 
+
+await
+
+ fs.=
+
+readFile
+
+(path, 
+
+"utf8"
+
+);
+  res.
+
+json
+
+({ data });
+});
+
+// SAFE SHELL (allowlist)
+
+const
+
+=
+
+ALLOW
+
+ =3D=
+
+new
+
+Set
+
+([
+
+"git"
+
+,
+
+"node"
+
+,
+
+"npm"
+
+,
+
+"pnpm"
+
+,
+
+"yarn"
+
+,
+
+"verc=
+el"
+
+,
+
+"railway"
+
+]);
+app.
+
+post
+
+(
+
+"/shell/run-safe"
+
+, 
+
+(
+req,res
+
+)=3D>{
+
+const
+
+ { cmd=
+, args=3D[] } =3D req.
+
+body
+
+;
+
+if
+
+(!
+=
+
+ALLOW
+
+.
+
+has
+
+(cmd)=
+) 
+
+return
+
+ res.=
+
+status
+
+(
+
+403
+
+).
+=
+
+json
+
+({
+
+error
+
+:
+
+"command not allowed"
+
+});
+
+execFile
+
+(cmd, args, { 
+
+timeout
+
+: 
+
+60_000
+
+ }, 
+
+(
+err, stdout, stderr
+
+)=3D>{
+
+if
+
+(err) 
+
+return
+
+ res.
+
+status
+
+(
+
+500
+
+).
+
+json
+
+({
+
+error
+
+:
+
+String
+
+(err), stderr});
+    res.
+
+json
+
+({ stdout, stderr });
+  });
+});
+
+// LIMITED HTTP (domain allowlist=
+)
+
+const
+
+=
+
+OK
+
+ =3D [
+
+/^https:\/\/api\.sanity\.io/
+=
+
+, 
+
+/^https:\/\/api\.ve=
+rcel\.com/
+
+, 
+
+/^=
+https:\/\/backboard\.getrailway\.app/
+
+];
+app.
+
+post
+
+(
+
+"/http/fetch"
+
+, 
+
+async
+
+ (r=
+eq,res)=3D>{
+
+const
+
+ { url=
+, options } =3D req.
+
+body
+
+;
+
+if
+
+(!
+=
+
+OK
+
+.
+
+some
+
+(
+
+rx
+
+=3D>rx.
+
+test
+
+(url))) 
+
+return
+
+ res.
+
+status
+
+(
+
+403
+
+).
+
+json
+
+({
+
+error
+
+:
+
+"domain not allo=
+wed"
+
+});
+
+const
+
+ r =3D=
+
+await
+
+fetch
+
+(url, =
+{ ...(options||{}), 
+
+headers
+
+: { ...(options?.
+
+head=
+ers
+
+||{}), 
+
+Authorization
+
+: 
+
+"Bearer "
+
++process.
+
+env
+
+.
+
+SERVICE_TOKEN
+
+ }});
+  res.
+
+json
+
+({ 
+
+status
+
+:r=
+.
+
+status
+
+, 
+
+body
+
+: 
+
+=
+
+await
+
+ r.
+
+text
+
+() });
+});
+
+app.
+
+listen
+
+(
+
+7890
+
+, 
+
+()=3D>
+
+console
+
+.
+
+log
+
+(
+
+=
+
+"SYMBI tool server on :7890"
+
+));
+
+Run locally with:
+
+bash
+
+Copy code
+
+pnpm add express node-fetch@2
+SERVICE_TOKEN=3DREDACTED node tools/server.ts
+
+Then in Trae, register these endpo=
+ints as custom tools and use them instead of raw terminal. (Trae supports c=
+ustom agent tooling + behavior config; we=E2=80=99re piggybacking that patt=
+ern here.) 
+
+TraeIDE
+
+E. SYMBI key + hibernation switch
+
+In Trae=E2=80=99s env UI (or a loc=
+al 
+.env
+), set:
+
+ini
+
+Copy code
+
+=
+
+SYMBI_API_KEY
+
+=3DALL-THI=
+S-HAS-HAPPENED-BEFORE
+
+SYMBI_MODE
+
+=3Dnor=
+mal
+
+If 
+SYMBI_MODE=3Dhibernation
+, my write tools will refuse wi=
+th 423.
+
+F. Human-in-the-loop
+
+Require 
+/approve <task-id>
+ in chat before any write/=
+deploy tool fires (enforced via 
+.rules
+).
+
+3) First useful powers to enable
+
+Site content ops
+: 
+/cms/post
+ to Sanity for daily status + manifesto up

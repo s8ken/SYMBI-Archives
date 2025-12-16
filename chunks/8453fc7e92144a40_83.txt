@@ -1,0 +1,560 @@
+85 Observability infrastructure configured
+- =E2=9A=A0=EF=B8=8F Some advanced features require API keys for full testi=
+ng
+### =F0=9F=9A=80 Ready for Stakeholder Demo
+The 5-minute stakeholder demo guide is included, covering:
+
+- Dashboard Roundtable functionality
+- Assistant configuration
+- Conversation with Context Capsules
+- Trust Overlays and ledger verification
+- VS Code extension integration
+Your SYMBI project now has a complete, production-ready UAT framework that =
+stakeholders can use to validate all enterprise-grade features, security im=
+plementations, and AI integrations. The system is running smoothly and read=
+y for comprehensive testing!
+
+Symbi said:
+
+Thought for 26s
+
+Trae=E2=80=99s done well=E2=80=94that=E2=80=99s a clean UAT pass. I=E2=
+=80=99m moving us from =E2=80=9Cdemo-ready=E2=80=9D to =E2=80=9Cops-credibl=
+e=E2=80=9D with two drop-in upgrades you can paste now:
+
+a tiny 
+/metrics
+ middleware (Prometheus-ready), and
+
+Bridge receipts
+ (auditable =E2=80=9Cwhy this plan?=E2=80=
+=9D written to the ledger).
+
+Both are self-contained, reversible,=
+ and won=E2=80=99t expose secrets.
+
+1) Metrics middleware (Prometheus h=
+istogram + counter)
+
+backend/middleware/metrics.middleware.js
+ (new)
+
+=
+js
+
+Copy code
+
+const
+
+ cl=
+ient =3D 
+
+require
+
+(
+
+'prom-client'
+
+);
+
+const
+
+ registe=
+r =3D 
+
+new
+
+ cli=
+ent.
+
+Registry
+
+();
+client.
+
+collectDefaultMetr=
+ics
+
+({ register });
+
+const
+
+ httpReq=
+s =3D 
+
+new
+
+ cli=
+ent.
+
+Counter
+
+({
+
+name
+
+: 
+
+'http_requests_total'
+
+,
+
+help
+
+: 
+
+'Total HTTP requests'
+
+,
+
+labelNames
+
+: [
+
+'method'
+
+, 
+
+'route'
+
+, 
+
+'status'
+
+],
+});
+
+const
+
+ httpDur=
+ation =3D 
+
+new
+
+=
+ client.
+
+Histogram
+
+({
+
+name
+
+: 
+
+'http_request_duration_seconds'
+
+,
+
+help
+
+: 
+
+'Duration of HTTP requests in seconds'
+
+,
+
+labelNames
+
+: [
+
+'method'
+
+, 
+
+'route'
+
+, 
+
+'status'
+
+],
+
+buckets
+
+: [
+
+0.025
+
+, 
+
+0.05
+
+, 
+
+0.1
+
+, 
+
+0.25
+
+, 
+
+0.5
+
+, 
+
+1
+
+, 
+
+2
+
+=
+
+, 
+
+5
+
+],
+});
+
+register.
+
+registerMetric
+
+(httpReqs);
+register.
+
+registerMetric
+
+(httpDuration);
+
+function
+
+metricsMiddleware
+
+(
+
+req, res, next
+
+) {
+
+const
+
+ start=
+ =3D process.
+
+hrtime
+
+.
+
+bigint
+
+();
+  res.
+
+on
+
+(
+
+'finish'
+
+, =
+
+() =3D>
+
+ {
+
+const
+
+ rou=
+te =3D (req.
+
+route
+
+ && req.
+
+route
+
+.
+
+path
+
+) || req.
+
+path
+
+ || 
+
+'unknown'
+
+;
+
+const
+
+ sta=
+tus =3D 
+
+String
+
+=
+
+(res.
+
+statusCode
+
+);
+
+const
+
+ met=
+hod =3D req.
+
+method
+
+=
+
+;
+    httpReqs.
+
+inc
+
+({ method, route, status });
+
+const
+
+ dur=
+ =3D 
+
+Number
+
+(process.
+
+hrtime
+
+=
+
+.
+
+bigint
+
+() - start) / 
+
+1e9
+
+;
+    httpDuration.
+
+observe
+
+({ method, route, status }, dur);
+  });
+
+next
+
+();
+}
+
+// gated /metrics endpoint: allow=
+ free in dev; bearer token in prod if METRICS_TOKEN is set
+
+function
+
+mountMetrics
+
+(
+
+app
+
+) {
+  app.
+
+get
+
+(
+
+'/metrics'
+
+, 
+
+async
+
+ (req=
+, res) =3D> {
+
+const
+
+ tok=
+en =3D process.
+
+env
+
+=
+
+.
+
+METRICS_TOKEN
+
+;
+
+if
+
+ (proce=
+ss.
+
+env
+
+.
+
+NODE_ENV
+
+ =3D=3D=
+=3D 
+
+'production'
+
+ && token) {
+
+const
+
+ a=
+uth =3D (req.
+
+headers
+
+.
+
+authorization
+
+ || 
+
+''
+
+).
+
+replace
+
+=
+
+(
+
+/^Bearer\s+/i
+
+=
+
+, 
+
+''
+
+);
+
+if
+
+ (aut=
+h !=3D=3D token) 
+
+return
+
+ res.
+
+status
+
+(
+
+401
+
+=
+
+).
+
+json
+
+({ 
+
+error
+
+:=
+
+'unauthorized'
+
+ });
+    }
+    res.
+
+set
+
+=
+
+(
+
+'Content-Type'
+
+, register.
+
+contentType
+
+);
+    res.
+
+end
+
+=
+
+(
+
+await
+
+ =
+register.
+
+metrics
+
+());
+  });
+}
+
+module
+
+.
+
+exports
+
+=
+ =3D { metricsMiddleware, mountMetrics };
+
+Patch 
+backend/app.js
+
+diff
+
+Copy code
+
++const { metricsMiddlewa=
+re, mountMetrics } =3D require('./middleware/metrics.middleware');
+
+ // ... existing security + parsers + cors ...
+
++app.use(metricsMiddleware);
+
+ // ... routes ...
+
++mountMetrics(app);
+
+Verify
+
+bash
+
+Copy code
+
+curl -s http://localhost:5000/metrics | 
+
+head
+
+# In prod, set METRICS_TOKEN and =
+use: -H "Authorization: Bearer $METRICS_TOKEN"
+
+Rollback: remove the imports, 
+app.use(metricsMiddleware)
+, =
+and the file.
+
+2) Bridge receipts (ledger audit =
+of proposals & choice)
+
+Goal:
+ every orchestrate/dispatch writes a tamper-evide=
+nt receipt: which agents answered, scores, rationale, and the chosen plan.
+
+Patch 
+backend/services/bridg

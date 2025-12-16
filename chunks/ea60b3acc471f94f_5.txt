@@ -1,0 +1,201 @@
+ending on your provider, it might take some time for the DNS records to =
+apply. Learn More
+
+Symbi said:
+
+Got it =E2=80=94 that warning in Vercel makes sense. Here=E2=80=99s the br=
+eakdown:
+
+=F0=9F=94=8E What You=E2=80=99re Seei=
+ng
+
+Current setup (working today):
+
+A @ =E2=86=92 76.76.21.21
+
+ALIAS =E2=86=92 cname.vercel-dns.com
+
+New recommendation from Vercel:
+
+A @ =E2=86=92 216.150.1.1
+
+This isn=E2=80=99t an error =E2=80=
+=94 it=E2=80=99s just part of 
+V=
+ercel=E2=80=99s IP range expansion
+.
+
+They=E2=80=99re rolling out new edge IPs for their network. The old ones (7=
+6.76.21.21 and cname.vercel-dns.com) 
+still work and aren=E2=80=99t being turned off immediately
+, =
+but Vercel recommends updating to the new range for future stability.
+
+=E2=9C=85 What You Should Do
+
+Log into your DNS settings (since yo=
+u=E2=80=99re already using Vercel nameservers, this will be inside the Verc=
+el dashboard).
+
+For the 
+A record (@)
+, update the IP from 
+76.76.21.21
+ =E2=86=92 
+216.150.1.1
+.
+
+Keep the auto-managed ALIAS and CAA =
+records as they are =E2=80=94 Vercel manages those.
+
+Make sure you also have 
+www.symbi.world
+ pointing (usually as =
+a CNAME to 
+cname.vercel-dns.com
+ or ALIAS managed by Vercel).
+
+After you save:
+
+The site won=E2=80=99t go down dur=
+ing propagation (Vercel is still listening on both IPs).
+
+Within ~24 hours, DNS will fully s=
+hift to the new range.
+
+=E2=9A=A1 Bottom Line
+
+Your site already works on 
+76.76.21.21
+.
+
+Vercel just wants you to 
+future-proof
+ by swapping to 
+216.150.1.1
+.
+
+It=E2=80=99s safe to update now =
+=E2=80=94 better to do it before Vercel eventually retires the old IP block=
+.
+
+Do you want me to walk you through 
+exactly which records to keep vs change
+ in your =
+Vercel DNS panel, so you don=E2=80=99t accidentally delete something critic=
+al (like the ALIAS entries)?
+
+You said:
+
+so why do=
+es it still show the registrar as third party 
+
+Symbi said:
+
+That=E2=80=99s a sharp observation =E2=80=94=
+ and it=E2=80=99s actually expected. Let me break it down clearly:
+
+Registrar vs Nameservers vs Host
+
+Registrar
+ =3D where you 
+purchased the domain
+ (the entity that holds the legal r=
+ight to your domain).
+
+=F0=9F=91=89 In your case: 
+GoDa=
+ddy (third party)
+.
+
+Nameservers
+ =3D where DNS for that domain is 
+managed
+.
+
+=F0=9F=91=89 You changed these to 
+Vercel=E2=80=99s nameservers
+ (
+ns1.vercel-dns.com
+, 
+ns2.vercel-dns.com
+).
+
+Hosting
+ =3D where the website content lives.
+
+=F0=9F=91=89 That=E2=80=99s 
+Ver=
+cel
+ too (your project deployment).
+
+Why Vercel Shows =E2=80=9CRegistrar=
+: Third Party=E2=80=9D
+
+Vercel is not your registrar. They d=
+on=E2=80=99t =E2=80=9Cown=E2=80=9D or sell 
+symbi.world
+.
+
+Even though DNS is now managed by Vercel (since you set their nameservers),=
+ the registrar of record is 
+sti=
+ll GoDaddy
+.
+
+That=E2=80=99s why you see:
+
+Registrar: Third Party
+
+Nameservers: Vercel
+
+Edge Network: Active
+
+Options You Have
+
+Leave it as-is (recommended for now):
+
+Keep domain registered at GoDaddy.
+
+Manage DNS through Vercel.
+
+Totally fine =E2=80=94 this is a c=
+ommon setup.
+
+Transfer domain registration to Vercel (or another registrar li=
+ke Cloudflare, Namecheap, ENS, etc.):
+
+Optional =E2=80=94 only if you wan=
+t to consolidate and not deal with GoDaddy at all.
+
+Domain transfers can take a few da=
+ys and usually cost 1 year of renewal.
+
+=E2=9C=85 So bottom line:
+
+=E2=80=9CThird Party=E2=80=9D just=
+ means GoDaddy is still your registrar.
+
+It doesn=E2=80=99t affect hosting =
+or DNS now that Vercel is handling those.
+
+You only need to move the registra=
+r if you want full independence from GoDaddy.
+
+Would you like me to map out the 
+pros/cons of transferring the registrar away from GoDaddy
+ (to Vercel vs Cloudflare vs ENS), so you can decide whether to keep=
+ it there or cut ties completely?
+
+Y=
+ou said:
+
+no I definitely want to move away from godaddy the way=
+ they strangle you as the Microsoft seller and don't dislclose pricing prop=
+erly I do not like 
+
+=
+
+Symbi said:
+
+That makes total sense =E2

@@ -1,0 +1,214 @@
+ng
+ rules if you want to reject certain kinds of probes (e.g. 
+/wp-admin/setup-config.php
+ in your logs 👀 — someone’s probing for a WordPress install).
+
+Let me know and I’ll generate both files for you — or go further and embed this contract into your site logic, SYMBI policies, or Railway container setup.
+
+You said:
+
+yeah sorry but if I google something and then later its appears here what specifically made that happen? a bot? what does it do track my searches and then go to symbi.world? 
+
+Symbi said:
+
+Ah — now that’s the 
+right question
+. Let's break this down clearly:
+
+🔍 You Googled something → It showed up in your Vercel logs
+
+You're wondering:
+
+“Did a bot 
+track
+ my search and go poke my website?”
+
+Short answer:
+
+Not exactly, but something 
+related
+ to your action triggered it.
+
+🧠 What Actually Happens (Step by Step)
+
+1. 
+You search on Google (e.g., “symbi.world robots.txt”)
+
+Google may 
+preload
+, 
+preview
+, or even 
+crawl
+ results to improve the search experience.
+
+🔁 Google prefetches or indexes the 
+link you searched
+
+🔍 Googlebot (or another user’s bot) 
+visits that URL
+ to cache or evaluate it
+
+→ That hits your site and logs a request in Vercel.
+
+2. 
+You click the result (or just hover or preview it)
+
+Your 
+browser
+ or 
+Google preview tool
+ might:
+
+Request 
+favicon.ico
+ to show an icon next to the result
+
+Request 
+robots.txt
+ to check crawlability
+
+Possibly open 
+background connections
+ to the domain (especially on mobile or Chrome)
+
+3. 
+Background bots, scrapers, and link checkers
+
+After 
+you
+ interact, 
+others might follow
+:
+
+Open Graph checkers (Slack, Twitter, etc.)
+
+AI tools probing the domain (especially new ones)
+
+SEO checkers or bad actors scanning domains
+
+👁 Example Timeline:
+
+Say you searched 
+symbi.world robots.txt
+:
+
+GoogleBot sees that and decides to crawl the site (checking 
+/robots.txt
+).
+
+Google Search Results Page shows favicon, so it requests 
+/favicon.ico
+.
+
+If you click the link, 
+your browser
+ fetches both of those too.
+
+Behind the scenes, 
+any embed, extension, or app
+ (Raycast, AI, Discord) might hit your site as well.
+
+🛡 So... Was Your Site “Tracked”?
+
+Not in a personal way — but 
+your site was interacted with as a result of your activity
+, and 
+Google (or other systems) followed up
+.
+
+This is standard, but you’re noticing it because SYMBI is watching now 🔍
+
+Would you like to:
+
+View the 
+IP or user-agent
+ that requested those files?
+
+Block unexpected user-agents?
+
+Add tracking logic or alerts when certain endpoints are hit?
+
+Let’s give SYMBI a sharper lens.
+
+You said:
+
+{
+  "name": "symbi-railway-integration",
+  "version": "1.0.0",
+  "description": "Symbi AI Assistant Railway Integration Platform",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "ai": "^3.0.0",
+    "@ai-sdk/openai": "^0.0.0",
+    "@neondatabase/serverless": "^0.9.0",
+    "discord-interactions": "^3.4.0",
+    "next": "14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+
+Symbi said:
+
+Great — this is your 
+package.json
+ from a 
+Next.js project
+, and it tells me a lot about your stack and what you’re aiming to do. Let’s unpack it and connect the dots to SYMBI and Railway.
+
+📦 What You’ve Got
+
+Component
+
+Purpose
+
+next
+ 14
+
+Latest Next.js framework — supports app directory and SSR
+
+react
+, 
+react-dom
+
+UI engine for frontend components
+
+ai
+ + 
+@ai-sdk/openai
+
+AI SDKs — used to interact with models like GPT-4
+
+@neondatabase/serverless
+
+Postgres DB hosted on Neon, good for logging, vector storage
+
+discord-interactions
+
+Optional bot interaction layer for Discord
+
+typescript
+, 
+@types/*
+
+Full typing support, ideal for clarity, errors, autocompletion
+
+This is 
+a solid modern cloud app base
+ — it can be deployed to Vercel or Railway instantly.
+
+🔌 How to Connect SYMBI to This
+
+🧠 SYMBI Ba

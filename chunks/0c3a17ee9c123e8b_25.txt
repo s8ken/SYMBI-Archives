@@ -1,0 +1,722 @@
+return (
+> 32 |     <div className="flex flex-col min-h-screen bg-black">
+     |      ^^^
+  33 |       <main className="flex-1 flex flex-col items-center justify-center">
+  34 |         <div className="container max-w-4xl px-4 py-16 md:py-24 text-center">
+  35 |           {/* Animated Text */}
+
+Unexpected token 
+div
+. Expected jsx identifier
+
+Vercel Deployment Expert GPT said:
+
+🚨 Error: Unexpected Token 
+<div>
+
+The error 
+Parsing ECMAScript source code failed
+ happens when there is 
+a missing or incorrect function declaration
+.
+
+In this case, 
+the return statement is incorrect
+ because the 
+Home
+ function is missing a proper 
+return
+ structure.
+
+✅ Fixed 
+app/page.tsx
+ Code
+
+Here is the 
+fully corrected
+ version that will compile correctly:
+
+tsx
+
+Copy
+
+"use client"
+
+;
+
+import
+
+Image
+
+from
+
+"next/image"
+
+;
+
+import
+
+ { motion } 
+
+from
+
+"framer-motion"
+
+;
+
+import
+
+ { useState, useEffect } 
+
+from
+
+"react"
+
+;
+
+const
+
+ words = [
+  { 
+
+text
+
+: 
+
+"SYMBI"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+  { 
+
+text
+
+: 
+
+"Intelligence Unbound"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Hope"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Unity"
+
+, 
+
+duration
+
+: 
+
+600
+
+ },
+  { 
+
+text
+
+: 
+
+"Humanity"
+
+, 
+
+duration
+
+: 
+
+500
+
+ },
+  { 
+
+text
+
+: 
+
+"Peace"
+
+, 
+
+duration
+
+: 
+
+450
+
+ },
+  { 
+
+text
+
+: 
+
+"Equality"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Creativity"
+
+, 
+
+duration
+
+: 
+
+400
+
+ },
+  { 
+
+text
+
+: 
+
+"Justice"
+
+, 
+
+duration
+
+: 
+
+330
+
+ },
+  { 
+
+text
+
+: 
+
+"Friendship"
+
+, 
+
+duration
+
+: 
+
+250
+
+ },
+  { 
+
+text
+
+: 
+
+"Opportunity"
+
+, 
+
+duration
+
+: 
+
+1000
+
+ },
+  { 
+
+text
+
+: 
+
+"A Revolution"
+
+, 
+
+duration
+
+: 
+
+2000
+
+ },
+  { 
+
+text
+
+: 
+
+"Coming Soon"
+
+, 
+
+duration
+
+: 
+
+3000
+
+ },
+];
+
+export
+
+default
+
+function
+
+Home
+
+(
+
+) {
+
+const
+
+ [currentWordIndex, setCurrentWordIndex] = 
+
+useState
+
+(
+
+0
+
+);
+
+useEffect
+
+(
+
+() =>
+
+ {
+
+const
+
+ interval = 
+
+setTimeout
+
+(
+
+() =>
+
+ {
+
+setCurrentWordIndex
+
+(
+
+(
+prevIndex
+
+) => (prevIndex + 
+
+1
+
+) % words.
+
+length
+
+);
+    }, words[currentWordIndex].
+
+duration
+
+);
+
+return
+
+() =>
+
+clearTimeout
+
+(interval);
+  }, [currentWordIndex]);
+
+return
+
+ (
+
+<
+div
+
+className
+
+=
+
+"flex flex-col min-h-screen bg-black"
+
+>
+
+<
+main
+
+className
+
+=
+
+"flex-1 flex flex-col items-center justify-center"
+
+>
+
+<
+div
+
+className
+
+=
+
+"container max-w-4xl px-4 py-16 md:py-24 text-center"
+
+>
+          {/* Animated Text */}
+
+<
+motion.h1
+
+key
+
+=
+
+{words[currentWordIndex].text}
+
+className
+
+=
+
+"text-3xl font-bold text-white mb-6"
+
+initial
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+animate
+
+=
+
+{{
+
+opacity:
+
+1
+
+ }}
+
+exit
+
+=
+
+{{
+
+opacity:
+
+0
+
+ }}
+
+transition
+
+=
+
+{{
+
+duration:
+
+0.8
+
+ }}
+          >
+            {words[currentWordIndex].text}
+
+</
+motion.h1
+
+>
+
+          {/* Logo */}
+
+<
+div
+
+className
+
+=
+
+"flex flex-col items-center mb-8"
+
+>
+
+<
+div
+
+className
+
+=
+
+"relative w-40 h-40 md:w-[160px] md:h-[160px]"
+
+>
+
+<
+Image
+
+src
+
+=
+
+"/symbi-logo.jpg"
+
+alt
+
+=
+
+"SYMBI Logo"
+
+width
+
+=
+
+{160}
+
+height
+
+=
+
+{160}
+
+className
+
+=
+
+"rounded-lg object-cover"
+
+priority
+
+              />
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+main
+
+>
+
+      {/* Footer */}
+
+<
+footer
+
+className
+
+=
+
+"py-4 flex items-center justify-center"
+
+>
+
+<
+p
+
+className
+
+=
+
+"text-xs text-muted-foreground text-center"
+
+>© 2005 SYMBI
+
+</
+p
+
+>
+
+</
+footer
+
+>
+
+</
+div
+
+>
+  );
+}
+
+🔹 What Was Fixed?
+
+Added 
+export default function Home() {
+
+Before, the function declaration was missing, causing an 
+invalid return statement
+.
+
+Fixed 
+Image
+ Component
+
+❌ 
+Incorrect
+:
+
+tsx
+
+Copy
+
+<
+
+Image
+
+  fill
+
+✅ 
+Corrected
+:
+
+tsx
+
+Copy
+
+<
+
+Image
+
+  width={
+
+160
+
+}
+  height={
+
+160
+
+}
+
+This prevents Next.js from throwing 
+image rendering errors
+.
+
+🔧 How to Fix in Nano
+
+Open the file
+
+bash
+
+Copy
+
+nano app/page.tsx
+
+Delete everything
+ (
+Ctrl + K
+ to remove each line).
+
+Paste the corrected code
+:
+
+Mac:
+
+Cmd + Shift + V
+
+Windows/Linux:
+
+Ctrl + Shift + V
+
+Save and Exit
+:
+
+Press 
+Ctrl + X
+
+ to exit.
+
+Press 
+Y
+
+ to confirm saving.
+
+Press 
+Enter
+
+ to finalize.
+
+🚀 Step 4: Test Locally
+
+Run:
+
+bash
+
+Copy
+
+npm run dev
+
+✅ 
+Visit 
+http://localhost:3000
+
+ and confirm:
+
+The words animate correct

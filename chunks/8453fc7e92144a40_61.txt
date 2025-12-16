@@ -1,0 +1,185 @@
+ a/frontend/src/pages/=
+ConversationDetail.js
+
++++ b/frontend/src/pages/Conversa=
+tionDetail.js
+
+@@
+ import React, { useEffect, useState } from "react";
+
++import TrustChips from "../comp=
+onents/trust/TrustChips";
+
+ export default function ConversationDetail() {
+   // ...existing state/hooks...
+   const [conversation, setConversation] =3D useState(null);
+   const conversationId =3D /* your way to read :id from route */;
+
+   useEffect(() =3D> {
+     // existing fetch of conversation + messages
+   }, [conversationId]);
+
+   if (!conversation) return null;
+
+   return (
+     <div className=3D"p-3">
+       <div className=3D"flex items-center justify-between mb-2">
+         <h2 className=3D"text-lg font-semibold">Conversation</h2&=
+gt;
+
++        {/* Session-level trust=
+ chips (latest event) */}
+
++        <TrustChips sessionI=
+d=3D{conversation.session_id || conversationId} compact />
+
+=
+
+       </div>
+
+       {/* messages list */}
+       <div>
+         {conversation.messages?.map((m, idx) =3D> (
+           <div key=3D{idx} className=3D"mb-3">
+             <div className=3D"text-sm opacity-70">{m.sender} =E2=80=
+=A2 {new Date(m.timestamp).toLocaleString()}</div>
+             <div className=3D"whitespace-pre-wrap">{m.content}</d=
+iv>
+
++            {/* Optional per-me=
+ssage chips, matched by nearest timeline event within =C2=B15s */}
+
++            <TrustChips
+
++              sessionId=3D{conv=
+ersation.session_id || conversationId}
+
++              at=3D{m.timestamp=
+}
+
++              compact
+
++              className=3D"mt-1=
+"
+
++            />
+
+=
+
+           </div>
+         ))}
+       </div>
+     </div>
+   );
+ }
+
+Rollback:
+ delete 
+TrustChips.js
+ and the three inserted lines in 
+ConversationDetail.js
+.
+
+What I can assist with beyond thi=
+s (today)
+
+Finish PR-D in Web
+ (Roundtable UI): you already have 
+RoundtableDialog.js
+; I ca=
+n harden it with scoring badges, proposal JSON viewer, and =E2=80=9CDispatc=
+h (dry-run)=E2=80=9D wired to 
+/=
+api/bridge/dispatch
+.
+
+Assistants UX (PR-B)
+: add =E2=80=9CUse Most Recent=E2=
+=80=9D toggle, 
+Edit Assistant=
+
+ form (
+PUT /api/assist=
+ant/:id
+), and a model picker fed by 
+/api/llm/models/openai
+.
+
+Context Capsules (PR-C)
+: add 
+GET/PUT /api/context/capsule/:sessionId
+ + a tiny =
+editor panel; server injects capsules into LLM calls.
+
+Docs/Swagger polish (PR-F)
+: dev-only 
+/docs
+; confirm RBAC + webhook HMAC are a=
+pplied; ignore artifacts.
+
+How we run this without anyone se=
+eing VS Code
+
+Non-devs live entirely in the 
+Web Trust Console
+ (Chat =
++ Trust overlay, Timeline/Insights, Roundtable button).
+
+Builders use the 
+extension
+ when they want IDE-native f=
+lows (still the same brain).
+
+Both surfaces share the 
+same SYMBI Core
+ (Express + Mon=
+go + Bridge + Ledger). Vendor keys remain server-side; clients only hold a =
+scoped 
+SYMBI_API_KEY
+.
+
+If you want me to bundle PR-A + a=
+ small PR-D hardening next, just say:
+
+=E2=80=9CShip PR-A + PR-D hardening.=E2=80=9D
+
+I=E2=80=99ll drop the exact diffs for 
+RoundtableDialog.js
+ and a compact proposals list view you can=
+ paste in alongside the TrustChips above.
+
+=
+
+=
+
+You said:
+
+update: Delivered Cha=
+nges
+
+VS Code Extension (thin client)
+symbi-vscode-extension/package.json
+symbi-vscode-extension/tsconfig.json
+symbi-vscode-extension/src/extension.ts
+symbi-vscode-extension/src/net.ts
+symbi-vscode-extension/src/ledgerView.ts
+symbi-vscode-extension/src/webviewHtml.ts
+symbi-vscode-extension/.vscodeignore
+Dev Container
+.devcontainer/devcontainer.json
+.devcontainer/docker-compose.dev.yml
+.vscode/tasks.json
+Bridge Orchestrator (server)
+backend/bridge/bridge.config.yaml
+backend/services/bridge.service.js
+backend/services/ledger.service.js
+backend/services/llm.util.js
+backend/controllers/bridge.controller.js
+backend/routes/bridge.routes.js
+backend/app.js
+(wired /api/bridge)
+Web Trust Console (non=E2=80=91dev surface)
+frontend/src/components/bridge/RoundtableDialog.js
+frontend/src/pages/Dashboard.js
+(Roundtable button + dialog)
+frontend/src/components/trust/Trus

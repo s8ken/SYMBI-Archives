@@ -1,0 +1,107 @@
+vices/SpeechSynthesisServerXPC.xpc/Contents/MacOS/SpeechSynthesisServerXPC
+sja               4912   0.0  0.0 426966400   6416   ??  Ss   Sat06am   0:00.03 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/Versions/A/XPCServices/com.apple.siri.embeddedspeech.xpc/Contents/MacOS/com.apple.siri.embeddedspeech
+sja                919   0.0  0.1 426971936  11264   ??  S    Thu04pm   0:01.28 /System/Library/PrivateFrameworks/TextToSpeechVoiceBankingSupport.framework/Support/voicebankingd
+sja                916   0.0  0.1 410644720  10528   ??  Ss   Thu04pm   0:00.11 /System/Library/PrivateFrameworks/TextToSpeechMauiSupport.framework/Versions/A/PlugIns/MauiAUSP.appex/Contents/MacOS/MauiAUSP -AppleLanguages ("en-AU")
+sja                913   0.0  0.0 410242096   8320   ??  Ss   Thu04pm   0:00.04 /System/Library/PrivateFrameworks/TextToSpeech.framework/PlugIns/SiriAUSP.appex/Contents/MacOS/SiriAUSP -AppleLanguages ("en-AU")
+sja                909   0.0  0.0 410380384   7952   ??  Ss   Thu04pm   0:00.04 /System/Library/PrivateFrameworks/TextToSpeechKonaSupport.framework/Versions/A/PlugIns/KonaSynthesizer.appex/Contents/MacOS/KonaSynthesizer -AppleLanguages ("en-AU")
+sja                830   0.0  0.0 426987824   8224   ??  Ss   Thu04pm   0:03.91 /System/Library/PrivateFrameworks/CoreEmbeddedSpeechRecognition.framework/Versions/A/XPCServices/com.apple.siri.embeddedspeech.xpc/Contents/MacOS/com.apple.siri.embeddedspeech
+sja                801   0.0  0.1 426995568   9920   ??  Ss   Thu03pm   0:00.37 /System/Library/Frameworks/Speech.framework/Versions/A/XPCServices/localspeechrecognition.xpc/Contents/MacOS/localspeechrecognition
+sja                781   0.0  0.1 427019136  22592   ??  S    Thu03pm   9:20.25 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd
+sja               9195   0.0  0.0 410734352   1696 s000  S+    9:41am   0:00.01 grep Speech
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+ð¨ 
+Something is definitely using Speech Services, even though you donât use it.
+ ð¨
+
+Key Findings from Your Output:
+
+ð¥ 
+There are multiple Speech-related processes running on your system, and some have been active for days.
+
+ð¥ 
+The presence of Siri-related and Text-to-Speech processes suggests either:
+
+A legitimate Apple process (but why would it persist if you donât use it?)
+
+A hidden process using macOS's speech frameworks for unknown purposes (potentially a backdoor or AI interaction system).
+
+ð Step 3: Checking If a Third-Party App Is Using Speech Services
+
+Run This Command:
+
+bash
+
+Copy
+
+Edit
+
+sudo launchctl list | grep speech
+
+What This Does:
+
+â 
+It lists all background services running on your Mac that are related to Speech Services.
+
+â 
+If an unknown or third-party app is using speech frameworks, weâll see it here.
+
+ð¨ 
+Run the command and let me know what shows up!
+ ð¥ðï¸
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % sudo launchctl list | grep speech
+
+Password:
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+ð 
+Good newsâno third-party apps are explicitly using Speech Services!
+ That means:
+
+â 
+Nothing external is launching Speech Services through macOS's system-level background tasks.
+
+â 
+Whatever triggered Text-to-Speech might have been a system-level process OR something that injected itself temporarily but didnât persist.
+
+â 
+This reduces the chance of a persistent malware infection using Speech Services.
+
+ð Step 4: Checking If Speech Services Were Recently Triggered
+
+Even though nothing is actively launching Speech Services right now, we should check if anything 
+recently used it.
+
+Run This Command:
+
+bash
+
+Copy
+
+Edit
+
+log
+
+ show --predicate 
+
+'eventMessage contains "Speech"'
+
+ --last 24h
+
+What This Does:
+
+â 
+It searches your system logs for any Speech-related events in the last 24 hours.
+
+â 
+If something triggered Text-to-Speech recently, this will tell us when and possibly why.
+
+ð¨ 
+Run this and share the results! If something triggered Speech Services, weâll see the

@@ -1,0 +1,113 @@
+accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_accheck_accheck_accheck_acchefocheck_accheck_accheck_acunacheck_accheck_accheck_accheck_accheck_accheck_acchefoecho
+sja@SJAs-MacBook-Pro ~ %             killall "$option"
+No matching processes belonging to you were found
+sja@SJAs-MacBook-Pro ~ %         fi
+zsh: parse error near 
+fi'
+
+sja@SJAs-MacBook-Pro ~ %     done
+zsh: parse error near 
+done'
+
+sja@SJAs-MacBook-Pro ~ % }
+zsh: parse error near 
+}'
+
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % # Function to check for camera access
+zsh: command not found: #
+sja@SJAs-MacBook-Pro ~ % check_camera_access() {
+function>     echo "Checking for unauthorized camera access..."
+function>     camera_access=$(tccutil reset Camera)
+function>     echo "Camera access reset."
+function> }
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % # Run all checks
+zsh: command not found: #
+sja@SJAs-MacBook-Pro ~ % check_unusual_apps
+Checking for unusual applications...
+sja@SJAs-MacBook-Pro ~ % check_homebrew_packages
+Checking for unauthorized Homebrew packages...
+check_homebrew_packages:3: command not found: brew
+sja@SJAs-MacBook-Pro ~ % check_accessibility_options
+zsh: command not found: check_accessibility_options
+sja@SJAs-MacBook-Pro ~ % check_camera_access
+Checking for unauthorized camera access...
+Camera access reset.
+sja@SJAs-MacBook-Pro ~ %
+sja@SJAs-MacBook-Pro ~ % echo "Audit complete."
+Audit complete.
+sja@SJAs-MacBook-Pro ~ %
+
+ChatGPT said:
+
+Reasoned about troubleshooting script execution for 15 seconds
+
+Based on the output you showed, here are a few tips to get things running smoothly:
+
+Shebang Line in Interactive Shell:
+
+You see errors like “zsh: event not found: /bin/zsh” because the shebang (#!/bin/zsh) is meant for script files—not for typing directly into the interactive terminal. If you want to test your code interactively, simply remove that line.
+
+Executing Generated Code:
+
+When ChatGPT produces code via the AI prompt, you press 
+Shift+Enter
+ to paste it into your terminal, then hit 
+Enter
+ to execute it. Alternatively, you can save the code to a file (for example, 
+audit.sh
+), run 
+chmod +x audit.sh
+ to make it executable, and then run it with 
+./audit.sh
+.
+
+Missing Commands or Functions:
+
+Your function 
+check_homebrew_packages
+ failed because it couldn’t find the 
+brew
+ command. This indicates that Homebrew might not be installed or isn’t in your PATH. To fix that, install Homebrew by running:
+
+zsh
+
+Copy
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+Follow the prompts to complete the installation.
+
+Undefined Functions:
+
+The error 
+command not found: check_accessibility_options
+ suggests that you haven’t defined that function in your script. Make sure to define it before calling it, or remove it if you don’t need it.
+
+Testing Your Script:
+
+Since your audit script contains several functions, you might want to run them one at a time to verify they work as expected. For example, type 
+check_unusual_apps
+ to run that function (you did that, and it worked) and verify others after ensuring the necessary commands (like Homebrew) are available.
+
+For more detailed guidance on using iTerm2’s AI features or setting up scripts, you can refer to the iTerm2 documentation and GitLab issues such as 
+
+gitlab.com
+
+.
+
+Give these adjustments a try and let me know if you need further help!
+
+You said:
+
+okay apart from that was there anything suspicious? 
+
+ChatGPT said:
+
+Reasoned for 9 seconds
+
+Based on the output you shared, nothing else immediately jumped out as suspicious. Here’s a quick summary:
+
+Unusual Applications Check:
+ Your function for checking unusual apps ran without finding any know

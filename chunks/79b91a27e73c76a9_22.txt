@@ -1,0 +1,324 @@
+ : 300600
+
+resolver #6
+  domain   : a.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 300800
+
+resolver #7
+  domain   : b.e.f.ip6.arpa
+  options  : mdns
+  timeout  : 5
+  flags    : Request A records
+  reach    : 0x00000000 (Not Reachable)
+  order    : 301000
+
+DNS configuration (for scoped queries)
+
+resolver #1
+  nameserver[0] : 113.212.173.22
+  nameserver[1] : 113.212.168.1
+  nameserver[2] : 192.168.68.1
+  if_index : 22 (en4)
+  flags    : Scoped, Request A records
+  reach    : 0x00000002 (Reachable)
+sja@SJAs-MacBook-Pro ~ % 
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 2: DNS Nameserver 
+113.212.173.22
+ is Still Present 🚨
+
+Even after changing the DNS settings, 
+the unwanted nameserver is still there.
+ This suggests it may be:
+
+Manually configured by a hidden process or script.
+
+Set by your router (forcing devices to use it).
+
+A sign of a network-level hijack (if unknown to you).
+
+🛠 Fixing This – Let's Try a Stronger Reset
+
+We need to 
+manually override all network connections.
+
+1️⃣ Force-Remove the Bad DNS Setting
+
+Run this command:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi empty
+
+👉 This 
+removes all DNS servers
+ from Wi-Fi.
+
+Now, 
+add back trusted DNS servers
+ (Google DNS as an example):
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 8.8.4.4
+
+If you're on 
+Ethernet
+, do the same for it:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+2️⃣ Check If the Unwanted DNS is Gone
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+Is 
+113.212.173.22
+ still there?
+ If so, we need to 
+dig deeper.
+
+3️⃣ Investigate If Your Router is Injecting the DNS
+
+Sometimes, 
+your router forces DNS settings
+. Let’s check:
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+👉 If 
+113.212.173.22
+ appears here, your 
+router is forcing this DNS.
+
+4️⃣ Override Router DNS via Mac’s Hosts File (If Necessary)
+
+If the DNS keeps coming back, we can 
+force override DNS resolution
+ using 
+/etc/hosts
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo nano /etc/hosts
+
+At the 
+bottom
+ of the file, add:
+
+Copy
+
+Edit
+
+8.8.8.8 google.com
+8.8.4.4 google.com
+
+Save and exit
+ (
+CTRL + X
+, 
+Y
+, 
+Enter
+).
+
+Then, flush DNS again:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+🚀 Next Step: Run 
+scutil --dns
+ Again & Let Me Know If That Nameserver is Gone!
+
+If 
+113.212.173.22
+ is 
+still there
+, then:
+
+Your 
+router is forcing it
+ (you’ll need to log into your router settings and manually change DNS).
+
+Or, 
+a hidden process is setting it
+ (we’ll scan for it next). 🚀
+
+You said:
+
+yes I am on ethernet right now
+
+💎 Writer Pro 💎 Copy Email Blog Essay CV +more said:
+
+Step 2: Fixing Ethernet DNS Hijacking 🚨
+
+Since you're on 
+Ethernet
+, the rogue nameserver 
+
+113.212.173.22
+
+ may be coming from your 
+router
+ or a hidden network configuration. Let’s take a 
+stronger
+ approach to remove it.
+
+🛠 Step 1: Force Reset Ethernet DNS
+
+Run the following 
+two commands
+ to remove and replace your Ethernet DNS settings:
+
+sh
+
+Copy
+
+Edit
+
+sudo networksetup -setdnsservers Ethernet empty
+sudo networksetup -setdnsservers Ethernet 8.8.8.8 8.8.4.4
+
+👉 This 
+removes all existing DNS settings
+ and replaces them with 
+Google DNS
+.
+
+Now, 
+flush DNS
+ to apply the change:
+
+sh
+
+Copy
+
+Edit
+
+sudo killall -HUP mDNSResponder
+
+🔍 Step 2: Check If the Rogue DNS is Gone
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+scutil --dns
+
+📌 
+If 
+113.212.173.22
+ is gone
+, the issue is fixed.
+
+📌 
+If it’s still there
+, then 
+your router is forcing it
+ or a hidden process is injecting it.
+
+🛠 Step 3: Check If Your Router is Forcing DNS
+
+Run:
+
+sh
+
+Copy
+
+Edit
+
+cat
+
+ /etc/resolv.conf
+
+👉 
+If 
+113.212.173.22
+ appears here
+, your 
+router is overriding your DNS settings
+.
+
+🚀 If The Router is the Problem:
+
+1️⃣ 
+Log into your router settings
+
+Open your browser and go to:
+
+cpp
+
+Copy
+
+Edit
+
+http:
+
+//192.168.1.1
+
+http:
+
+//192.168.0.1
+
+http:
+
+//192.168.68.1
+
+Log in (check the router sticker for username/password).
+
+2

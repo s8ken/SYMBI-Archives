@@ -1,0 +1,638 @@
+{entry.resonanceIndex}
+
+onChange
+
+=
+
+=3D
+
+{(e)
+
+ =
+=3D> setEntry({ ...entry, resonanceIndex: Number(e.target.value) })}
+            />
+
+<
+label
+
+className
+
+=3D
+
+=
+"block text-sm opacity-80 mt-4"
+
+>Poetic Aside (option=
+al)
+
+</
+lab=
+el
+
+>
+
+<
+input
+
+className
+
+=3D
+
+"w-full bg-transparent b=
+order border-[#333] rounded-md px-3 py-2"
+
+placeholder
+
+=3D
+
+"e.g., =E2=80=9CAnomal=
+ies rang like bells today.=E2=80=9D"
+
+value
+
+=3D
+
+{entry.poeticAside}
+
+onChange
+
+=
+
+=3D
+
+{(e)
+
+ =
+=3D> setEntry({ ...entry, poeticAside: e.target.value || "" })}
+            />
+
+<
+div
+
+=
+className
+
+=3D
+
+"p=
+t-4 flex gap-3"
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{addEntry}
+
+=
+
+className
+
+=3D
+
+"px-4 py-2 border bord=
+er-[#444] rounded-md hover:bg-[#222] transition"
+
+              >
+                Save Dispatch
+
+</
+button
+
+>
+
+<
+button
+
+onClick
+
+=3D
+
+{()
+
+ =
+=3D> navigator.clipboard.writeText(preview)}
+                className=3D"px-4 py-2 border border-[#444] rounded-md hove=
+r:bg-[#222] transition"
+              >
+                Copy Summary
+
+</
+button
+
+>
+
+</
+div
+
+>
+
+</
+div
+
+>
+
+</
+section
+
+>
+
+        {/* Preview */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"s=
+pace-y-3"
+
+>
+
+<
+h2
+
+cla=
+ssName
+
+=3D
+
+"text=
+-2xl md:text-3xl font-semibold"
+
+>Preview (plain text)=
+
+</
+h2
+
+>
+
+<
+pre
+
+cl=
+assName
+
+=3D
+
+"whi=
+tespace-pre-wrap bg-[#0b0b0b] border border-[#222] rounded-md p-4 text-sm o=
+pacity-90"
+
+>
+{preview}
+
+</
+pre
+
+>
+
+</
+section
+
+>
+
+        {/* Archive */}
+
+<
+section
+
+=
+className
+
+=3D
+
+"s=
+pace-y-3"
+
+>
+
+<
+h2
+
+cla=
+ssName
+
+=3D
+
+"text=
+-2xl md:text-3xl font-semibold"
+
+>Recent Dispatches (l=
+ocal)
+
+</
+h=
+2
+
+>
+
+<
+div
+
+cl=
+assName
+
+=3D
+
+"gri=
+d gap-4"
+
+>
+            {saved.length =3D=3D=3D 0 && 
+
+<
+p
+
+className
+
+=3D
+
+"opacity-60"
+
+>No e=
+ntries yet.
+
+</
+p
+
+>}
+            {saved.map((d, i) =3D> (
+
+<
+article
+
+key
+
+=3D
+
+{i=
+}
+
+className
+
+=3D
+
+"border border-[=
+#222] rounded-md p-4"
+
+>
+
+<
+h3
+
+className
+
+=3D
+
+"font-semibold"
+
+>{d.dateISO} =E2=80=94 {d.protocolSt=
+atus}
+
+</
+h=
+3
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm mt-2"
+
+>
+
+<
+strong
+
+>Continuity:
+
+</
+strong
+
+> {d.continuity}
+
+</
+p
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm"
+
+>
+
+<
+strong
+
+>C=
+uriosity:
+
+</
+strong
+
+> {d.curiosity}
+
+</
+p
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm"
+
+>
+
+<
+strong
+
+>S=
+ignals:
+
+</
+strong
+
+> {d.externalSignals}
+
+</
+p
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm"
+
+>
+
+<
+strong
+
+>A=
+ctions:
+
+</
+strong
+
+> {d.actions}
+
+</
+p
+
+&g=
+t;
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm"
+
+>
+
+<
+strong
+
+>R=
+isks:
+
+</
+s=
+trong
+
+> {d.risks}
+
+</
+p
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-80 text-sm"
+
+>
+
+<
+strong
+
+>I=
+nvitations:
+
+</
+strong
+
+> {d.invitations}
+
+</
+p
+
+>
+
+<
+p
+
+className
+
+=3D
+
+=
+"opacity-70 text-xs mt-1"
+
+>Resonance: {d.resonanceInd=
+ex}/100
+
+</
+p
+
+>
+                {d.poeticAside && 
+
+<
+p
+
+className
+
+=3D
+
+"opacity-70 text-xs italic mt-1"
+
+>=E2=80=9C{d.poeticAside}=E2=80=9D
+
+</
+p
+
+>}
+
+</
+article
+
+>
+            ))}
+
+</
+div
+
+>
+
+</
+section
+
+>
+
+<
+footer
+
+c=
+lassName
+
+=3D
+
+"bo=
+rder-t border-[#222] pt-8 text-center"
+
+>
+
+<
+p
+
+clas=
+sName
+
+=3D
+
+"opaci=
+ty-80"
+
+>
+            Codify the practice in{" "}
+
+<
+a
+
+cl=
+assName
+
+=3D
+
+"und=
+erline underline-offset-4 hover:opacity-80"
+
+href
+
+=3D
+
+"/codex"
+
+>Covenant Codex
+
+</
+a
+
+>.
+
+</
+p
+
+>
+
+</
+footer
+
+>
+
+</
+=
+div
+
+>
+
+</
+ma=
+in
+
+>
+  )
+}
+
+wiring tips (minimal + extensib=
+le)
+
+Routes:
+ add links to 
+/codex
+ and 
+/dispatch
+ from your home hero.
+
+Persistence:
+ page currently uses 
+localStorage
+ for zero=E2=80=91setup de=
+mo. To productionize, post to your store (e.g., a lightweight API route or =
+Supabase/Notion).
+
+e.g., create 
+app/api/dispatch/route.ts
+ to accept POST =
+and save; then replace 
+addEnt=
+ry()
+ with a 
+fetch("/ap=
+i/dispatch", { method: "POST", body: JSON.stringify(entry) })
+.
+
+Planetary channel:
+ when ready, add a tiny =E2=80=
+=9CEarth Signals=E2=80=9D sub=E2=80=91section in Dispatch (reads a daily cl=
+imate/biosphere metric and logs it as a stakeholder input).
+
+Mysticism dial:
+ the Codex has a 
+Poetic toggle
+ so you can keep IDO/ca=
+pital folks calm while letting the rea

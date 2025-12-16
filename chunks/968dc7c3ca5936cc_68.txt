@@ -1,0 +1,311 @@
+licitly disable the authenticated root
+ (a separate security feature beyond SIP):
+
+Perform these steps exactly in Recovery Mode:
+
+Reboot into 
+Recovery Mode
+ again:
+
+Shut down the Mac.
+
+Hold down the power button until "Loading startup options" appears.
+
+Click 
+Options
+, then 
+Continue
+.
+
+Open 
+Terminal
+ from the Recovery menu bar (Utilities â Terminal).
+
+Execute the following command exactly:
+
+bash
+
+Copy
+
+Edit
+
+csrutil authenticated-root 
+
+disable
+
+After the command completes successfully, reboot normally:
+
+bash
+
+Copy
+
+Edit
+
+reboot
+
+After rebooting normally:
+
+Open Terminal and run these commands to verify the status:
+
+bash
+
+Copy
+
+Edit
+
+csrutil status
+mount | grep 
+
+" / "
+
+You should see:
+
+Authenticated Root
+: disabled
+
+System Integrity Protection
+: disabled
+
+The root filesystem (
+/
+) should 
+no longer be sealed and read-only
+ after rebooting.
+
+Return here once you've completed these steps and verified the status above.
+
+You said:
+
+if I got back into recover and into terminal and type csrutil authenticated-root disable it will say its already disabled
+
+ChatGPT said:
+
+If Recovery Mode already reports:
+
+csharp
+
+Copy
+
+Edit
+
+Authenticated Root 
+
+is
+
+ already disabled.
+
+but you're still seeing:
+
+vbnet
+
+Copy
+
+Edit
+
+mount_apfs:
+
+ volume could 
+
+not
+
+ be mounted: Permission denied
+
+mount:
+
+ / failed 
+
+with
+
+66
+
+It means macOS is currently booted from a sealed snapshot rather than the writable root volume. This usually happens when the system is still booting from the protected snapshot of the operating system, even if you disabled SIP and Authenticated Root.
+
+Hereâs exactly what you should do next to resolve this:
+
+Step-by-Step (one more recovery boot):
+
+Restart your Mac again into Recovery Mode:
+
+Shut down your Mac.
+
+Press and hold the power button until you see âLoading startup options.â
+
+Choose 
+Options
+, then click 
+Continue
+.
+
+Open Terminal
+ (from the top menu bar: 
+Utilities â Terminal
+).
+
+Identify your macOS volume
+:
+
+bash
+
+Copy
+
+Edit
+
+diskutil apfs list
+
+Look carefully at the output. Identify your primary macOS volume named something like 
+"Macintosh HD"
+ (not "Data" or "Preboot"). Make a note of the exact 
+identifier
+, which is something like 
+disk3s3
+ (yours was previously 
+disk3s3
+).
+
+Mount the volume as writable:
+
+Use the exact disk identifier from above:
+
+bash
+
+Copy
+
+Edit
+
+mount -uw /Volumes/Macintosh\ HD
+
+(Make sure to use your exact volume name above, typically 
+"Macintosh HD"
+.)
+
+If it returns no error, it's successful.
+
+If you get permission errors again, first explicitly mount the correct device:
+
+bash
+
+Copy
+
+Edit
+
+mount -uw /dev/disk3s3 /Volumes/Macintosh\ HD
+
+(Replace 
+disk3s3
+ with your actual disk identifier from the previous step.)
+
+Verify the mount succeeded
+:
+
+bash
+
+Copy
+
+Edit
+
+mount | grep Macintosh
+
+Ensure you see output showing it mounted as 
+read/write
+ (
+rw
+), not sealed or read-only.
+
+Rebuild a writable snapshot of the volume
+ (required for persistent changes):
+
+bash
+
+Copy
+
+Edit
+
+bless --folder /Volumes/Macintosh\ HD/System/Library/CoreServices --bootefi --create-snapshot
+
+(This step creates a new writable snapshot that macOS boots from.)
+
+Reboot into normal mode:
+
+bash
+
+Copy
+
+Edit
+
+reboot
+
+After booting back normally:
+
+Run these checks again in 
+Terminal
+ to confirm:
+
+bash
+
+Copy
+
+Edit
+
+csrutil status
+mount | grep 
+
+" / "
+
+You should see:
+
+Authenticated Root: disabled
+
+System Integrity Protection: disabled
+
+Volume mounted as 
+read/write
+ (no longer sealed)
+
+Return here after confirming this step-by-step.
+
+You said:
+
+I filled the steps but it kept saying sealed 
+
+ChatGPT said:
+
+When you repeatedly see the "sealed" error despite following the exact steps, it typically means that macOS is still enforcing a cryptographic seal on the snapshot of the system volume.
+
+The error you're seeing:
+
+pgsql
+
+Copy
+
+Edit
+
+mount_apfs: volume could 
+
+not
+
+ be mounted: Permission denied
+mount: / failed 
+
+with
+
+66
+
+/dev/disk3s3s1 
+
+on
+
+ / (apfs, sealed, 
+
+local
+
+, 
+
+read
+
+-
+
+only
+
+, journaled)
+
+What this means clear

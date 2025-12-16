@@ -1,0 +1,427 @@
+igns receipts fo=
+r every tool invocation and final answer.
+
+Repo agents
+
+GitHub webhooks =E2=86=92 your loc=
+al agent =E2=86=92 analyses =E2=86=92 (optionally) comment back on PRs.
+
+When offline, use 
+Mailbox
+ to queue messages; when alwa=
+ys-on and public, use 
+Proxy
+ to publish interactions to Agentverse (good for discoverability). 
+
+Platform to enable the agentic economy.
+
++1
+
+Why Agentverse helps here
+
+Hosted Agents
+: fast spin-up, no servers to maintain, 
+Agent Storage
+ for sta=
+te, 
+logs
+ built-in, a=
+nd you can create from 
+blank =
+script or template
+. 
+
+Platform to enable the agentic=
+ economy.
+
+Allowed imports + full Python
+: you=E2=80=99re not boxe=
+d into a tiny sandbox anymore. 
+
+Platform to enable the agentic economy.
+
+Agent types
+: you can mix 
+Hosted
+, 
+Local
+, 
+Mailbox
+, 
+Proxy
+ depe=
+nding on uptime/state needs. 
+
+Platform to ena=
+ble the agentic economy.
+
+Custom domains/Web3 Agent Names
+: friendly addressing a=
+nd discovery. 
+
+Platform to enable the agentic economy.
+
+Step-by-step rollout
+
+A) Stand up one Hosted Site Agent=
+ (template you=E2=80=99ll clone 3=C3=97)
+
+Create Hosted Agent
+ in Agentverse (start from blank sc=
+ript). You=E2=80=99ll get an 
+ag=
+ent.py
+ and the code editor with tabs for 
+Secrets / Storage / Logs
+. 
+
+Platfo=
+rm to enable the agentic economy.
+
+Storage schema
+:
+
+session:{id}
+ (short conversation state)
+
+rag:last_crawl_ts
+ (health)
+
+trust:last_receipt_id
+
+Tools in agent code
+:
+
+rag.retrieve(index=3D"<site>", top_k=3D6)
+ (points to=
+ your vector DB)
+
+web.fetch
+ with a 
+domain allow-list
+ (ycq/* etc.)
+
+answer_with_citations
+ (include URLs + passage IDs)
+
+Trust hook
+: after composing the answer, compute 
+input_hash
+/
+output_hash
+, add metadata, 
+sign
+, and store receipt ID in Storag=
+e.
+
+(Optional) 
+Register Web3 Name / domain
+ for the agent s=
+o it=E2=80=99s easy to call. 
+
+Platform to enable the agentic=
+ economy.
+
+Note: Hosted agents 
+reset globals
+ per call; rely on 
+Agent Storage
+ for any =
+persistent state. 
+
+Platform to enable the agen=
+tic economy.
+
+B) Clone for the other two sites
+
+Duplicate the Hosted Agent; change=
+ the 
+index name
+ &=
+; domain allow-list.
+
+C) Deploy Repo Agents (Local + Ma=
+ilbox/Proxy)
+
+Run each repo agent on your infra =
+(Node/Bun/Python=E2=80=94your choice).
+
+Connect to Agentverse via 
+Mailbox
+ (buffers messages wh=
+ile offline). Use Agentverse 
+=
+Local Agent Inspector
+ to bind mailbox; messages queue and deliver =
+later. 
+
+Platform to enable the agentic economy.
+
+If you want real-time marketplace =
+visibility and you=E2=80=99re always-on, wire a 
+Proxy
+ instead (no buffering; offline messages a=
+re dropped). 
+
+Platform to enable the agentic e=
+conomy.
+
+Tools for repo agent: 
+gh.list_prs
+, 
+gh.diff
+, 
+lint
+, 
+risk.score
+, 
+propose_patch (gated)
+, 
+comment.write (gated)
+=E2=80=94each action emits a 
+signed receipt
+.
+
+Minimal agent manifests (portable=
+ idea)
+
+Site agent (ycq)
+
+yaml
+
+Copy code
+
+name:
+
+ycq-agent
+
+purpose:
+
+=
+
+"Answer questions from ycq with citations=
+"
+
+tools:
+
+-
+
+rag.retrieve:
+
+ { 
+
+index:
+
+"ycq"
+
+, 
+
+top_k:
+
+6
+
+ }
+
+-
+
+web.fetch:
+
+ { 
+
+=
+
+allowlist:
+
+ [
+
+"ycq.example"
+
+, 
+
+"www.ycq.example"
+
+] }
+
+policies:
+
+models:
+
+ [
+
+"gpt-4o-mini"
+
+,
+
+"claude-3.7-sonnet"
+
+=
+]
+
+max_input_tokens:
+
+8000
+
+max_output_tokens:
+
+1500
+
+cost_ceiling_usd:
+
+1.00
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+fields:
+
+ [
+
+model
+
+, 
+
+tool_ids
+
+, 
+
+sdk_version
+
+, 
+
+policy_id
+
+, 
+
+input_hash
+
+, 
+
+output_hash
+
+, 
+
+timestamp
+
+]
+
+storage:
+
+history_ttl_minutes:
+
+=
+
+120
+
+Repo agent (ycq)
+
+yaml
+
+Copy code
+
+name:
+
+ycq-repo-agent
+
+triggers:
+
+github:
+
+ { 
+
+events:
+
+ [
+
+pull_request
+
+, 
+
+push
+
+, 
+
+issues
+
+] }
+
+mode:
+
+local
+
+connectivity:
+
+mailbox
+
+# or proxy if always-on
+
+tools:
+
+-
+
+gh.list_prs
+
+-
+
+gh.diff
+
+-
+
+lint.run
+
+-
+
+risk.score
+
+-
+
+propose.patch
+
+=
+
+# gated
+
+-
+
+comment.write
+
+=
+
+# gated
+
+policies:
+
+allow_comment:
+
+=
+
+true
+
+allow_push:
+
+false
+
+          =
+
+# human gate
+
+trust:
+
+sign_receipts:
+
+=
+
+true
+
+attach_receipt_to_comment:
+
+true
+
+Open questions / decisions
+
+Mailbox vs Proxy
+ for repo 

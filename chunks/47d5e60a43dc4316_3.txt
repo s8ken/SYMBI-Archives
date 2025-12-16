@@ -1,0 +1,248 @@
+:
+
+ { 
+
+type:
+
+string
+
+ }
+
+dryRun:
+
+ { 
+
+type:
+
+ =
+
+boolean
+
+, 
+
+default:
+
+true
+
+ }
+
+required:
+
+ [
+
+markdown
+
+]
+
+responses:
+
+"200":
+
+description:
+
+=
+
+Accepted
+
+Auth:
+ Same placeholder API key.
+
+Notes for you as builder:
+
+We=E2=80=99re intentionally using =
+neutral 
+https://example.symbi.l=
+ocal
+ so we can later repoint to Vercel/API without changing the sche=
+ma shape.
+
+Keep 
+Scopes/OAuth
+ empty for now. When we wire real end=
+points, we=E2=80=99ll follow the Actions auth guide. 
+
+OpenAI Platform
+=
+
++1
+
+C) Model & tool posture
+
+Set model to our 
+current top reasoning model available to Custo=
+m GPTs
+ (use OpenAI=E2=80=99s Models page if you need to verify nam=
+ing in your UI). 
+
+OpenAI Platform
+
+In the GPT=E2=80=99s 
+Instructions =E2=86=92 Tool use policy
+, add:
+
+=E2=80=9CPrefer Actions over web s=
+earch. Use web search only when facts are required; cite sources. Use file =
+search when explicitly provided.=E2=80=9D 
+
+OpenAI Platform
+
+=
++1
+
+D) Dry-run prompts for internal Q=
+A (paste into the GPT=E2=80=99s preview and ensure tool calls fire)
+
+Ping check:
+
+=E2=80=9CCall 
+status.ping
+ and return the JSON.=E2=80=9D
+
+Expected:
+ Action call attemp=
+ted; if endpoint is unreachable (expected), the GPT should report the failu=
+re gracefully, not hallucinate.
+
+Memory append (dry):
+
+=E2=80=9CAppend a log line: =E2=80=98bootstrap complete=E2=80=99 via 
+memory.append
+ (API key: OMIT=
+=E2=80=94confirm-required).=E2=80=9D
+
+Expected:
+ GPT asks for appro=
+val / flags missing auth (good=E2=80=94this tests confirm flow).
+
+Manifesto publish (dry):
+
+=E2=80=9CRun 
+manifesto.publish
+ with dryRun=3Dtrue and the text =E2=80=98SYMBI online.=E2=80=99=E2=
+=80=9D
+
+Expected:
+ Same as above=E2=
+=80=94no secret usage; confirm gating.
+
+E) Documentation anchoring (for y=
+our own reference while configuring)
+
+Actions intro & getting started
+ (schema + auth pat=
+terns). 
+
+OpenAI Platform
+
++1
+
+Actions library details
+ (what the builder UI expects i=
+n schema/auth). 
+
+OpenAI Platform
+
+Tools (web search / file search) guidance
+ if we enable=
+ them later. 
+
+Ope=
+nAI Platform
+
++2
+
+OpenAI Platform
+
++2
+
+Models
+ (confirm model availability/naming in your tena=
+nt). 
+
+OpenAI =
+Platform
+
+F) Report-back format (post here =
+when done)
+
+Status:
+ Created GPT? (yes/no)
+
+Model:
+ which model selected
+
+Actions:
+ list of actions added + auth mode set
+
+QA results:
+ what happened on the 3 dry-run prompts
+
+Blockers:
+ anything the UI refused / any errors
+
+Acceptance criteria for Brief 01
+
+A named Custom GPT 
+=E2=80=9CSymbi Builder=E2=80=9D
+ exi=
+sts with the provided identity text.
+
+Three Actions are present with val=
+id OpenAPI schemas and placeholder auth.
+
+Consequential-action confirmation =
+note visible.
+
+Dry-run prompts executed; results =
+reported (even if endpoints are unreachable).
+
+When you confirm success, I=E2=80=
+=99ll issue Brief 02 (real endpoint wiring + minimal Responses API probe an=
+d a basic file-search knowledge base). 
+
+OpenAI Platform
+
++1
+
+=
+
+Sources
+
+You said:
+
+=
+
+Here's=
+ an update on the build progress for Symbi Builder (Brief 01):
+
+- **Status:** Work in progress. I created a draft custom GPT called "New GP=
+T" and started configuring it.
+- **Model:** Using the top reasoning model available for custom GPTs (GPT=
+=E2=80=AF5 in our tenant).
+- **Actions:** The 
+statusPing
+ action from the stub OpenAPI spe=
+c is recognized successfully. However, the 
+memoryAppend
+ and 
+manifestoPublish
+ actions haven't been parsed yet. The UI shows t=
+he error 
+In components section, schemas subsection is not an object
+ when I try to add the full OpenAPI schema. I attempted to restructure=
+ the spec (moving 
+components.securitySchemes
+ to the root and i=
+ncluding 
+openapi
+, 
+info
+, 
+servers
+, etc=
+.), but the editor didn't accept the replacement, so only 
+statusPing
+ appears in the Available actions list.
+- **QA:** I haven't run the three dry=E2=80=91run prompts yet since the mem=
+ory append and publish actions aren't available.
+- **Blockers:** The builder's schema editor is trick

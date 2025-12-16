@@ -1,0 +1,260 @@
+video files exist from 
+the last 3 months
+, they might be 
+local copies of livestreams
+.
+
+📡 4️⃣ Find How They Maintained Persistent Access
+
+If this has been 
+happening for 3 months
+, the attacker 
+must have had a way to maintain access
+—possibly through:
+
+iCloud syncing
+ (they could be pulling video/audio from your iCloud account).
+
+Remote access (SSH, VNC, AirPlay, Sidecar, Accessibility tools).
+
+A. Check for Remote Access Services
+
+sh
+
+Copy
+
+sudo netstat -an | grep LISTEN
+
+🔍 
+Look for:
+
+Ports 5900
+ (VNC / Remote Screen Sharing)
+
+Ports 22
+ (SSH - Remote Terminal Access)
+
+Ports 443, 5223
+ (Apple iCloud Sync & Remote Management)
+
+If anything unexpected is open, that means 
+your system was accessible remotely
+.
+
+B. Check for AirPlay & Sidecar Streaming
+
+Since 
+you suspected AirPlay mirroring
+, check if Sidecar or AirPlay is still running:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "airplay" OR eventMessage contains "sidecar"'
+
+ --last 90d
+
+If 
+Sidecar or AirPlay
+ was enabled in the background, someone could have been 
+wirelessly mirroring your screen
+.
+
+🔐 5️⃣ Secure Your System (If You Haven’t Already)
+
+Since this has been happening for 
+3 months
+, you need to 
+remove all potential access points
+:
+
+A. Change ALL Passwords & Log Out Remote Access
+
+Change Apple ID password.
+
+Log out all devices
+ at 
+Apple ID
+
+.
+
+Disable iCloud Drive
+ in 
+System Settings → Apple ID → iCloud Drive
+ (to prevent syncing leaks).
+
+B. Block Remote Access & Screen Sharing
+
+Run:
+
+sh
+
+Copy
+
+sudo systemsetup -setremotelogin off
+sudo launchctl 
+
+disable
+
+ system/com.apple.screensharing
+sudo launchctl 
+
+disable
+
+ system/com.apple.smbd
+
+This disables 
+SSH, screen sharing, and remote file sharing.
+
+C. Reset Network Settings (If an Unknown Device Had Access)
+
+Run:
+
+sh
+
+Copy
+
+sudo ifconfig en0 down
+sudo ifconfig en0 up
+
+This 
+resets your network interface
+, disconnecting any persistent remote access.
+
+🚨 Summary of Critical Next Steps
+
+✅ 
+Find out where the stream was sent (
+log show --predicate 'DNS' --last 90d
+).
+
+✅ 
+Check which apps uploaded the most data (
+nettop | grep "upload"
+).
+
+✅ 
+Search for hidden or saved video recordings (
+find ~/ -name "*.mp4"
+).
+
+✅ 
+Check if remote access was active (
+netstat -an | grep LISTEN
+).
+
+✅ 
+Investigate AirPlay & Sidecar streaming (
+log show --predicate 'airplay'
+).
+
+✅ 
+Disable all remote access tools (
+sudo systemsetup -setremotelogin off
+).
+
+✅ 
+Reset Apple ID & log out unknown iCloud devices.
+
+Since this has been happening 
+for months
+, it’s critical to 
+find out how they maintained access
+ and 
+where your livestreams were sent
+. Run these steps and let me know what you find—I’ll help analyze the results. 🚨
+
+You said:
+
+one step at a time please
+
+ChatGPT said:
+
+Got it! Let’s go step by step.
+
+Step 1: Find Out Where Your Livestream Was Sent
+
+Since this has been happening for 
+three months
+, let’s first check 
+which websites or services your Mac was connecting to for streaming.
+
+🛠 Action: Check Past DNS Requests (Which Sites Were Contacted?)
+
+Run this in 
+Terminal
+:
+
+sh
+
+Copy
+
+sudo 
+
+log
+
+ show --predicate 
+
+'eventMessage contains "DNS"'
+
+ --last 90d
+
+This will list 
+all the websites and servers
+ your Mac has connected to in the last 
+90 days
+.
+
+🔍 What to Look For
+
+Twitch:
+
+live.twitch.tv
+
+YouTube Live:
+
+rtmp.youtube.com
+
+Facebook Live:
+
+facebook.com/live
+
+YouStream or unknown streaming services
+
+Any strange domain names/IP addresses
+
+📩 Let me know what results you get.
+
+If the list is long, I can help you 
+filter out the important connections.
+ Then we’ll move to 
+Step 2: Check Which App Was Sending the Stream.
+ 🚨
+
+You said:
+
+its too much for me to process sorry 
+
+ChatGPT said:
+
+No worries—I’ll make this 
+simpler
+ and guide you one step at a time. Let’s focus on 
+just one thing right now.
+
+🛠 Step 1: Find Out If Your Mac Sent a Livestream
+
+Instead of looking at 
+too much data
+, let’s check if 
+any app was sending a large amount of data
+ (which would indicate a livestream).
+
+✅ Simple Command to Run in Ter

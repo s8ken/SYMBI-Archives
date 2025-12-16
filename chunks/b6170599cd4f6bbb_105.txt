@@ -1,0 +1,295 @@
+ 
+permanent
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/java
+
+You said:
+
+sja@SJAs-MacBook-Pro ~ % ls -l ~/Downloads | grep javafx
+
+sja@SJAs-MacBook-Pro ~ % 
+
+2/2
+
+ChatGPT said:
+
+ð¨ JavaFX Folder is Missing â Letâs Fix It! ð¥
+
+Since 
+ls -l ~/Downloads | grep javafx
+
+returned nothing
+, that means 
+the JavaFX extraction failed, or the files are missing
+. Let's 
+re-download and extract it properly
+.
+
+â Step 1: Re-Download JavaFX
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads
+curl -LO https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+â Step 2: Extract JavaFX Again
+
+Once downloaded, extract it:
+
+sh
+
+Copy
+
+Edit
+
+unzip openjfx-11.0.2_osx-x64_bin-sdk.zip
+
+Now, check that the files exist:
+
+sh
+
+Copy
+
+Edit
+
+ls
+
+ -l ~/Downloads | grep javafx
+
+ð 
+If you see 
+javafx-sdk-11.0.2
+, the extraction worked.
+
+â Step 3: Move JavaFX to a Permanent Location
+
+Since 
+
+/opt/
+ is blocked by macOS System Integrity Protection (SIP)
+, weâll move JavaFX to a 
+safe location
+:
+
+sh
+
+Copy
+
+Edit
+
+sudo 
+
+mkdir
+
+ -p /usr/local/javafx
+sudo 
+
+mv
+
+ ~/Downloads/javafx-sdk-11.0.2 /usr/local/javafx/
+
+â Step 4: Set JavaFX Path for Java
+
+Now, configure Java to recognize JavaFX:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+
+export
+
+ JAVA_OPTS=
+
+"--module-path 
+$PATH_TO_FX
+
+ --add-modules javafx.controls,javafx.fxml"
+
+Make it 
+permanent
+ by adding it to your 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib'
+
+ >> ~/.zshrc
+
+echo
+
+'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"'
+
+ >> ~/.zshrc
+
+source
+
+ ~/.zshrc
+
+â Step 5: Run Autopsy Again
+
+sh
+
+Copy
+
+Edit
+
+cd
+
+ ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome 
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+ð 
+Try these steps and let me know if Autopsy finally launches! ð¥
+
+You said:
+
+sja@SJAs-MacBook-Pro Downloads % ls -l ~/Downloads | grep javafx
+
+drwxr-xr-x   4 sja  staff         128 16 Jan  2019 javafx-sdk-11.0.2
+sja@SJAs-MacBook-Pro Downloads % sudo mkdir -p /usr/local/javafx
+sudo mv ~/Downloads/javafx-sdk-11.0.2 /usr/local/javafx/
+
+sja@SJAs-MacBook-Pro Downloads % export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib
+export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"
+
+sja@SJAs-MacBook-Pro Downloads % echo 'export PATH_TO_FX=/usr/local/javafx/javafx-sdk-11.0.2/lib' >> ~/.zshrc
+echo 'export JAVA_OPTS="--module-path $PATH_TO_FX --add-modules javafx.controls,javafx.fxml"' >> ~/.zshrc
+source ~/.zshrc
+
+sja@SJAs-MacBook-Pro Downloads % cd ~/Downloads/autopsy-4.21.0/bin
+./autopsy --jdkhome "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+Cannot find java. Please use the --jdkhome switch.
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ Autopsy Still Canât Find Java? Letâs Force It to Work! ð¥
+
+Since Autopsy 
+still canât detect Java
+, even though 
+Java 11 and JavaFX are correctly installed
+, we need to 
+hardcode the Java path
+ directly.
+
+â Step 1: Verify That Java 11 Exists
+
+Before anything, make sure 
+Zulu Java 11 is installed and detected
+:
+
+sh
+
+Copy
+
+Edit
+
+/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+ð 
+Expected Output:
+
+nginx
+
+Copy
+
+Edit
+
+openjdk
+
+ version 
+
+"11.0.26"
+
+ ...
+
+â Step 2: Set Java 11 Manually for This Session
+
+Run the following 
+to force Autopsy to use Zulu Java 11
+:
+
+sh
+
+Copy
+
+Edit
+
+export
+
+ JAVA_HOME=
+
+"/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home"
+
+export
+
+ PATH=
+
+"
+$JAVA_HOME
+
+/bin:
+
+$PATH
+
+"
+
+Make it 
+permanent
+ by adding it to your 
+.zshrc
+:
+
+sh
+
+Copy
+
+Edit
+
+echo
+
+'export JAVA_HOME="/Library/Java/Java
+
+You said:
+
+sja@SJAs-MacBook-Pro bin % /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java -version
+
+zsh: no such file or directory: /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java
+sja@SJAs-MacBook-Pro bin % 
+
+ChatGPT said:
+
+ð¨ Java 11 (Zulu) is Missing â Let's Fix It!

@@ -1,0 +1,304 @@
+
+Edit
+
+/Users/sja/Documents/symbi-main-site/
+
+Then create or open this file:
+
+lua
+
+Copy
+
+Edit
+
+.env.
+
+local
+
+You can create or edit it via terminal with:
+
+bash
+
+Copy
+
+Edit
+
+nano .env.local
+
+Or, if you're using VS Code:
+
+bash
+
+Copy
+
+Edit
+
+code .env.local
+
+ð Contents of 
+.env.local
+
+Paste the following:
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+ð Replace 
+skYourCopiedTokenHere
+ with the 
+actual token
+ you just generated from Sanity.
+
+â After That
+
+Save and close the file.
+
+Restart your dev server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+Try editing + saving again in 
+http://localhost:3001/studio
+
+Let me know when itâs added â Iâll help confirm itâs working.
+
+You said:
+
+sja@SJAs-MacBook-Pro symbi-main-site % 
+sja@SJAs-MacBook-Pro symbi-main-site % cd /Users/sja/Documents/symbi-main-site/
+
+sja@SJAs-MacBook-Pro symbi-main-site % .env.local
+
+zsh: command not found: .env.local
+sja@SJAs-MacBook-Pro symbi-main-site % 
+
+ChatGPT said:
+
+Ah yep! Easy mistake â 
+.env.local
+ is a 
+file
+, not a command. Here's what you want to do instead:
+
+â Create or Edit the 
+.env.local
+ File
+
+From your terminal (and youâre already in the right folder):
+
+bash
+
+Copy
+
+Edit
+
+nano .env.local
+
+That will open a file editor in the terminal.
+
+ð Paste the following into that file:
+
+env
+
+Copy
+
+Edit
+
+NEXT_PUBLIC_SANITY_PROJECT_ID=wryptr7v
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_VERSION=2025-02-19
+SANITY_API_TOKEN=skYourCopiedTokenHere
+
+Replace 
+skYourCopiedTokenHere
+ with the 
+actual token
+ you generated from Sanity (starts with 
+sk...
+).
+
+ð¾ Then:
+
+Press 
+Control + X
+ to exit.
+
+Press 
+Y
+ to confirm saving.
+
+Press 
+Enter
+ to write the file.
+
+ð Finally, restart your dev server:
+
+bash
+
+Copy
+
+Edit
+
+npm run dev
+
+And youâre golden â¨ Let me know if you want to test the update/save flow again!
+
+You said:
+
+ja@SJAs-MacBook-Pro symbi-main-site % npm run dev
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ â  Port 3000 is in use, trying 3001 instead.
+   â² Next.js 15.1.0
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.68.101:3001
+   - Environments: .env.local
+   - Experiments (use with caution):
+     Â· webpackBuildWorker
+     Â· parallelServerCompiles
+     Â· parallelServerBuildTraces
+
+ â Starting...
+ â Ready in 1461ms
+ â Compiling / ...
+ â Compiled / in 5.3s (4739 modules)
+ â Compiled in 174ms (1755 modules)
+ GET / 200 in 5353ms
+ GET / 200 in 104ms
+ â Compiling /_not-found ...
+ â Compiled /_not-found in 620ms (4720 modules)
+ GET /host 404 in 678ms
+
+ChatGPT said:
+
+ð¥ Thatâs a 
+win
+! Everything compiled successfully and your 
+.env.local
+ file was detected â notice this line:
+
+diff
+
+Copy
+
+Edit
+
+- Environments: .env.local
+
+That means your Sanity environment variables are now in place â
+
+â Next Steps to Test It All
+
+Now that the setup is live:
+
+Head to 
+http://localhost:3001/studio
+ in your browser.
+
+Try editing and saving that 
+test page
+ in Sanity Studio again.
+
+Confirm that:
+
+You can 
+save
+ the updated content (no API/network error).
+
+It 
+reflects
+ on 
+http://localhost:3001
+ if your Next.js page is fetching from Sanity.
+
+Let me know how the save goes. If it still errors out, weâll recheck the token scope or CORS â but it looks like weâre right on track ð
+
+You said:
+
+I got got a 404
+
+ChatGPT said:
+
+Thanks for the update â letâs get you into the Studio. A 404 on 
+/studio
+ usually means one of these:
+
+ð Quick Debug Checklist
+
+â 1. 
+Check Sanity Studio Route
+
+You must have this file in your Next.js app:
+
+bash
+
+Copy
+
+Edit
+
+app/studio/[[...index]]/page.tsx
+
+If that folder/file isnât there, create it like this:
+
+bash
+
+Copy
+
+Edit
+
+mkdir
+
+ -p app/studio/[[...index]]
+
+Then inside that folder, create 
+page.tsx
+ with:
+
+tsx
+
+Copy
+
+Edit
+
+'use client'
+
+import
+
+ { 
+
+NextStudio
+
+ } 
+
+from
+
+'next-sanity/studio'
+
+import
+
+ config 
+
+from
+
+'../../../sanity.config'
+
+export
+
+default
+
